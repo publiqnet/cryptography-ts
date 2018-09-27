@@ -2,10 +2,11 @@
   "name": "cryptography-ts",
   "version": "1.0.0",
   "description": "Cryptography functionality",
-  "main": "index.js",
+  "main": "bin/kay-pair.js",
   "scripts": {
     "ts:compile": "./node_modules/.bin/tsc",
-    "build": "npm run ts:compile"
+    "build": "npm run ts:compile",
+    "test": "./node_modules/.bin/tsc --project tsconfig.test.json && node ./test_bin/test.js"
   },
   "repository": {
     "type": "git",
