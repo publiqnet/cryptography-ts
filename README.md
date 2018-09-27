@@ -1,2 +1,2 @@
-# blockchain-models-ts
+# cryptography-ts
 Cryptography functionality
