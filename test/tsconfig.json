@@ -2,13 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "outDir": "test_bin/"
+    "outDir": "../test_bin/"
   },
   "include": [
        "src/**/*",
-       "./test.ts"
+       "./index.ts"
    ],
    "exclude": [
-       "node_modules",
+       "node_modules"
    ]
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "ts:compile": "./node_modules/.bin/tsc",
     "build": "npm run ts:compile",
-    "test": "./node_modules/.bin/tsc --project tsconfig.test.json && node ./test_bin/test.js"
+    "test": "./node_modules/.bin/tsc --project ./test/tsconfig.json && node ./test_bin/test/index.js"
   },
   "repository": {
     "type": "git",
