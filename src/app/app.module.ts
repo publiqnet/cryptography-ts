@@ -20,7 +20,6 @@ import { MessagesComponent }    from './messages/messages.component';
 import { PLATFORM_ID, APP_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-
 @NgModule({
   imports: [
     BrowserModule.withServerTransition({ appId: 'new-publishing-platform' }),

@@ -1,3 +1,20 @@
-node_modules
-/.history
+
+# compiled output
 /dist
+/dist-server
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+/.vscode
+/.history
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
