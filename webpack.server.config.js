@@ -1,6 +1,18 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const getProjectName = () => {
+    const projectName =  process.argv.find(t => {
+        return t.startsWith('--project_name=');
+    });
+
+    if(projectName){
+        return projectName.replace('--project_name=', '');
+    }
+
+    throw ('Please define project name in package json command!');
+};
+
 module.exports = {
   entry: { server: './server.ts' },
   resolve: { extensions: ['.js', '.ts'] },
@@ -13,7 +25,15 @@ module.exports = {
     filename: '[name].js'
   },
   module: {
-    rules: [{ test: /\.ts$/, loader: 'ts-loader' }]
+    rules: [
+      { test: /\.ts$/, loader: 'ts-loader' },
+      {
+        // Mark files inside `@angular/core` as using SystemJS style dynamic imports.
+        // Removing this will cause deprecation warnings to appear.
+        test: /[\/\\]@angular[\/\\]core[\/\\].+\.js$/,
+        parser: { system: true },
+      },
+    ]
   },
   plugins: [
     // Temporary Fix for issue: https://github.com/angular/angular/issues/11580
@@ -27,6 +47,9 @@ module.exports = {
       /(.+)?express(\\|\/)(.+)?/,
       path.join(__dirname, 'src'),
       {}
-    )
+    ),
+    new webpack.DefinePlugin({
+        'process.env.PROJECT_NAME': JSON.stringify(getProjectName()),
+    })
   ]
 };
