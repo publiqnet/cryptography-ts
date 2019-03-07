@@ -40,7 +40,7 @@
     "angular-froala-wysiwyg": "^2.7.6",
     "angular2-useful-swiper": "5.0.1",
     "angulartics2": "^5.1.2",
-    "arcnet-js": "git+https://github.com/publiqnet/publiq-crypt-js.git#3.0.dev",
+    "arcnet-js": "git+https://github.com/PUBLIQNetwork/publiq-cript-js.git#3.0.dev",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "buffer": "^5.2.1",
@@ -101,7 +101,6 @@
     "tslib": "^1.9.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2",
-    "webpack": "^4.20.2",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.1"
   }
