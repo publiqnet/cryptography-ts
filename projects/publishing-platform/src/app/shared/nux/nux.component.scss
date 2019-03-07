@@ -1,0 +1,211 @@
+.nux {
+  position: absolute;
+  z-index: 13;
+  .nux-background{
+    box-shadow: 1px 4px 8px 0px rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: default;
+    font-size: 18px;
+    width: 400px;
+    border-radius: 8px;
+    text-align: left;
+    z-index: 13;
+    min-height: 80px;
+    background-color: white;
+    padding: 24px;
+    font-weight: 400;
+  }
+  &:before{
+    content: '';
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */    
+    height: 100%;
+    width: 100%;
+    position: fixed; /* Stay in place */
+    z-index: -1; /* Sit on top */
+    left: 0;
+    top: 0;
+    // background-color: rgb(0,0,0); /* Black fallback color */
+    background-color: rgba(0,0,0, 0.45); /* Black w/opacity */
+    overflow-x: hidden; /* Disable horizontal scroll */
+  }
+  &:after{
+    content: '';
+    position: absolute;
+    top: -11px;
+    height: 0;
+    left: 42%;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 14px solid #ffffff;
+    border-radius: 9px;
+    z-index: 0;
+  }
+  &.nux-pointer-top:after{
+    top: -11px;
+    height: 0;
+    left: 42%;
+  }
+  &.nux-pointer-right:after{
+    transform: rotate(90deg);
+    right: -24px;
+    top:42%;
+    left: auto;
+  }
+   &.nux-pointer-left:after{
+    transform: rotate(-90deg);
+    right: auto!important;
+    left: -25px;
+    top: 42%;
+  }
+  &.nux-pointer-bottom:after{
+    transform: rotate(180deg);
+    bottom: -12px;
+    top: auto;
+    left: 42%;
+  }
+  &.nux-pointer-bottom.left:after, &.nux-pointer-top.left:after{
+    left: 8%;
+    right: auto;
+  }
+   &.nux-pointer-bottom.right:after, &.nux-pointer-top.right:after{
+    right: 8%;
+    left: auto;
+  }
+  &.nux-pointer-left.top:after, &.nux-pointer-right.top:after{
+    top: 22%;
+    bottom: auto
+  }
+  &.nux-pointer-left.bottom:after, &.nux-pointer-right.bottom:after{
+    top: auto;
+    bottom: 22%
+  }
+
+  .nux-btn{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    button{
+      font-size: 16px;
+    }
+  }
+
+  h3 {
+    font-family: 'Open Sans', sans-serif;
+    color: #FFFFFF;
+    font-weight: bold;
+  }
+
+  p{
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.7);
+    margin: 4px 0 12px;
+        line-height: 22px;
+  }
+
+  span {
+    font-size: 16px;
+    display: inline-block;
+    margin-right: 4px;
+    padding:5px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.7);   
+    margin-right: 24px
+  }
+}
+.nux-top {
+  bottom: 114%;
+}
+
+.nux-bottom {
+  top: 120%;
+}
+
+.nux-right {
+  right: 0;
+}
+
+.nux-left {
+  left: 0;
+}
+
+@media screen  and (max-width: 991px){
+  .nux-for-adults{
+    left: 0;
+    &:after{
+      right: auto!important;
+      left: 8%!important;
+    }
+  }
+}
+@media screen  and (max-width: 575px){
+  .nux-cover-mob{
+    left: 0;
+    &:after{
+      left: 8%!important;
+      right: auto!important;
+    }
+  }
+  .nux-headline{
+    right: auto;
+  }
+  .nux-add-pub{
+    left: -60%;
+    &:after{
+      left: 40%!important;
+    }
+  }
+}
+@media screen  and (max-width: 830px){
+
+}
+@media screen  and (max-width: 490px){
+  .nux .nux-background{
+    max-width: 340px;
+    width: 100%;
+  }
+  .nux-publish{
+    .nux-background{
+      width: 320px;
+    }
+  }
+}
+@media screen  and (max-width: 390px){
+  .nux-add-pub{
+    .nux-background{
+      width: 340px;
+    }
+  }
+}
+@media screen  and (max-width: 370px){
+  .nux .nux-background{
+    max-width: 300px;
+    width: 100%;
+  }
+  .nux-publish{
+    .nux-background{
+      width: 280px;
+    }
+  }
+  .nux-pub-view{
+    left: 4%;
+    .nux-background{
+      width: 96%;
+    }
+  }
+
+}
+
+.dots-container {
+  text-align: center;
+  .dot {
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    background: #484848;
+    display: inline-block;
+    &:not(:last-child) {margin-right: 4px;}
+
+    &.active {
+      background: #ffffff;
+    }
+  }
+}

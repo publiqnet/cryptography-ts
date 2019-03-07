@@ -1,0 +1,26 @@
+<main class="important">
+    <div class="container-fluid">
+        <h1>{{title}}</h1>
+        <div class="main-panel-border clearfix"></div>
+
+        <div class="message-container">
+            <ng-container>
+                <mat-expansion-panel *ngFor="let message of messageList; let index = index" [expanded]="index === 0">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <ng-container>
+                                <span class="date">{{message.created_at *1000 | date: 'MMM dd, y'}}</span>
+                            </ng-container>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            <div>
+                                <span class="upper-bold">{{message.title}}</span>
+                            </div>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <p class="message-body">{{message.content}}</p>
+                </mat-expansion-panel>
+            </ng-container>
+        </div>
+    </div>
+</main>

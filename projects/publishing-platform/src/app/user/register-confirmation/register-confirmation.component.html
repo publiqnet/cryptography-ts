@@ -1,0 +1,10 @@
+<mat-card class="centered" *ngIf="!confirmed">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>
+
+<mat-card class="centered" *ngIf="confirmed">
+    <mat-card-content>
+        <p>{{'user.your_account_confirmed' | translate}}</p>
+        <p>{{'user.click' | translate}} <a routerLink="/user/login"><b> {{'user.here_for_login' | translate}}</b></a></p>
+    </mat-card-content>
+</mat-card>

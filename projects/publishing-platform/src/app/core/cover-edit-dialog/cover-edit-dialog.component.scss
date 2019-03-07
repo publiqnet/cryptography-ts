@@ -1,0 +1,56 @@
+h3 {
+  font-family: "Open Sans", sans-serif;
+  margin: 0 auto 20px;
+  text-align: center;
+  display: block;
+  max-width: calc(100% - 48px);
+
+  a {
+    color: blue;
+    margin-left: 5px;
+  }
+}
+
+.image-cropper-container{
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+::ng-deep .main-canvas {
+  max-width: 960px;
+}
+
+p {
+  font-family: "Open Sans", sans-serif;
+}
+
+.settingTitleText {
+  padding: 20px 0;
+}
+
+.dialog-wrapper {
+  position: relative;
+}
+
+.actions-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+
+  button:last-child {
+    margin-left: 12px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .actions-container {
+    flex-direction: column;
+
+    p {
+      margin-bottom: 12px;
+    }
+  }
+}

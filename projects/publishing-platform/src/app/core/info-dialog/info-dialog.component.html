@@ -1,0 +1,32 @@
+<div fxLayout="row" fxLayoutAlign="flex-end center" class="div-close">
+    <mat-icon fxFlexAlign="flex-end" class="mat-18 pointer icon_close" (click)="onCloseCancel()">close</mat-icon>
+</div>
+
+<div [ngSwitch]="action" class="info-container">
+
+    <div *ngSwitchCase="'settings'">
+        <h3 mat-dialog-title class="settings-title">{{'core.personal_update' | translate}}</h3>
+        <h4 *ngIf="title" class="infoText settingTitleText" [innerHTML]="title"></h4>
+        <app-settings [hideElement]="false"></app-settings>
+    </div>
+
+    <div *ngSwitchCase="'for_adult'" class="fullsized">
+        <h3 *ngIf="title" mat-dialog-title class="infoText adultTitleText text-center" [innerHTML]="title"></h3>
+        <div mat-dialog-actions>
+            <button mat-button (click)="onCloseConfirm()">{{'core.continue_reading' | translate}}</button>
+            <button mat-button (click)="onCloseCancel()">{{'core.cancel_dialog' | translate}}</button>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'message'" class="fullsized">
+        <h3 *ngIf="title" mat-dialog-title class="infoText messageTitleText" [innerHTML]="title"></h3>
+        <button mat-button (click)="onCloseConfirm()">{{'core.ok' | translate}}</button>
+    </div>
+
+    <div *ngSwitchCase="'notChannelAuthor'" class="fullsized">
+        <h3 mat-dialog-title class="infoText messageTitleText">{{'core.choose_your_channel' | translate}}</h3>
+        <p>{{'core.dear_author' | translate}} <a class="main-site-url" href="{{mainSiteUrl}}" target="_blank">{{'core.homepage' | translate}}</a> {{'core.and_choose' | translate}}</p>
+    </div>
+
+    <div *ngSwitchDefault><p>{{'core.action_not_found' | translate}}</p></div>
+</div>

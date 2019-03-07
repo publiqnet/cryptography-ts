@@ -1,0 +1,14 @@
+<div [ngClass]="positionConfig" *ngIf="key === keys[currentStep]" (click)="$event.stopPropagation()">
+    <div class="nux-background">
+        <h3 *ngIf="title" [innerHTML]="title | translate"></h3>
+        <p [innerHTML]="key | translate"></p>
+        <div class='nux-btn'>
+            <!-- <span *ngIf="currentStep !== 0" (click)="previous($event)">Previous</span> -->
+            <span *ngIf="currentStep !== keys?.length - 1" (click)="finish($event)">{{ 'nux.editor.not_now' | translate}}</span>
+            <button color='primary' mat-raised-button type='button' class='' (click)="next($event)" [innerHTML]="(currentStep !== keys?.length - 1 ? 'nux.editor.next' : 'nux.editor.finish') | translate"></button>
+        </div>
+        <!-- <div class="dots-container">
+            <div *ngFor="let key of keys; let i = index;" [ngClass]="{dot: true, active: (i === currentStep)}"></div>
+        </div> -->
+    </div>
+</div>

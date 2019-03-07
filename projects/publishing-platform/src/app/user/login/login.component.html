@@ -1,0 +1,31 @@
+<mat-card class="centered" *ngIf="!formSubmitted">
+    <mat-card-title>{{'user.sign_in' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'user.enter_email_and_password' | translate}}</mat-card-subtitle>
+
+    <mat-card-content>
+        <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
+            <mat-form-field class="full-width">
+                <input matInput formControlName="email" placeholder="{{'user.email_address' | translate}}" value="">
+            </mat-form-field>
+
+            <div>
+                <app-control-message class="warning mb-4 h6" [control]="loginForm.controls['email']"></app-control-message>
+            </div>
+
+            <mat-form-field class="full-width">
+                <input matInput formControlName="password" placeholder="{{'user.password' | translate}}" type="password" value="">
+            </mat-form-field>
+
+            <mat-card-actions class="ml-0 mt-2">
+                <button mat-raised-button color="primary" [disabled]="!loginForm.valid">{{'user.sign_in' | translate}}</button>
+            </mat-card-actions>
+
+            <a [routerLink]="['/user/recover']" class="forgot-password">{{'user.forgot_pass' | translate}}</a>
+
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="formSubmitted">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>

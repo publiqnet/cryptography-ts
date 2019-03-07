@@ -1,0 +1,43 @@
+<div class="inner-wrap article-list-wrap" style="margin-top: 0;">
+
+    <div class="article-list masonry">
+        <!--START CARDS-->
+        <ng-container *ngFor="let account of accounts">
+            <ng-container *ngIf="account.meta">
+                <div class="list-item masonry-brick">
+                    <div class="author middle-profile-pic">
+                        <div class="middle-avatar "
+                             [ngStyle]="{'background-image': checkImageHashExist(account) ?
+                             'url(' + account.meta.image_hash + ')' :
+                             'url(/assets/no-image-article.jpg)'}">
+                            <span *ngIf="!account.meta?.image_hash" class="vh-centered">{{account.shortName}}</span>
+
+                        </div>
+                        <a routerLink="/a/{{account.name}}">{{getAccountName(account)}}</a>
+                    </div>
+
+                    <ng-container  *ngIf="account['subscribing'] != 1 && account['subscribing'] != -1">
+                        <span class="follow" (click)="follow(account)">
+                            <i class="mr-2 icon-follow"></i>
+                            <span><a>{{'author.follow' | translate}}</a></span>
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="(account['subscribing'] == 1)">
+                        <span class="follow" (click)="unfollow(account)">
+                            <i class="mr-2 icon-unfollow"></i>
+                            <span><a>{{'author.unfollow' | translate}}</a></span>
+                        </span>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+    <!--END CARDS-->
+</div>
+
+<div *ngIf="hasSeparator" class="content-wrap separation-block">
+    <div class="inner-wrap">
+        <br clear="all">
+    </div>
+</div>
+

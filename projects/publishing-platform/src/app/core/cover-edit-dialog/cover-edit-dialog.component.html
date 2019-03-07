@@ -1,0 +1,13 @@
+<div class="dialog-wrapper image-cropper-container">
+    <div>
+        <img-cropper #cropper [image]="data" [settings]="cropperSettings" class="img-cropper-tag"></img-cropper>
+    </div>
+
+    <div class="actions-container">
+        <p>{{'dialog.crop_image.drag_to_move' | translate }}</p>
+        <div>
+            <button mat-raised-button (click)="onCloseCancel()">{{'dialog.crop_image.cancel' | translate }}</button>
+            <button [disabled]="cropping" mat-raised-button color="primary" (click)="cropImage()">{{'dialog.crop_image.crop' | translate }}</button>
+        </div>
+    </div>
+</div>

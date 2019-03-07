@@ -1,0 +1,30 @@
+h3 {
+  font-family: "Open Sans", sans-serif;
+  margin: 0 auto 20px;
+  text-align: center;
+  display: block;
+  max-width: calc(100% - 48px);
+
+  a {
+    color: blue;
+    margin-left: 5px;
+  }
+}
+
+p {
+  font-family: "Open Sans", sans-serif;
+}
+
+.settingTitleText {
+  padding: 20px 0;
+}
+
+.dialog-wrapper {
+  position: relative;
+}
+
+mat-icon.icon_close {
+  position: absolute;
+  top: 0; right: 0;
+  z-index: 1001;
+}

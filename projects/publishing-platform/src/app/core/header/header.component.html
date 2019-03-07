@@ -1,0 +1,183 @@
+<mat-toolbar color="primary" class="public-header" [ngClass]="{'has-revisions': isHistoryArticle}">
+    <div class="header-slide-wrapper-container">
+        <div class="header-slide-wrapper">
+            <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+                <div fxLayout="column" [ngClass]="{'logo-container': true, 'publiq-logo-container': !channel, 'search-open': searchBar}"
+                    fxLayoutAlign="center center">
+                    <a routerLink="/">
+                        <span class="publiq-logo-small" *ngIf="!channel"></span>
+                        <span class="publiq-logo" [ngClass]="{publiq: channel}" aria-label="PUBLIQ" [ngStyle]="{'background-image': 'url(' + logoImage + ')'}"></span>
+                    </a>
+                </div>
+                <span class="spacer"></span>
+
+                <div [hidden]="!searchBar" style="width: 100%;">
+                    <app-autocomplete-search [searchBarStatus]="searchBar"></app-autocomplete-search>
+                </div>
+
+                <div fxLayout="row" style="height: 36px;">
+                    <div fxLayout fxLayoutAlign="center center">
+                        <i class="searchIcon menuIcon" [ngClass]="searchBar ? 'icon-close' : 'icon-search'" (click)="toggleSearchBar()">
+                        </i>
+                    </div>
+                    <div fx Layout fxLayoutAlign="center center" [ngClass]="{'hidden-sm-down': searchBar}">
+                        <i class="menuIcon" [ngClass]="showTagList ? 'icon-close' : 'icon-tags'" (click)="tagListToggle()"></i>
+                    </div>
+
+                    <div fxLayout fxLayoutAlign="center center" *ngIf="!account && (navTabView !== 'login')" [routerLink]="['/user/login']" [ngClass]="{'hidden-sm-down': searchBar, 'hidden-md-up': true}">
+                        <i class="icon-sign-in menuIcon"></i>
+                    </div>
+                    <div fxLayout fxLayoutAlign="center center" *ngIf="!account && (navTabView !== 'register')" [routerLink]="['/user/register']"
+                        [ngClass]="{'hidden-sm-down': searchBar, 'hidden-md-up': true}">
+                        <i class="icon-profile menuIcon"></i>
+                    </div>
+
+                    <div *ngIf="!account && (navTabView !== 'login')" class="hidden-sm-down labelled-button" [routerLink]="['/user/login']">
+                        <i class="icon-sign-in"></i>
+                        <span>{{"header.sign_in" | translate}}</span>
+                    </div>
+
+                    <div *ngIf="!account && (navTabView !== 'register')" class="hidden-sm-down labelled-button" [routerLink]="['/user/register']">
+                        <i class="icon-profile"></i>
+                        <span>{{"header.join" | translate}}</span>
+                    </div>
+
+                    <!--<div fxLayout fxLayoutAlign="center center" *ngIf="balance" [ngClass]="{'hidden-sm-down': searchBar, 'hidden-md-up': true}">
+                        <i class="icon-pbq menuIcon"></i> 
+                    </div>-->
+                    <div *ngIf="balance && account" class="hidden-sm-down labelled-button balance-button" [routerLink]="['/wallet']">
+                        <i class="icon-pbq menuIcon"></i>
+                        <span>{{balance?.balance_pbq | number: '0.0-8'}} PBQ</span>
+                    </div>
+                    <!-- <mat-menu #bmenu="matMenu" [overlapTrigger]="false">
+                        <button mat-menu-item class="hidden-md-up">
+                            <i class="icon-pbq"></i>
+                            <span>{{balance?.balance_pbq | number: '0.0-8'}} PBQ</span>
+                        </button>
+                        <button mat-menu-item [routerLink]="['/wallet']">
+                            <i class="icon-receive"></i>
+                            <span>{{"header.wallet" | translate}}</span>
+                        </button>
+                        &lt;!&ndash;<button mat-menu-item [routerLink]="['/wallet/receive']">
+                            <i class="icon-receive"></i>
+                            <span>{{"header.receive_tokens" | translate}}</span>
+                        </button>
+                        <button mat-menu-item [routerLink]="['/wallet/transfer']">
+                            <i class="icon-send"></i>
+                            <span>{{"header.send_tokens" | translate}}</span>
+                        </button>
+                        <button mat-menu-item [routerLink]="['/wallet/transactions']">
+                            <i class="icon-transaction-history"></i>
+                            <span>{{"header.my_transactions" | translate}}</span>
+                        </button>&ndash;&gt;
+
+                    </mat-menu>-->
+
+                    <div class="header-notifications" fxLayout fxLayoutAlign="center center" *ngIf="account" (click)="toggleNotificationDropdown()"
+                        [ngClass]="{'hidden-sm-down': searchBar}" appClickOutside (clickOutside)="closeNotificationDD()">
+                        <i class="icon-notifications menuIcon"></i>
+
+                        <span [hidden]="!notificationCount || notificationCount === 0" [ngStyle]="{fontSize: notificationCount>9?'9px':''}">{{notificationCount
+                            < 9 ? notificationCount : '9+'}}</span>
+                    </div>
+
+                    <div fxLayout fxLayoutAlign="center center" *ngIf="account" [ngClass]="{'hidden-sm-down': searchBar}" [matMenuTriggerFor]="menu">
+                        <i class="icon-profile menuIcon"></i>
+                    </div>
+                    <mat-menu #menu="matMenu" [overlapTrigger]="false">
+                        <button mat-menu-item (click)="goTo('/content/newcontent')">
+                            <i class="icon-new-story"></i>
+                            <span>{{"header.new_story" | translate}}</span>
+                        </button>
+                        <button mat-menu-item (click)="goTo('/content/mycontent')">
+                            <i class="icon-my-stories"></i>
+                            <span>{{"header.my_stories" | translate}}</span>
+                        </button>
+                        <!-- <button mat-menu-item [routerLink]="['/user/notifications']">
+                            <mat-icon>notifications</mat-icon>
+                            <span>Notifications</span>
+                        </button>-->
+                        <!--<button mat-menu-item [routerLink]="['/']" [disabled]="true">-->
+                        <!--<mat-icon>format_list_numbered</mat-icon>-->
+                        <!--<span>Statistics</span>-->
+                        <!--</button>-->
+                        <!--<button mat-menu-item [routerLink]="['/']" [disabled]="true">-->
+                        <!--<mat-icon>supervisor_account</mat-icon>-->
+                        <!--<span>Subscriptions</span>-->
+                        <!--</button>-->
+                        <!--<button mat-menu-item [routerLink]="['/help']">-->
+                        <!--<mat-icon>help</mat-icon>-->
+                        <!--<span>Help</span>-->
+                        <!--</button>-->
+                        <button mat-menu-item [routerLink]="['/content/publications']">
+                            <i class="publications-icon"></i>
+                            <span>{{"header.publications" | translate}}</span>
+                        </button>
+                        <button *ngIf="account && account.id" mat-menu-item [routerLink]="['/a/' + account.name ]">
+                            <i class="icon-profile"></i>
+                            <span>{{"header.profile" | translate}}</span>
+                        </button>
+                        <button mat-menu-item (click)="redirectToWalletSecurity()">
+                            <img src="../../../assets/ic_wallet.svg" alt="wallet">
+                            <span>{{"header.wallet" | translate}}</span>
+                        </button>
+                        <button mat-menu-item (click)="signout()">
+                            <i class="icon-log-out"></i>
+                            <span>{{"header.log_out" | translate}}</span>
+                        </button>
+                    </mat-menu>
+
+                </div>
+            </div>
+            <div class="header-slide inner-wrap header-article-meta" fxLayout="row" fxLayoutGap="20px">
+                <div fxLayout="row" fxFlex="1 0" fxLayoutAlign="auto center" (click)="scrollToTop()">
+                    <div class="avatar" [ngStyle]="{'background-image':checkImageHashExist() ? 'url(' + articleMetaData?.full_account?.meta.image_hash + ')':'none'}">
+                        <span *ngIf="!checkImageHashExist()" class="vh-centered">{{articleMetaData?.full_account?.shortName}}</span>
+                    </div>
+                    <h3>{{articleMetaData?.meta?.title}}</h3>
+
+                </div>
+
+                <!--span-->
+                <div class="social" [ngClass]="socialsOpen?'open':''" *ngIf="articleMetaData && currentArticleLink">
+                    <ul class="d-inline-flex">
+                        <li>
+                            <a (click)="copy()">
+                                <img class="mr10" src="../../../assets/social/copy.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://twitter.com/share?url={{currentArticleLink}}" onclick="window.open(this.href, 'twitterwindow','left=20,top=20,width=600,height=300,toolbar=0,resizable=1'); return false;">
+                                <img class="mr10" src="../../../assets/social/twitter.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a (click)="share(currentArticleLink)" style="cursor: pointer">
+                                <img class="mr10" src="../../../assets/social/facebook.svg">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.linkedin.com/shareArticle?mini=true&url={{currentArticleLink}}" onclick="window.open(this.href, 'linkedinwindow','left=20,top=20,width=600,height=700,toolbar=0,resizable=1'); return false;">
+                                <img class="linkedin_icon" src="../../../assets/social/linkedin.svg">
+                            </a>
+                        </li>
+                    </ul>
+                    <i class="icon-share" (click)="toggleSocials()"></i>
+                </div>
+                <!-- </span> -->
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isHistoryArticle" class="has-revisions-info">
+        <div class="inner-wrap">
+            <span>{{"header.old_story" | translate}}
+                <a href="#" (click)="articleUpdatedVersion($event)">{{"header.here" | translate}}</a>.
+            </span>
+        </div>
+    </div>
+    <div class="reading-progress"></div>
+    <app-notification-dropdown *ngIf="account" class="inner-wrap" [disableScroll]="false" [hidden]="!showNotificationDropdown"
+        (unreadCount)="updateNotificationCount($event)" (changeNote)="closeNotificationDD()"></app-notification-dropdown>
+</mat-toolbar>
+
+<app-tag-list *ngIf="showTagList" [ngClass]="showTagList ? 'show' : 'hide'" (tagevent)="targetEvent($event)"></app-tag-list>

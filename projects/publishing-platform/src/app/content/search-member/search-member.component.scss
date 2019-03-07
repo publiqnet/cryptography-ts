@@ -1,0 +1,125 @@
+app-search-member {
+  outline: none;
+}
+mat-form-field:focus{
+  outline: none;
+}
+.add-member-form{
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+}
+.autocomplete-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+.mat-form-field-appearance-legacy .mat-form-field-underline{
+  display: none;
+}
+.autocomplete-full-width {
+  width: 100%;
+  background: white;
+  mat-icon{
+    margin-left: auto;
+  }
+  mat-select{
+    width: 100%!important;
+    margin: 30px 0;
+    padding: 0 10px;
+    margin-left: 0!important;
+  }
+  button{
+    margin-left: auto;
+    margin-bottom: 20px;
+  }
+  span.searched-item{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+}
+
+.autocomplete-center {
+  padding: 20px 40px 0px;
+}
+
+.upper-bold {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+small {
+  font-size: 14px;
+}
+
+.mat_option {
+  position: relative;
+}
+
+.more_text {
+  font-size: 14px;
+  position: absolute;
+  right: 16px;
+  top: 4px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  -webkit-border-radius: 16px;
+  border-radius: 16px;
+  background: #3366ff;
+  vertical-align: middle;
+  margin-right: 10px;
+  background-position: center !important;
+  background-size: cover;
+  position: relative;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold
+
+}
+
+.line-bottom {
+  border-bottom: 1px solid #3366ff;
+}
+
+.italic {
+  font-style: italic;
+}
+
+/deep/.has_more_option {
+  .mat-option-text {
+    width: 100%;
+    height: 98%;
+    border-bottom: 1px solid #3366ff;
+  }
+}
+
+/deep/ .autocomplete-full-width span label {
+  display: none !important;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.name {
+  font-size: 16px;
+}
+.byEmails{
+   div{
+    padding: 50px 0 10px 0;
+    text-align: right;
+  }
+  mat-chip-list input.mat-chip-input[type="text"]{
+    &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+      color: black!important;
+    }
+  
+  }
+}

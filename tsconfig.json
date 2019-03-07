@@ -10,12 +10,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "skipLibCheck": true,
     "target": "es5",
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "es2018",
+      "es2017",
       "dom"
     ],
     "paths": {
@@ -24,6 +25,9 @@
       ],
       "shared-lib/*": [
         "dist/shared-lib/*"
+      ],
+      "node_modules": [
+        "node_modules/*"
       ]
     }
   }

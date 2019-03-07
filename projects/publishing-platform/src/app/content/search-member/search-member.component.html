@@ -1,0 +1,65 @@
+<div class="autocomplete-full-width add-member-form">
+  
+  <form class="autocomplete-for autocomplete-center" >
+    <small>
+    *{{'publication.inv_by_email_text' | translate}}
+    </small>
+      <mat-form-field class="autocomplete-full-width">
+          <mat-chip-list #chipList>
+            <ng-container>
+                 <mat-chip  *ngFor="let tagInput of allTags" [removable]="removable" (remove)="remove(tagInput)">
+                  <span class="searched-item">{{ getTagName(tagInput) }}</span>
+                  <mat-icon matChipRemove *ngIf="removable" (click)="remove(tagInput)">cancel</mat-icon>
+              </mat-chip>
+            </ng-container>
+              <input matInput
+              autofocus
+              placeholder="{{'content.search' | translate}}"
+              aria-label="Search"
+              #tagInput
+              (keyup)='keyUp.next($event)'
+              [matChipInputFor]="chipList"
+              [matChipInputAddOnBlur]="addOnBlur"
+              value=""
+              [matAutocomplete]="auto"
+              (matChipInputTokenEnd)="add($event)"
+              >
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
+                  <ng-container *ngIf="searchedAccountsList?.length && !searchAccountLoading">
+                      <mat-option *ngFor="let account of searchedAccountsList" class="mat_option" [value]="account">
+                          <ng-container *ngIf="account">
+                              <div class="avatar" [ngStyle]="{'background-image':checkImageHashExist(account) ? 'url('+ account.meta.image_hash + ')' : 'none'}">
+                                  <span *ngIf="!checkImageHashExist(account)" class="vh-centered">
+                                      {{account.shortName ?  account.shortName : ''}}
+                                  </span>
+                              </div>
+                              <span class="name">{{getAccountName(account)}}</span>
+                          </ng-container>
+
+                      </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="!searchedAccountsList?.length && !searchAccountLoading">
+                      <div>
+                          <span class="title">{{'content.data_not_found' | translate}}</span>
+                      </div>
+                  </ng-container>
+              </mat-autocomplete>
+
+              <mat-select [(ngModel)]="selected" placeholder="{{'content.select_status' | translate}}" style="width: 20%;
+  margin-left: 20px;" [value]="statuses[0]" name="status">
+                  <mat-option *ngFor="let status of statuses" [value]="status">
+                      {{status}}
+                  </mat-option>
+              </mat-select>
+              <p style="color:red" *ngIf="limitUp">
+                  {{'publication.invitation_limit' | translate}}
+              </p>
+              <p style="color:red" *ngIf="emailExists">
+                  Email already exists
+              </p>
+              <button mat-raised-button color="primary" [disabled]="allTags.length==0 || clicked" (click)="addMember()">{{'publication.invite' | translate}}</button>
+          </mat-chip-list>
+      </mat-form-field>
+  </form>
+ 
+</div>

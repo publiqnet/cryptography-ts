@@ -23,9 +23,25 @@
               "projects/publishing-platform/src/assets"
             ],
             "styles": [
-              "projects/publishing-platform/src/styles.css"
+              "projects/publishing-platform/src/styles.scss",
+              "projects/publishing-platform/src/assets/css/publiq.icons.css",
+              "projects/publishing-platform/src/assets/css/reset.css",
+              "projects/publishing-platform/src/assets/css/icon.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/froala-editor/css/froala_editor.pkgd.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/froala-editor/js/froala_editor.pkgd.min.js",
+              "node_modules/froala-editor/js/languages/ja.js",
+              "node_modules/hammerjs/hammer.min.js",
+              "projects/publishing-platform/src/assets/js/swiper.min.js",
+              "projects/publishing-platform/src/assets/js/masonry.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/isotope.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/imagesloaded.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/share_buttons.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -102,23 +118,23 @@
           }
         },
         "server": {
-              "builder": "@angular-devkit/build-angular:server",
-              "options": {
-                  "outputPath": "dist/server",
-                  "main": "projects/publishing-platform/src/main.server.ts",
-                  "tsConfig": "projects/publishing-platform/tsconfig.server.json"
-              },
-              "configurations": {
-                  "production": {
-                      "fileReplacements": [
-                          {
-                              "replace": "projects/publishing-platform/src/environments/environment.ts",
-                              "with": "projects/publishing-platform/src/environments/environment.prod.ts"
-                          }
-                      ]
-                  }
-              }
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/server",
+            "main": "projects/publishing-platform/src/main.server.ts",
+            "tsConfig": "projects/publishing-platform/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/publishing-platform/src/environments/environment.ts",
+                  "with": "projects/publishing-platform/src/environments/environment.prod.ts"
+                }
+              ]
+            }
           }
+        }
       }
     },
     "shared-lib": {

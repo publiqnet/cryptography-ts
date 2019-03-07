@@ -1,0 +1,40 @@
+<div class="small-card-list-wrapper">
+    <div class="inner-wrap row">
+        <!--<div class="trending-item" *ngFor="let d of [1,2,3,4,5,6];">-->
+        <div class="trending-item col-12 col-sm-6 col-md-4" *ngFor="let article of articles | slice: 0:6; let i = index;">
+            <a>
+                <div (click)="redirect(article)" class="trending-image"
+                     [ngStyle]="{'background-image':'url(' + getImage(article)  + ')'}">
+
+                </div>
+            </a>
+
+            <div class="trending-info">
+                <div class="datetime">
+                    <span>
+                        {{article.created | date:'d'}}
+                        {{('months.' + (article.created | date:'MMM')) | translate}}
+                        {{thisYear != (article.created | date: ' y') ? (article.created | date: ' y') : ''}}, 
+                        {{article.created | date: 'HH:mm'}}
+                    </span>
+                    <ng-container *ngIf="article.viewcount !== undefined">
+                        <i class="icon-views"></i>
+                        <span>{{article.viewcount}}</span>
+                    </ng-container>
+                </div>
+                <a (click)="redirect(article)"><h4>{{(article.meta.title.length > 40) ? (article.meta.title |
+                    slice:0:40) + '..' : (article.meta.title)}}</h4></a>
+                <div class="trending-author">
+                    <a routerLink="/a/{{article.full_account?.name}}">{{article?.full_account?.firstName}}
+                        {{article?.full_account?.lastName}}</a>
+                    <span *ngIf="article.publication">{{'shared.in' | translate}}</span>
+                    <a (click)="goToPublicationPage(article.publication?.slug)">{{article.publication?.title}}</a>
+                </div>
+                <div class="trending-tag-list">
+                    <a *ngFor="let tag of article.meta.displayTags; let lastTag = last;" routerLink="/t/{{tag}}">{{
+                        tag }}{{lastTag ? '' : ', '}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
