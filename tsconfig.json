@@ -16,7 +16,7 @@
       "node_modules/@types"
     ],
     "lib": [
-      "es2017",
+      "es2018",
       "dom"
     ],
     "paths": {
@@ -25,9 +25,6 @@
       ],
       "shared-lib/*": [
         "dist/shared-lib/*"
-      ],
-      "node_modules": [
-        "node_modules/*"
       ]
     }
   }

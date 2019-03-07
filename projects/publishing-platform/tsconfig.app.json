@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "../../out-tsc/app",
     "types": []
   },
@@ -8,11 +9,11 @@
     "**/*.d.ts",
     "**/*.ts",
     "src/main.ts",
-    "src/main-server.ts",
+    "src/main.server.ts",
     "src/polyfills.ts",
     "../../node_modules/arcnet-js/index.ts",
     "../../node_modules/arcnet-js/lib/**/*",
     "../../node_modules/arcnet-js/typings.d.ts"
   ],
-  "exclude": ["test.ts", "**/*.spec.ts", "**/testing/*", "server.ts"]
+  "exclude": ["test.ts", "**/*.spec.ts", "server.ts"]
 }
