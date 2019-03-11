@@ -11,7 +11,6 @@ import * as CryptoJS from 'crypto-js';
 const secp256k1 = new ec('secp256k1');
 const generatorPoint = secp256k1.g;
 
-
 import * as BN from 'bn.js';
 
 export class KeyPair {
@@ -25,11 +24,17 @@ export class KeyPair {
     }
 
     public get BrainKey (): string {
-      return this.brainKey;
+      return this.pureBrainKay;
     }
 
     constructor( brainKeyPrefix ?: string ) {
-        const brainKey = KeyPair.createBrainKey(0, brainKeyPrefix);
+        if(!brainKeyPrefix){
+            this.pureBrainKay = KeyPair.generateRandomText()
+        } else {
+            this.pureBrainKay = brainKeyPrefix;
+        }
+
+        const brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
 
         const privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
         // KeyPair.generateEntropy(0);
@@ -53,6 +58,7 @@ export class KeyPair {
     private publicKey: PublicKey ;
     private privateKey: PrivateKey ;
     private brainKey: string;
+    private pureBrainKay: string;
 
     static generateRandomText () {
         const random_seed = rand(10);
@@ -67,9 +73,9 @@ export class KeyPair {
     }
 
     static createBrainKey(suffix, text = '') {
-      if (!text) {
-        return `${KeyPair.generateRandomText()} ${suffix}`;
-      }
+      // if (!text) {
+      //   return `${KeyPair.generateRandomText()} ${suffix}`;
+      // }
       //  ${suffix}
       return `${text} ${suffix}`;
     }

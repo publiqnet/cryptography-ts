@@ -12,7 +12,13 @@ var secp256k1 = new elliptic_1.ec('secp256k1');
 var generatorPoint = secp256k1.g;
 var KeyPair = /** @class */ (function () {
     function KeyPair(brainKeyPrefix) {
-        var brainKey = KeyPair.createBrainKey(0, brainKeyPrefix);
+        if (!brainKeyPrefix) {
+            this.pureBrainKay = KeyPair.generateRandomText();
+        }
+        else {
+            this.pureBrainKay = brainKeyPrefix;
+        }
+        var brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
         var privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
         // KeyPair.generateEntropy(0);
         var pubKeyCoordinates = generatorPoint.mul(privateCorKeyHex);
@@ -38,7 +44,7 @@ var KeyPair = /** @class */ (function () {
     });
     Object.defineProperty(KeyPair.prototype, "BrainKey", {
         get: function () {
-            return this.brainKey;
+            return this.pureBrainKay;
         },
         enumerable: true,
         configurable: true
@@ -54,9 +60,9 @@ var KeyPair = /** @class */ (function () {
     };
     KeyPair.createBrainKey = function (suffix, text) {
         if (text === void 0) { text = ''; }
-        if (!text) {
-            return KeyPair.generateRandomText() + " " + suffix;
-        }
+        // if (!text) {
+        //   return `${KeyPair.generateRandomText()} ${suffix}`;
+        // }
         //  ${suffix}
         return text + " " + suffix;
     };
