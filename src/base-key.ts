@@ -18,6 +18,10 @@ export class BaseKey {
         return BaseKey.toBase58(this.key);
     }
 
+    public get Key () {
+        return this.key;
+    }
+
     protected key;
 
     static hexStringToByteArray (hexStr) {
