@@ -8,6 +8,9 @@ var BaseKey = /** @class */ (function () {
     function BaseKey() {
     }
     Object.defineProperty(BaseKey.prototype, "Key", {
+        get: function () {
+            return this.key;
+        },
         set: function (hexKey) {
             this.key = hexKey;
         },
