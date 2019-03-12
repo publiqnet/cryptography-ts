@@ -1,5 +1,5 @@
 import { Account, IAccount } from '../';
-import { PrivateKey, PublicKey, Aes } from 'arcnet-js';
+// import { PrivateKey, PublicKey, Aes } from 'arcnet-js';
 import { Subject, Observable } from 'rxjs';
 
 /**
@@ -31,25 +31,25 @@ export class TransactionDetailMemoObject {
     }
     // console.log('Aes', Aes.decrypt_with_checksum);
     // const pKey = PrivateKey.fromWif(account.pKey);
-    let pKey = account.pKey;
-
-    if (pKey.constructor.name == 'String') {
-      pKey = PrivateKey.fromWif(account.pKey);
-    }
-
-    let sender = PublicKey.fromPublicKeyString(this.from);
-    if (pKey.toPublicKey() && pKey.toPublicKey() === this.from) {
-      sender = PublicKey.fromPublicKeyString(this.to);
-    }
+    // let pKey = account.pKey;
+    //
+    // if (pKey.constructor.name == 'String') {
+    //   pKey = PrivateKey.fromWif(account.pKey);
+    // }
+    //
+    // let sender = PublicKey.fromPublicKeyString(this.from);
+    // if (pKey.toPublicKey() && pKey.toPublicKey() === this.from) {
+    //   sender = PublicKey.fromPublicKeyString(this.to);
+    // }
 
     try {
-      const plaintext = Aes.decrypt_with_checksum(
-        pKey,
-        sender,
-        this.nonce,
-        this.message
-      );
-      return plaintext.toString();
+      // const plaintext = Aes.decrypt_with_checksum(
+      //   pKey,
+      //   sender,
+      //   this.nonce,
+      //   this.message
+      // );
+      // return plaintext.toString();
     } catch (err) {
       return '';
     }

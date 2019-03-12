@@ -14,15 +14,15 @@ import { Account } from './models/account';
 import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
 
-import {
-  Aes,
-  Apis,
-  ChainStore,
-  FetchChain, key,
-  PrivateKey,
-  TransactionBuilder,
-  TransactionHelper
-} from 'arcnet-js';
+// import {
+//   Aes,
+//   Apis,
+//   ChainStore,
+//   FetchChain, key,
+//   PrivateKey,
+//   TransactionBuilder,
+//   TransactionHelper
+// } from 'arcnet-js';
 
 export enum OrderOptions {
   author_desc = <any>'+author',
@@ -119,105 +119,105 @@ export class ContentService {
           this.accountService.brainKeyEncrypted,
           password
         ).subscribe(
-          brainKey => {
-            this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-
-            if (!this.accountService.accountInfo.pKey) {
-              this.errorService.handleError('need_private_key', {
-                status: 409,
-                error: {message: 'need_private_key'}
-              });
-              return;
-            }
-
-            const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
-
-            this.walletService.api
-              .then(apiRes => {
-                ChainStore.init()
-                  .then(() => {
-                    const boostData = {amount: 0, asset: CoinName};
-                    Promise.all([
-                      FetchChain('getAccount', this.accountService.accountInfo),
-                      FetchChain('getAsset', boostData.asset)
-                    ])
-                      .then(res => {
-                        const [
-                          sponsorAccount,
-                          pbqAsset
-                        ] = res;
-
-                        const tr = new TransactionBuilder();
-                        // end_date
-                        tr.add_type_operation('cancel_promotion', {
-                          sponsor: sponsorAccount.get('id'),
-                          fee: {
-                            amount: 0,
-                            asset_id: pbqAsset.get('id')
-                          },
-                          id: id
-                        });
-                        tr.set_required_fees().then(() => {
-                          tr.add_signer(
-                            pKey,
-                            pKey.toPublicKey().toPublicKeyString()
-                          );
-                          tr.broadcast((data) => {
-                            this.accountService.loadBalance();
-                            this.pendingProcess.next(false);
-                            // this.submittedContentChanged.next(this.submittedContentData);
-                            // this.articleUpLoading = false;
-                          });
-                        });
-                      })
-                      .catch(reason => {
-                        this.errorService.handleError('transfer_failed', {
-                          status: 409,
-                          error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        this.pendingProcess.next(false);
-                        return;
-                      });
-                  })
-                  .catch(reason => {
-                    this.walletService.destroyExternalWsService();
-                    if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
-                        this.walletService.initExternalWsService(environment.daemon_address_second);
-                        this.cancelArticleBoosting(password, id);
-                    } else {
-                        this.errorService.handleError('transfer_failed', {
-                            status: 409,
-                            error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        this.pendingProcess.next(false);
-                        return;
-                    }
-                  });
-              })
-              .catch(reason => {
-                this.errorService.handleError('transfer_failed', {
-                  status: 409,
-                  error: {message: 'transfer_failed'}
-                });
-                this.articleUpLoading = false;
-                this.articleUpLoadingChanged.next(this.articleUpLoading);
-                this.pendingProcess.next(false);
-                return;
-              });
-          },
-          err => {
-            this.errorService.handleError('transfer-password-error', {
-              status: 409,
-              error: {message: 'password_error'}
-            });
-            this.articleUpLoading = false;
-            this.pendingProcess.next(false);
-            this.articleUpLoadingChanged.next(this.articleUpLoading);
-          }
+          // brainKey => {
+          //   this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
+          //
+          //   if (!this.accountService.accountInfo.pKey) {
+          //     this.errorService.handleError('need_private_key', {
+          //       status: 409,
+          //       error: {message: 'need_private_key'}
+          //     });
+          //     return;
+          //   }
+          //
+          //   // const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
+          //
+          //   // this.walletService.api
+          //   //   .then(apiRes => {
+          //   //     ChainStore.init()
+          //   //       .then(() => {
+          //   //         const boostData = {amount: 0, asset: CoinName};
+          //   //         Promise.all([
+          //   //           FetchChain('getAccount', this.accountService.accountInfo),
+          //   //           FetchChain('getAsset', boostData.asset)
+          //   //         ])
+          //   //           .then(res => {
+          //   //             const [
+          //   //               sponsorAccount,
+          //   //               pbqAsset
+          //   //             ] = res;
+          //   //
+          //   //             const tr = new TransactionBuilder();
+          //   //             // end_date
+          //   //             tr.add_type_operation('cancel_promotion', {
+          //   //               sponsor: sponsorAccount.get('id'),
+          //   //               fee: {
+          //   //                 amount: 0,
+          //   //                 asset_id: pbqAsset.get('id')
+          //   //               },
+          //   //               id: id
+          //   //             });
+          //   //             tr.set_required_fees().then(() => {
+          //   //               tr.add_signer(
+          //   //                 pKey,
+          //   //                 pKey.toPublicKey().toPublicKeyString()
+          //   //               );
+          //   //               tr.broadcast((data) => {
+          //   //                 this.accountService.loadBalance();
+          //   //                 this.pendingProcess.next(false);
+          //   //                 // this.submittedContentChanged.next(this.submittedContentData);
+          //   //                 // this.articleUpLoading = false;
+          //   //               });
+          //   //             });
+          //   //           })
+          //   //           .catch(reason => {
+          //   //             this.errorService.handleError('transfer_failed', {
+          //   //               status: 409,
+          //   //               error: {message: 'transfer_failed'}
+          //   //             });
+          //   //             this.articleUpLoading = false;
+          //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+          //   //             this.pendingProcess.next(false);
+          //   //             return;
+          //   //           });
+          //   //       })
+          //   //       .catch(reason => {
+          //   //         this.walletService.destroyExternalWsService();
+          //   //         if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
+          //   //             this.walletService.initExternalWsService(environment.daemon_address_second);
+          //   //             this.cancelArticleBoosting(password, id);
+          //   //         } else {
+          //   //             this.errorService.handleError('transfer_failed', {
+          //   //                 status: 409,
+          //   //                 error: {message: 'transfer_failed'}
+          //   //             });
+          //   //             this.articleUpLoading = false;
+          //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+          //   //             this.pendingProcess.next(false);
+          //   //             return;
+          //   //         }
+          //   //       });
+          //   //   })
+          //   //   .catch(reason => {
+          //   //     this.errorService.handleError('transfer_failed', {
+          //   //       status: 409,
+          //   //       error: {message: 'transfer_failed'}
+          //   //     });
+          //   //     this.articleUpLoading = false;
+          //   //     this.articleUpLoadingChanged.next(this.articleUpLoading);
+          //   //     this.pendingProcess.next(false);
+          //   //     return;
+          //   //   });
+          // },
+          // err => {
+          //   this.errorService.handleError('transfer-password-error', {
+          //     status: 409,
+          //     error: {message: 'password_error'}
+          //   });
+          //   this.articleUpLoading = false;
+          //   this.pendingProcess.next(false);
+          //   this.articleUpLoadingChanged.next(this.articleUpLoading);
+          // }
         );
       } catch (MalformedURLException) {
         console.log('MalformedURLException');
@@ -243,132 +243,132 @@ export class ContentService {
       this.walletService.initExternalWsService();
 
       try {
-        CryptService.brainKeyDecrypt(
-          this.accountService.brainKeyEncrypted,
-          password
-        ).subscribe(
-          brainKey => {
-            this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-
-            // check private key
-            if (!this.accountService.accountInfo.pKey) {
-              this.errorService.handleError('need_private_key', {
-                status: 409,
-                error: {message: 'need_private_key'}
-              });
-              // this.articleUpLoading = false;
-              // this.articleUpLoadingChanged.next(this.articleUpLoading);
-              return;
-            }
-
-            const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
-
-            this.walletService.api
-              .then(apiRes => {
-                ChainStore.init()
-                  .then(() => {
-                    const boostDataBudget = {amount: 0, asset: CoinName};
-
-                    Promise.all([
-                      FetchChain('getAccount',  this.accountService.accountInfo.promoAccount),
-                      FetchChain('getAccount', this.accountService.accountInfo),
-                      FetchChain('getAsset', boostDataBudget.asset)
-                    ])
-                      .then(res => {
-                        const [
-                          promoAgentAccount,
-                          sponserAccount,
-                          pbqAsset
-                        ] = res;
-
-                        if (!promoAgentAccount) {
-                          this.errorService.handleError(
-                            'not_found_author_account',
-                            {
-                              status: 409,
-                              error: {message: 'not_found_author_account'}
-                            }
-                          );
-                          // this.articleUpLoading = false;
-                          // this.articleUpLoadingChanged.next(this.articleUpLoading);
-                          return;
-                        }
-
-                        const tr = new TransactionBuilder();
-                        // end_date
-                        tr.add_type_operation('promote_content', {
-                          sponsor: sponserAccount.get('id'),
-                          promo_agent: promoAgentAccount.get('id'),
-                          ds_id: dsId,
-                          fee: {
-                            amount: 0,
-                            asset_id: pbqAsset.get('id')
-                          },
-                          budget: {
-                            amount: boostData.boostMoney,
-                            asset_id: pbqAsset.get('id')
-                          },
-                          start_date: boostData.boostStartDate,
-                          end_date: boostData.boostEndDate
-                        });
-                        tr.set_required_fees().then(() => {
-                          tr.add_signer(
-                            pKey,
-                            pKey.toPublicKey().toPublicKeyString()
-                          );
-                          tr.broadcast((data) => {
-                            this.accountService.loadBalance();
-                            this.submittedContentChanged.next(this.submittedContentData);
-                            this.articleUpLoading = false;
-                            this.pendingProcess.next(false);
-                          });
-                        });
-                      })
-                      .catch(reason => {
-                        this.errorService.handleError('transfer_failed', {
-                          status: 409,
-                          error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        return;
-                      });
-                  })
-                  .catch(reason => {
-                    this.walletService.destroyExternalWsService();
-                    if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
-                      this.walletService.initExternalWsService(environment.daemon_address_second);
-                      this.articleBoost(password, dsId, boostData);
-                    } else {
-                        this.errorService.handleError('transfer_failed', {
-                            status: 409,
-                            error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        return;
-                    }
-                  });
-              })
-              .catch(reason => {
-                this.errorService.handleError('transfer_failed', {
-                  status: 409,
-                  error: {message: 'transfer_failed'}
-                });
-                this.articleUpLoading = false;
-                this.articleUpLoadingChanged.next(this.articleUpLoading);
-                return;
-              });
-          },
-          err => {
-            this.errorService.handleError('transfer-password-error', {
-              status: 409,
-              error: {message: 'password_error'}
-            });
-            this.articleUpLoading = false;
-            this.articleUpLoadingChanged.next(this.articleUpLoading);
-          }
-        );
+        // CryptService.brainKeyDecrypt(
+        //   this.accountService.brainKeyEncrypted,
+        //   password
+        // ).subscribe(
+        //   brainKey => {
+        //     this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
+        //
+        //     // check private key
+        //     if (!this.accountService.accountInfo.pKey) {
+        //       this.errorService.handleError('need_private_key', {
+        //         status: 409,
+        //         error: {message: 'need_private_key'}
+        //       });
+        //       // this.articleUpLoading = false;
+        //       // this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //       return;
+        //     }
+        //
+        //     const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
+        //
+        //     this.walletService.api
+        //       .then(apiRes => {
+        //         ChainStore.init()
+        //           .then(() => {
+        //             const boostDataBudget = {amount: 0, asset: CoinName};
+        //
+        //             Promise.all([
+        //               FetchChain('getAccount',  this.accountService.accountInfo.promoAccount),
+        //               FetchChain('getAccount', this.accountService.accountInfo),
+        //               FetchChain('getAsset', boostDataBudget.asset)
+        //             ])
+        //               .then(res => {
+        //                 const [
+        //                   promoAgentAccount,
+        //                   sponserAccount,
+        //                   pbqAsset
+        //                 ] = res;
+        //
+        //                 if (!promoAgentAccount) {
+        //                   this.errorService.handleError(
+        //                     'not_found_author_account',
+        //                     {
+        //                       status: 409,
+        //                       error: {message: 'not_found_author_account'}
+        //                     }
+        //                   );
+        //                   // this.articleUpLoading = false;
+        //                   // this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //                   return;
+        //                 }
+        //
+        //                 const tr = new TransactionBuilder();
+        //                 // end_date
+        //                 tr.add_type_operation('promote_content', {
+        //                   sponsor: sponserAccount.get('id'),
+        //                   promo_agent: promoAgentAccount.get('id'),
+        //                   ds_id: dsId,
+        //                   fee: {
+        //                     amount: 0,
+        //                     asset_id: pbqAsset.get('id')
+        //                   },
+        //                   budget: {
+        //                     amount: boostData.boostMoney,
+        //                     asset_id: pbqAsset.get('id')
+        //                   },
+        //                   start_date: boostData.boostStartDate,
+        //                   end_date: boostData.boostEndDate
+        //                 });
+        //                 tr.set_required_fees().then(() => {
+        //                   tr.add_signer(
+        //                     pKey,
+        //                     pKey.toPublicKey().toPublicKeyString()
+        //                   );
+        //                   tr.broadcast((data) => {
+        //                     this.accountService.loadBalance();
+        //                     this.submittedContentChanged.next(this.submittedContentData);
+        //                     this.articleUpLoading = false;
+        //                     this.pendingProcess.next(false);
+        //                   });
+        //                 });
+        //               })
+        //               .catch(reason => {
+        //                 this.errorService.handleError('transfer_failed', {
+        //                   status: 409,
+        //                   error: {message: 'transfer_failed'}
+        //                 });
+        //                 this.articleUpLoading = false;
+        //                 this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //                 return;
+        //               });
+        //           })
+        //           .catch(reason => {
+        //             this.walletService.destroyExternalWsService();
+        //             if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
+        //               this.walletService.initExternalWsService(environment.daemon_address_second);
+        //               this.articleBoost(password, dsId, boostData);
+        //             } else {
+        //                 this.errorService.handleError('transfer_failed', {
+        //                     status: 409,
+        //                     error: {message: 'transfer_failed'}
+        //                 });
+        //                 this.articleUpLoading = false;
+        //                 this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //                 return;
+        //             }
+        //           });
+        //       })
+        //       .catch(reason => {
+        //         this.errorService.handleError('transfer_failed', {
+        //           status: 409,
+        //           error: {message: 'transfer_failed'}
+        //         });
+        //         this.articleUpLoading = false;
+        //         this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //         return;
+        //       });
+        //   },
+        //   err => {
+        //     this.errorService.handleError('transfer-password-error', {
+        //       status: 409,
+        //       error: {message: 'password_error'}
+        //     });
+        //     this.articleUpLoading = false;
+        //     this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //   }
+        // );
       } catch (MalformedURLException) {
         console.log('MalformedURLException');
         this.errorService.handleError('transfer_failed', {
@@ -392,125 +392,125 @@ export class ContentService {
       this.walletService.initExternalWsService();
 
       try {
-        CryptService.brainKeyDecrypt(
-          this.accountService.brainKeyEncrypted,
-          password
-        ).subscribe(
-          brainKey => {
-            this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-
-            // check private key
-            if (!this.accountService.accountInfo.pKey) {
-              this.errorService.handleError('need_private_key', {
-                status: 409,
-                error: {message: 'need_private_key'}
-              });
-              this.articleUpLoading = false;
-              this.articleUpLoadingChanged.next(this.articleUpLoading);
-              return;
-            }
-
-            const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
-
-            this.walletService.api
-              .then(apiRes => {
-                ChainStore.init()
-                  .then(() => {
-
-                    const sendAmount = {amount: 0, asset: CoinName};
-                    Promise.all([
-                      FetchChain('getAccount', this.accountService.accountInfo),
-                      FetchChain('getAsset', sendAmount.asset)
-                    ])
-                      .then(res => {
-                        const [
-                          fAccount,
-                          feeAsset
-                        ] = res;
-                        if (!fAccount) {
-                          this.errorService.handleError(
-                            'not_found_author_account',
-                            {
-                              status: 409,
-                              error: {message: 'not_found_author_account'}
-                            }
-                          );
-                          this.articleUpLoading = false;
-                          this.articleUpLoadingChanged.next(this.articleUpLoading);
-                          return;
-                        }
-
-                        const tr = new TransactionBuilder();
-                        tr.add_type_operation('content_submit', {
-                          fee: {
-                            amount: 0,
-                            asset_id: feeAsset.get('id')
-                          },
-                          author: fAccount.get('id'),
-                          ds_id: dsId,
-                          meta: meta
-                        });
-                        tr.set_required_fees().then(() => {
-                          tr.add_signer(
-                            pKey,
-                            pKey.toPublicKey().toPublicKeyString()
-                          );
-                          console.log('uw: start', new Date());
-                          tr.broadcast((data) => {
-                            console.log('uw: end', new Date());
-                            this.articleSubmitEnd(dsId, boostInfo && boostInfo.boostEnabled);
-                            if (boostInfo && boostInfo.boostEnabled) {
-                              this.articleBoost(password, dsId, boostInfo);
-                            }
-
-                          });
-                        });
-                      })
-                      .catch(reason => {
-                        this.errorService.handleError('transfer_failed', {
-                          status: 409,
-                          error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        return;
-                      });
-                  })
-                  .catch(reason => {
-                    this.walletService.destroyExternalWsService();
-                    if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
-                      this.walletService.initExternalWsService(environment.daemon_address_second);
-                      this.articleSubmit(password, meta, dsId, boostInfo);
-                    } else {
-                        this.errorService.handleError('transfer_failed', {
-                            status: 409,
-                            error: {message: 'transfer_failed'}
-                        });
-                        this.articleUpLoading = false;
-                        this.articleUpLoadingChanged.next(this.articleUpLoading);
-                        return;
-                    }
-                  });
-              })
-              .catch(reason => {
-                this.errorService.handleError('transfer_failed', {
-                  status: 409,
-                  error: {message: 'transfer_failed'}
-                });
-                this.articleUpLoading = false;
-                this.articleUpLoadingChanged.next(this.articleUpLoading);
-                return;
-              });
-          },
-          err => {
-            this.errorService.handleError('transfer-password-error', {
-              status: 409,
-              error: {message: 'password_error'}
-            });
-            this.articleUpLoading = false;
-            this.articleUpLoadingChanged.next(this.articleUpLoading);
-          }
-        );
+        // CryptService.brainKeyDecrypt(
+        //   this.accountService.brainKeyEncrypted,
+        //   password
+        // ).subscribe(
+        //   brainKey => {
+        //     this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
+        //
+        //     // check private key
+        //     if (!this.accountService.accountInfo.pKey) {
+        //       this.errorService.handleError('need_private_key', {
+        //         status: 409,
+        //         error: {message: 'need_private_key'}
+        //       });
+        //       this.articleUpLoading = false;
+        //       this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //       return;
+        //     }
+        //
+        //     // const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
+        //     //
+        //     // this.walletService.api
+        //     //   .then(apiRes => {
+        //     //     ChainStore.init()
+        //     //       .then(() => {
+        //     //
+        //     //         const sendAmount = {amount: 0, asset: CoinName};
+        //     //         Promise.all([
+        //     //           FetchChain('getAccount', this.accountService.accountInfo),
+        //     //           FetchChain('getAsset', sendAmount.asset)
+        //     //         ])
+        //     //           .then(res => {
+        //     //             const [
+        //     //               fAccount,
+        //     //               feeAsset
+        //     //             ] = res;
+        //     //             if (!fAccount) {
+        //     //               this.errorService.handleError(
+        //     //                 'not_found_author_account',
+        //     //                 {
+        //     //                   status: 409,
+        //     //                   error: {message: 'not_found_author_account'}
+        //     //                 }
+        //     //               );
+        //     //               this.articleUpLoading = false;
+        //     //               this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //     //               return;
+        //     //             }
+        //     //
+        //     //             const tr = new TransactionBuilder();
+        //     //             tr.add_type_operation('content_submit', {
+        //     //               fee: {
+        //     //                 amount: 0,
+        //     //                 asset_id: feeAsset.get('id')
+        //     //               },
+        //     //               author: fAccount.get('id'),
+        //     //               ds_id: dsId,
+        //     //               meta: meta
+        //     //             });
+        //     //             tr.set_required_fees().then(() => {
+        //     //               tr.add_signer(
+        //     //                 pKey,
+        //     //                 pKey.toPublicKey().toPublicKeyString()
+        //     //               );
+        //     //               console.log('uw: start', new Date());
+        //     //               tr.broadcast((data) => {
+        //     //                 console.log('uw: end', new Date());
+        //     //                 this.articleSubmitEnd(dsId, boostInfo && boostInfo.boostEnabled);
+        //     //                 if (boostInfo && boostInfo.boostEnabled) {
+        //     //                   this.articleBoost(password, dsId, boostInfo);
+        //     //                 }
+        //     //
+        //     //               });
+        //     //             });
+        //     //           })
+        //     //           .catch(reason => {
+        //     //             this.errorService.handleError('transfer_failed', {
+        //     //               status: 409,
+        //     //               error: {message: 'transfer_failed'}
+        //     //             });
+        //     //             this.articleUpLoading = false;
+        //     //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //     //             return;
+        //     //           });
+        //     //       })
+        //     //       .catch(reason => {
+        //     //         this.walletService.destroyExternalWsService();
+        //     //         if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
+        //     //           this.walletService.initExternalWsService(environment.daemon_address_second);
+        //     //           this.articleSubmit(password, meta, dsId, boostInfo);
+        //     //         } else {
+        //     //             this.errorService.handleError('transfer_failed', {
+        //     //                 status: 409,
+        //     //                 error: {message: 'transfer_failed'}
+        //     //             });
+        //     //             this.articleUpLoading = false;
+        //     //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //     //             return;
+        //     //         }
+        //     //       });
+        //     //   })
+        //     //   .catch(reason => {
+        //     //     this.errorService.handleError('transfer_failed', {
+        //     //       status: 409,
+        //     //       error: {message: 'transfer_failed'}
+        //     //     });
+        //     //     this.articleUpLoading = false;
+        //     //     this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //     //     return;
+        //     //   });
+        //   },
+        //   err => {
+        //     this.errorService.handleError('transfer-password-error', {
+        //       status: 409,
+        //       error: {message: 'password_error'}
+        //     });
+        //     this.articleUpLoading = false;
+        //     this.articleUpLoadingChanged.next(this.articleUpLoading);
+        //   }
+        // );
       } catch (MalformedURLException) {
         console.log('MalformedURLException');
         this.errorService.handleError('transfer_failed', {

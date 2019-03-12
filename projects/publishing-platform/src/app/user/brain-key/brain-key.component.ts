@@ -5,7 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { key } from 'arcnet-js/lib/src/Key';
+// import { key } from 'arcnet-js/lib/src/Key';
 
 import { ValidationService } from '../../core/validator/validator.service';
 import { AccountService } from '../../core/services/account.service';
@@ -37,7 +37,7 @@ export class BrainKeyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.accountService.brainKey = key.suggest_brain_key(dictionary);
+    // this.accountService.brainKey = key.suggest_brain_key(dictionary);
     this.loading = false;
     this.buildForm();
     if (isPlatformBrowser(this.platformId)) {

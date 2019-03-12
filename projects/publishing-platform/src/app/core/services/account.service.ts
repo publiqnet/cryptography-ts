@@ -17,6 +17,11 @@ import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } fro
 import { HttpRpcService } from './httpRpc.service';
 import { Subscriber } from './models/subscriber';
 
+import { KeyPair } from 'cryptography-ts';
+import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction';
+KeyPair.setPublicKeyPrefix('NOAH');
+
+
 
 @Injectable()
 export class AccountService {
@@ -34,7 +39,7 @@ export class AccountService {
     public userFavouriteTagsKey = 'user_favourite_tags';
     public favouriteAuthorsKey = 'favourite_authors';
 
-    public userUrl = `${environment.backend}/api/v1/user`;
+    public userUrl = `${environment.backend}/api/v1/account`;
 
     public accountUpdated$: BehaviorSubject<any> = new BehaviorSubject(null);
     public showTagList$: EventEmitter<any> = new EventEmitter();
@@ -117,7 +122,7 @@ export class AccountService {
     mySubscribersChanged: Subject<Subscriber[]> = new Subject<Subscriber[]>();
     isSubscribedByAuthorsChanged: Subject<string[]> = new Subject<string[]>();
     tempBrainKey = '';
-    stringToSign = '';
+    public stringToSign: number;
 
     static isJsonString(str) {
         try {
@@ -242,29 +247,35 @@ export class AccountService {
     }
 
     register(password: string): void {
-        if (isPlatformBrowser(this.platformId)) {
-            this.brainKeyEncrypted = CryptService.brainKeyEncrypt(
-                this.brainKey,
-                password
-            );
-            let privateKey = key.get_brainPrivateKey(this.brainKey);
-            this.publicKey = CryptService.generatePublicKey(privateKey);
-            const keyHash = CryptService.stringToHash(this.publicKey);
-            const signedPublicKey = CryptService.hashToSign(keyHash, privateKey);
 
-            privateKey = privateKey.toWif();
+        if (isPlatformBrowser(this.platformId)) {
+
+            const kayPair = new KeyPair();
+            this.brainKeyEncrypted = kayPair.getEncryptedBrainKeyByPassword(password);
+            const signedString = this.getSignetString(this.stringToSign, kayPair.BrainKey);
+
+            // const privateKey = kayPair.Private.key;
+            // this.publicKey = kayPair.PpublicKey;
+
+            // let privateKey = key.get_brainPrivateKey(this.brainKey);
+            // this.publicKey = CryptService.generatePublicKey(privateKey);
+            // const keyHash = CryptService.stringToHash(this.publicKey);
+            // const signedPublicKey = kayPair.signMessage(kayPair.Ppublic.key);
+            // CryptService.hashToSign(keyHash, privateKey);
+
+            // privateKey = privateKey.toWif();
             const url = this.userUrl + '/complete-registration';
             this.http
                 .post(url, {
-                    code: this.code,
-                    brainKeyEncrypted: this.brainKeyEncrypted,
-                    publicKey: this.publicKey,
-                    signedPublicKey,
-                    privateKey
+                    confirmationCode: this.code,
+                    brainKey: this.brainKeyEncrypted,
+                    publicKey: kayPair.PpublicKey,
+                    signedString: signedString
                 })
                 .pipe(
                     map(userInfo => {
                         this.accountInfo = userInfo;
+                        debugger;
                         if (AccountService.isJsonString(this.accountInfo.meta)) {
                             this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
                         }
@@ -295,8 +306,10 @@ export class AccountService {
     loadConfirm(code: string): void {
         if (isPlatformBrowser(this.platformId)) {
             const url = this.userUrl + `/confirmation/${code}`;
-            this.http.get(url).subscribe(
+            this.http.get <{stringToSign: number}> (url).subscribe(
                 result => {
+                    console.log('result - ', result);
+                    this.stringToSign = result.stringToSign;  // (result && result['stringToSign']) ? result['stringToSign'] : '';
                     this.code = code;
                     this.confirmCode = result;
                     this.confirmCodeChanged.next(result);
@@ -367,51 +380,51 @@ export class AccountService {
             brainKey: string,
             password: string,
             stringToSign): void {
-        if (isPlatformBrowser(this.platformId)) {
-            this.brainKeyEncrypted = CryptService.brainKeyEncrypt(brainKey, password);
-            const privateKey = key.get_brainPrivateKey(brainKey);
-            this.publicKey = CryptService.generatePublicKey(privateKey);
-            const stringHash = CryptService.stringToHash(stringToSign);
-            const signedString = CryptService.hashToSign(stringHash, privateKey);
-            const url = this.userUrl + '/recover-account';
-
-            this.http
-                .post(url, {
-                    email,
-                    signedString,
-                    stringHash,
-                    brainKeyEncrypted: this.brainKeyEncrypted
-                })
-                .pipe(filter(data => data != null))
-                .pipe(
-                    map(userInfo => {
-                        this.accountInfo = userInfo;
-                        if (AccountService.isJsonString(this.accountInfo.meta)) {
-                            this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-                        }
-
-                        localStorage.setItem('auth', this.accountInfo.token);
-                        if (this.accountInfo.language) {
-                            localStorage.setItem('lang', this.accountInfo.language);
-                            this.translateService.use(this.accountInfo.language);
-                        } else {
-                            this.changeLang('en');
-                        }
-                        this.accountUpdated$.next(this.accountInfo);
-
-                        this.loadBalance();
-
-                        return userInfo;
-                    })
-                )
-                .subscribe(
-                    data => {
-                        this.recoverData = data;
-                        this.recoverDataChanged.next(this.recoverData);
-                    },
-                    error => this.errorService.handleError('recover', error, url)
-                );
-        }
+        // if (isPlatformBrowser(this.platformId)) {
+        //     this.brainKeyEncrypted = CryptService.brainKeyEncrypt(brainKey, password);
+        //     const privateKey = key.get_brainPrivateKey(brainKey);
+        //     this.publicKey = CryptService.generatePublicKey(privateKey);
+        //     const stringHash = CryptService.stringToHash(stringToSign);
+        //     const signedString = CryptService.hashToSign(stringHash, privateKey);
+        //     const url = this.userUrl + '/recover-account';
+        //
+        //     this.http
+        //         .post(url, {
+        //             email,
+        //             signedString,
+        //             stringHash,
+        //             brainKeyEncrypted: this.brainKeyEncrypted
+        //         })
+        //         .pipe(filter(data => data != null))
+        //         .pipe(
+        //             map(userInfo => {
+        //                 this.accountInfo = userInfo;
+        //                 if (AccountService.isJsonString(this.accountInfo.meta)) {
+        //                     this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
+        //                 }
+        //
+        //                 localStorage.setItem('auth', this.accountInfo.token);
+        //                 if (this.accountInfo.language) {
+        //                     localStorage.setItem('lang', this.accountInfo.language);
+        //                     this.translateService.use(this.accountInfo.language);
+        //                 } else {
+        //                     this.changeLang('en');
+        //                 }
+        //                 this.accountUpdated$.next(this.accountInfo);
+        //
+        //                 this.loadBalance();
+        //
+        //                 return userInfo;
+        //             })
+        //         )
+        //         .subscribe(
+        //             data => {
+        //                 this.recoverData = data;
+        //                 this.recoverDataChanged.next(this.recoverData);
+        //             },
+        //             error => this.errorService.handleError('recover', error, url)
+        //         );
+        // }
     }
 
     authenticate(email: string): void {
@@ -441,51 +454,51 @@ export class AccountService {
                 : '';
             const url = this.userUrl + '/signin/get-token';
             try {
-                CryptService.brainKeyDecrypt(
-                    resForStep2.brainKeyEncrypted,
-                    password
-                ).subscribe(brainKey => {
-                    this.brainKey = brainKey;
-                    privateKey = key.get_brainPrivateKey(this.brainKey);
-                    this.publicKey = CryptService.generatePublicKey(privateKey);
-
-                    stringHash = CryptService.stringToHash(resForStep2.stringToSign + '');
-                    signedString = CryptService.hashToSign(stringHash, privateKey);
-                });
-
-                if (isPlatformBrowser(this.platformId)) {
-                    this.http
-                        .post(url, {email, signedString, stringHash})
-                        .pipe(
-                            map((userInfo: any) => {
-                                this.accountInfo = userInfo;
-                                this.accountInfo.email = email;
-                                if (AccountService.isJsonString(this.accountInfo.meta)) {
-                                    this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-                                }
-
-                                localStorage.setItem('auth', this.accountInfo.token);
-
-                                this.loadBalance();
-                                if (this.accountInfo.language) {
-                                    localStorage.setItem('lang', this.accountInfo.language);
-                                    this.translateService.use(this.accountInfo.language);
-                                } else {
-                                    this.changeLang('en');
-                                }
-                                this.accountUpdated$.next(this.accountInfo);
-                                this.accountInfo.pKey = privateKey;
-                                return userInfo;
-                            })
-                        )
-                        .subscribe(
-                            data => {
-                                this.loginData = data;
-                                this.loginDataChanged.next(this.loginData);
-                            },
-                            error => this.errorService.handleError('login', error, url)
-                        );
-                }
+                // CryptService.brainKeyDecrypt(
+                //     resForStep2.brainKeyEncrypted,
+                //     password
+                // ).subscribe(brainKey => {
+                //     // this.brainKey = brainKey;
+                //     // privateKey = key.get_brainPrivateKey(this.brainKey);
+                //     // this.publicKey = CryptService.generatePublicKey(privateKey);
+                //     //
+                //     // stringHash = CryptService.stringToHash(resForStep2.stringToSign + '');
+                //     // signedString = CryptService.hashToSign(stringHash, privateKey);
+                // });
+                //
+                // if (isPlatformBrowser(this.platformId)) {
+                //     this.http
+                //         .post(url, {email, signedString, stringHash})
+                //         .pipe(
+                //             map((userInfo: any) => {
+                //                 this.accountInfo = userInfo;
+                //                 this.accountInfo.email = email;
+                //                 if (AccountService.isJsonString(this.accountInfo.meta)) {
+                //                     this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
+                //                 }
+                //
+                //                 localStorage.setItem('auth', this.accountInfo.token);
+                //
+                //                 this.loadBalance();
+                //                 if (this.accountInfo.language) {
+                //                     localStorage.setItem('lang', this.accountInfo.language);
+                //                     this.translateService.use(this.accountInfo.language);
+                //                 } else {
+                //                     this.changeLang('en');
+                //                 }
+                //                 this.accountUpdated$.next(this.accountInfo);
+                //                 this.accountInfo.pKey = privateKey;
+                //                 return userInfo;
+                //             })
+                //         )
+                //         .subscribe(
+                //             data => {
+                //                 this.loginData = data;
+                //                 this.loginDataChanged.next(this.loginData);
+                //             },
+                //             error => this.errorService.handleError('login', error, url)
+                //         );
+                // }
             } catch (MalformedURLException) {
                 this.errorService.handleError('login', {status: 404}, url);
             }
@@ -554,11 +567,11 @@ export class AccountService {
                     map((result: any[]) => result.length ? result.map(data => new Subscriber(data['subscriber'])) : [])
                 )
                 .subscribe((res: Subscriber[]) => {
-                    this.subscribers = res;
-                    this.subscribersChanged.next(this.subscribers);
-                },
-                error => this.errorService.handleError('loadAuthorSubscribers', error, url)
-            );
+                        this.subscribers = res;
+                        this.subscribersChanged.next(this.subscribers);
+                    },
+                    error => this.errorService.handleError('loadAuthorSubscribers', error, url)
+                );
         }
     }
 
@@ -589,7 +602,7 @@ export class AccountService {
                     filter(data => data != null),
                     map((result: any) => {
                         const subscriptions = [];
-                            result.map(obj => {
+                        result.map(obj => {
                             if (obj['user']) {
                                 subscriptions.push(new Subscriber(obj['user']));
                             }
@@ -674,24 +687,24 @@ export class AccountService {
     }
 
     initExternalWsService(daemonAddress = environment.daemon_address_first) {
-        if (!Apis.inst || !this.api) {
-            this.currentDaemonAddress = daemonAddress;
-            try {
-                this.api = Apis.instance(daemonAddress, true).init_promise
-                    .then(res => {
-                        // success
-                    }, error => {
-                        // error
-                    });
-            } catch (error) {
-                console.log('WalletService init_promise error - ', error);
-                return;
-            }
-        }
+        // if (!Apis.inst || !this.api) {
+        //     this.currentDaemonAddress = daemonAddress;
+        //     try {
+        //         this.api = Apis.instance(daemonAddress, true).init_promise
+        //             .then(res => {
+        //                 // success
+        //             }, error => {
+        //                 // error
+        //             });
+        //     } catch (error) {
+        //         console.log('WalletService init_promise error - ', error);
+        //         return;
+        //     }
+        // }
     }
 
     destroyExternalWsService() {
-        Apis.close();
+        // Apis.close();
         this.api = '';
     }
 
@@ -732,119 +745,119 @@ export class AccountService {
             this.initExternalWsService();
 
             try {
-                CryptService.brainKeyDecrypt(
-                    this.brainKeyEncrypted,
-                    password
-                ).subscribe(
-                    brainKey => {
-                        this.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-
-                        // check private key
-                        if (!this.accountInfo.pKey) {
-                            this.errorService.handleError('need_private_key', {
-                                status: 409,
-                                error: {message: 'need_private_key'}
-                            });
-                            this.profileUpdating = false;
-                            this.profileUpdatingChanged.next(this.profileUpdating);
-                            return;
-                        }
-
-                        const pKey = PrivateKey.fromWif(this.accountInfo.pKey);
-
-                        this.api
-                            .then(apiRes => {
-                                ChainStore.init()
-                                    .then(() => {
-                                        const CoinName = 'PBQ';
-                                        const sendAmount = {amount: 0, asset: CoinName};
-                                        Promise.all([
-                                            FetchChain('getAccount', this.accountInfo),
-                                            FetchChain('getAsset', sendAmount.asset)
-                                        ])
-                                            .then(res => {
-                                                const [
-                                                    fAccount,
-                                                    feeAsset
-                                                ] = res;
-                                                if (!fAccount) {
-                                                    this.errorService.handleError(
-                                                        'not_found_author_account',
-                                                        {
-                                                            status: 409,
-                                                            error: {message: 'not_found_author_account'}
-                                                        }
-                                                    );
-                                                    this.profileUpdating = false;
-                                                    this.profileUpdatingChanged.next(this.profileUpdating);
-                                                    return;
-                                                }
-
-                                                const tr = new TransactionBuilder();
-                                                tr.add_type_operation('account_update', {
-                                                    fee: {
-                                                        amount: 0,
-                                                        asset_id: feeAsset.get('id')
-                                                    },
-                                                    account: fAccount.get('id'),
-                                                    meta: meta
-                                                });
-                                                tr.set_required_fees().then(() => {
-                                                    tr.add_signer(
-                                                        pKey,
-                                                        pKey.toPublicKey().toPublicKeyString()
-                                                    );
-
-                                                    tr.broadcast((data) => {
-                                                        this.updateAccountEnd(newData);
-                                                    });
-                                                });
-                                            })
-                                            .catch(reason => {
-                                                this.errorService.handleError('account_update_failed', {
-                                                    status: 409,
-                                                    error: {message: 'account_update_failed'}
-                                                });
-                                                this.profileUpdating = false;
-                                                this.profileUpdatingChanged.next(this.profileUpdating);
-                                                return;
-                                            });
-                                    })
-                                    .catch(reason => {
-                                        this.destroyExternalWsService();
-                                        if (environment.daemon_address_second != this.currentDaemonAddress) {
-                                            this.initExternalWsService(environment.daemon_address_second);
-                                            this.blockchainUpdateAccount(data, password, newData);
-                                        } else {
-                                            this.errorService.handleError('account_update_failed', {
-                                                status: 409,
-                                                error: {message: 'account_update_failed'}
-                                            });
-                                            this.profileUpdating = false;
-                                            this.profileUpdatingChanged.next(this.profileUpdating);
-                                            return;
-                                        }
-                                    });
-                            })
-                            .catch(reason => {
-                                this.errorService.handleError('account_update_failed', {
-                                    status: 409,
-                                    error: {message: 'account_update_failed'}
-                                });
-                                this.profileUpdating = false;
-                                this.profileUpdatingChanged.next(this.profileUpdating);
-                                return;
-                            });
-                    },
-                    err => {
-                        this.errorService.handleError('blockchainUpdateAccount', {
-                            status: 409,
-                            error: {message: 'blockchainUpdateAccount'}
-                        });
-                        this.profileUpdating = false;
-                        this.profileUpdatingChanged.next(this.profileUpdating);
-                    }
-                );
+                // CryptService.brainKeyDecrypt(
+                //     this.brainKeyEncrypted,
+                //     password
+                // ).subscribe(
+                //     brainKey => {
+                //         this.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
+                //
+                //         // check private key
+                //         if (!this.accountInfo.pKey) {
+                //             this.errorService.handleError('need_private_key', {
+                //                 status: 409,
+                //                 error: {message: 'need_private_key'}
+                //             });
+                //             this.profileUpdating = false;
+                //             this.profileUpdatingChanged.next(this.profileUpdating);
+                //             return;
+                //         }
+                //
+                //         const pKey = PrivateKey.fromWif(this.accountInfo.pKey);
+                //
+                //         this.api
+                //             .then(apiRes => {
+                //                 ChainStore.init()
+                //                     .then(() => {
+                //                         const CoinName = 'PBQ';
+                //                         const sendAmount = {amount: 0, asset: CoinName};
+                //                         Promise.all([
+                //                             FetchChain('getAccount', this.accountInfo),
+                //                             FetchChain('getAsset', sendAmount.asset)
+                //                         ])
+                //                             .then(res => {
+                //                                 const [
+                //                                     fAccount,
+                //                                     feeAsset
+                //                                 ] = res;
+                //                                 if (!fAccount) {
+                //                                     this.errorService.handleError(
+                //                                         'not_found_author_account',
+                //                                         {
+                //                                             status: 409,
+                //                                             error: {message: 'not_found_author_account'}
+                //                                         }
+                //                                     );
+                //                                     this.profileUpdating = false;
+                //                                     this.profileUpdatingChanged.next(this.profileUpdating);
+                //                                     return;
+                //                                 }
+                //
+                //                                 const tr = new TransactionBuilder();
+                //                                 tr.add_type_operation('account_update', {
+                //                                     fee: {
+                //                                         amount: 0,
+                //                                         asset_id: feeAsset.get('id')
+                //                                     },
+                //                                     account: fAccount.get('id'),
+                //                                     meta: meta
+                //                                 });
+                //                                 tr.set_required_fees().then(() => {
+                //                                     tr.add_signer(
+                //                                         pKey,
+                //                                         pKey.toPublicKey().toPublicKeyString()
+                //                                     );
+                //
+                //                                     tr.broadcast((data) => {
+                //                                         this.updateAccountEnd(newData);
+                //                                     });
+                //                                 });
+                //                             })
+                //                             .catch(reason => {
+                //                                 this.errorService.handleError('account_update_failed', {
+                //                                     status: 409,
+                //                                     error: {message: 'account_update_failed'}
+                //                                 });
+                //                                 this.profileUpdating = false;
+                //                                 this.profileUpdatingChanged.next(this.profileUpdating);
+                //                                 return;
+                //                             });
+                //                     })
+                //                     .catch(reason => {
+                //                         this.destroyExternalWsService();
+                //                         if (environment.daemon_address_second != this.currentDaemonAddress) {
+                //                             this.initExternalWsService(environment.daemon_address_second);
+                //                             this.blockchainUpdateAccount(data, password, newData);
+                //                         } else {
+                //                             this.errorService.handleError('account_update_failed', {
+                //                                 status: 409,
+                //                                 error: {message: 'account_update_failed'}
+                //                             });
+                //                             this.profileUpdating = false;
+                //                             this.profileUpdatingChanged.next(this.profileUpdating);
+                //                             return;
+                //                         }
+                //                     });
+                //             })
+                //             .catch(reason => {
+                //                 this.errorService.handleError('account_update_failed', {
+                //                     status: 409,
+                //                     error: {message: 'account_update_failed'}
+                //                 });
+                //                 this.profileUpdating = false;
+                //                 this.profileUpdatingChanged.next(this.profileUpdating);
+                //                 return;
+                //             });
+                //     },
+                //     err => {
+                //         this.errorService.handleError('blockchainUpdateAccount', {
+                //             status: 409,
+                //             error: {message: 'blockchainUpdateAccount'}
+                //         });
+                //         this.profileUpdating = false;
+                //         this.profileUpdatingChanged.next(this.profileUpdating);
+                //     }
+                // );
             } catch (err) {
 
                 this.errorService.handleError('account_update_failed', {
@@ -1233,5 +1246,23 @@ export class AccountService {
                     error => this.errorService.handleError('getIsSubscribedByAuthors', error, url)
                 );
         }
+    }
+
+    getSignetString(stringToSign, brainKey) {
+        // debugger
+        const now = new Date(new Date(stringToSign * 1000));
+        const now_1h = new Date(now.getTime() + (1 * 60 * 1000));
+        const keyPair = new KeyPair(brainKey);
+        const transactionObj = new PubliqTransaction({
+            creation: +now,
+            expiry: +now_1h,
+            fee: {
+                whole: 0,
+                fraction: 0
+            },
+            action: {}// transferObj,
+        });
+        const signedString = keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
+        return signedString;
     }
 }

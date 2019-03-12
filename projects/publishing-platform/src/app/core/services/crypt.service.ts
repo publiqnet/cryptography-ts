@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Signature, key } from 'arcnet-js';
+// import { Signature, key } from 'arcnet-js';
 import { Observable } from 'rxjs';
 import { Buffer } from 'buffer';
 import * as CryptoJS from 'crypto-js';
@@ -30,7 +30,8 @@ export class CryptService {
   }
 
   static generatePrivateKey(brainKey) {
-    return key.get_brainPrivateKey(brainKey);
+      debugger;
+    // return key.get_brainPrivateKey(brainKey);
   }
 
   static generatePublicKey(privkey) {
@@ -43,24 +44,24 @@ export class CryptService {
   }
 
   static hashToSign(stringHash, privkey) {
-    return Signature.signBufferSha256(
-      new Buffer(stringHash, 'hex'),
-      privkey
-    ).toHex();
+    // return Signature.signBufferSha256(
+    //   new Buffer(stringHash, 'hex'),
+    //   privkey
+    // ).toHex();
   }
 
   static verifySignature(stringSignature, stringHash, pubKeyString) {
-    const recPubKey = Signature.fromBuffer(
-      new Buffer(stringSignature, 'hex')
-    ).recoverPublicKey(new Buffer(stringHash, 'hex'));
-    return recPubKey.toString() === pubKeyString;
+    // const recPubKey = Signature.fromBuffer(
+    //   new Buffer(stringSignature, 'hex')
+    // ).recoverPublicKey(new Buffer(stringHash, 'hex'));
+    // return recPubKey.toString() === pubKeyString;
   }
 
   static restorePublicKey(stringSignature, stringHash) {
-    const recPubKey = Signature.fromBuffer(
-      new Buffer(stringSignature, 'hex')
-    ).recoverPublicKey(new Buffer(stringHash, 'hex'));
-    return recPubKey.toString();
+    // const recPubKey = Signature.fromBuffer(
+    //   new Buffer(stringSignature, 'hex')
+    // ).recoverPublicKey(new Buffer(stringHash, 'hex'));
+    // return recPubKey.toString();
   }
 
   static md5(key: string): string {

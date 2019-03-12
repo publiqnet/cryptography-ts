@@ -25,6 +25,12 @@
       ],
       "shared-lib/*": [
         "dist/shared-lib/*"
+      ],
+      "blockchain-oauth-lib": [
+        "dist/blockchain-oauth-lib"
+      ],
+      "blockchain-oauth-lib/*": [
+        "dist/blockchain-oauth-lib/*"
       ]
     }
   }

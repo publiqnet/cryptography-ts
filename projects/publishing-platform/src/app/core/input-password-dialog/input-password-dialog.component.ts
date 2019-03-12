@@ -68,20 +68,20 @@ export class InputPasswordDialogComponent implements OnInit, OnDestroy {
 
     decryptPK(brainKeyEncrypted) {
         try {
-            CryptService.brainKeyDecrypt(brainKeyEncrypted, this.password).subscribe(brainKey => {
-                const privateKey = CryptService.generatePrivateKey(brainKey);
-                this.decriptedPrivateKey = privateKey.toWif();
-                if (this.decriptedPrivateKey) {
-                  this.dialogRef.close({password: this.password});
-                    this.passwordVerified = true;
-                } else {
-                    this.passError = this.errorService.getError('password_error');
-                    this.passwordVerified = false;
-                }
-            }, error => {
-                this.passError = this.errorService.getError('password_error');
-                this.passwordVerified = false;
-            });
+            // CryptService.brainKeyDecrypt(brainKeyEncrypted, this.password).subscribe(brainKey => {
+            //     const privateKey = CryptService.generatePrivateKey(brainKey);
+            //     this.decriptedPrivateKey = privateKey.toWif();
+            //     if (this.decriptedPrivateKey) {
+            //       this.dialogRef.close({password: this.password});
+            //         this.passwordVerified = true;
+            //     } else {
+            //         this.passError = this.errorService.getError('password_error');
+            //         this.passwordVerified = false;
+            //     }
+            // }, error => {
+            //     this.passError = this.errorService.getError('password_error');
+            //     this.passwordVerified = false;
+            // });
 
         } catch (MalformedURLException) {
             this.passError = this.errorService.getError('password_error');
@@ -100,17 +100,17 @@ export class InputPasswordDialogComponent implements OnInit, OnDestroy {
 
     decryptBK(brainKeyEncrypted) {
         try {
-            CryptService.brainKeyDecrypt(brainKeyEncrypted, this.password).subscribe(brainKey => {
-                    if (brainKey) {
-                      this.dialogRef.close({password: this.password});
-                        this.decryptedBrainKey = brainKey;
-                        this.passwordVerified = true;
-                    }
-                }, error => {
-                    this.passError = this.errorService.getError('password_error');
-                    this.passwordVerified = false;
-                }
-            );
+            // CryptService.brainKeyDecrypt(brainKeyEncrypted, this.password).subscribe(brainKey => {
+            //         if (brainKey) {
+            //           this.dialogRef.close({password: this.password});
+            //             this.decryptedBrainKey = brainKey;
+            //             this.passwordVerified = true;
+            //         }
+            //     }, error => {
+            //         this.passError = this.errorService.getError('password_error');
+            //         this.passwordVerified = false;
+            //     }
+            // );
 
         } catch (MalformedURLException) {
             this.passError = this.errorService.getError('password_error');
