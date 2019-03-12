@@ -30,7 +30,7 @@ var KeyPair = /** @class */ (function () {
     }
     Object.defineProperty(KeyPair.prototype, "PpublicKey", {
         get: function () {
-            return "" + KeyPair.publicKeyPrefix + this.publicKey.Key;
+            return "" + KeyPair.publicKeyPrefix + this.publicKey.Base58;
         },
         enumerable: true,
         configurable: true

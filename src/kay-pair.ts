@@ -41,7 +41,7 @@ export class KeyPair {
   }
 
   public get PpublicKey(): string {
-    return `${KeyPair.publicKeyPrefix}${this.publicKey.Key}`;
+    return `${KeyPair.publicKeyPrefix}${this.publicKey.Base58}`;
   }
 
   public get BrainKey(): string {
