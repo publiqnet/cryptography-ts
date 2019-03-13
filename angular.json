@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "preserveSymlinks": true,
             "outputPath": "dist/publishing-platform",
             "index": "projects/publishing-platform/src/index.html",
             "main": "projects/publishing-platform/src/main.ts",
