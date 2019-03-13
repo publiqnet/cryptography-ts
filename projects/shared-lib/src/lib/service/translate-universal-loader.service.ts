@@ -1,13 +1,8 @@
 import { Observable } from 'rxjs';
 import { TranslateLoader } from '@ngx-translate/core';
-import { Injectable } from '@angular/core';
 declare var require: any;
-
 const fs = require('fs');
 
-@Injectable({
-    providedIn: 'root'
-})
 export class TranslateUniversalLoader implements TranslateLoader {
   constructor(private prefix: string = 'i18n', private suffix: string = '.json') {
   }
