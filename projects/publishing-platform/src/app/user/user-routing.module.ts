@@ -4,12 +4,10 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { RecoverComponent } from './recover/recover.component';
 import { AuthguardService } from '../core/services/authguard.service';
-import { RegisterConfirmationComponent } from './register-confirmation/register-confirmation.component';
 import { NotificationComponent } from './notification/notification.component';
-import { BrainKeyComponent } from './brain-key/brain-key.component';
-import { RegisterGuardService } from '../guards/register-guard.service';
 import { SettingsComponent } from '../shared/settings/settings.component';
-import { NewPasswordComponent } from './new-password/new-password.component';
+import { LoginPasswordComponent } from './login-password/login-password.component';
+import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 
 export const userRoutes: Routes = [
   {
@@ -37,31 +35,31 @@ export const userRoutes: Routes = [
         component: SettingsComponent
       },
       {
-        path: 'confirmation/:code',
+        path: 'signin/confirmation/:code',
+        data: {
+          action: 'signin'
+        },
         pathMatch: 'full',
-        component: RegisterConfirmationComponent
+        component: LoginPasswordComponent
+      },
+      {
+        path: 'signup/confirmation/:code',
+        data: {
+          action: 'signup'
+        },
+        pathMatch: 'full',
+        component: RegistrationPasswordComponent
       },
       {
         path: 'set-new-password/:code',
         pathMatch: 'full',
         component: RecoverComponent
       },
-      // {
-      //   path: 'new-password',
-      //   pathMatch: 'full',
-      //   component: NewPasswordComponent,
-      // },
       {
         path: 'notifications',
         pathMatch: 'full',
         canActivate: [AuthguardService],
         component: NotificationComponent
-      },
-      {
-        path: 'complete-registration',
-        pathMatch: 'full',
-        component: BrainKeyComponent,
-        canActivate: [RegisterGuardService]
       }
     ]
   }

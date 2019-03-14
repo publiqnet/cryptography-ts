@@ -8,11 +8,11 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { RecoverComponent } from './recover/recover.component';
 import { SharedModule } from '../shared/shared.module';
-import { RegisterConfirmationComponent } from './register-confirmation/register-confirmation.component';
 import { NotificationComponent } from './notification/notification.component';
-import { BrainKeyComponent } from './brain-key/brain-key.component';
 import { userRoutes } from './user-routing.module';
 import { NewPasswordComponent } from './new-password/new-password.component';
+import { LoginPasswordComponent } from './login-password/login-password.component';
+import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 
 
 @NgModule({
@@ -26,9 +26,9 @@ import { NewPasswordComponent } from './new-password/new-password.component';
     LoginComponent,
     RegisterComponent,
     RecoverComponent,
-    RegisterConfirmationComponent,
+    LoginPasswordComponent,
+    RegistrationPasswordComponent,
     NotificationComponent,
-    BrainKeyComponent,
     NewPasswordComponent
   ]
 })
