@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core
 import { AccountService } from '../../core/services/account.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
+import { filter, switchMap } from 'rxjs/operators';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 
 @Component({
@@ -17,6 +17,7 @@ export class RecoverComponent implements OnInit, OnDestroy {
   public loading = false;
   public brainKeyError = '';
   isPasswordMode: boolean;
+  private stringToSign = '';
 
   errorEventEmiterSubscription = Subscription.EMPTY;
   signedStringSubscription = Subscription.EMPTY;
@@ -48,7 +49,11 @@ export class RecoverComponent implements OnInit, OnDestroy {
 
   checkBrainKey() {
     this.loading = true;
-    this.accountService.checkBrainkey(this.brainKey);
+    this.accountService.checkBrainkey(this.brainKey)
+      .subscribe(authData => {
+        this.stringToSign = authData.stringToSign;
+        this.isPasswordMode = true;
+      }, error => this.errorService.handleError('recover', error));
   }
 
   ngOnDestroy() {

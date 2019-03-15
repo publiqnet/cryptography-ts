@@ -133,21 +133,15 @@ export class AccountService {
     return true;
   }
 
-  checkBrainkey(brainKey) {
-    this.tempBrainKey = brainKey;
-    const privateKey = CryptService.generatePrivateKey(brainKey);
-    this.publicKey = CryptService.generatePublicKey(privateKey);
-    const url = this.userUrl + `/recover-account/authenticate/${this.publicKey}`;
+  checkBrainkey(brainKey: string): Observable<{ stringToSign: any }> {
+    // this.tempBrainKey = brainKey;
+    const keyPair = new KeyPair(brainKey.trim());
 
-    this.http.get(url)
-      .pipe(filter(data => (data != null)))
-      .pipe(map(data => {
-        this.stringToSign = data['stringToSign'];
-        return data['stringToSign'];
-      }))
-      .subscribe(data => {
-        this.signedStringChanged.next(data);
-      }, error => this.errorService.handleError('recover', error, url));
+    const publicKey = keyPair.PpublicKey;
+
+    const url = this.userUrl + `/recover/authenticate/${publicKey}`;
+
+    return this.http.get <{ stringToSign: any }>(url);
   }
 
   getRpcAccount(): Account {
@@ -262,99 +256,79 @@ export class AccountService {
     }
   }
 
-  recoverSetNewPassword(password: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.brainKeyEncrypted = CryptService.brainKeyEncrypt(this.tempBrainKey, password);
-      const privateKey = CryptService.generatePrivateKey(this.tempBrainKey);
-      this.publicKey = CryptService.generatePublicKey(privateKey);
-      const stringHash = CryptService.stringToHash(this.stringToSign);
-      const signedString = CryptService.hashToSign(stringHash, privateKey);
-      this.tempBrainKey = '';
+  recoverSetNewPassword(brainKey: string, stringToSign: number, password: string) {
+      const keyPair = new KeyPair(brainKey);
+      const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);
+      const publicKey = keyPair.PpublicKey;
+      const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
 
-      const url = this.userUrl + '/recover-account/complete';
-      // brainKeyEncrypted
-      this.http.post(url, {
-        signedString,
-        brainKeyEncrypted: this.brainKeyEncrypted,
-        stringHash,
-        publicKey: this.publicKey
-      })
-        .pipe(filter(data => (data != null)))
-        .pipe(map(userInfo => {
-          this.accountInfo = userInfo;
-          if (AccountService.isJsonString(this.accountInfo.meta)) {
-            this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-          }
-
-          localStorage.setItem('auth', this.accountInfo.token);
-          if (this.accountInfo.language) {
-            localStorage.setItem('lang', this.accountInfo.language);
-            this.translateService.use(this.accountInfo.language);
-          } else {
-            this.changeLang('en');
-          }
-          this.accountUpdated$.next(this.accountInfo);
-
-          this.loadBalance();
-
-          return userInfo;
-        }))
-        .subscribe(data => {
-          this.recoverData = data;
-          this.recoverDataChanged.next(this.recoverData);
-        }, error => this.errorService.handleError('recover', error, url));
-    }
+      const url = this.userUrl + '/recover/complete';
+      debugger;
+      return this.http.post(url, {
+        brainKey: encryptedBrainKey,
+        publicKey: publicKey,
+        signedString: signedString
+      });
   }
 
-  recover(email: string,
-          brainKey: string,
-          password: string,
-          stringToSign): void {
-    // if (isPlatformBrowser(this.platformId)) {
-    //     this.brainKeyEncrypted = CryptService.brainKeyEncrypt(brainKey, password);
-    //     const privateKey = key.get_brainPrivateKey(brainKey);
-    //     this.publicKey = CryptService.generatePublicKey(privateKey);
-    //     const stringHash = CryptService.stringToHash(stringToSign);
-    //     const signedString = CryptService.hashToSign(stringHash, privateKey);
-    //     const url = this.userUrl + '/recover-account';
+  recover(brainKey: string, stringToSign: number) {
+    const keyPair = new KeyPair(brainKey);
+    const publicKey = keyPair.PpublicKey;
+    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
+
+    const url = this.userUrl + '/recover/complete';
+
+    return this.http.post(url, {
+      brainKey: brainKey,
+      publicKey: publicKey,
+      signedString: signedString
+    });
+
+
+
+    // this.brainKeyEncrypted = CryptService.brainKeyEncrypt(brainKey, password);
+    // const privateKey = key.get_brainPrivateKey(brainKey);
+    // this.publicKey = CryptService.generatePublicKey(privateKey);
+    // const stringHash = CryptService.stringToHash(stringToSign);
+    // const signedString = CryptService.hashToSign(stringHash, privateKey);
+    // const url = this.userUrl + '/recover-account';
     //
-    //     this.http
-    //         .post(url, {
-    //             email,
-    //             signedString,
-    //             stringHash,
-    //             brainKeyEncrypted: this.brainKeyEncrypted
-    //         })
-    //         .pipe(filter(data => data != null))
-    //         .pipe(
-    //             map(userInfo => {
-    //                 this.accountInfo = userInfo;
-    //                 if (AccountService.isJsonString(this.accountInfo.meta)) {
-    //                     this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-    //                 }
+    // this.http
+    //   .post(url, {
+    //     email,
+    //     signedString,
+    //     stringHash,
+    //     brainKeyEncrypted: this.brainKeyEncrypted
+    //   })
+    //   .pipe(filter(data => data != null))
+    //   .pipe(
+    //     map(userInfo => {
+    //       this.accountInfo = userInfo;
+    //       if (AccountService.isJsonString(this.accountInfo.meta)) {
+    //         this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
+    //       }
     //
-    //                 localStorage.setItem('auth', this.accountInfo.token);
-    //                 if (this.accountInfo.language) {
-    //                     localStorage.setItem('lang', this.accountInfo.language);
-    //                     this.translateService.use(this.accountInfo.language);
-    //                 } else {
-    //                     this.changeLang('en');
-    //                 }
-    //                 this.accountUpdated$.next(this.accountInfo);
+    //       localStorage.setItem('auth', this.accountInfo.token);
+    //       if (this.accountInfo.language) {
+    //         localStorage.setItem('lang', this.accountInfo.language);
+    //         this.translateService.use(this.accountInfo.language);
+    //       } else {
+    //         this.changeLang('en');
+    //       }
+    //       this.accountUpdated$.next(this.accountInfo);
     //
-    //                 this.loadBalance();
+    //       this.loadBalance();
     //
-    //                 return userInfo;
-    //             })
-    //         )
-    //         .subscribe(
-    //             data => {
-    //                 this.recoverData = data;
-    //                 this.recoverDataChanged.next(this.recoverData);
-    //             },
-    //             error => this.errorService.handleError('recover', error, url)
-    //         );
-    // }
+    //       return userInfo;
+    //     })
+    //   )
+    //   .subscribe(
+    //     data => {
+    //       this.recoverData = data;
+    //       this.recoverDataChanged.next(this.recoverData);
+    //     },
+    //     error => this.errorService.handleError('recover', error, url)
+    //   );
   }
 
   // signIn(code) {
@@ -401,7 +375,10 @@ export class AccountService {
     const brainKey = KeyPair.decryptBrainKeyByPassword(encryptedBrainKey, password);
 
     if (!brainKey) {
-      alert('auth error');
+      this.errorService.handleError('loginSession', {
+        status: 409,
+        error: {message: 'invalid_session_id'}
+      });
     }
 
     const keyPair = new KeyPair(brainKey.trim());

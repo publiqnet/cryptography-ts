@@ -10,6 +10,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-login-password',
@@ -31,6 +32,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
     public router: Router,
     public accountService: AccountService,
     private errorService: ErrorService,
+    public notificationService: NotificationService,
     public t: TranslateService
   ) {
   }
@@ -59,11 +61,13 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-        if (data.action === 'loadConfirm') {
-          this.router.navigate(['/page-not-found']);
+          if (data.action === 'loadConfirm') {
+            this.router.navigate(['/page-not-found']);
+          } else if (data.action === 'login' || data.action === 'authenticate') {
+            this.notificationService.error(data.message);
+          }
         }
-      }
-    );
+      );
   }
 
   get TokenCheckStatusEnum() {
@@ -89,7 +93,8 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
       .subscribe(authData => {
         // this.router.navigate(['/']); get user data from backend
       }, (err) => {
-        this.tokenCheckStatus = TokenCheckStatus.Error;
+        // this.tokenCheckStatus = TokenCheckStatus.Error;
+        this.errorService.handleError('login', {status: 404});
       });
   }
 

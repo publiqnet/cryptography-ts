@@ -31,4 +31,4 @@
 </div>
 
 
-<app-new-password *ngIf="isPasswordMode"></app-new-password>
+<app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
