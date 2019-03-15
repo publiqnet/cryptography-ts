@@ -233,21 +233,19 @@ export class AccountService {
   }
 
   preRegister(email: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const language = this.translateService.currentLang;
-      const url = this.userUrl;
-      this.http.put(this.userUrl, {email, language}).subscribe(
-        data => {
-          this.preRegisterData = data;
-          this.preRegisterDataChanged.next(this.preRegisterData);
-        },
-        error => this.errorService.handleError('preRegister', error, url)
-      );
-    }
+    const language = this.translateService.currentLang;
+    const url = this.userUrl + '/signup';
+    this.http.put(url, {email, language}).subscribe(
+      data => {
+        this.preRegisterData = data;
+        this.preRegisterDataChanged.next(this.preRegisterData);
+      },
+      error => this.errorService.handleError('preRegister', error, url)
+    );
   }
 
   loadConfirm(code: string): Observable<{ stringToSign: number }> {
-    const url = this.userUrl + `/confirmation/${code}`;
+    const url = this.userUrl + `/signup/confirmation/${code}`;
     return this.http.get <{ stringToSign: number }>(url);
   }
 
@@ -389,8 +387,7 @@ export class AccountService {
     const publicKey = keyPair.PpublicKey;
     const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
 
-
-    const url = this.userUrl + `/complete-registration`;
+    const url = this.userUrl + `/signup/complete`;
 
     return this.http.post(url, {
       confirmationCode: code,
