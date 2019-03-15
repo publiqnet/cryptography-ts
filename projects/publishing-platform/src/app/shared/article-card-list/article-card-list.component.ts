@@ -1,8 +1,22 @@
-import { AfterViewInit, Component, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ArticleService } from '../../core/services/article.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -24,8 +38,7 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
   @Input() fromPublications: boolean;
   @Output('articleRemove') articleRemove = new EventEmitter();
   @ViewChild('grid') private grid;
-  // @Output() viewCountChange = new EventEmitter();
-  viewCount = 0;
+
   thisYear = new Date().getFullYear();
   public isotopeOptions = {
     transitionDuration: 0,
@@ -37,8 +50,7 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
   private isoGrid;
   public ids = [];
   public defaultImage = '/assets/image-loading.png';
-  errorEventEmitterSubscription: Subscription = Subscription.EMPTY;
-  contentViewsSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     private articleService: ArticleService,
@@ -49,56 +61,59 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
   ) {
   }
 
-    ngOnInit() {
-        if (isPlatformBrowser(this.platformId)) {
-              if (this.calculateViewCount) {
-                if (this.articles && this.articles.length) {
-                    this.articles.forEach(value => {
-                        this.ids.push(value.ds_id);
-                    });
-                    // pushing id for last main article view
-                    if (
-                        this.articleService.lastArticle &&
-                        !this.ids.includes(this.articleService.lastArticle.ds_id)
-                    ) {
-                        this.ids.push(this.articleService.lastArticle.ds_id);
-                    }
-
-                    if (this.ids) {
-                        this.articleService.getContentViews(this.ids);
-                    }
-                }
-            }
-
-      this.contentViewsSubscription = this.articleService.getContentViewsDataChanged.subscribe(
-        views => {
-          views.forEach(view => {
-            if (
-              this.articleService.lastArticle &&
-              view._id === this.articleService.lastArticle.ds_id
-            ) {
-              this.articleService.lastArticle.viewcount = view.viewcount;
-            }
-            this.articles.forEach(content => {
-              if (content.ds_id == view._id) {
-                content.viewcount = view.viewcount;
-                // this.viewCount += content.viewcount;
-              }
-            });
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.calculateViewCount) {
+        if (this.articles && this.articles.length) {
+          this.articles.forEach(value => {
+            this.ids.push(value.ds_id);
           });
-          // this.viewCountChange.emit(this.viewCount);
-        }
-      );
+          // pushing id for last main article view
+          if (
+            this.articleService.lastArticle &&
+            !this.ids.includes(this.articleService.lastArticle.ds_id)
+          ) {
+            this.ids.push(this.articleService.lastArticle.ds_id);
+          }
 
-      this.errorEventEmitterSubscription = this.errorService.errorEventEmiter.subscribe(
-        (error: ErrorEvent) => {
-          if (error.action === 'getContentViews') {
-            console.log('getContentViews', error.message);
+          if (this.ids) {
+            this.articleService.getContentViews(this.ids);
           }
         }
-      );
-      this.articles.map(
-        res => {
+      }
+
+      this.articleService.getContentViewsDataChanged
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(views => {
+            views.forEach(view => {
+              if (
+                this.articleService.lastArticle &&
+                view._id === this.articleService.lastArticle.ds_id
+              ) {
+                this.articleService.lastArticle.viewcount = view.viewcount;
+              }
+              this.articles.forEach(content => {
+                if (content.ds_id == view._id) {
+                  content.viewcount = view.viewcount;
+                }
+              });
+            });
+          }
+        );
+
+      this.errorService.errorEventEmiter
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((error: ErrorEvent) => {
+            if (error.action === 'getContentViews') {
+              console.log('getContentViews', error.message);
+            }
+          }
+        );
+      this.articles.map(res => {
           res.created = this.getCorrectDateFormat(res.created);
           res.published = this.getCorrectDateFormat(res.published);
           return res;
@@ -107,24 +122,24 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
     }
   }
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (isPlatformBrowser(this.platformId) &&  changes.hasOwnProperty('articles')) {
-          if (this.fromPublications) {
-            if (changes['articles'].previousValue) {
-              const ids = [];
-              const sliced = changes['articles'].currentValue.slice(changes['articles'].previousValue.length);
-              sliced.forEach(value => {
-                ids.push(value.ds_id);
-              });
-              this.articleService.getContentViews(ids);
-            }
-          }
-          setTimeout(() => {
-                this.reloadGrid();
-                }, 100
-            );
+  ngOnChanges(changes: SimpleChanges) {
+    if (isPlatformBrowser(this.platformId) && changes.hasOwnProperty('articles')) {
+      if (this.fromPublications) {
+        if (changes['articles'].previousValue) {
+          const ids = [];
+          const sliced = changes['articles'].currentValue.slice(changes['articles'].previousValue.length);
+          sliced.forEach(value => {
+            ids.push(value.ds_id);
+          });
+          this.articleService.getContentViews(ids);
         }
+      }
+      setTimeout(() => {
+          this.reloadGrid();
+        }, 100
+      );
     }
+  }
 
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId) && this.homepageGrid) {
@@ -166,13 +181,6 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
     this.isoGrid.layout();
   }
 
-  ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.errorEventEmitterSubscription.unsubscribe();
-      this.contentViewsSubscription.unsubscribe();
-    }
-  }
-
   redirect(article) {
     this.articleService.getArticleByIdDataChanged.next(article);
     this.router.navigate([`s/${article.ds_id}`]);
@@ -195,6 +203,13 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
   removeArticle(dsid, event) {
     event.stopPropagation();
     this.articleRemove.emit(dsid);
+  }
+
+  ngOnDestroy() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
   }
 
 }
