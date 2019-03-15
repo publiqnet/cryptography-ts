@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ValidationService } from '../../core/validator/validator.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { NotificationService } from '../../core/services/notification.service';
 
@@ -75,8 +74,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
-    this.configForm = this.formBuilder.group(
-      {
+    this.configForm = this.formBuilder.group({
         password: new FormControl('', [
           Validators.required
         ])
