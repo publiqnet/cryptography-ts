@@ -1,5 +1,4 @@
-// export const backend = 'https://stage-api.publiq.network';
-export const backend = 'http://192.168.10.104:8001';
+export const backend = 'https://stage-api.publiq.network';
 export const dsBackend = 'https://stage-ds.publiq.network';
 export const daemonAddressFirst = 'wss://south.publiq.network:443/websocket_stage';
 export const daemonAddressSecond = 'wss://south.publiq.network:8092/websocket_stage';
