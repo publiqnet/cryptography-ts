@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
@@ -13,6 +13,8 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
     styleUrls: ['./new-password.component.css']
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
+    @Input() brainKey: string;
+    @Input() stringToSign: number;
 
     public formView = 'formView';
     public mailForm: FormGroup;
@@ -51,7 +53,9 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
         this.formView = '';
 
-        this.accountService.recoverSetNewPassword(this.recoverForm.value.password);
+        this.accountService.recoverSetNewPassword(this.brainKey, this.stringToSign, this.recoverForm.value.password).subscribe(recoverData => {
+          console.log('recoverData - ', recoverData);
+        });
     }
 
     private buildRecoverForm() {
