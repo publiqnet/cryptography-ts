@@ -1,14 +1,8 @@
-import {
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Draft } from '../../core/services/models/draft';
 import { ArticleService } from '../../core/services/article.service';
@@ -23,44 +17,49 @@ export class EditDraftComponent implements OnInit, OnDestroy {
   public draft: Draft;
   public draftId: string;
 
-  getDraftByIdDataSubscription: Subscription = Subscription.EMPTY;
-  errorEventEmitterSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     private articleService: ArticleService,
     private activatedRoute: ActivatedRoute,
-    @Inject(PLATFORM_ID) private platformId: Object,
     private errorService: ErrorService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.activatedRoute.params.subscribe((params: Params) => {
+    this.activatedRoute.params
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((params: Params) => {
         this.draftId = params['id'];
 
         this.articleService.getDraftById(this.draftId);
       });
 
-      this.errorEventEmitterSubscription = this.errorService.errorEventEmiter.subscribe(
-        (data: ErrorEvent) => {
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: ErrorEvent) => {
           if (data.action === 'getDraftById') {
-              console.log(data.message);
-              this.router.navigate(['/page-not-found']);
+            this.router.navigate(['/page-not-found']);
           }
         }
       );
 
-      this.getDraftByIdDataSubscription = this.articleService.getDraftByIdDataChanged.subscribe(
+    this.articleService.getDraftByIdDataChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
         draft => (this.draft = draft)
       );
-    }
   }
 
   ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.getDraftByIdDataSubscription.unsubscribe();
-      this.errorEventEmitterSubscription.unsubscribe();
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

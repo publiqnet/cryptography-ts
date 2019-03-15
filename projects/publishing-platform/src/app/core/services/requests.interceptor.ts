@@ -22,7 +22,7 @@ export class RequestsInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (isPlatformBrowser(this.platformId)) {
+    /*if (isPlatformBrowser(this.platformId)) {
       if (request.url.indexOf(filestorageLink) !== -1 ) {
         request.headers.delete('X-API-CHANNEL');
         return next.handle(request);
@@ -34,7 +34,7 @@ export class RequestsInterceptor implements HttpInterceptor {
           }
         });
       }
-    }
+    }*/
 
     return next.handle(request)
       .pipe(tap(

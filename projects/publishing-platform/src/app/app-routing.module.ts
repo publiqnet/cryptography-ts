@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { storyRoutes } from './story/story-routing.module';
-import { helpRoutes } from './help/help-routing.module';
 import { HomepageComponent } from './core/homepage/homepage.component';
 import { TemplateComponent } from './core/template/template.component';
 import { ArticleComponent } from './core/article/article.component';
@@ -60,8 +59,7 @@ const routes: Routes = [
                 path: 'user',
                 loadChildren: './user/user.module#UserModule'
             },
-            ...storyRoutes,
-            ...helpRoutes
+            ...storyRoutes
         ]
     },
     {

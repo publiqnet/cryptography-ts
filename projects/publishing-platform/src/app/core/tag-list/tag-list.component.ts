@@ -1,20 +1,13 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  OnDestroy,
-  OnInit,
-  Output,
-  PLATFORM_ID
-} from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 
 import { Broadcaster } from '../../broadcaster/broadcaster';
 import { TagDetailObject } from '../models/classes/tag.detail.object';
 import { TagService } from '../services/tag.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tag-list',
@@ -24,7 +17,7 @@ import { TagService } from '../services/tag.service';
 export class TagListComponent implements OnInit, OnDestroy {
   @Output() tagevent = new EventEmitter();
   tags: TagDetailObject[] = [];
-  tagsSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     public router: Router,
@@ -39,7 +32,11 @@ export class TagListComponent implements OnInit, OnDestroy {
 
       this.tags = this.tagService.getTags();
 
-      this.tagsSubscription = this.tagService.tagsChanged.subscribe(
+      this.tagService.tagsChanged
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
         (tags: TagDetailObject[]) => {
           this.tags = tags;
         }
@@ -50,14 +47,15 @@ export class TagListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = 'auto';
-
-      this.tagsSubscription.unsubscribe();
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
     }
   }
 
   tagListToggle(tag) {
     this.tagevent.emit(1);
     this.broadcaster.broadcast('searchTags', tag.name);
-    this.tagsSubscription.unsubscribe();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

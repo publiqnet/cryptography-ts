@@ -85,11 +85,11 @@
                         <i class="icon-profile menuIcon"></i>
                     </div>
                     <mat-menu #menu="matMenu" [overlapTrigger]="false">
-                        <button mat-menu-item (click)="goTo('/content/newcontent')">
+                        <button mat-menu-item (click)="redirectTo('/content/newcontent')">
                             <i class="icon-new-story"></i>
                             <span>{{"header.new_story" | translate}}</span>
                         </button>
-                        <button mat-menu-item (click)="goTo('/content/mycontent')">
+                        <button mat-menu-item (click)="redirectTo('/content/mycontent')">
                             <i class="icon-my-stories"></i>
                             <span>{{"header.my_stories" | translate}}</span>
                         </button>

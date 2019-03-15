@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/
 
 import { MatDialogRef } from '@angular/material';
 
-import { CryptService } from '../services/crypt.service';
+// import { CryptService } from '../services/crypt.service';
 import { AccountService } from '../services/account.service';
 import { ErrorService } from '../services/error.service';
 
