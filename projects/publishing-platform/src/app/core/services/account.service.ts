@@ -263,7 +263,6 @@ export class AccountService {
       const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
 
       const url = this.userUrl + '/recover/complete';
-      debugger;
       return this.http.post(url, {
         brainKey: encryptedBrainKey,
         publicKey: publicKey,
@@ -399,9 +398,9 @@ export class AccountService {
 
   login(email: string, password: string, resForStep2) {
     if (isPlatformBrowser(this.platformId)) {
-      let privateKey;
-      let stringHash;
-      let signedString;
+      // const privateKey;
+      // const stringHash;
+      // const signedString;
 
 
       this.brainKeyEncrypted = resForStep2.brainKeyEncrypted
@@ -426,39 +425,39 @@ export class AccountService {
           // signedString = CryptService.hashToSign(stringHash, privateKey);
         });
 
-        if (isPlatformBrowser(this.platformId)) {
-          this.http
-            .post(url, {email, signedString, stringHash})
-            .pipe(
-              map((userInfo: any) => {
-                this.accountInfo = userInfo;
-                this.accountInfo.email = email;
-                if (AccountService.isJsonString(this.accountInfo.meta)) {
-                  this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-                }
-
-                localStorage.setItem('auth', this.accountInfo.token);
-
-                this.loadBalance();
-                if (this.accountInfo.language) {
-                  localStorage.setItem('lang', this.accountInfo.language);
-                  this.translateService.use(this.accountInfo.language);
-                } else {
-                  this.changeLang('en');
-                }
-                this.accountUpdated$.next(this.accountInfo);
-                this.accountInfo.pKey = privateKey;
-                return userInfo;
-              })
-            )
-            .subscribe(
-              data => {
-                this.loginData = data;
-                this.loginDataChanged.next(this.loginData);
-              },
-              error => this.errorService.handleError('login', error, url)
-            );
-        }
+        // if (isPlatformBrowser(this.platformId)) {
+        //   this.http
+        //     .post(url, {email, signedString, stringHash})
+        //     .pipe(
+        //       map((userInfo: any) => {
+        //         this.accountInfo = userInfo;
+        //         this.accountInfo.email = email;
+        //         if (AccountService.isJsonString(this.accountInfo.meta)) {
+        //           this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
+        //         }
+        //
+        //         localStorage.setItem('auth', this.accountInfo.token);
+        //
+        //         this.loadBalance();
+        //         if (this.accountInfo.language) {
+        //           localStorage.setItem('lang', this.accountInfo.language);
+        //           this.translateService.use(this.accountInfo.language);
+        //         } else {
+        //           this.changeLang('en');
+        //         }
+        //         this.accountUpdated$.next(this.accountInfo);
+        //         this.accountInfo.pKey = privateKey;
+        //         return userInfo;
+        //       })
+        //     )
+        //     .subscribe(
+        //       data => {
+        //         this.loginData = data;
+        //         this.loginDataChanged.next(this.loginData);
+        //       },
+        //       error => this.errorService.handleError('login', error, url)
+        //     );
+        // }
       } catch (MalformedURLException) {
         this.errorService.handleError('login', {status: 404}, url);
       }
@@ -1209,7 +1208,6 @@ export class AccountService {
   }
 
   getSignetString(stringToSign, brainKey) {
-    // debugger
     const now = new Date(new Date(stringToSign * 1000));
     const now_1h = new Date(now.getTime() + (1 * 60 * 1000));
     const keyPair = new KeyPair(brainKey);

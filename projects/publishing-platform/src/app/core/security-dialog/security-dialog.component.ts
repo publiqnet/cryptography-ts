@@ -36,9 +36,9 @@ export class SecurityDialogComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (event.keyCode === ESCAPE_KEYCODE) {
-            this.onCloseCancel();
-        }
+        // if (event.keyCode === ESCAPE_KEYCODE) {
+        //     this.onCloseCancel();
+        // }
     }
 
     onCloseCancel() {

@@ -30,7 +30,6 @@ export class CryptService {
   }
 
   static generatePrivateKey(brainKey) {
-      debugger;
     // return key.get_brainPrivateKey(brainKey);
   }
 
