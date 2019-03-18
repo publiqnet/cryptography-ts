@@ -87,7 +87,7 @@ export class ContentService {
   public pendingProcess = new Subject();
 
   static generateTags(metaTags) {
-    const result;
+    let result;
     if (typeof metaTags === 'string') {
       result = [{display: metaTags, value: metaTags}];
     } else if (Array.isArray(metaTags)) {
