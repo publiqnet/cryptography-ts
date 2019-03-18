@@ -1,43 +1,42 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
 
 import { Broadcaster } from '../../broadcaster/broadcaster';
 import { WalletService } from '../../core/services/wallet.service';
 
 @Component({
-    selector: 'app-wallet',
-    templateUrl: './wallet.component.html',
-    styleUrls: ['./wallet.component.scss']
+  selector: 'app-wallet',
+  templateUrl: './wallet.component.html',
+  styleUrls: ['./wallet.component.scss']
 })
 export class WalletComponent implements OnInit, OnDestroy {
-    broadcasterSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
-    constructor(private broadcaster: Broadcaster,
-                @Inject(PLATFORM_ID) private platformId: Object,
-                public walletService: WalletService) {
-    }
+  constructor(private broadcaster: Broadcaster,
+              public walletService: WalletService) {
+  }
 
-    ngOnInit(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            this.broadcasterSubscription = this.broadcaster
-                .on<any>('changeToTabTransactions')
-                .subscribe(data => {
-                    this.walletService.selectedTabIndex = this.walletService.tabs.transaction;
-                });
-        }
-    }
+  ngOnInit(): void {
+    this.broadcaster
+      .on<any>('changeToTabTransactions')
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+        this.walletService.selectedTabIndex = this.walletService.tabs.transaction;
+      });
+  }
 
-    onLinkClick(event) {
-        this.walletService.selectedTabIndex = event.index;
-    }
+  onLinkClick(event) {
+    this.walletService.selectedTabIndex = event.index;
+  }
 
 
-    ngOnDestroy(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            this.broadcasterSubscription.unsubscribe();
-            this.walletService.selectedTabIndex = this.walletService.tabs.receive;
-        }
-    }
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+    this.walletService.selectedTabIndex = this.walletService.tabs.receive;
+  }
 }

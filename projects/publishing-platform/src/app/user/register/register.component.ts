@@ -13,12 +13,13 @@ import {
 } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-register',
@@ -26,15 +27,13 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-  registerSuccess = false;
 
   public registerForm: FormGroup;
   private errorMessages: string;
   private conditionsWarning: string;
   public formView = 'registerForm';
 
-  preRegisterSubscription: Subscription = Subscription.EMPTY;
-  errorEventEmitterSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     private accountService: AccountService,
@@ -42,32 +41,40 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private FormBuilder: FormBuilder,
     private errorService: ErrorService,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.buildForm();
-    if (isPlatformBrowser(this.platformId)) {
-      this.registerForm.valueChanges.subscribe(
-        data => {
-          this.errorMessages = '';
-          this.conditionsWarning = '';
-        },
-        err => console.log(err)
-      );
+    this.registerForm.valueChanges
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+        this.errorMessages = '';
+        this.conditionsWarning = '';
+      },
+      err => console.log(err)
+    );
 
-      this.errorEventEmitterSubscription = this.errorService.errorEventEmiter.subscribe(
-        (data: ErrorEvent) => {
-          if (data.action === 'preRegister') {
-            this.formView = 'registerForm';
-            this.notificationService.error(data.message);
-          }
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: ErrorEvent) => {
+        if (data.action === 'preRegister') {
+          this.formView = 'registerForm';
+          this.notificationService.error(data.message);
         }
-      );
+      }
+    );
 
-      this.preRegisterSubscription = this.accountService.preRegisterDataChanged.subscribe(
-        () => (this.formView = 'successMessage')
-      );
-    }
+    this.accountService.preRegisterDataChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => (this.formView = 'successMessage')
+    );
   }
 
   register() {
@@ -88,9 +95,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.preRegisterSubscription.unsubscribe();
-      this.errorEventEmitterSubscription.unsubscribe();
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

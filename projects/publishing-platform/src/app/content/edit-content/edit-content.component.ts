@@ -1,14 +1,9 @@
-import {
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Content } from '../../core/services/models/content';
 import { ArticleService } from '../../core/services/article.service';
@@ -27,8 +22,7 @@ export class EditContentComponent
   public contentId: string;
   hasPendingChanges = false;
 
-  contentDataSubscription: Subscription = Subscription.EMPTY;
-  errorEventEmitterSubscription: Subscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -37,39 +31,52 @@ export class EditContentComponent
     private accountService: AccountService,
     private errorService: ErrorService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.activatedRoute.params.subscribe((params: Params) => {
-        if (params['id']) {
-          this.contentId = params['id'];
-          this.articleService.getArticleById(this.contentId);
-        }
-      });
-
-      this.errorEventEmitterSubscription = this.errorService.errorEventEmiter.subscribe(
-        (data: ErrorEvent) => {
-          if (data.action === 'getArticleById') {
-            console.log(data.message);
+      this.activatedRoute.params
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((params: Params) => {
+          if (params['id']) {
+            this.contentId = params['id'];
+            this.articleService.getArticleById(this.contentId);
           }
-        }
-      );
+        });
 
-      this.contentDataSubscription = this.articleService.getArticleByIdDataChanged.subscribe(
-        data => {
-          this.articleService.setHeaderArticleMeta(null);
-          document.querySelector('mat-toolbar').classList.remove('shrink');
-          if (data) {
-            if (data && data.content) {
-                if (data.full_account && this.accountService.accountInfo && data.full_account.name != this.accountService.accountInfo.name) {
-                    this.router.navigate(['/page-not-found']);
-                }
-                this.content = data;
+      this.errorService.errorEventEmiter
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
+          (data: ErrorEvent) => {
+            if (data.action === 'getArticleById') {
+              console.log(data.message);
             }
           }
-        }
-      );
+        );
+
+      this.articleService.getArticleByIdDataChanged
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
+          data => {
+            this.articleService.setHeaderArticleMeta(null);
+            document.querySelector('mat-toolbar').classList.remove('shrink');
+            if (data) {
+              if (data && data.content) {
+                if (data.full_account && this.accountService.accountInfo && data.full_account.name != this.accountService.accountInfo.name) {
+                  this.router.navigate(['/page-not-found']);
+                }
+                this.content = data;
+              }
+            }
+          }
+        );
     }
   }
 
@@ -79,9 +86,10 @@ export class EditContentComponent
 
   ngOnDestroy() {
     if (isPlatformBrowser(this.platformId)) {
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+
       this.articleService.getArticleByIdDataChanged.next('');
-      this.contentDataSubscription.unsubscribe();
-      this.errorEventEmitterSubscription.unsubscribe();
     }
   }
 }

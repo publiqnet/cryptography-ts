@@ -45,8 +45,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { ArticleCardListComponent } from './article-card-list/article-card-list.component';
 import { ArticleSmallCardListComponent } from './article-small-card-list/article-small-card-list.component';
-import { TagInnerComponent } from './tag-inner/tag-inner.component';
-import { UserRelatedArticlesComponent } from './user-related-articles/user-related-articles.component';
 import { ControlMessagesComponent } from './control-message/control-message.component';
 import { PbqPipe } from '../core/pipes/pbq.pipe';
 import { TimeIntervalPipe } from '../core/pipes/timeinterval.pipe';
@@ -56,7 +54,6 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { ReportDialogComponent } from '../core/report-dialog/report-dialog.component';
 import { LoginDialogComponent } from '../core/login-dialog/login-dialog.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
-// import { ErrorService } from '../core/services/error.service';
 import { FloatPipe } from '../core/pipes/float.pipe';
 import { IdToUsernamePipe } from '../core/pipes/id_to_username.pipe';
 import { DomChangeDirective } from '../core/dom-change.directive';
@@ -125,8 +122,6 @@ export function createTranslateLoader(http: HttpClient) {
     ArticleCardListComponent,
     ArticleSmallCardListComponent,
     AccountListComponent,
-    TagInnerComponent,
-    UserRelatedArticlesComponent,
     ControlMessagesComponent,
     PageNotFoundComponent,
     PbqPipe,

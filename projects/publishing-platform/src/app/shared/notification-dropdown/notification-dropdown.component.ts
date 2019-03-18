@@ -2,11 +2,12 @@ import { Component, OnInit, Output, EventEmitter, ElementRef, AfterViewChecked, 
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { UserNotificationService } from '../../core/services/user-notification.service';
 import { UserNotification } from '../../core/services/models/UserNotification';
-import { UserNotificationType } from '../../core/models/enumes/UserNotificationType';
+import { UserNotificationType } from '../../core/models/enumes';
 import { PublicationService } from '../../core/services/publication.service';
 import { WalletService } from '../../core/services/wallet.service';
 import { Publication } from '../../core/services/models/publication';
@@ -35,7 +36,8 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
     };
 
     userNotifications: UserNotification[];
-    subscription: Subscription = Subscription.EMPTY;
+    private unsubscribe$ = new ReplaySubject<void>(1);
+
     emitHide = () => {
         this.noteHideEmitter.emit(null);
     }
@@ -60,10 +62,18 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
             this.width = window.innerWidth;
         }
         // load the initial batch of notifications and create a stream
-        this.userNotificationService.loadNotifications().subscribe();
+        this.userNotificationService.loadNotifications()
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe();
 
         // subscribe to the notification changes
-        this.subscription = this.userNotificationService.notificationsChanged$.subscribe(
+        this.userNotificationService.notificationsChanged$
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe(
             () => {
                 this.unreadCount = this.userNotificationService.unreadCount;
                 this.userNotifications = this.userNotificationService.userNotifications;
@@ -90,7 +100,6 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
     }
 
     goNotificationPage(uNotification: UserNotification): void {
-        // console.log('going to notification page');
 
         this.userNotificationService.toggleStatus(uNotification, true);
 
@@ -191,7 +200,8 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
 
     ngOnDestroy(): void {
         if (isPlatformBrowser(this.platformId)) {
-            this.subscription.unsubscribe();
+            this.unsubscribe$.next();
+            this.unsubscribe$.complete();
             this.userNotificationService.reset();
         }
     }

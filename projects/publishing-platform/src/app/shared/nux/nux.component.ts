@@ -1,5 +1,8 @@
-import { Component, Inject, Input, PLATFORM_ID, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { NuxService } from '../../core/services/nux.service';
 import { AccountService } from '../../core/services/account.service';
 declare var jQuery;
@@ -43,8 +46,7 @@ export class NuxComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() title: string;
     @Input() step: number;
     @Input() positionConfig: NuxPositioning = { 'nux-top': true, 'left': true };
-    subscription: Subscription;
-
+    private unsubscribe$ = new ReplaySubject<void>(1);
 
     constructor(public el: ElementRef, public nuxService: NuxService, private accountService: AccountService) { }
 
@@ -71,7 +73,11 @@ export class NuxComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.subscription = this.nuxService.currentStep.subscribe((step: number) => {
+        this.nuxService.currentStep
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe((step: number) => {
             if (this.key === this.nuxService.keys[this.page][step]) {
                 const sibling = this.el.nativeElement.nextElementSibling;
 
@@ -79,10 +85,6 @@ export class NuxComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
     }
-
-    // get shouldHide(): boolean {
-    //     return this.nuxService.shouldHide;
-    // }
 
     get keys(): string[] {
         return this.nuxService.keys[this.page];
@@ -127,10 +129,8 @@ export class NuxComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnDestroy(): void {
-        if (this.subscription) {
-            // console.log('unsub', this.currentStep, this.shouldHide);
-            this.subscription.unsubscribe();
-        }
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
         this.nuxService.reset(this.page);
     }
 }

@@ -1,8 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '../../core/services/account.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 
 @Component({
@@ -19,25 +22,31 @@ export class RecoverComponent implements OnInit, OnDestroy {
   isPasswordMode: boolean;
   private stringToSign = '';
 
-  errorEventEmiterSubscription = Subscription.EMPTY;
-  signedStringSubscription = Subscription.EMPTY;
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private accountService: AccountService,
-              @Inject(PLATFORM_ID) private platformId: Object,
               private errorService: ErrorService,
               private router: Router) {
   }
 
   ngOnInit() {
     this.isPasswordMode = false;
-    this.errorEventEmiterSubscription = this.errorService.errorEventEmiter.subscribe((error: ErrorEvent) => {
-      if (error.action === 'recover') {
-        this.loading = false;
-        this.brainKeyError = this.errorService.getError('incorrect_recover_phrase');
-      }
-    });
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((error: ErrorEvent) => {
+        if (error.action === 'recover') {
+          this.loading = false;
+          this.brainKeyError = this.errorService.getError('incorrect_recover_phrase');
+        }
+      });
 
-    this.signedStringSubscription = this.accountService.signedStringChanged.subscribe(stringToSign => {
+    this.accountService.signedStringChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(stringToSign => {
       // this.router.navigate(['/user/new-password']);
       this.isPasswordMode = true;
     });
@@ -50,6 +59,9 @@ export class RecoverComponent implements OnInit, OnDestroy {
   checkBrainKey() {
     this.loading = true;
     this.accountService.checkBrainkey(this.brainKey)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
       .subscribe(authData => {
         this.stringToSign = authData.stringToSign;
         this.isPasswordMode = true;
@@ -57,10 +69,10 @@ export class RecoverComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // if (isPlatformBrowser(this.platformId)) {
     this.brainKeyError = '';
-    this.signedStringSubscription.unsubscribe();
-    this.errorEventEmiterSubscription.unsubscribe();
-    // }
+
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+
   }
 }

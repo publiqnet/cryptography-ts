@@ -20,7 +20,9 @@ export class Broadcaster {
   on<T>(key: any): Observable<T> {
     return this._eventBus
       .asObservable()
-      .pipe(filter(event => event.key === key))
-      .pipe(map(event => <T>event.data));
+      .pipe(
+        filter(event => event.key === key),
+        map(event => <T>event.data)
+      );
   }
 }

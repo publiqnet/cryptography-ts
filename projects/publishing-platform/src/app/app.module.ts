@@ -16,7 +16,6 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { StoryModule } from './story/story.module';
 import { AppRoutingModule } from './app-routing.module';
-import { HelpModule } from './help/help.module';
 import { AuthorModule } from './author/author.module';
 import { ArticleService } from './core/services/article.service';
 import { AccountService } from './core/services/account.service';
@@ -42,7 +41,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         CoreModule,
         AuthorModule,
         StoryModule,
-        HelpModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
