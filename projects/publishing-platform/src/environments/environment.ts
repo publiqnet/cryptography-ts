@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  backend: 'https://api.publiq.network',
-  ds_backend: 'https://ds.publiq.network',
+  backend: 'https://stage-api.publiq.network',
+  ds_backend: 'https://stage-ds.publiq.network',
   daemon_address_first: 'wss://south.publiq.network:443/websocket_stage',
   daemon_address_second: 'wss://south.publiq.network:8092/websocket_stage',
   currentVersion: 'presentation',
