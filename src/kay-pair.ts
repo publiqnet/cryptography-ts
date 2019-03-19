@@ -115,10 +115,24 @@ export class KeyPair {
   }
 
   static decryptBrainKeyByPassword(brainKey: string, password: string) {
-    return CryptoJS.AES.decrypt(
-      brainKey,
-      password,
-      { format: Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
+      let returnObject = {
+          isValid: false,
+          brainKey: null
+      };
+
+      try {
+          returnObject.brainKey = CryptoJS.AES.decrypt(
+              brainKey,
+              password,
+              { format: Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
+
+          returnObject.isValid = true;
+      } catch (e) {
+          returnObject.brainKey = null;
+          returnObject.isValid = false
+      }
+
+      return returnObject;
   }
 
   static encryptBrainKey(brainKey) {

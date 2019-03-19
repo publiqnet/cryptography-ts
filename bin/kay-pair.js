@@ -99,7 +99,19 @@ var KeyPair = /** @class */ (function () {
         return CryptoJS.AES.encrypt(brainKey, password, { format: encryptor_1.Encryptor.prototype }).toString();
     };
     KeyPair.decryptBrainKeyByPassword = function (brainKey, password) {
-        return CryptoJS.AES.decrypt(brainKey, password, { format: encryptor_1.Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
+        var returnObject = {
+            isValid: false,
+            brainKey: null
+        };
+        try {
+            returnObject.brainKey = CryptoJS.AES.decrypt(brainKey, password, { format: encryptor_1.Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
+            returnObject.isValid = true;
+        }
+        catch (e) {
+            returnObject.brainKey = null;
+            returnObject.isValid = false;
+        }
+        return returnObject;
     };
     KeyPair.encryptBrainKey = function (brainKey) {
         return SHA256(SHA512(brainKey)).toString();
