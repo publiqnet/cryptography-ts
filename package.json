@@ -3,17 +3,21 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run build:ssr && npm run serve:ssr",
-    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "lint:fix": "ng lint --fix",
     "precommit": "npm run lint:fix && git add .",
     "build:shared-lib": "ng build shared-lib",
-    "webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=publishing-platform",
-    "build:ssr": "ng build publishing-platform --prod && ng run publishing-platform:server:production && npm run webpack:server",
-    "serve:ssr": "node dist/server.js"
+    "pp:build": "npm run pp:build:stage",
+    "pp:start": "npm run pp:start:stage",
+    "pp:build:stage": "ng build --configuration=staging && npm run pp:build:stage:ssr",
+    "pp:build:stage:ssr": "ng run publishing-platform:server && npm run pp:webpack:server",
+    "pp:start:stage": "npm run pp:build:stage && node dist/server.js",
+    "pp:build:prod": "ng build --configuration=production && npm run pp:build:prod:ssr",
+    "pp:build:prod:ssr": "ng run publishing-platform:server --configuration=production && npm run pp:webpack:server",
+    "pp:start:prod": "npm run pp:build:prod && node dist/server.js",
+    "pp:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=publishing-platform"
   },
   "private": true,
   "dependencies": {
