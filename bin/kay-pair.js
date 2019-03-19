@@ -105,7 +105,13 @@ var KeyPair = /** @class */ (function () {
         };
         try {
             returnObject.brainKey = CryptoJS.AES.decrypt(brainKey, password, { format: encryptor_1.Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
-            returnObject.isValid = true;
+            if (!returnObject.brainKey) {
+                returnObject.isValid = false;
+                returnObject.brainKey = null;
+            }
+            else {
+                returnObject.isValid = true;
+            }
         }
         catch (e) {
             returnObject.brainKey = null;

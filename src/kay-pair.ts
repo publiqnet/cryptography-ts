@@ -126,7 +126,12 @@ export class KeyPair {
               password,
               { format: Encryptor.prototype }).toString(CryptoJS.enc.Utf8);
 
-          returnObject.isValid = true;
+          if(!returnObject.brainKey) {
+              returnObject.isValid = false;
+              returnObject.brainKey = null;
+          } else {
+              returnObject.isValid = true;
+          }
       } catch (e) {
           returnObject.brainKey = null;
           returnObject.isValid = false
