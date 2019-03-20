@@ -10,6 +10,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
+import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
 
 @Component({
   selector: 'app-registration-password',
@@ -28,6 +29,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public accountService: AccountService,
+    public oauthService: OauthService,
     private errorService: ErrorService,
     public t: TranslateService
   ) {
@@ -40,7 +42,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
         filter(params => params.code),
         switchMap(params => {
           this.token = params.code;
-          return this.accountService.loadConfirm(params.code);
+          return this.oauthService.signupConfirmation(params.code);
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -83,12 +85,13 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.tokenCheckStatus = TokenCheckStatus.Loading;
-    this.accountService.registerByEncryptedBrainKey(this.stringToSign, this.token, this.configForm.value.password)
+    this.oauthService.signupComplete(this.stringToSign, this.token, this.configForm.value.password)
       .pipe(
+        switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(authData => {
-      // this.router.navigate(['/']); get user data from backend
+      .subscribe(data => {
+        this.router.navigate(['/']);
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
       });

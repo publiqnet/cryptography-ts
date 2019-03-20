@@ -375,7 +375,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       this.isContentUpLoading = false;
       this.isSubmited = false;
       this.contentService.hideFooter$.emit(true);
-      this.publicationService.getMyPublications();
+      // this.publicationService.getMyPublications();
 
       FroalaEditorCustomConfigs();
 

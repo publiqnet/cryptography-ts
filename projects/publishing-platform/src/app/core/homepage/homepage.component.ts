@@ -107,7 +107,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
       zip(
         this.articleService.contentExSponsoredChanged,
-        this.publicationService.loadStoriesPublicationByDsIdDataChanged,
+        // this.publicationService.loadStoriesPublicationByDsIdDataChanged,
         this.articleService.getContentViewsDataChanged
       )
         .pipe(
@@ -115,8 +115,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
         )
         .subscribe((data: any[]) => {
           const stories: Content[] = data[0];
-          const publications: any[] = data[1];
-          const views: any[] = data[2];
+          const publications: any[] = [];
+          const views: any[] = data[1];
+          // const publications: any[] = data[1];
+          // const views: any[] = data[2];
 
           if (stories.length > this.storiesDefaultCount) {
             const lastIndex = stories.length - 1;
@@ -218,7 +220,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
         .subscribe(data => {
             if (data && data.token) {
               this.logined = true;
-              this.accountService.getSubscriptionAndPreferences();
+              // this.accountService.getSubscriptionAndPreferences();
             } else {
               this.logined = false;
             }

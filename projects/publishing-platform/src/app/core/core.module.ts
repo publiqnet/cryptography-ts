@@ -47,7 +47,8 @@ import { InputPasswordDialogComponent } from './input-password-dialog/input-pass
 import { LinkService } from './services/link.service';
 import { NewstorySubmission2Component } from './newstory-submission2/newstory-submission2.component';
 import { HttpRpcService } from './services/httpRpc.service';
-
+import { environment } from '../../environments/environment';
+import { OauthService } from 'shared-lib';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -114,7 +115,9 @@ export function createTranslateLoader(http: HttpClient) {
         HttpRpcService,
         NuxService,
         ChannelService,
-        LinkService
+        LinkService,
+        OauthService,
+        { provide: 'oauthUrl', useValue: environment.oauth_backend }
     ],
     exports: [SafePipe, SharedModule],
     entryComponents: [

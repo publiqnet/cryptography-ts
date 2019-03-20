@@ -184,18 +184,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // this.translate.use('en');
       // An EventEmitter to listen to lang change events
-      this.translate.onLangChange
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((params: LangChangeEvent) => {
-          if (params && params.lang) {
-            const lang: string = params.lang == 'jp' ? 'ja-JP' : 'en';
-            this.adapter.setLocale(lang);
-
-            this.accountService.changeLang(params.lang);
-          }
-        });
+      // this.translate.onLangChange
+      //   .pipe(
+      //     takeUntil(this.unsubscribe$)
+      //   )
+      //   .subscribe((params: LangChangeEvent) => {
+      //     if (params && params.lang) {
+      //       const lang: string = params.lang == 'jp' ? 'ja-JP' : 'en';
+      //       this.adapter.setLocale(lang);
+      //
+      //       this.accountService.changeLang(params.lang);
+      //     }
+      //   });
       this.channelSettings = this.state.get(CHANNEL_CONFIG, {} as any);
       this.channelService.channelConfig = this.channelSettings;
       this.channelService.pages = this.channelSettings['pages'];

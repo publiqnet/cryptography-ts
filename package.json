@@ -8,6 +8,7 @@
     "e2e": "ng e2e",
     "lint:fix": "ng lint --fix",
     "precommit": "npm run lint:fix && git add .",
+    "watch:shared-lib": "ng build shared-lib --watch",
     "build:shared-lib": "ng build shared-lib",
     "pp:build": "npm run pp:build:stage",
     "pp:start": "npm run pp:start:stage",

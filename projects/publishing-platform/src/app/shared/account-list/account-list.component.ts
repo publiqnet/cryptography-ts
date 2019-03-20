@@ -61,9 +61,9 @@ export class AccountListComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist(account: Account) {
-    const meta = account.meta ? account.meta : '';
-    const image = meta.image_hash ? meta.image_hash : '';
-    return !!(account && meta && image && image !== '' && !image.startsWith('http://127.0.0.1') && image.indexOf('_thumb') !== -1);
+    return false;
+    // const image = account.image_hash ? account.image_hash : '';
+    // return !!(account && image && image !== '' && !image.startsWith('http://127.0.0.1') && image.indexOf('_thumb') !== -1);
   }
 
   follow(account: Account) {

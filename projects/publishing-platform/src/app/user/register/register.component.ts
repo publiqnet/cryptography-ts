@@ -20,6 +20,7 @@ import { ValidationService } from '../../core/validator/validator.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { takeUntil } from 'rxjs/operators';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-register',
@@ -40,6 +41,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private FormBuilder: FormBuilder,
     private errorService: ErrorService,
+    private oauthService: OauthService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
@@ -68,13 +70,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
         }
       }
     );
-
-    this.accountService.preRegisterDataChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => (this.formView = 'successMessage')
-    );
   }
 
   register() {
@@ -82,7 +77,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
     this.formView = '';
-    this.accountService.preRegister(this.registerForm.value.email);
+
+    this.oauthService.signup(this.registerForm.value.email)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(oauthData => {
+        this.formView = 'successMessage';
+      }, error => {
+          this.errorService.handleError('preRegister', error);
+      });
   }
 
   private buildForm() {

@@ -64,7 +64,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((error: ErrorEvent) => {
-        if (error.action === 'loginSession') {
+        if (error.action === 'oauth_decrypt_brain_key') {
+          console.log('oauth_decrypt_brain_key', error.message);
+          localStorage.removeItem('auth');
+          localStorage.setItem('lang', 'en');
+        } else if (error.action === 'loginSession') {
           console.log('login-session-error---', error.message);
           localStorage.removeItem('auth');
           localStorage.setItem('lang', 'en');
@@ -100,21 +104,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.accountService.balanceChanged
-      .pipe(
-        filter(result => result != null),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((balance: number) => {
-          if (this.accountService.accountInfo) {
-            this.accountService.accountInfo.balance = balance;
-            return (this.balance = {
-              balance: balance,
-              balance_pbq: balance / 100000000
-            });
-          }
-        }
-      );
+    // this.accountService.balanceChanged
+    //   .pipe(
+    //     filter(result => result != null),
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe((balance: number) => {
+    //       if (this.accountService.accountInfo) {
+    //         this.accountService.accountInfo.balance = balance;
+    //         return (this.balance = {
+    //           balance: balance,
+    //           balance_pbq: balance / 100000000
+    //         });
+    //       }
+    //     }
+    //   );
 
     this.accountService.accountUpdated$
       .pipe(

@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
+import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
 
 @Component({
   selector: 'app-new-password',
@@ -25,6 +26,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private accountService: AccountService,
+              private oauthService: OauthService,
               private FormBuilder: FormBuilder,
               private router: Router,
               private errorService: ErrorService,
@@ -55,7 +57,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
     this.formView = '';
 
-    this.accountService.recoverSetNewPassword(this.brainKey, this.stringToSign, this.recoverForm.value.password)
+    this.oauthService.recoverComplete(this.brainKey, this.stringToSign, this.recoverForm.value.password)
       .pipe(
         takeUntil(this.unsubscribe$)
       )

@@ -21,19 +21,19 @@ export class RequestsInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (isPlatformBrowser(this.platformId)) {
-      if (request.url.indexOf(environment.filestorage_link) !== -1 ) {
-        request.headers.delete('X-API-CHANNEL');
-        return next.handle(request);
-      }
-      if (!request.headers.has('X-API-CHANNEL')) {
-        request = request.clone({
-          setHeaders: {
-            'X-API-CHANNEL': this.channelService.channel || 'stage'
-          }
-        });
-      }
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    //   if (request.url.indexOf(environment.filestorage_link) !== -1 ) {
+    //     request.headers.delete('X-API-CHANNEL');
+    //     return next.handle(request);
+    //   }
+    //   if (!request.headers.has('X-API-CHANNEL')) {
+    //     request = request.clone({
+    //       setHeaders: {
+    //         'X-API-CHANNEL': this.channelService.channel || 'stage'
+    //       }
+    //     });
+    //   }
+    // }
 
     return next.handle(request)
       .pipe(tap(

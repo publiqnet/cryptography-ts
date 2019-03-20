@@ -45,9 +45,9 @@
                     <!--<div fxLayout fxLayoutAlign="center center" *ngIf="balance" [ngClass]="{'hidden-sm-down': searchBar, 'hidden-md-up': true}">
                         <i class="icon-pbq menuIcon"></i> 
                     </div>-->
-                    <div *ngIf="balance && account" class="hidden-sm-down labelled-button balance-button" [routerLink]="['/wallet']">
+                    <div *ngIf="account" class="hidden-sm-down labelled-button balance-button" [routerLink]="['/wallet']">
                         <i class="icon-pbq menuIcon"></i>
-                        <span>{{balance?.balance_pbq | number: '0.0-8'}} PBQ</span>
+                        <span>{{account?.balance | number: '0.0-8'}} PBQ</span>
                     </div>
                     <!-- <mat-menu #bmenu="matMenu" [overlapTrigger]="false">
                         <button mat-menu-item class="hidden-md-up">

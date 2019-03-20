@@ -2,7 +2,7 @@ import { EventEmitter, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 
-import { BehaviorSubject, Subject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable, ReplaySubject, throwError } from 'rxjs';
 import { map, filter, take, tap, switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -19,6 +19,7 @@ import { Subscriber } from './models/subscriber';
 
 import { KeyPair } from 'cryptography-ts';
 import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction';
+import { UtilsService } from 'shared-lib';
 
 KeyPair.setPublicKeyPrefix('PBQ');
 
@@ -30,6 +31,7 @@ export class AccountService {
               @Inject(PLATFORM_ID) private platformId: Object,
               private httpRpcService: HttpRpcService,
               private errorService: ErrorService,
+              private utilsService: UtilsService,
               public translateService: TranslateService) {
   }
 
@@ -39,6 +41,7 @@ export class AccountService {
   public userFavouriteTagsKey = 'user_favourite_tags';
   public favouriteAuthorsKey = 'favourite_authors';
 
+  // public oauthUrl = `${environment.oauth_backend}/api/user`;
   public userUrl = `${environment.backend}/api/user`;
 
   public accountUpdated$: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -67,9 +70,6 @@ export class AccountService {
 
   confirmCode: any;
   confirmCodeChanged = new Subject<any>();
-
-  preRegisterData: any;
-  preRegisterDataChanged = new Subject<any>();
 
   registerData: any;
   registerDataChanged = new Subject<any>();
@@ -226,23 +226,6 @@ export class AccountService {
       : null;
   }
 
-  preRegister(email: string): void {
-    const language = this.translateService.currentLang;
-    const url = this.userUrl + '/signup';
-    this.http.put(url, {email, language}).subscribe(
-      data => {
-        this.preRegisterData = data;
-        this.preRegisterDataChanged.next(this.preRegisterData);
-      },
-      error => this.errorService.handleError('preRegister', error, url)
-    );
-  }
-
-  loadConfirm(code: string): Observable<{ stringToSign: number }> {
-    const url = this.userUrl + `/signup/confirmation/${code}`;
-    return this.http.get <{ stringToSign: number }>(url);
-  }
-
   sendRecoverEmail(email: string): void {
     if (isPlatformBrowser(this.platformId)) {
       const url: string = this.userUrl + '/check-email';
@@ -256,212 +239,38 @@ export class AccountService {
     }
   }
 
-  recoverSetNewPassword(brainKey: string, stringToSign: number, password: string) {
-      const keyPair = new KeyPair(brainKey);
-      const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);
-      const publicKey = keyPair.PpublicKey;
-      const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
-
-      const url = this.userUrl + '/recover/complete';
-      return this.http.post(url, {
-        brainKey: encryptedBrainKey,
-        publicKey: publicKey,
-        signedString: signedString
-      });
+  accountAuthenticate(token: string): Observable<any> {
+    const url = this.userUrl + `/authenticate`;
+    return this.http.get(url, {headers: new HttpHeaders({'X-OAUTH-TOKEN': token})})
+      .pipe(
+        map((userInfo: any) => {
+          this.setAccountInfo(userInfo);
+          localStorage.setItem('auth', userInfo.token);
+          return userInfo;
+        }))
+      ;
   }
 
-  recover(brainKey: string, stringToSign: number) {
-    const keyPair = new KeyPair(brainKey);
-    const publicKey = keyPair.PpublicKey;
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
+  setAccountInfo(userInfo) {
+    this.accountInfo = {
+      ...userInfo,
+      balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
+    };
 
-    const url = this.userUrl + '/recover/complete';
+    // this.loadBalance();
+    // if (this.accountInfo.language) {
+    //   localStorage.setItem('lang', this.accountInfo.language);
+    //   this.translateService.use(this.accountInfo.language);
+    // } else {
+    //   this.changeLang('en');
+    // }
 
-    return this.http.post(url, {
-      brainKey: brainKey,
-      publicKey: publicKey,
-      signedString: signedString
-    });
-
-
-
-    // this.brainKeyEncrypted = CryptService.brainKeyEncrypt(brainKey, password);
-    // const privateKey = key.get_brainPrivateKey(brainKey);
-    // this.publicKey = CryptService.generatePublicKey(privateKey);
-    // const stringHash = CryptService.stringToHash(stringToSign);
-    // const signedString = CryptService.hashToSign(stringHash, privateKey);
-    // const url = this.userUrl + '/recover-account';
-    //
-    // this.http
-    //   .post(url, {
-    //     email,
-    //     signedString,
-    //     stringHash,
-    //     brainKeyEncrypted: this.brainKeyEncrypted
-    //   })
-    //   .pipe(filter(data => data != null))
-    //   .pipe(
-    //     map(userInfo => {
-    //       this.accountInfo = userInfo;
-    //       if (AccountService.isJsonString(this.accountInfo.meta)) {
-    //         this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-    //       }
-    //
-    //       localStorage.setItem('auth', this.accountInfo.token);
-    //       if (this.accountInfo.language) {
-    //         localStorage.setItem('lang', this.accountInfo.language);
-    //         this.translateService.use(this.accountInfo.language);
-    //       } else {
-    //         this.changeLang('en');
-    //       }
-    //       this.accountUpdated$.next(this.accountInfo);
-    //
-    //       this.loadBalance();
-    //
-    //       return userInfo;
-    //     })
-    //   )
-    //   .subscribe(
-    //     data => {
-    //       this.recoverData = data;
-    //       this.recoverDataChanged.next(this.recoverData);
-    //     },
-    //     error => this.errorService.handleError('recover', error, url)
-    //   );
-  }
-
-  // signIn(code) {
-  //     this.authenticateByCode(code).pipe(
-  //       switchMap(authData => {
-  //         const encryptedBrainKey = authData.brainKey;
-  //         const stringToSign = authData.stringToSign;
-  //         return this.loginByEncryptedBrainKey(encryptedBrainKey, stringToSign, code, password);
-  //       })
-  //     )
-  //     .subscribe(loginData => {
-  //         console.log(loginData);
-  //       }
-  //     );
-  // }
-
-  authenticateByCode(code: string): Observable<any> {
-    const url = this.userUrl + `/signin/check-code/${code}`;
-    return this.http.get(url);
-  }
-
-  authenticate(email: string): Observable<any> {
-    const url = this.userUrl + `/signin/authenticate/${email}`;
-    return this.http.get(url);
-  }
-
-  registerByEncryptedBrainKey(stringToSign, code, password) {
-    const keyPair = new KeyPair();
-    const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);
-    const publicKey = keyPair.PpublicKey;
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
-
-    const url = this.userUrl + `/signup/complete`;
-
-    return this.http.post(url, {
-      confirmationCode: code,
-      brainKey: encryptedBrainKey,
-      publicKey: publicKey,
-      signedString: signedString
-    });
-  }
-
-  loginByEncryptedBrainKey(encryptedBrainKey, stringToSign, code, password) {
-    const brainKey = KeyPair.decryptBrainKeyByPassword(encryptedBrainKey, password);
-
-    if (!brainKey) {
-      this.errorService.handleError('loginSession', {
-        status: 409,
-        error: {message: 'invalid_session_id'}
-      });
-    }
-
-    const keyPair = new KeyPair(brainKey.trim());
-
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
-
-    const url = this.userUrl + `/signin/get-token`;
-
-    return this.http.post(url, {
-      code: code,
-      signedString: signedString
-    });
+    this.accountUpdated$.next(this.accountInfo);
+    return userInfo;
   }
 
   getAuthenticateData() {
     return this.resForStep2Data ? this.resForStep2Data : '';
-  }
-
-  login(email: string, password: string, resForStep2) {
-    if (isPlatformBrowser(this.platformId)) {
-      // const privateKey;
-      // const stringHash;
-      // const signedString;
-
-
-      this.brainKeyEncrypted = resForStep2.brainKeyEncrypted
-        ? resForStep2.brainKeyEncrypted
-        : '';
-
-
-      const url = this.userUrl + '/signin/get-token';
-      try {
-
-        KeyPair.decryptBrainKeyByPassword(this.brainKeyEncrypted, password);
-
-        CryptService.brainKeyDecrypt(
-          resForStep2.brainKeyEncrypted,
-          password
-        ).subscribe(brainKey => {
-          // this.brainKey = brainKey;
-          // privateKey = key.get_brainPrivateKey(this.brainKey);
-          // this.publicKey = CryptService.generatePublicKey(privateKey);
-          //
-          // stringHash = CryptService.stringToHash(resForStep2.stringToSign + '');
-          // signedString = CryptService.hashToSign(stringHash, privateKey);
-        });
-
-        // if (isPlatformBrowser(this.platformId)) {
-        //   this.http
-        //     .post(url, {email, signedString, stringHash})
-        //     .pipe(
-        //       map((userInfo: any) => {
-        //         this.accountInfo = userInfo;
-        //         this.accountInfo.email = email;
-        //         if (AccountService.isJsonString(this.accountInfo.meta)) {
-        //           this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-        //         }
-        //
-        //         localStorage.setItem('auth', this.accountInfo.token);
-        //
-        //         this.loadBalance();
-        //         if (this.accountInfo.language) {
-        //           localStorage.setItem('lang', this.accountInfo.language);
-        //           this.translateService.use(this.accountInfo.language);
-        //         } else {
-        //           this.changeLang('en');
-        //         }
-        //         this.accountUpdated$.next(this.accountInfo);
-        //         this.accountInfo.pKey = privateKey;
-        //         return userInfo;
-        //       })
-        //     )
-        //     .subscribe(
-        //       data => {
-        //         this.loginData = data;
-        //         this.loginDataChanged.next(this.loginData);
-        //       },
-        //       error => this.errorService.handleError('login', error, url)
-        //     );
-        // }
-      } catch (MalformedURLException) {
-        this.errorService.handleError('login', {status: 404}, url);
-      }
-    }
   }
 
   loginSession(): void {
@@ -479,30 +288,16 @@ export class AccountService {
         error: {message: 'invalid_session_id'}
       });
     }
-    const url = this.userUrl + '/get-user';
+    const url = this.userUrl;
     this.http
       .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
       .pipe(
         map((userInfo: any) => {
-          this.accountInfo = userInfo;
-          if (AccountService.isJsonString(this.accountInfo.meta)) {
-            this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-          }
+          this.setAccountInfo(userInfo);
 
-          if (this.accountInfo.language) {
-            localStorage.setItem('lang', this.accountInfo.language);
-            this.translateService.use(this.accountInfo.language);
-          } else {
-            this.changeLang('en');
-          }
-
-          this.accountUpdated$.next(this.accountInfo);
-
-          this.loadBalance();
-
-          this.brainKeyEncrypted = this.accountInfo.brainKeyEncrypted
-            ? this.accountInfo.brainKeyEncrypted
-            : '';
+          // this.brainKeyEncrypted = this.accountInfo.brainKeyEncrypted
+          //   ? this.accountInfo.brainKeyEncrypted
+          //   : '';
 
           return userInfo;
         })
@@ -611,28 +406,29 @@ export class AccountService {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       const token = this.accountInfo.token;
-
+      this.accountInfo = null;
       localStorage.removeItem('auth');
+      this.brainKey = '';
+
       localStorage.removeItem('for_adult');
       localStorage.setItem('lang', 'en');
       localStorage.removeItem(this.userFavouriteTagsKey);
-      this.accountInfo = null;
-      this.publicKey = '';
-      this.brainKey = '';
-      this.accountUpdated$.next(null);
-      this.unsetBalance();
-      this.logoutData = null;
-      this.logoutDataChanged.next(this.logoutData);
+      // this.publicKey = '';
 
-      this.http
-        .post(this.userUrl + '/signout', '', {
-          headers: new HttpHeaders({'X-API-TOKEN': token})
-        })
-        .subscribe(
-          () => {
-          },
-          error => this.errorService.handleError('logout', error)
-        );
+      this.accountUpdated$.next(null);
+      // this.unsetBalance();
+      // this.logoutData = null;
+      this.logoutDataChanged.next(null);
+
+      // this.http
+      //   .post(this.userUrl + '/signout', '', {
+      //     headers: new HttpHeaders({'X-API-TOKEN': token})
+      //   })
+      //   .subscribe(
+      //     () => {
+      //     },
+      //     error => this.errorService.handleError('logout', error)
+      //   );
     }
   }
 
@@ -876,12 +672,12 @@ export class AccountService {
   public setShortName() {
     if (
       this.accountInfo &&
-      this.accountInfo.meta.first_name &&
-      this.accountInfo.meta.last_name
+      this.accountInfo.first_name &&
+      this.accountInfo.last_name
     ) {
       this.shortName = this.accountInfo.shortName = (
-        this.accountInfo.meta.first_name.charAt(0) +
-        this.accountInfo.meta.last_name.charAt(0)
+        this.accountInfo.first_name.charAt(0) +
+        this.accountInfo.last_name.charAt(0)
       ).toUpperCase();
     }
   }

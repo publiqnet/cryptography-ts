@@ -246,31 +246,31 @@ export class PublicationService {
     }
 
     loadStoriesPublicationByDsId(dsArray: string[], forPage: PageOptions = PageOptions.default): void {
-        const url = environment.backend + '/api/v1/content/publications';
-        this.http.post(url, {articles: dsArray})
-            .pipe(
-                filter(data => data != null),
-                map((data: any[]) => {
-                        data.map(item => {
-                            if (item['publication']) {
-                                item['publication'] = new Publication(item['publication']);
-                            }
-                        });
-
-                        return data;
-                    }
-                )
-            )
-            .subscribe((publications) => {
-                // @ts-ignore
-                if (forPage === PageOptions.homepageTagStories) {
-                    this.homepageTagStoriesPublicationChanged.next(publications);
-                } else if (forPage === PageOptions.homepageAuthorStories) {
-                    this.homepageAuthorStoriesPublicationChanged.next(publications);
-                } else {
-                    this.loadStoriesPublicationByDsIdDataChanged.next(publications);
-                }
-            }, error => this.errorService.handleError('loadStoriesPublicationByDsId', error, url));
+        // const url = environment.backend + '/api/v1/content/publications';
+        // this.http.post(url, {articles: dsArray})
+        //     .pipe(
+        //         filter(data => data != null),
+        //         map((data: any[]) => {
+        //                 data.map(item => {
+        //                     if (item['publication']) {
+        //                         item['publication'] = new Publication(item['publication']);
+        //                     }
+        //                 });
+        //
+        //                 return data;
+        //             }
+        //         )
+        //     )
+        //     .subscribe((publications) => {
+        //         // @ts-ignore
+        //         if (forPage === PageOptions.homepageTagStories) {
+        //             this.homepageTagStoriesPublicationChanged.next(publications);
+        //         } else if (forPage === PageOptions.homepageAuthorStories) {
+        //             this.homepageAuthorStoriesPublicationChanged.next(publications);
+        //         } else {
+        //             this.loadStoriesPublicationByDsIdDataChanged.next(publications);
+        //         }
+        //     }, error => this.errorService.handleError('loadStoriesPublicationByDsId', error, url));
     }
 
     checkPublication(slug): Promise<boolean> {

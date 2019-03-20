@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 export interface IAccount {
   id?: string;
   username?: string;
-  pKey?: string;
   pubKey?: string;
   passwordHint?: string;
   brainKey?: string;
@@ -20,7 +19,6 @@ export interface IAccount {
 export class Account implements IAccount {
   id: string;
   username: string;
-  pKey: string;
   pubKey: string;
   passwordHint: string;
   brainKey: string;

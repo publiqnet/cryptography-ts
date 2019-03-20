@@ -24,7 +24,6 @@ import { PublicationModule } from './publication/publication.module';
 import { PublicationService } from './core/services/publication.service';
 import { LanguageGuard } from './guards/language.guard';
 import { RequestsInterceptor } from './core/services/requests.interceptor';
-import { SharedLibModule } from 'shared-lib';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -49,8 +48,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
         }),
         PublicationModule,
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-        SharedLibModule
+        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics])
     ],
     providers: [
         ArticleService,

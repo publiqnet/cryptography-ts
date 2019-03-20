@@ -62,24 +62,24 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
             this.width = window.innerWidth;
         }
         // load the initial batch of notifications and create a stream
-        this.userNotificationService.loadNotifications()
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe();
-
-        // subscribe to the notification changes
-        this.userNotificationService.notificationsChanged$
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe(
-            () => {
-                this.unreadCount = this.userNotificationService.unreadCount;
-                this.userNotifications = this.userNotificationService.userNotifications;
-                this.unreadCountEmitter.emit(this.unreadCount);
-            }
-        );
+        // this.userNotificationService.loadNotifications()
+        //   .pipe(
+        //     takeUntil(this.unsubscribe$)
+        //   )
+        //   .subscribe();
+        //
+        // // subscribe to the notification changes
+        // this.userNotificationService.notificationsChanged$
+        //   .pipe(
+        //     takeUntil(this.unsubscribe$)
+        //   )
+        //   .subscribe(
+        //     () => {
+        //         this.unreadCount = this.userNotificationService.unreadCount;
+        //         this.userNotifications = this.userNotificationService.userNotifications;
+        //         this.unreadCountEmitter.emit(this.unreadCount);
+        //     }
+        // );
     }
 
     deleteNotification(uNotification: UserNotification): void {

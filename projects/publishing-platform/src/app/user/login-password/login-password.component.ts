@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, flatMap, switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AccountService } from '../../core/services/account.service';
@@ -10,6 +10,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { NotificationService } from '../../core/services/notification.service';
+import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
 
 @Component({
   selector: 'app-login-password',
@@ -30,6 +31,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public accountService: AccountService,
+    public oauthService: OauthService,
     private errorService: ErrorService,
     public notificationService: NotificationService,
     public t: TranslateService
@@ -43,7 +45,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         filter(params => params.code),
         switchMap(params => {
           this.token = params.code;
-          return this.accountService.authenticateByCode(params.code);
+          return this.oauthService.signinCheckCode(params.code);
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -84,12 +86,13 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.tokenCheckStatus = TokenCheckStatus.Loading;
-    this.accountService.loginByEncryptedBrainKey(this.encryptedBrainKey, this.stringToSign, this.token, this.configForm.value.password)
+    this.oauthService.signinGetToken(this.encryptedBrainKey, this.stringToSign, this.token, this.configForm.value.password)
       .pipe(
+        switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
         takeUntil(this.unsubscribe$)
       )
       .subscribe(authData => {
-        // this.router.navigate(['/']); get user data from backend
+        this.router.navigate(['/']);
       }, (err) => {
         // this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('login', {status: 404});

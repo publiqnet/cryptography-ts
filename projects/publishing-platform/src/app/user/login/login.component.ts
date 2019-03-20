@@ -10,6 +10,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
+import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private accountService: AccountService,
+    private oauthService: OauthService,
     public notificationService: NotificationService,
     private errorService: ErrorService,
     private router: Router,
@@ -72,7 +74,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.authStep = TokenCheckStatus.Loading;
 
-    this.accountService.authenticate(this.loginForm.value.email)
+    this.oauthService.signinAuthenticate(this.loginForm.value.email)
       .pipe(
         takeUntil(this.unsubscribe$)
       )

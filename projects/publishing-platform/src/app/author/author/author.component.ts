@@ -103,13 +103,13 @@ export class AuthorComponent implements OnInit, OnDestroy {
               : '';
             this.seo.generateTags({
               title: `${this.author.firstName || ''} ${this.author.lastName || ''}`.trim(),
-              image: this.author.meta['social_image_hash'] || this.author.meta.image_hash || null,
+              // image: this.author.meta['social_image_hash'] || this.author.meta.image_hash || null,
               url
             });
 
-            if (this.author.meta.image_hash) {
-              this.avatarUrl = this.author.meta.image_hash;
-            }
+            // if (this.author.meta.image_hash) {
+            //   this.avatarUrl = this.author.meta.image_hash;
+            // }
             this.shortName = this.author.shortName ? this.author.shortName : '';
 
             this.loadingAuthor = false;
@@ -194,14 +194,14 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist() {
-    return !!(
-      this.author &&
-      this.author.meta &&
-      this.author.meta.image_hash &&
-      this.author.meta.image_hash !== '' &&
-      !this.author.meta.image_hash.startsWith('http://127.0.0.1') &&
-      this.author.meta.image_hash.indexOf('_thumb') !== -1
-    );
+    return false;
+    // return !!(
+    //   this.author &&
+    //   this.author.image_hash &&
+    //   this.author.image_hash !== '' &&
+    //   !this.author.image_hash.startsWith('http://127.0.0.1') &&
+    //   this.author.image_hash.indexOf('_thumb') !== -1
+    // );
   }
 
   follow() {

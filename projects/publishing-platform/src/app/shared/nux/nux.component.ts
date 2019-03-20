@@ -121,7 +121,7 @@ export class NuxComponent implements OnInit, OnDestroy, AfterViewInit {
     finish(e?: Event): void {
         this.accountService.accountInfo.nuxEditor = true;
         this.accountService.accountUpdated$.next(this.accountService.accountInfo);
-        this.nuxService.finishNux(this.page);
+        // this.nuxService.finishNux(this.page);
         if (e) {
             e.preventDefault();
             e.stopPropagation();
