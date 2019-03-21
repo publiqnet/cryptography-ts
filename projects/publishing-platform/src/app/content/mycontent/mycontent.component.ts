@@ -19,6 +19,8 @@ import { Publication } from '../../core/services/models/publication';
 import { PublicationService } from '../../core/services/publication.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 import { Content } from '../../core/services/models/content';
+import { DraftService } from '../../core/services/draft.service';
+import { DraftData } from '../../core/services/models/draft';
 
 
 @Component({
@@ -55,20 +57,21 @@ export class MycontentComponent implements OnInit, OnDestroy {
     public accountService: AccountService,
     public t: TranslateService,
     private dialog: MatDialog,
-    private contentService: ContentService
+    private contentService: ContentService,
+    private draftService: DraftService
   ) {
   }
 
   ngOnInit() {
-    if (this.accountService.accountInfo && this.accountService.accountInfo.name) {
-      this.articleService.getMyStories(this.accountService.accountInfo.name, this.startFromBlock, this.storiesDefaultCount + 1);
-      this.accountService.loadAuthorStats(this.accountService.accountInfo.name);
+    if (this.accountService.accountInfo && this.accountService.accountInfo.publicKey) {
+      this.articleService.getMyStories(this.accountService.accountInfo.publicKey, this.startFromBlock, this.storiesDefaultCount + 1);
+      // this.accountService.loadAuthorStats(this.accountService.accountInfo.publicKey);
 
       this.contentService.pendingProcess.pipe(takeUntil(this.unsubscribe$)).subscribe((res: boolean) => {
         this.startFromBlock = '0.0.0';
         this.resetStartBlock = true;
         this.articleService.getMyStories(
-          this.accountService.accountInfo.name, this.startFromBlock, this.storiesDefaultCount + 1
+          this.accountService.accountInfo.publicKey, this.startFromBlock, this.storiesDefaultCount + 1
         );
       });
     }
@@ -87,7 +90,7 @@ export class MycontentComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.publicationService.getMyPublications();
+    // this.publicationService.getMyPublications();
     this.accountService.authorStatsDataChanged
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -160,42 +163,12 @@ export class MycontentComponent implements OnInit, OnDestroy {
       .subscribe((publications: any[]) => {
         this.publications = publications;
       });
-
-    this.articleService.getUserDraftsDataChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-          this.drafts = data;
-          this.loading = false;
-        }
-      );
-
-    this.articleService.deleteDraftDataChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(draft => {
-          if (draft !== 'undefined' && this.drafts && draft in this.drafts) {
-            this.drafts.splice(draft, 1);
-          }
-        }
-      );
-
-    this.articleService.deleteAllDraftsDataChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(draft => {
-        this.articleService.getUserDraftsData = [];
-        this.articleService.getUserDraftsDataChanged.next(this.articleService.getUserDraftsData);
-      });
   }
 
   seeMore() {
     this.seeMoreLoading = true;
     this.resetStartBlock = false;
-    this.articleService.getMyStories(this.accountService.accountInfo.name, this.startFromBlock, this.storiesDefaultCount + 1);
+    this.articleService.getMyStories(this.accountService.accountInfo.publicKey, this.startFromBlock, this.storiesDefaultCount + 1);
   }
 
   openDialogSubmission2(ds_id: string): void {
@@ -261,7 +234,10 @@ export class MycontentComponent implements OnInit, OnDestroy {
   }
 
   getDrafts() {
-    this.articleService.getUserDrafts();
+    this.draftService.getUserDrafts().subscribe((drafts: DraftData[]) => {
+      this.drafts = drafts;
+      this.loading = false;
+    });
   }
 
   deleteDraft(id: string, index: number) {
@@ -271,7 +247,11 @@ export class MycontentComponent implements OnInit, OnDestroy {
       )
       .subscribe(result => {
         if (result) {
-          this.articleService.deleteDraft(id, true, index);
+          this.draftService.delete(id).subscribe(data => {
+            if (this.drafts && index in this.drafts) {
+              this.drafts.splice(index, 1);
+            }
+          });
           return true;
         }
         return false;
@@ -330,7 +310,10 @@ export class MycontentComponent implements OnInit, OnDestroy {
       )
       .subscribe(result => {
         if (result) {
-          this.articleService.deleteAllDrafts();
+          this.draftService.deleteAll().subscribe(data => {
+            this.drafts = [];
+            this.loading = false;
+          });
           return true;
         }
         return false;
@@ -366,14 +349,14 @@ export class MycontentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-      this.openedContents = {};
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
+    this.openedContents = {};
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
 
-      this.publishedContent = [];
-      this.articleService.getMyStoriesData = [];
-      this.articleService.getMyStoriesDataChanged.next([]);
-      this.publicationService.loadStoriesPublicationByDsIdDataChanged.next([]);
-      this.startFromBlock = '0.0.0';
+    this.publishedContent = [];
+    this.articleService.getMyStoriesData = [];
+    this.articleService.getMyStoriesDataChanged.next([]);
+    this.publicationService.loadStoriesPublicationByDsIdDataChanged.next([]);
+    this.startFromBlock = '0.0.0';
   }
 }

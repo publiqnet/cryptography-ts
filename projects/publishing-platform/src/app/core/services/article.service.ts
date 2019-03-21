@@ -8,7 +8,6 @@ import { filter, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { AccountService } from './account.service';
-import { Draft } from './models/draft';
 import { Account } from './models/account';
 import { Content, PageOptions } from './models/content';
 import { OrderOptions } from './content.service';
@@ -51,26 +50,8 @@ export class ArticleService {
     getArticlesByTagDataChanged = new Subject<any>();
     getArticlesByTagData: any = [];
 
-    getUserDraftsDataChanged = new Subject<any>();
-    getUserDraftsData: any = [];
-
     getMyStoriesDataChanged = new Subject<any>();
     getMyStoriesData: any = [];
-
-    getDraftByIdDataChanged = new Subject<any>();
-    getDraftByIdData: any = [];
-
-    addDraftDataChanged = new Subject<any>();
-    addDraftData: any = [];
-
-    updateDraftDataChanged = new Subject<any>();
-    updateDraftData: any = [];
-
-    deleteDraftDataChanged = new Subject<any>();
-    deleteDraftData: any = [];
-
-    deleteAllDraftsDataChanged = new Subject<any>();
-    deleteAllDraftsData: any = [];
 
     suggestContentsByTagsDataChanged = new Subject<Content[]>();
     suggestContentsByTagsData: Content[] = [];
@@ -493,109 +474,6 @@ export class ArticleService {
             contents.push(new Content(content));
         });
         return {boostedArticlesCount, articles: contents};
-    }
-
-    getUserDrafts(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            const url = this.apiUrl + '/draft';
-
-            this.http
-                .get(url, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    data => {
-                        this.getUserDraftsData = data;
-                        this.getUserDraftsDataChanged.next(this.getUserDraftsData);
-                    },
-                    error => this.errorService.handleError('getUserDrafts', error, url)
-                );
-        }
-    }
-
-    getDraftById(id: string): void {
-        const url = this.apiUrl + `/draft/${id}`;
-        if (isPlatformBrowser(this.platformId)) {
-            this.http
-                .get(url, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    data => {
-                        this.getDraftByIdData = data;
-                        this.getDraftByIdDataChanged.next(this.getDraftByIdData);
-                    },
-                    error => this.errorService.handleError('getDraftById', error, url)
-                );
-        }
-    }
-
-    addDraft(draft: Draft): void {
-        const url = this.apiUrl + '/draft';
-        if (isPlatformBrowser(this.platformId)) {
-            this.http
-                .put(this.apiUrl + '/draft', draft, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    data => {
-                        this.addDraftData = data;
-                        this.addDraftDataChanged.next(this.addDraftData);
-                    },
-                    error => this.errorService.handleError('addDraft', error, url)
-                );
-        }
-    }
-
-    editDraft(id: string, draft: Draft): void {
-        const url = this.apiUrl + `/draft/${id}`;
-        if (isPlatformBrowser(this.platformId)) {
-            this.http
-                .post(this.apiUrl + `/draft/${id}`, draft, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    (data) => {
-                        this.updateDraftData = data;
-                        this.updateDraftDataChanged.next(this.updateDraftData);
-                    },
-                    error => this.errorService.handleError('editDraft', error, url)
-                );
-        }
-    }
-
-    deleteDraft(id: string, list = true, index = 0) {
-        const url = this.apiUrl + `/draft/${id}`;
-        if (isPlatformBrowser(this.platformId)) {
-            this.http
-                .delete(url, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    () => {
-                        this.deleteDraftData = index;
-                        this.deleteDraftDataChanged.next(this.deleteDraftData);
-                    },
-                    error => this.errorService.handleError('deleteDraft', error, url)
-                );
-        }
-    }
-
-    deleteAllDrafts() {
-        const url = this.apiUrl + `/draft/all`;
-        if (isPlatformBrowser(this.platformId)) {
-            this.http
-                .delete(url, {
-                    headers: new HttpHeaders({'X-API-TOKEN': this.getAccountToken()})
-                })
-                .subscribe(
-                    () => {
-                        this.deleteAllDraftsData = 'OK';
-                        this.deleteAllDraftsDataChanged.next(this.deleteAllDraftsData);
-                    },
-                    error => this.errorService.handleError('deleteAllDrafts', error, url)
-                );
-        }
     }
 
     getArticleById(id: string, needFullAccount = true): void {

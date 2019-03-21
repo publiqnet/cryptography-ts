@@ -1,4 +1,6 @@
-export interface Draft {
+import { reference } from '@angular/core/src/render3';
+
+export interface Draft { // todo delete
   title: string;
   headline: string;
   tags: Array<string>;
@@ -16,3 +18,40 @@ export interface Draft {
   contentId: number;
   publication: string;
 }
+
+export interface IDraft {
+  content: string;
+  forAdults: boolean;
+  headline: string;
+  reference: string;
+  sourceOfMaterial: string;
+  title: string;
+  id?: string;
+  created?: string;
+  updated?: string;
+}
+
+export class DraftData {
+  content: string;
+  forAdults: boolean;
+  headline: string;
+  reference: string;
+  sourceOfMaterial: string;
+  title: string;
+  id: string;
+  created: Date;
+  updated: Date;
+
+  constructor(data: IDraft) {
+    for (const i in data) {
+      if (data.hasOwnProperty(i)) {
+        if (['created', 'updated'].includes(i)) {
+          this[i] = new Date(data[i]);
+        } else {
+          this[i] = data[i];
+        }
+      }
+    }
+  }
+}
+

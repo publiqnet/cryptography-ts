@@ -48,7 +48,8 @@ import { LinkService } from './services/link.service';
 import { NewstorySubmission2Component } from './newstory-submission2/newstory-submission2.component';
 import { HttpRpcService } from './services/httpRpc.service';
 import { environment } from '../../environments/environment';
-import { OauthService } from 'shared-lib';
+import { OauthService, HttpHelperService } from 'shared-lib';
+import { DraftService } from './services/draft.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -57,6 +58,13 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/home/', '.json');
 }
+
+HttpHelperService.setBaseHeaders([
+  {
+    headerKay: 'X-API-TOKEN',
+    getHeaderValue: () => localStorage.getItem('auth')
+  }
+]);
 
 @NgModule({
     imports: [
@@ -117,7 +125,9 @@ export function createTranslateLoader(http: HttpClient) {
         ChannelService,
         LinkService,
         OauthService,
-        { provide: 'oauthUrl', useValue: environment.oauth_backend }
+        { provide: 'oauthUrl', useValue: environment.oauth_backend },
+        HttpHelperService,
+        DraftService
     ],
     exports: [SafePipe, SharedModule],
     entryComponents: [

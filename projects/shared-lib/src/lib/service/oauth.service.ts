@@ -94,6 +94,13 @@ export class OauthService {
     });
   }
 
+  recoverAuthenticate(brainKey: string): Observable<{ stringToSign: any }> {
+    const keyPair = new KeyPair(brainKey.trim());
+    const publicKey = keyPair.PpublicKey;
+    const url = this.url + `/recover/authenticate/${publicKey}`;
+    return this.http.get <{ stringToSign: any }>(url);
+  }
+
   recoverComplete(brainKey: string, stringToSign: number, password: string) {
     const keyPair = new KeyPair(brainKey);
     const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);

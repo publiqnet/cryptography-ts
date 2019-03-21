@@ -17,8 +17,8 @@ import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { isPlatformBrowser } from '@angular/common';
 import { ENTER } from '@angular/cdk/keycodes';
 
-import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { zip, ReplaySubject } from 'rxjs';
+import { map, debounceTime, filter, takeUntil, flatMap } from 'rxjs/operators';
+import { zip, ReplaySubject, of } from 'rxjs';
 import { now } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { SwiperComponent } from 'angular2-useful-swiper';
@@ -28,7 +28,7 @@ import { ContentService } from '../../core/services/content.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ArticleService } from '../../core/services/article.service';
-import { Draft } from '../../core/services/models/draft';
+import { Draft, DraftData, IDraft } from '../../core/services/models/draft';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { FroalaEditorCustomConfigs } from './froala-editor-custom-configs';
@@ -40,6 +40,7 @@ import { NuxService } from '../../core/services/nux.service';
 import { NewstorySubmissionComponent } from '../../core/newstory-submission/newstory-submission.component';
 import { ValidationService } from '../../core/validator/validator.service';
 import { Boost } from '../../core/services/models/boost';
+import { DraftService } from '../../core/services/draft.service';
 
 declare const $: any;
 const scrollElementIntoView = (element: HTMLElement) => {
@@ -72,7 +73,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   private hasDraft = false;
   public hasEditableContent = false;
   public isSubmited = false;
-  public draftUpdateDate = '';
   public nuxSeen = true;
   private boostInfo;
   private isArticleBoosted;
@@ -357,6 +357,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private accountService: AccountService,
     private articleService: ArticleService,
+    private draftService: DraftService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private errorService: ErrorService,
     public dialogService: DialogService,
@@ -551,29 +552,19 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           }
         });
 
-      this.articleService.addDraftDataChanged
+      this.draftService.draftData$
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(draft => {
-            this.hasDraft = true;
-            const message = this.translateService.instant('content.draft_saved');
-            this.notificationService.autoSave(message);
-            this.draftId = draft.id;
-            this.draftUpdateDate = draft.lastModifiedDate;
+        .subscribe((draft: DraftData) => {
+            if (draft) {
+              this.hasDraft = true;
+              const message = this.translateService.instant('content.draft_saved');
+              this.notificationService.autoSave(message);
+              this.draftId = draft.id;
+            }
           }
         );
-
-      this.articleService.updateDraftDataChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(draft => {
-          this.hasDraft = true;
-          const message = this.translateService.instant('content.draft_saved');
-          this.notificationService.autoSave(message);
-          this.draftUpdateDate = draft.lastModifiedDate;
-        });
 
       this.contentService.uploadMainPhotoDataChanged
         .pipe(
@@ -618,14 +609,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           }
         });
 
-      this.articleService.deleteDraftDataChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe();
-
       this.contentService.submittedContentChanged
         .pipe(
+          flatMap(data => (this.draftId) ? this.draftService.delete(this.draftId) : of(data)),
           takeUntil(this.unsubscribe$)
         )
         .subscribe(
@@ -635,13 +621,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
             if (this.loadingOnSave) {
               this.loadingOnSave = false;
             }
-            if (this.draftId) {
-              this.articleService.deleteDraft(
-                this.draftId,
-                false,
-                0
-              );
-            }
+            // if (this.draftId) {
+            //   this.draftService.delete(this.draftId);
+            // }
             // if (this.boostInfo && this.boostInfo.boostEnabled) {
             //   this.contentService.articleBoost(this.password, )
             // }
@@ -937,29 +919,30 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     if (typeof this.contentForm.value.tags === 'string' || this.contentForm.value.tags instanceof String) {
       this.contentForm.value.tags = [this.contentForm.value.tags];
     }
-    const newDraft = {
-      title: this.contentForm.value.title || '',
-      headline: this.contentForm.value.headline || '',
-      tags: this.contentForm.value.tags || [],
-      coverImages: this.coverImages || [],
-      mainCoverImageUrl: this.mainCoverImageUrl || '',
-      mainCoverImageChecker: this.mainCoverImageChecker,
-      listImages: this.listImages || [],
-      mainListImageUrl: this.listImageUrl || '',
-      listImageChecker: this.listImageChecker,
+    const newDraft: IDraft = {
+      // tags: this.contentForm.value.tags || [],
+      // coverImages: this.coverImages || [],
+      // mainCoverImageUrl: this.mainCoverImageUrl || '',
+      // mainCoverImageChecker: this.mainCoverImageChecker,
+      // listImages: this.listImages || [],
+      // mainListImageUrl: this.listImageUrl || '',
+      // listImageChecker: this.listImageChecker,
+      // content: this.contentForm.value.content || '',
+      // lastModifiedDate: Date.now(),
+      // publication: this.contentForm.value.publicationSlug,
+      // contentId: this.contentId
       content: this.contentForm.value.content || '',
-      lastModifiedDate: Date.now(),
-      sourceOfMaterial: this.contentForm.value.sourceOfMaterial || '',
-      reference: this.contentForm.value.reference || '',
       forAdults: this.contentForm.value.forAdults,
-      publication: this.contentForm.value.publicationSlug,
-      contentId: this.contentId
+      headline: this.contentForm.value.headline || '',
+      reference: this.contentForm.value.reference || '',
+      sourceOfMaterial: this.contentForm.value.sourceOfMaterial || '',
+      title: this.contentForm.value.title || '',
     };
 
     if (id) {
-      this.articleService.editDraft(id, newDraft);
+      this.draftService.update(id, newDraft);
     } else {
-      this.articleService.addDraft(newDraft);
+      this.draftService.create(newDraft);
     }
   }
 

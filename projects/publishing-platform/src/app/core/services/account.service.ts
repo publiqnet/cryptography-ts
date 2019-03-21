@@ -133,17 +133,6 @@ export class AccountService {
     return true;
   }
 
-  checkBrainkey(brainKey: string): Observable<{ stringToSign: any }> {
-    // this.tempBrainKey = brainKey;
-    const keyPair = new KeyPair(brainKey.trim());
-
-    const publicKey = keyPair.PpublicKey;
-
-    const url = this.userUrl + `/recover/authenticate/${publicKey}`;
-
-    return this.http.get <{ stringToSign: any }>(url);
-  }
-
   getRpcAccount(): Account {
     return this.authorAccount;
   }

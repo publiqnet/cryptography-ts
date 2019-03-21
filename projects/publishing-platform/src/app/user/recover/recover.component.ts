@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-recover',
@@ -26,6 +26,7 @@ export class RecoverComponent implements OnInit, OnDestroy {
 
   constructor(private accountService: AccountService,
               private errorService: ErrorService,
+              private oauthService: OauthService,
               private router: Router) {
   }
 
@@ -58,7 +59,7 @@ export class RecoverComponent implements OnInit, OnDestroy {
 
   checkBrainKey() {
     this.loading = true;
-    this.accountService.checkBrainkey(this.brainKey)
+    this.oauthService.recoverAuthenticate(this.brainKey)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
