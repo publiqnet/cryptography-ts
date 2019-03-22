@@ -62,11 +62,7 @@ export class DraftService {
     return this.httpHelperService.call(HttpMethodTypes.get, url)
       .pipe(
         filter(data => data != null),
-        map(data => {
-          const result: DraftData[] = [];
-          data.map(draft => result.push(new DraftData(draft)));
-          return result;
-        })
+        map(data => data.map(draft => new DraftData(draft)))
       );
   }
 
