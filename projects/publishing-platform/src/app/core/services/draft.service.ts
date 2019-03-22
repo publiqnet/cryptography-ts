@@ -28,7 +28,6 @@ export class DraftService {
     this.httpHelperService.call(HttpMethodTypes.put, url, draft)
       .subscribe(
         data => {
-          console.log('data - ', data);
           this.DraftData = data;
         },
         error => {
