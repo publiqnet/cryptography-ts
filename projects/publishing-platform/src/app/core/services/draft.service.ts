@@ -11,7 +11,7 @@ export class DraftService {
   draftData$ = new Subject<any>();
   draftData: DraftData = null;
 
-  private readonly url = `${environment.backend}/api/draft`;
+  private readonly url = `${environment.backend}/api`;
 
   constructor(
     private httpHelperService: HttpHelperService
@@ -24,7 +24,7 @@ export class DraftService {
   }
 
   create(draft: IDraft): void {
-    const url = this.url + `/create`;
+    const url = this.url + `/draft/create`;
     this.httpHelperService.call(HttpMethodTypes.put, url, draft)
       .subscribe(
         data => {
@@ -39,7 +39,7 @@ export class DraftService {
   }
 
   update(id: string, draft: IDraft): void {
-    const url = this.url + `/update/${id}`;
+    const url = this.url + `/draft/${id}`;
 
     this.httpHelperService.call(HttpMethodTypes.post, url, draft)
       .subscribe(
@@ -49,18 +49,17 @@ export class DraftService {
         error => {
           console.log(error);
           // this.errorService.handleError('addDraft', error, url);
-          // this.errorService.handleError('editDraft', error, url)
         }
       );
   }
 
   get(id: string): Observable <DraftData> {
-    const url = this.url + `/${id}`;
+    const url = this.url + `/draft/${id}`;
     return this.httpHelperService.call(HttpMethodTypes.get, url).pipe(map(data => new DraftData(data)));
   }
 
   getUserDrafts(): Observable<DraftData[]> {
-    const url = `${environment.backend}/api/drafts`;
+    const url = this.url + `/drafts`;
     return this.httpHelperService.call(HttpMethodTypes.get, url)
       .pipe(
         filter(data => data != null),
@@ -73,12 +72,12 @@ export class DraftService {
   }
 
   delete(id: string): Observable<any> {
-    const url = this.url + `/delete/${id}`;
+    const url = this.url + `/draft/${id}`;
     return this.httpHelperService.call(HttpMethodTypes.delete, url);
   }
 
   deleteAll(): Observable<any> {
-    const url = this.url + `/all`;
+    const url = this.url + `/drafts`;
     return this.httpHelperService.call(HttpMethodTypes.delete, url);
   }
 }
