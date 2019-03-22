@@ -1,9 +1,9 @@
-import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
 import { KeyPair } from 'cryptography-ts';
 import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction';
+import { HttpHelperService, HttpMethodTypes } from './http-helper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class OauthService {
   private url: string;
 
   constructor(
-    private http: HttpClient,
+    private httpHelper: HttpHelperService,
     @Inject('oauthUrl') url: string
   ) {
     if (!url) {
@@ -23,9 +23,9 @@ export class OauthService {
     this.url = `${url}/api/user`;
   }
 
-  private getSignetString(stringToSign, brainKey) {
+  private static getSignetString(stringToSign, brainKey) {
     const now = new Date(new Date(stringToSign * 1000));
-    const now_1h = new Date(now.getTime() + (1 * 60 * 1000));
+    const now_1h = new Date(now.getTime() + (60 * 1000));
     const keyPair = new KeyPair(brainKey);
     const transactionObj = new PubliqTransaction({
       creation: +now,
@@ -36,29 +36,29 @@ export class OauthService {
       },
       action: {},
     });
-    const signedString = keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
-    return signedString;
+    return keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
   }
 
   signup(email: string): Observable<any> {
     const url = this.url + '/signup';
-    return this.http.put(url, {email});
+    return this.httpHelper.customCall(HttpMethodTypes.put, url, {email});
   }
 
   signupConfirmation(code: string): Observable<{ stringToSign: number }> {
     const url = this.url + `/signup/confirmation/${code}`;
-    return this.http.get <{ stringToSign: number }>(url);
+    return this.httpHelper.customCall(HttpMethodTypes.get, url);
+
   }
 
   signupComplete(stringToSign, code, password) {
     const keyPair = new KeyPair();
     const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);
     const publicKey = keyPair.PpublicKey;
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
+    const signedString = OauthService.getSignetString(stringToSign, keyPair.BrainKey);
 
     const url = this.url + `/signup/complete`;
 
-    return this.http.post(url, {
+    return this.httpHelper.customCall(HttpMethodTypes.post, url, {
       confirmationCode: code,
       brainKey: encryptedBrainKey,
       publicKey: publicKey,
@@ -68,12 +68,12 @@ export class OauthService {
 
   signinCheckCode(code: string): Observable<any> {
     const url = this.url + `/signin/check-code/${code}`;
-    return this.http.get(url);
+    return this.httpHelper.customCall(HttpMethodTypes.get, url);
   }
 
   signinAuthenticate(email: string): Observable<any> {
     const url = this.url + `/signin/authenticate/${email}`;
-    return this.http.get(url);
+    return this.httpHelper.customCall(HttpMethodTypes.get, url);
   }
 
   signinGetToken(encryptedBrainKey, stringToSign, code, password) {
@@ -85,10 +85,10 @@ export class OauthService {
 
     const brainKey = brainKeyData.brainKey;
     const keyPair = new KeyPair(brainKey);
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
+    const signedString = OauthService.getSignetString(stringToSign, keyPair.BrainKey);
     const url = this.url + `/signin/get-token`;
 
-    return this.http.post(url, {
+    return this.httpHelper.customCall(HttpMethodTypes.post, url, {
       code: code,
       signedString: signedString
     });
@@ -98,17 +98,18 @@ export class OauthService {
     const keyPair = new KeyPair(brainKey.trim());
     const publicKey = keyPair.PpublicKey;
     const url = this.url + `/recover/authenticate/${publicKey}`;
-    return this.http.get <{ stringToSign: any }>(url);
+    return this.httpHelper.customCall(HttpMethodTypes.get, url);
   }
 
   recoverComplete(brainKey: string, stringToSign: number, password: string) {
     const keyPair = new KeyPair(brainKey);
     const encryptedBrainKey = keyPair.getEncryptedBrainKeyByPassword(password);
     const publicKey = keyPair.PpublicKey;
-    const signedString = this.getSignetString(stringToSign, keyPair.BrainKey);
+    const signedString = OauthService.getSignetString(stringToSign, keyPair.BrainKey);
 
     const url = this.url + '/recover/complete';
-    return this.http.post(url, {
+
+    return this.httpHelper.customCall(HttpMethodTypes.post, url, {
       brainKey: encryptedBrainKey,
       publicKey: publicKey,
       signedString: signedString
