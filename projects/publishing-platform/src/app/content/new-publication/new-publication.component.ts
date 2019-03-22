@@ -128,7 +128,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(res => {
-          this.router.navigate(['/content/publications']);
+          this.router.navigate(['/p/my-publications']);
         });
     } else {
       this.publicationService.createPublication(formData)
@@ -136,7 +136,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(res => {
-          this.router.navigate(['/content/publications']);
+          this.router.navigate(['/p/my-publications']);
           this.publicationService.getMyPublications();
           this.loading = false;
         }, err => {

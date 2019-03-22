@@ -34,54 +34,60 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.publicationService.getMyPublications();
-    this.publicationService.myPublications
+    this.publicationService.getMyPublications2()
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((data: Array<Publication>) => {
-        if (data) {
-          data.forEach((pub: any) => {
-              if (pub.logo && !pub.cover) {
-                this.publicationService.getAverageRGB(pub);
-              }
-              pub.members = pub.members.filter(m => m.status !== 1);
-            }
-          );
-          this.publications = data;
-        }
-      });
+      .subscribe();
 
-    this.publicationService.myMemberships
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Array<Publication>) => {
-        this.membership = data;
-      });
 
-    this.publicationService.myInvitations
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(
-        (data: Array<Publication>) => {
-          this.invitations = data;
-        }
-      );
-
-    this.publicationService.averageRGBChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-        this.publications.forEach(pub => {
-          if (pub.slug === data.slug) {
-            // @ts-ignore
-            pub.coverColor = data.color;
-          }
-        });
-      });
+    // this.publicationService.myPublications
+    //   .pipe(
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe((data: Array<Publication>) => {
+    //     if (data) {
+    //       data.forEach((pub: any) => {
+    //           if (pub.logo && !pub.cover) {
+    //             this.publicationService.getAverageRGB(pub);
+    //           }
+    //           pub.members = pub.members.filter(m => m.status !== 1);
+    //         }
+    //       );
+    //       this.publications = data;
+    //     }
+    //   });
+    //
+    // this.publicationService.myMemberships
+    //   .pipe(
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe((data: Array<Publication>) => {
+    //     this.membership = data;
+    //   });
+    //
+    // this.publicationService.myInvitations
+    //   .pipe(
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe(
+    //     (data: Array<Publication>) => {
+    //       this.invitations = data;
+    //     }
+    //   );
+    //
+    // this.publicationService.averageRGBChanged
+    //   .pipe(
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe(data => {
+    //     this.publications.forEach(pub => {
+    //       if (pub.slug === data.slug) {
+    //         // @ts-ignore
+    //         pub.coverColor = data.color;
+    //       }
+    //     });
+    //   });
   }
 
   deletePublication(slug, index, e) {

@@ -52,7 +52,7 @@
                           <button type="submit" mat-raised-button color="primary" [disabled]="!publicationForm.valid || loading">
                             {{isEditing ? ('content.update' | translate) : ('content.create' | translate)}}
                           </button>
-                          <button mat-raised-button [routerLink]="!isEditing ? ['/content/publications'] : ['/p', slug]">{{'content.cancel' | translate}}</button>
+                          <button mat-raised-button [routerLink]="!isEditing ? ['/p/my-publications'] : ['/p', slug]">{{'content.cancel' | translate}}</button>
                         </div>
                       </div>
                     </div>

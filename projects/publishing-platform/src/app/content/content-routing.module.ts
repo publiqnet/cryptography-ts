@@ -5,7 +5,6 @@ import { AuthguardService } from '../core/services/authguard.service';
 import { MycontentComponent } from './mycontent/mycontent.component';
 import { EditDraftComponent } from './edit-draft/edit-draft.component';
 import { EditContentComponent } from './edit-content/edit-content.component';
-import { MyPublicationsComponent } from './my-publications/my-publications.component';
 import { NewPublicationComponent } from './new-publication/new-publication.component';
 import { PendingChangesGuard } from '../guards/pending-changes-guard.service';
 
@@ -21,11 +20,6 @@ export const contentRoutes: Routes = [
       {
         path: 'mycontent',
         component: MycontentComponent,
-        canActivate: [AuthguardService]
-      },
-      {
-        path: 'publications',
-        component: MyPublicationsComponent,
         canActivate: [AuthguardService]
       },
       {

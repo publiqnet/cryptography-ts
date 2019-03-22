@@ -11,7 +11,6 @@ import { NewcontentComponent } from './newcontent/newcontent.component';
 import { SharedModule } from '../shared/shared.module';
 import { EditDraftComponent } from './edit-draft/edit-draft.component';
 import { EditContentComponent } from './edit-content/edit-content.component';
-import { MyPublicationsComponent } from './my-publications/my-publications.component';
 import { NewPublicationComponent } from './new-publication/new-publication.component';
 import { contentRoutes } from './content-routing.module';
 
@@ -31,7 +30,6 @@ import { contentRoutes } from './content-routing.module';
     NewcontentComponent,
     EditDraftComponent,
     EditContentComponent,
-    MyPublicationsComponent,
     NewPublicationComponent
   ]
 })
