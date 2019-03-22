@@ -40,9 +40,9 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.params['pub']) {
+    if (this.route.snapshot.params['slug']) {
       this.isEditing = true;
-      this.slug = this.route.snapshot.params['pub'];
+      this.slug = this.route.snapshot.params['slug'];
       this.publicationService.getPublicationBySlug(this.slug)
         .pipe(
           takeUntil(this.unsubscribe$)
@@ -66,7 +66,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  openDialog() {
+  onSubmit() {
     if (this.publicationForm.invalid) {
       return;
     }

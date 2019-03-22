@@ -6,8 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PublicationComponent } from './publication/publication.component';
 import { PublicationRoutingModule } from './publication-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { MyPublicationComponent } from './my-publication/my-publication.component';
-import { MyPublicationsComponent } from '../content/my-publications/my-publications.component';
+import { ManagePublicationComponent } from './manage/manage-publication.component';
+import { MyPublicationsComponent } from './my-publications/my-publications.component';
+import { NewPublicationComponent } from './new/new-publication.component';
 
 
 @NgModule({
@@ -19,8 +20,9 @@ import { MyPublicationsComponent } from '../content/my-publications/my-publicati
   ],
   declarations: [
     PublicationComponent,
-    MyPublicationComponent,
-    MyPublicationsComponent
+    ManagePublicationComponent,
+    MyPublicationsComponent,
+    NewPublicationComponent
   ]
 })
 export class PublicationModule {}

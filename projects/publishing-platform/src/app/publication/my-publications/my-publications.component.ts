@@ -8,6 +8,7 @@ import { DialogService } from '../../core/services/dialog.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publication } from '../../core/services/models/publication';
 import { environment } from '../../../environments/environment';
+import { Publications } from '../../core/services/models/publications';
 
 @Component({
   selector: 'app-my-publications',
@@ -18,9 +19,9 @@ import { environment } from '../../../environments/environment';
   ]
 })
 export class MyPublicationsComponent implements OnInit, OnDestroy {
-  publications: Array<Publication>;
-  membership: Array<Publication>;
-  invitations: Array<Publication>;
+  publications: Publication[];
+  membership: Publication[];
+  invitations: Publication[];
   selectedIndex = this.publicationService.tabIndexInv;
   filePath = environment.backend + '/uploads/publications/';
   coverColor = 'blue';
@@ -38,56 +39,60 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe();
+      .subscribe((data: Publications) => {
+        this.publications = data.owned;
+        this.membership = data.membership;
+        this.invitations = data.invitations;
+      });
 
 
-    // this.publicationService.myPublications
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe((data: Array<Publication>) => {
-    //     if (data) {
-    //       data.forEach((pub: any) => {
-    //           if (pub.logo && !pub.cover) {
-    //             this.publicationService.getAverageRGB(pub);
-    //           }
-    //           pub.members = pub.members.filter(m => m.status !== 1);
-    //         }
-    //       );
-    //       this.publications = data;
-    //     }
-    //   });
-    //
-    // this.publicationService.myMemberships
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe((data: Array<Publication>) => {
-    //     this.membership = data;
-    //   });
-    //
-    // this.publicationService.myInvitations
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe(
-    //     (data: Array<Publication>) => {
-    //       this.invitations = data;
-    //     }
-    //   );
-    //
-    // this.publicationService.averageRGBChanged
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe(data => {
-    //     this.publications.forEach(pub => {
-    //       if (pub.slug === data.slug) {
-    //         // @ts-ignore
-    //         pub.coverColor = data.color;
-    //       }
-    //     });
-    //   });
+    /*this.publicationService.myPublications
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: Array<Publication>) => {
+        if (data) {
+          data.forEach((pub: any) => {
+              if (pub.logo && !pub.cover) {
+                this.publicationService.getAverageRGB(pub);
+              }
+              pub.members = pub.members.filter(m => m.status !== 1);
+            }
+          );
+          this.publications = data;
+        }
+      });
+
+    this.publicationService.myMemberships
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: Array<Publication>) => {
+        this.membership = data;
+      });
+
+    this.publicationService.myInvitations
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        (data: Array<Publication>) => {
+          this.invitations = data;
+        }
+      );
+
+    this.publicationService.averageRGBChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+        this.publications.forEach(pub => {
+          if (pub.slug === data.slug) {
+            // @ts-ignore
+            pub.coverColor = data.color;
+          }
+        });
+      });*/
   }
 
   deletePublication(slug, index, e) {

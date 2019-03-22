@@ -14,7 +14,8 @@ import { ErrorService } from './error.service';
 import { ChannelService } from './channel.service';
 import { ContentService } from './content.service';
 import { HttpRpcService } from './httpRpc.service';
-import { HttpHelperService, HttpMethodTypes } from '../../../../../shared-lib/src/lib/service/http-helper.service';
+import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { IPublications, Publications } from './models/publications';
 
 
 @Injectable()
@@ -87,11 +88,7 @@ export class PublicationService {
 
   getMyPublications2() {
     return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
-      .pipe(
-        map(data => {
-          console.log(data);
-        })
-      );
+      .pipe(map((data: IPublications) => new Publications(data)));
   }
 
   getPublicationBySlug(slug) {

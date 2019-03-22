@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { FormBuilder, } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 import { ReplaySubject, combineLatest } from 'rxjs';
 import { filter, skip, takeUntil, switchMap } from 'rxjs/operators';
@@ -14,11 +14,11 @@ import { parseZone } from 'moment';
 import { ArticleService } from '../../core/services/article.service';
 
 @Component({
-  selector: 'app-my-publication',
-  templateUrl: './my-publication.component.html',
-  styleUrls: ['./my-publication.component.scss']
+  selector: 'app-manage-publication',
+  templateUrl: './manage-publication.component.html',
+  styleUrls: ['./manage-publication.component.scss']
 })
-export class MyPublicationComponent implements OnInit, OnDestroy, OnChanges {
+export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input('currentUser') currentUser;
   @Input('dsIdArray') dsIdArray;
