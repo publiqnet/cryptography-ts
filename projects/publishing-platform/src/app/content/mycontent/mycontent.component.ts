@@ -1,8 +1,9 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { MatDialog } from '@angular/material';
 
 import { ReplaySubject, zip } from 'rxjs';
+import { takeUntil, map, filter, switchMap, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ArticleService } from '../../core/services/article.service';
@@ -11,9 +12,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { ContentService } from '../../core/services/content.service';
 import { AccountService } from '../../core/services/account.service';
-import { MatDialog } from '@angular/material';
 import { NewstorySubmission2Component } from '../../core/newstory-submission2/newstory-submission2.component';
-import { takeUntil, map } from 'rxjs/operators';
 import { HttpRpcService } from '../../core/services/httpRpc.service';
 import { Publication } from '../../core/services/models/publication';
 import { PublicationService } from '../../core/services/publication.service';
@@ -234,32 +233,46 @@ export class MycontentComponent implements OnInit, OnDestroy {
   }
 
   getDrafts() {
-    this.draftService.getUserDrafts().subscribe((drafts: DraftData[]) => {
-      this.drafts = drafts;
-      this.loading = false;
-    });
+    this.draftService.getUserDrafts()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((drafts: DraftData[]) => {
+        this.drafts = drafts;
+        this.loading = false;
+      });
   }
 
   deleteDraft(id: string, index: number) {
     this.dialogService.openConfirmDialog('')
       .pipe(
+        filter(result => result),
+        switchMap(() => this.draftService.delete(id)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(result => {
-        if (result) {
-          this.draftService.delete(id).subscribe(data => {
-            if (this.drafts && index in this.drafts) {
-              this.drafts.splice(index, 1);
-            }
-          });
-          return true;
+      .subscribe(() => {
+        if (this.drafts && index in this.drafts) {
+          this.drafts.splice(index, 1);
         }
-        return false;
       });
   }
 
   editDraft(id: string) {
     this.router.navigate([`/content/editdraft/${id}`]);
+  }
+
+  deleteAllDrafts() {
+    this.dialogService.openConfirmDialog('')
+      .pipe(
+        filter(result => result),
+        tap(() => this.loading = true),
+        switchMap(() => this.draftService.deleteAll()),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+        this.drafts = [];
+        this.loading = false;
+      });
   }
 
   showContentHistoryList(publishedContentItem) {
@@ -301,23 +314,6 @@ export class MycontentComponent implements OnInit, OnDestroy {
     return this.hasImage(article)
       ? article.meta.thumbnail_hash.replace('original', 'thumb')
       : '/assets/no-image-article.jpg';
-  }
-
-  deleteAllDrafts() {
-    this.dialogService.openConfirmDialog('')
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(result => {
-        if (result) {
-          this.draftService.deleteAll().subscribe(data => {
-            this.drafts = [];
-            this.loading = false;
-          });
-          return true;
-        }
-        return false;
-      });
   }
 
   hasImage(article) {
