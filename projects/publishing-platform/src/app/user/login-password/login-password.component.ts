@@ -94,7 +94,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
       .subscribe(authData => {
         this.router.navigate(['/']);
       }, (err) => {
-        // this.tokenCheckStatus = TokenCheckStatus.Error;
+        this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('login', {status: 404});
       });
   }
