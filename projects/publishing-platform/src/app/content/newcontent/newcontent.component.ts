@@ -104,7 +104,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   mainCoverImageUrl = '';
   listImageUrl = '';
   currentTags = [];
-  contentUrl = environment.backend + '/api/v1/content';
+  contentUrl = environment.backend + '/api/file/upload';
   contentId = 0;
   actions = {
     main: 1,
@@ -159,7 +159,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     listAdvancedTypes: false,
     linkText: false,
     linkInsertButtons: ['linkBack'],
-    imageUploadURL: this.contentUrl + '/image',
+    imageUploadURL: this.contentUrl,
     videoAllowedTypes: ['mp4', 'webm', 'ogg'],
     imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
     charCounterMax: 65535,
@@ -202,6 +202,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       'froalaEditor.image.inserted': (e, editor, img, response) => {
         if (response) {
           const responseData = JSON.parse(response);
+          console.log('froalaEditor.image.inserted - ', response.uri);
           const uploadedImageOriginal = responseData.content_original_sample_file;
           const uploadedImageThumb = responseData.content_thumb_sample_file;
 

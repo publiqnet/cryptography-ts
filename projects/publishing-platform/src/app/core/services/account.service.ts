@@ -246,6 +246,8 @@ export class AccountService {
       balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
     };
 
+    this.accountInfo.token = (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth');
+
     // this.loadBalance();
     // if (this.accountInfo.language) {
     //   localStorage.setItem('lang', this.accountInfo.language);
