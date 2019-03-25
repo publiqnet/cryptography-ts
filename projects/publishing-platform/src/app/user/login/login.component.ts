@@ -10,7 +10,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
-import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-login',

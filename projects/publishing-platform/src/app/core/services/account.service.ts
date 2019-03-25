@@ -52,7 +52,7 @@ export class AccountService {
   public brainKey: string;
   public code = '';
   public publicKey = '';
-  public brainKeyEncrypted = '';
+  public brainKeyEncrypted: string;
   public authors = new Map();
   currentDaemonAddress = '';
 
@@ -235,6 +235,7 @@ export class AccountService {
         map((userInfo: any) => {
           this.setAccountInfo(userInfo);
           localStorage.setItem('auth', userInfo.token);
+          localStorage.setItem('encrypted_brain_key', this.brainKeyEncrypted);
           return userInfo;
         }))
       ;
@@ -285,11 +286,7 @@ export class AccountService {
       .pipe(
         map((userInfo: any) => {
           this.setAccountInfo(userInfo);
-
-          // this.brainKeyEncrypted = this.accountInfo.brainKeyEncrypted
-          //   ? this.accountInfo.brainKeyEncrypted
-          //   : '';
-
+          this.brainKeyEncrypted = localStorage.getItem('encrypted_brain_key');
           return userInfo;
         })
       )
@@ -399,6 +396,7 @@ export class AccountService {
       const token = this.accountInfo.token;
       this.accountInfo = null;
       localStorage.removeItem('auth');
+      localStorage.removeItem('encrypted_brain_key');
       this.brainKey = '';
 
       localStorage.removeItem('for_adult');

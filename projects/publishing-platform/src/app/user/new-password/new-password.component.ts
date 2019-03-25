@@ -3,12 +3,12 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
-import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-new-password',
@@ -40,9 +40,9 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-      this.formView = 'formView';
-      this.errorMessage = data.message;
-    });
+        this.formView = 'formView';
+        this.errorMessage = data.message;
+      });
 
     this.accountService.recoverDataChanged.subscribe(() => {
       this.formView = 'success';
@@ -59,11 +59,14 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
     this.oauthService.recoverComplete(this.brainKey, this.stringToSign, this.recoverForm.value.password)
       .pipe(
+        switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
         takeUntil(this.unsubscribe$)
       )
       .subscribe(recoverData => {
-      console.log('recoverData - ', recoverData);
-    });
+        this.router.navigate(['/']);
+      }, (err) => {
+        this.errorService.handleError('login', {status: 404});
+      });
   }
 
   private buildRecoverForm() {
