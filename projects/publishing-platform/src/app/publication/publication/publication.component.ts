@@ -4,13 +4,13 @@ import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 
-import { ReplaySubject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, ReplaySubject, zip } from 'rxjs';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { AccountService } from '../../core/services/account.service';
 import { LoginDialogComponent } from '../../core/login-dialog/login-dialog.component';
 import { PublicationService } from '../../core/services/publication.service';
-import { PublicationSubscribersResponse } from '../../core/services/models/publication';
+import { Publication, PublicationSubscribersResponse } from '../../core/services/models/publication';
 import { environment } from '../../../environments/environment';
 import { ChannelService } from '../../core/services/channel.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -33,7 +33,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   articles: number;
   articlesResponse;
   dsIdArray: Array<string>;
-  publication;
+  publication: Publication;
   owner;
   membersCount;
   currentUser;
@@ -57,9 +57,70 @@ export class PublicationComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.articlesLoaded = true;
-    this.route.params
-      .subscribe(param => {
-        this.accountService.accountUpdated$
+
+    combineLatest(this.route.params, this.accountService.accountUpdated$)
+      .pipe(
+        switchMap((data: any[]) => {
+          if (data[1]) {
+            this.currentUser = data[1];
+          }
+          return this.publicationService.getPublicationBySlug(data[0].slug);
+        })
+      )
+      .subscribe((pub: Publication) => {
+        console.log('------ ', pub);
+
+        this.myPublication = false;
+        this.publication = pub;
+        this.owner = this.currentUser && this.currentUser.name === this.publication.owner.username;
+       /* if (this.publication.logo && !this.publication.cover) {
+          this.publicationService.getAverageRGB(this.publication);
+        }*/
+        this.publicationService.checkPublication(this.publication.slug).then(
+          res => {
+            this.myPublication = res;
+          }
+        );
+        const title = this.publication.title;
+        const description = this.publication.description;
+        const image = this.publication.socialImage || this.publication.cover ? this.publication.socialImage || this.publication.cover : 'https://publiq.network/media/images/92169.png';
+        const url = environment.main_site_url + this.router.url;
+        this.seoService.generateTags({
+          title, description, image, url
+        });
+        /*if (isPlatformBrowser(this.platformId)) {
+          this.getMyRequests();
+          this.getMyMembership();
+          this.publicationService.loadSubscribers(this.publication.slug);
+          this.getPublicationArticles();
+        }
+        this.publicationService.subscribersChanged
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe((res: Array<PublicationSubscribersResponse>) => {
+              if (this.accountService.accountInfo) {
+                this.subscribers = res.length;
+                const userName = this.accountService.accountInfo.name;
+                res.forEach((elem: PublicationSubscribersResponse) => {
+                  if (userName === elem.subscriber.username) {
+                    this.canFollow = false;
+                  }
+                });
+              }
+            }
+          );*/
+      });
+
+    /* this.route.params
+      .pipe(
+        filter(params => params.slug),
+        switchMap((params) => this.publicationService.getPublicationBySlug(params.slug)),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+        console.log('data --- ', data);
+       this.accountService.accountUpdated$
           .pipe(
             switchMap(acc => {
               this.currentUser = acc;
@@ -110,14 +171,15 @@ export class PublicationComponent implements OnInit, OnDestroy {
               );
           });
       });
+      */
 
-    this.publicationService.averageRGBChanged
+    /*this.publicationService.averageRGBChanged
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
         this.averageColor = data.color;
-      });
+      });*/
   }
 
   setOwner(owner) {

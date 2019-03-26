@@ -70,50 +70,51 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
     if (this.publicationForm.invalid) {
       return;
     }
+
     this.loading = true;
     const formData = new FormData();
     if (this.isEditing) {
       formData.append(
-        'publication_update[title]',
+        'title',
         this.publicationForm.value.title
       );
       formData.append(
-        'publication_update[description]',
+        'description',
         this.publicationForm.value.description
       );
       if (this.coverFile) {
-        formData.append('publication_update[cover]', this.coverFile);
+        formData.append('cover', this.coverFile);
       }
       if (this.logoFile) {
-        formData.append('publication_update[logo]', this.logoFile);
+        formData.append('logo', this.logoFile);
       }
       formData.append(
-        'publication_update[deleteLogo]',
+        'deleteLogo',
         this.deleteLogo
       );
       formData.append(
-        'publication_update[deleteCover]',
+        'deleteCover',
         this.deleteCover
       );
     } else {
       formData.append(
-        'publication_create[title]',
+        'title',
         this.publicationForm.value.title
       );
       formData.append(
-        'publication_create[description]',
+        'description',
         this.publicationForm.value.description
       );
       if (this.coverFile) {
         formData.append(
-          'publication_create[cover]',
+          'cover',
           this.coverFile,
           this.coverFile.name
         );
       }
       if (this.logoFile) {
         formData.append(
-          'publication_create[logo]',
+          'logo',
           this.logoFile,
           this.logoFile.name
         );
@@ -135,13 +136,10 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(res => {
+        .subscribe(() => {
           this.router.navigate(['/p/my-publications']);
-          this.publicationService.getMyPublications();
           this.loading = false;
-        }, err => {
-          this.loading = false;
-        });
+        }, () => this.loading = false);
     }
 
 

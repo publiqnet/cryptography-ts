@@ -2,8 +2,8 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { Publication } from './models/publication';
@@ -52,24 +52,12 @@ export class PublicationService {
     this.reset();
   }
 
-  createPublication(data) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/create',
-      data,
-      header
-    );
+  createPublication(data: object | FormData): Observable<any> {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/create', data);
   }
 
-  editPublication(data, slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/' + slug + '/update',
-      data,
-      header
-    );
+  editPublication(data: object | FormData, slug: string): Observable<any> {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug, data);
   }
 
   getMyPublications() {
@@ -91,9 +79,15 @@ export class PublicationService {
       .pipe(map((data: IPublications) => new Publications(data)));
   }
 
-  getPublicationBySlug(slug) {
-    const channel = this.channelService.channel || 'stage';
-    return this.http.get(environment.backend + '/api/v1/publication/' + slug, {headers: {'X-API-CHANNEL': channel}});
+  getPublicationBySlug(slug: string | number) {
+    // const channel = this.channelService.channel || 'stage';
+    // return this.http.get(environment.backend + '/api/v1/publication/' + slug, {headers: {'X-API-CHANNEL': channel}});
+
+    return this.httpHelper.customCall(HttpMethodTypes.get, this.url + '/' + slug)
+      .pipe(
+        filter(data => data != null),
+        map(data => new Publication(data))
+      );
   }
 
   public getAccountToken() {
@@ -161,13 +155,8 @@ export class PublicationService {
     );
   }
 
-  deletePublication(slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.delete(
-      `${environment.backend}/api/v1/publication/${slug}`,
-      header
-    );
+  deletePublication(slug: string): Observable<any> {
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug);
   }
 
   becomeMember(slug) {
@@ -377,11 +366,10 @@ export class PublicationService {
   }
 
   deleteMembership(slug) {
-    // /api/v1/publication/{slug}/delete-membership
     const authToken = this.getAccountToken();
     const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
     return this.http.delete(
-      `${environment.backend}/api/v1/publication/delete-membership/${slug}`,
+      this.url + `/delete-membership/${slug}`,
       header
     );
   }

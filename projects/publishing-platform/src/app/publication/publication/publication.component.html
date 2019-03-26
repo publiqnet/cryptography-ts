@@ -2,18 +2,20 @@
     <mat-spinner></mat-spinner>
 </div>
 <div class="author-header-wrap transparent-wrap" *ngIf="!loadingPublication">
-    <div class="d-flex " [ngClass]="{'for-overlay':!averageColor}">
+    <div class="d-flex " [ngClass]="{'for-overlay':!publication.color}">
         <div class="background vh-centered  "
              [class.cover-opacity]="publication && !publication.cover && !publication.logo"
              [class.cover-filter]="publication && !publication.cover && !publication.logo"
-             [style.background-image]="publication && publication.cover ? 'url(' + imagePath + publication.cover + ')' : null"
-             [style.background-color]="publication && !publication.cover ? averageColor : null"></div>
+             [style.background-image]="publication && publication.cover ? 'url(' + publication.cover + ')' : null"
+             [style.background-color]="publication && !publication.cover ? publication.color : null"></div>
 
         <div class="inner-wrap title-wrap">
 
             <div class="avatar-wrap">
                 <div class="avatar"
-                     [ngStyle]="{'background-image': publication && publication.logo ? 'url(' + imagePath + publication.logo + ')' : 'url(/assets/no-image-article.jpg)', 'background-color':  publication?.logo ? 'white' : '#36f' }">
+                     [ngStyle]="{'background-image': publication && publication.logo ?
+                     'url(' + publication.logo + ')' : 'url(/assets/no-image-article.jpg)',
+                     'background-color':  publication?.logo ? 'white' : '#36f' }">
                     <span *ngIf="!publication?.logo">{{publication.title | pubTitle}}</span>
                 </div>
             </div>
@@ -71,18 +73,7 @@
 
     <app-manage-publication [currentUser]="currentUser" [dsIdArray]="dsIdArray"></app-manage-publication>
 
-    <!--<div *ngIf="((publicationArticles && publicationArticles?.length || loadingPublication) && articlesLoaded);else no_content">-->
-    <!--<app-article-card-list [articles]="publicationArticles" [hasSeparator]="false" [calculateViewCount]="true"></app-article-card-list>-->
-    <!--</div>-->
 
     <mat-spinner style="margin: 50px auto;" *ngIf="!loadingPublication && !articlesLoaded"></mat-spinner>
 
-    <!-- <ng-template #no_content> -->
-    <!--<div *ngIf="!loadingPublication && articlesLoaded">-->
-    <!--<div class="empty">-->
-    <!--<img src="/assets//no-materials.svg" alt="">-->
-    <!--<p>{{'publication.you_have_no_content' | translate}}</p>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</ng-template> -->
 </div>

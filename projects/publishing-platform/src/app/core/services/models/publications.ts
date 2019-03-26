@@ -1,3 +1,5 @@
+import { Publication } from './publication';
+
 export interface IPublications {
   owned?;
   invitations?;
@@ -6,7 +8,7 @@ export interface IPublications {
 }
 
 export class Publications {
-  owned?;
+  owned?: any[];
   invitations?;
   membership?;
   requests?;
@@ -14,7 +16,11 @@ export class Publications {
   constructor(options?: IPublications) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        this[i] = options[i];
+        if (i == 'owned') {
+          this[i] = options[i] && options[i].length ? options[i].map(data => new Publication(data)) : [];
+        } else {
+          this[i] = options[i];
+        }
       }
     }
   }

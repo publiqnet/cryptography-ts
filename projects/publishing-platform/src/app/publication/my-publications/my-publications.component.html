@@ -10,103 +10,125 @@
             <mat-tab label="{{'content.my_pubs' | translate}}">
                 <ng-container *ngIf="publications; else loader">
                     <div style="padding: 50px 5px;" class="main-container clearfix" *ngIf="publications.length > 0;else noPublications">
-                       <div class="row">
-                          <!--<div class=" col-md-4 col-sm-12" *ngFor="let publication of publications; let index = index" [ngStyle]="{'background-image':publication.cover? 'url('+publicationService.getImages(publication.cover)+')' : 'url(/assets/no-image-article.jpg)'}">-->
-                          <div class="cols col-lg-4 col-md-6 col-sm-12" *ngFor="let publication of publications; let index = index">
-                            <!--<mat-card class="post closed clearfix" >-->
-                            <div class="card-info"  (click)="goToDetail(publication.slug, 1)">
-                              <div class="cover-space" [ngClass]="{'cover-overlay': !publication.coverColor}" [ngStyle]="{'background-color': publication.cover? 'white': 'transparent','background-color': publication.coverColor? publication.coverColor: 'transparent' }">
-                                <img class="if-cover" *ngIf="publication.cover"  [src]="filePath + publication.cover" alt="cover">
-                                <img class="if-no-cover" *ngIf="!publication.cover && !publication.logo"  src="http://www.publiq.site/media/images/products/626_cover.jpg" alt="cover">
-                              </div>
-                              <div class="profile-pic" [ngStyle]="{'background-color': publication.logo? 'white': '#3365ff' }">
-                                <img *ngIf="publication.logo"  [src]="filePath + publication.logo" alt="img">
-                                <span *ngIf="!publication.logo" class="pub-first-letter">{{publication.title | pubTitle}}</span>
-                              </div>
-                              <div class="title-space">
-                                <h4 > {{publication.title}} </h4>
+                        <div class="row">
+                            <div class="cols col-lg-4 col-md-6 col-sm-12" *ngFor="let publication of publications; let index = index">
+                                <div class="card-info" (click)="goToDetail(publication.slug, 1)">
+                                    <div class="cover-space"
+                                         [ngClass]="{'cover-overlay': !publication.color}"
+                                         [ngStyle]="{'background-color': publication.cover ? 'white' : publication.color ? publication.color : 'transparent'}">
+                                        <img class="if-cover" *ngIf="publication.cover" [src]="publication.cover" alt="cover">
+                                        <img class="if-no-cover" *ngIf="!publication.cover && !publication.logo"
+                                             src="https://www.publiq.site/media/images/products/626_cover.jpg"
+                                             alt="cover">
+                                    </div>
+                                    <div class="profile-pic" [ngStyle]="{'background-color': publication.logo ? 'white': '#3365ff' }">
+                                        <img *ngIf="publication.logo" [src]="publication.logo" alt="img">
+                                        <span *ngIf="!publication.logo" class="pub-first-letter">{{publication.title | pubTitle}}</span>
+                                    </div>
+                                    <div class="title-space">
+                                        <h4> {{publication.title}} </h4>
 
-                                <span class="number"><b>{{publication.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
-                                <div class="seen-by">
-                                  <div  *ngFor="let member of publication.members | slice: 0: 5"
-                                        [title]="member.user.firstName + ' ' +  member.user.lastName"
-                                        [routerLink]="['/a', member.user.username]"
-                                        [ngStyle]="{ 'background-image': member.user.image ? 'url('+ member.user.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  "
-                                  >
+                                        <ng-container *ngIf="publication['articles'] && publication['articles'].length">
+                                            <span class="number">
+                                                <b>{{publication.articles.length || 0}}</b> {{'content.stories' | translate}}
+                                            </span>
+                                        </ng-container>
+                                        <ng-container *ngIf="publication['members'] && publication['members'].length">
+                                            <div class="seen-by">
 
-                                  </div>
-                                  <div *ngIf="publication.members.length > 5 " class="whole-number"><span>
-                                    +{{publication.members.length - 5}}
-                                  </span></div>
+                                                <div *ngFor="let member of publication.members | slice: 0: 5"
+                                                     [title]="member.user.firstName + ' ' +  member.user.lastName"
+                                                     [routerLink]="['/a', member.user.username]"
+                                                     [ngStyle]="{ 'background-image': member.user.image ?
+                                                                  'url('+ member.user.image + ')' :
+                                                                  'url( \' ../../../assets/no-image-article.jpg\')'}  "
+                                                >
+
+                                                </div>
+                                                <div *ngIf="publication.members.length > 5 " class="whole-number">
+                                                    <span>+{{publication.members.length - 5}}</span>
+                                                </div>
+
+                                            </div>
+                                            <span class="number"><b>{{publication.members.length || 0}}</b> {{'content.members' | translate}}</span>
+                                        </ng-container>
+
+                                    </div>
+                                    <div class="edit">
+                                        <a (click)="deletePublication(publication.slug, index, $event)"
+                                           class="delete-item">
+                                            <img class="icon-delete" src="../../../assets/delete.svg" alt="delete publication">
+                                        </a>
+                                    </div>
                                 </div>
-                                <span class="number"><b>{{publication.members.length || 0}}</b> {{'content.members' | translate}}</span>
-
-                              </div>
-                              <div class="edit" >
-                                <a (click)="deletePublication(publication.slug, index, $event)" class="delete-item">
-                                  <img class="icon-delete" src="../../../assets/delete.svg">
-                                </a>
-                              </div>
                             </div>
-                          <!--</mat-card>-->
-                          </div>
                         </div>
                     </div>
                 </ng-container>
             </mat-tab>
             <mat-tab label="{{'content.membership' | translate}}">
                 <ng-container *ngIf="membership; else loader">
-                    <div style="padding: 50px 0px;" class="main-container clearfix" *ngIf="membership?.length > 0;else noMembership">
+                    <div style="padding: 50px 0px;" class="main-container clearfix"
+                         *ngIf="membership?.length > 0;else noMembership">
 
                         <!--<mat-card class="post closed clearfix" *ngFor="let membership of membership; let index = index" [ngStyle]="{'background-image':membership.publication.cover? 'url('+publicationService.getImages(membership.publication.cover)+')' : 'url(/assets/no-image-article.jpg)'}">-->
                         <!--<mat-card class="post closed clearfix"  >-->
-                          <div class="cols col-md-12" *ngFor="let membership of membership; let index = index">
+                        <div class="cols col-md-12" *ngFor="let membership of membership; let index = index">
                             <div class="card-info-row membership">
-                              <div class="profile-pic" [ngStyle]="{'background-color': membership.publication.logo? 'transparent': '#3365ff' }">
-                                <img *ngIf="membership.publication.logo"  [src]="filePath + membership.publication.logo" alt="img">
-                                <span *ngIf="!membership.publication.logo" class="pub-first-letter">{{membership.publication.title | pubTitle}}</span>
-                              </div>
-                              <div class="title-space">
-                                <div class="info ">
-                                  <h4 (click)="goToDetail(membership.publication.slug, membership.status)">
-                                    {{membership.publication.title}} </h4>
-                                  <span class="number"><b>{{membership.publication.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                <div class="profile-pic"
+                                     [ngStyle]="{'background-color': membership.publication.logo? 'transparent': '#3365ff' }">
+                                    <img *ngIf="membership.publication.logo"
+                                         [src]="filePath + membership.publication.logo" alt="img">
+                                    <span *ngIf="!membership.publication.logo"
+                                          class="pub-first-letter">{{membership.publication.title | pubTitle}}</span>
                                 </div>
-                                <div class="leave-membership leave-item" (click)="deleteMembership(membership.publication.slug, index)">
-                                    {{'content.leave_pub' | translate}}
+                                <div class="title-space">
+                                    <div class="info ">
+                                        <h4 (click)="goToDetail(membership.publication.slug, membership.status)">
+                                            {{membership.publication.title}} </h4>
+                                        <span class="number"><b>{{membership.publication.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                    </div>
+                                    <div class="leave-membership leave-item"
+                                         (click)="deleteMembership(membership.publication.slug, index)">
+                                        {{'content.leave_pub' | translate}}
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
                         <!--</mat-card>-->
                     </div>
                 </ng-container>
             </mat-tab>
             <mat-tab label="{{'content.invitations' | translate}}">
-              <span class="reminder"></span>
+                <span class="reminder"></span>
                 <ng-container *ngIf="invitations; else loader">
-                    <div style="padding: 50px 5px;" class="main-container clearfix" *ngIf="invitations?.length > 0;else noInvitations">
+                    <div style="padding: 50px 5px;" class="main-container clearfix"
+                         *ngIf="invitations?.length > 0;else noInvitations">
 
                         <!--<mat-card class="post closed clearfix" *ngFor="let invitation of invitations; let index = index" [ngStyle]="{'background-image':invitation.publication.cover? 'url('+publicationService.getImages(invitation.publication.cover)+')' : 'url(/assets/no-image-article.jpg)'}">-->
-                          <div class="cols col-md-12" *ngFor="let invitation of invitations; let index = index">
+                        <div class="cols col-md-12" *ngFor="let invitation of invitations; let index = index">
                             <div class="card-info-row invitation-row">
-                              <div class="profile-pic" [ngStyle]="{'background-color': invitation.publication.logo? 'transparent': '#3365ff' }">
-                                <img *ngIf="invitation.publication.logo"  [src]="filePath + invitation.publication.logo" alt="img">
-                                <span *ngIf="!invitation.publication.logo" class="pub-first-letter">{{invitation.publication.title | pubTitle}}</span>
-                              </div>
-                              <div class="title-space">
-                                <div class="info">
-                                  <h4 (click)="goToDetail(invitation.publication.slug)">
-                                    {{invitation.publication.title}} </h4>
-                                  <span class="number"><b>{{invitation.publication.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                <div class="profile-pic"
+                                     [ngStyle]="{'background-color': invitation.publication.logo? 'transparent': '#3365ff' }">
+                                    <img *ngIf="invitation.publication.logo"
+                                         [src]="filePath + invitation.publication.logo" alt="img">
+                                    <span *ngIf="!invitation.publication.logo"
+                                          class="pub-first-letter">{{invitation.publication.title | pubTitle}}</span>
                                 </div>
-                                <div class="choose">
+                                <div class="title-space">
+                                    <div class="info">
+                                        <h4 (click)="goToDetail(invitation.publication.slug)">
+                                            {{invitation.publication.title}} </h4>
+                                        <span class="number"><b>{{invitation.publication.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                    </div>
+                                    <div class="choose">
                                   <span *ngIf="invitation.inviter" [routerLink]="['/a', invitation.inviter.username]">
                                     <b>{{invitation.inviter.firstName && invitation.inviter.lastName ? invitation.inviter.firstName + ' ' + invitation.inviter.lastName : invitation.inviter.username}}</b> {{'publication.invite' | translate}}
 
                                   </span>
-                                  <span class="acc-span">
-                                    <button mat-raised-button color="primary" (click)="invitationResponse(invitation.id,true)">
+                                        <span class="acc-span">
+                                    <button mat-raised-button color="primary"
+                                            (click)="invitationResponse(invitation.id,true)">
                                       {{'content.accept' | translate}}
                                     </button>
                                     <a (click)="invitationResponse(invitation.id,false)">
@@ -115,10 +137,10 @@
                                     </a>
                                   </span>
 
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
                         <!--</mat-card>-->
                     </div>
                 </ng-container>
@@ -135,16 +157,16 @@
 </ng-template>
 
 <ng-template #noInvitations>
-        <div class="empty">
-            <img src="/assets//no-materials.svg" alt="">
-            <p>{{'content.no_invitations' | translate}}</p>
-        </div>
+    <div class="empty">
+        <img src="/assets//no-materials.svg" alt="">
+        <p>{{'content.no_invitations' | translate}}</p>
+    </div>
 </ng-template>
 <ng-template #noMembership>
-        <div class="empty">
-            <img src="/assets//no-materials.svg" alt="">
-            <p>{{'content.no_membership' | translate}}</p>
-        </div>
+    <div class="empty">
+        <img src="/assets//no-materials.svg" alt="">
+        <p>{{'content.no_membership' | translate}}</p>
+    </div>
 </ng-template>
 <ng-template #loader>
     <div class="empty">

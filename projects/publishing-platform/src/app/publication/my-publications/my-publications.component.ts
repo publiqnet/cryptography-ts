@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { DialogService } from '../../core/services/dialog.service';
 import { PublicationService } from '../../core/services/publication.service';
@@ -24,7 +24,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   invitations: Publication[];
   selectedIndex = this.publicationService.tabIndexInv;
   filePath = environment.backend + '/uploads/publications/';
-  coverColor = 'blue';
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
@@ -80,55 +79,32 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
           this.invitations = data;
         }
       );
-
-    this.publicationService.averageRGBChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-        this.publications.forEach(pub => {
-          if (pub.slug === data.slug) {
-            // @ts-ignore
-            pub.coverColor = data.color;
-          }
-        });
-      });*/
+    */
   }
 
   deletePublication(slug, index, e) {
     e.stopPropagation();
+
     this.dialogService.openConfirmDialog('')
       .pipe(
+        filter(result => result),
+        switchMap(() => this.publicationService.deletePublication(slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(result => {
-        if (result) {
-          this.publicationService.deletePublication(slug)
-            .pipe(
-              takeUntil(this.unsubscribe$)
-            )
-            .subscribe(res => {
-              this.publications.splice(index, 1);
-            });
-        }
+      .subscribe(() => {
+        this.publications.splice(index, 1);
       });
   }
 
   deleteMembership(slug, index) {
     this.dialogService.openConfirmDialog('')
       .pipe(
+        filter(result => result),
+        switchMap(() => this.publicationService.deleteMembership(slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(result => {
-        if (result) {
-          this.publicationService.deleteMembership(slug)
-            .pipe(
-              takeUntil(this.unsubscribe$)
-            )
-            .subscribe(res => {
-              this.membership.splice(index, 1);
-            });
-        }
+      .subscribe(() => {
+        this.publications.splice(index, 1);
       });
   }
 
@@ -138,9 +114,13 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
 
   invitationResponse(id, accepted) {
     const body = {membershipId: id, accepted: accepted};
-    this.publicationService.acceptInvitation(body).subscribe(res => {
-      this.publicationService.getMyPublications();
-    });
+    this.publicationService.acceptInvitation(body)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(res => {
+        this.publicationService.getMyPublications();
+      });
   }
 
   ngOnDestroy() {

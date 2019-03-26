@@ -1,7 +1,9 @@
+import { environment } from '../../../../environments/environment';
+
 export interface PublicationOptions {
     title: string;
     description: string;
-    members;
+    members: any[];
     articles;
     inviter;
     cover;
@@ -10,14 +12,8 @@ export interface PublicationOptions {
     publicationItem?;
     id?: number;
     slug: string;
-}
-
-export interface PublicationResponse {
-    name: string;
-    description: string;
-    coverImage;
-    logoImage;
-    articles;
+    color: string;
+    owner: any;
 }
 
 export interface PublicationSubscribersResponse {
@@ -33,7 +29,7 @@ export interface PublicationSubscribersResponse {
 export class Publication {
     title;
     description;
-    members;
+    members: any[];
     articles;
     inviter;
     cover;
@@ -42,11 +38,18 @@ export class Publication {
     socialImage;
     publicationItem;
     slug: string;
-
+    color: string;
+    owner: any;
     constructor(options?: PublicationOptions) {
         for (const i in options) {
             if (options.hasOwnProperty(i)) {
-                this[i] = options[i] ? options[i] : '';
+                if (['logo', 'cover'].includes(i)) {
+                   this[i] = options[i] ? environment.backend + '/' + options[i] : '';
+                } else if (i === 'color') {
+                    this[i] = options[i] ? '#' + options[i] : '';
+                } else {
+                    this[i] = options[i] ? options[i] : '';
+                }
             }
         }
     }
