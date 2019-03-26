@@ -10,7 +10,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { NotificationService } from '../../core/services/notification.service';
-import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-login-password',
@@ -52,6 +52,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
       .subscribe(result => {
         this.stringToSign = result.stringToSign;
         this.encryptedBrainKey = result.brainKey;
+        this.accountService.brainKeyEncrypted = this.encryptedBrainKey;
         this.tokenCheckStatus = TokenCheckStatus.Success;
       }, error => {
         this.router.navigate(['/page-not-found']);

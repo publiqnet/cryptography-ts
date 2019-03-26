@@ -10,7 +10,7 @@ import { AccountService } from '../services/account.service';
 import { ValidationService } from '../validator/validator.service';
 import { ErrorEvent, ErrorService } from '../services/error.service';
 import { TokenCheckStatus } from '../models/enumes/TokenCheckStatus';
-import { OauthService } from '../../../../../shared-lib/src/lib/service/oauth.service';
+import { OauthService } from 'shared-lib';
 
 @Component({
   selector: 'app-login-dialog',
