@@ -14,6 +14,7 @@ const generatorPoint = secp256k1.g;
 
 import * as BN from 'bn.js';
 
+
 export class KeyPair {
 
   private publicKey: PublicKey;
@@ -30,9 +31,9 @@ export class KeyPair {
 
     const brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
     const privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
-    const pubKeyCoordinates = generatorPoint.mul(privateCorKeyHex);
-    const pubKeyXHex = pubKeyCoordinates.getX().toString('hex');
-    const pubKeyYHex = pubKeyCoordinates.getY().toString('hex');
+    const pubKeyCoordinates = KeyPair.getPointCordinats(privateCorKeyHex); //generatorPoint.mul(privateCorKeyHex);
+    const pubKeyXHex = pubKeyCoordinates.XHex;
+    const pubKeyYHex = pubKeyCoordinates.YHex;
 
     this.publicKey = new PublicKey(pubKeyXHex, pubKeyYHex);
     this.privateKey = new PrivateKey(privateCorKeyHex);
@@ -78,6 +79,8 @@ export class KeyPair {
 
   static publicKeyPrefix: string = '';
   static brainKeyLength: number = 16;
+
+
 
   static setPublicKeyPrefix(publicKeyPrefix = '') {
     this.publicKeyPrefix = publicKeyPrefix;
@@ -142,5 +145,24 @@ export class KeyPair {
 
   static encryptBrainKey(brainKey) {
     return SHA256(SHA512(brainKey)).toString();
+  }
+
+  static getPointCordinats(privateCorKeyHex) {
+    const pubKeyCoordinates = generatorPoint.mul(privateCorKeyHex);
+    const getFullHexStr = (hexStr) => {
+      let l = hexStr.length
+      let fullHexStr = hexStr;
+      for ( ; l < 64; l ++) {
+          fullHexStr = `${0}${fullHexStr}`;
+      }
+      return fullHexStr;
+    }
+
+    const hexPoint = {
+      XHex: getFullHexStr(pubKeyCoordinates.getX().toString('hex')),
+      YHex:  getFullHexStr(pubKeyCoordinates.getY().toString('hex'))
+    }
+
+    return hexPoint;
   }
 }
