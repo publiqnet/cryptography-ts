@@ -1,20 +1,18 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
 
 import { ReplaySubject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AccountService } from '../../core/services/account.service';
-import { LoginDialogComponent } from '../../core/login-dialog/login-dialog.component';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publication, PublicationSubscribersResponse } from '../../core/services/models/publication';
 import { environment } from '../../../environments/environment';
 import { ChannelService } from '../../core/services/channel.service';
 import { SeoService } from '../../core/services/seo.service';
 import { PublicationMemberStatusType } from '../../core/models/enumes';
+import { DialogService } from '../../core/services/dialog.service';
 
 
 @Component({
@@ -23,27 +21,21 @@ import { PublicationMemberStatusType } from '../../core/models/enumes';
   styleUrls: ['./publication.component.scss']
 })
 export class PublicationComponent implements OnInit, OnDestroy {
-  loadingPublication = true;
+  loading = true;
   articlesLoaded = false;
   canFollow = true;
-  becomeMem = false;
-  notMember = true;
-  imagePath: string = environment.backend + '/uploads/publications/';
   subscribers: number;
   articles: number;
   articlesResponse;
   dsIdArray: Array<string>;
   publication: Publication;
-  membersCount;
   currentUser;
   private unsubscribe$ = new ReplaySubject<void>(1);
-  requestId;
   slug: string;
-  myPublication = false;
 
   constructor(
     private accountService: AccountService,
-    public dialog: MatDialog,
+    public dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId,
@@ -61,28 +53,24 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.route.params
       .pipe(
         debounceTime(500),
-        switchMap((data: Params) => { this.slug = data.slug; return this.accountService.accountUpdated$; }),
-        switchMap((data: any) => {this.currentUser = data; return this.publicationService.getPublicationBySlug(this.slug); }),
+        switchMap((data: Params) => {
+          this.slug = data.slug;
+          return this.accountService.accountUpdated$;
+        }),
+        switchMap((data: any) => {
+          this.currentUser = data;
+          return this.publicationService.getPublicationBySlug(this.slug);
+        }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe((pub: Publication) => {
-        this.loadingPublication = false;
+        this.loading = false;
         this.setSeo();
 
-        console.log('data1----', pub);
-
-        this.myPublication = false;
         this.publication = pub;
-        // this.publicationService.checkPublication(this.publication.slug).then(
-        //   res => {
-        //     this.myPublication = res;
-        //   }
-        // );
 
 
         /*if (isPlatformBrowser(this.platformId)) {
-          this.getMyRequests();
-          this.getMyMembership();
           this.publicationService.loadSubscribers(this.publication.slug);
           this.getPublicationArticles();
         }
@@ -105,7 +93,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       });
   }
 
-  get PublicationMemberStatus() {
+  get MemberStatus() {
     return PublicationMemberStatusType;
   }
 
@@ -122,41 +110,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.seoService.generateTags({title, description, image, url});
   }
 
-
-  getMyRequests() {
-    this.publicationService.myRequests
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((req: Array<any>) => {
-        if (req) {
-          req.forEach(elem => {
-            if (elem.publication.slug === this.publication.slug) {
-              this.becomeMem = true;
-              this.requestId = elem.id;
-            }
-          });
-        }
-      });
-  }
-
-  getMyMembership() {
-    this.publicationService.myMemberships
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((mem: Array<any>) => {
-        const arr = [];
-        if (mem) {
-          mem.forEach(elem => {
-            if (elem.publication.slug === this.publication.slug) {
-              this.notMember = false;
-            }
-          });
-        }
-      });
-  }
-
   getPublicationArticles() {
     this.publicationService
       .getPublicationArticles(this.publication.slug)
@@ -169,89 +122,83 @@ export class PublicationComponent implements OnInit, OnDestroy {
           return element.dsId;
         });
         this.articles = this.dsIdArray.length;
-        this.loadingPublication = false;
+        this.loading = false;
       });
-  }
-
-  componentToHex(c) {
-    const hex = c.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
-  }
-
-  rgbToHex(r, g, b) {
-    return (
-      '#' +
-      this.componentToHex(r) +
-      this.componentToHex(g) +
-      this.componentToHex(b)
-    );
   }
 
   follow() {
     if (!this.accountService.loggedIn()) {
-      this.openLoginDialog();
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
       return false;
     } else {
-      this.publicationService.follow(this.publication.slug).subscribe(res => {
-        this.canFollow = false;
-        this.publicationService.loadSubscribers(this.publication.slug);
-      });
+      this.publicationService.follow(this.publication.slug)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => {
+          this.canFollow = false;
+          this.publicationService.loadSubscribers(this.publication.slug);
+        });
     }
   }
 
   unfollow() {
     if (!this.accountService.loggedIn()) {
-      this.openLoginDialog();
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
       return false;
     }
     this.publicationService.unfollow(this.publication.slug)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(res => {
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
         this.canFollow = true;
         this.publicationService.loadSubscribers(this.publication.slug);
       });
   }
 
-  becomeMember(slug) {
+  requestBecomeMember(slug: string) {
     if (!this.accountService.loggedIn()) {
-      this.openLoginDialog();
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
       return false;
     }
-    this.publicationService.becomeMember(slug)
+    this.publicationService.requestBecomeMember(slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => this.publication.memberStatus = this.MemberStatus.requested_to_be_a_contributor);
+  }
+
+  cancelBecomeMember(slug: string) {
+    this.publicationService.cancelBecomeMember(slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => this.publication.memberStatus = this.MemberStatus.no_info);
+  }
+
+  acceptInvitationBecomeMember(slug: string) {
+    if (!this.accountService.loggedIn()) {
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
+      return false;
+    }
+    this.publicationService.acceptInvitationBecomeMember(slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(res => {
-        this.becomeMem = true;
-        this.publicationService.getMyPublications();
+        console.log('res3 --- ', res);
       });
   }
 
-  cancelBecomeMember(slug) {
-    this.publicationService.cnacelRequest(this.requestId)
+  rejectInvitationBecomeMember(slug: string) {
+    if (!this.accountService.loggedIn()) {
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
+      return false;
+    }
+    this.publicationService.rejectInvitationBecomeMember(slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-          this.becomeMem = false;
-          this.publicationService.getMyPublications();
-        }
-      );
-  }
-
-  openLoginDialog() {
-    const dialogRef = this.dialog.open(LoginDialogComponent, {
-      width: '500px'
-    });
-    dialogRef.disableClose = true;
-
-    dialogRef.afterClosed()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe();
+      .subscribe(res => {
+        console.log('res4 --- ', res);
+      });
   }
 
   ngOnDestroy() {

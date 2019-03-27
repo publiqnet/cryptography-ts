@@ -26,7 +26,6 @@ export class PublicationService {
   myMemberships: ReplaySubject<any>;
   myInvitations: ReplaySubject<any>;
   myRequests: ReplaySubject<any>;
-  averageRGBChanged: Subject<any> = new Subject<any>();
   pendingPublications: ReplaySubject<any[]>;
   private subscribers;
   subscribersChanged = new Subject<any[]>();
@@ -80,9 +79,6 @@ export class PublicationService {
   }
 
   getPublicationBySlug(slug: string | number): Observable<Publication> {
-    // const channel = this.channelService.channel || 'stage';
-    // return this.http.get(environment.backend + '/api/v1/publication/' + slug, {headers: {'X-API-CHANNEL': channel}});
-
     return this.httpHelper.call(HttpMethodTypes.get, this.url + '/' + slug)
       .pipe(
         filter(data => data != null),
@@ -106,7 +102,6 @@ export class PublicationService {
       options
     );
   }
-
 
   getMembers(slug) {
     const authToken = this.getAccountToken();
@@ -151,19 +146,15 @@ export class PublicationService {
     );
   }
 
-  deletePublication(slug: string): Observable<any> {
-    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug);
-  }
+  deletePublication = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug);
 
-  becomeMember(slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/' + slug + '/become-a-member',
-      {slug},
-      header
-    );
-  }
+  requestBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
+
+  cancelBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/request');
+
+  acceptInvitationBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response');
+
+  rejectInvitationBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/invitation/response');
 
   getContentsByDsId(dsIdArray: Array<string>) {
     this.httpRpcService
@@ -214,15 +205,6 @@ export class PublicationService {
     );
   }
 
-  cnacelRequest(body) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      `${environment.backend}/api/v1/publication/cancel-request/${body}`,
-      {},
-      header
-    );
-  }
 
   cnacelInvitation(body) {
     const authToken = this.getAccountToken();
@@ -268,31 +250,6 @@ export class PublicationService {
     //     }, error => this.errorService.handleError('loadStoriesPublicationByDsId', error, url));
   }
 
-  checkPublication(slug): Promise<boolean> {
-    return new Promise(resolve => {
-      let pubArr = [];
-      this.myPublications.subscribe((publications: Array<Publication>) => {
-        if (publications) {
-          pubArr = publications;
-          this.myMemberships
-            .subscribe((publications: Array<Publication>) => {
-              if (publications) {
-                if (pubArr || publications) {
-                  pubArr.concat(publications).forEach(pub => {
-                    if ((!pub.publication && pub.slug === slug) || (pub.publication && pub.publication.slug === slug)) {
-                      resolve(pub.status ? pub.status : 1);
-                    }
-                  });
-                }
-              }
-
-            });
-        }
-      });
-    });
-
-  }
-
   changeMemberStatus(member) {
     const authToken = this.getAccountToken();
     const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
@@ -326,40 +283,9 @@ export class PublicationService {
     }
   }
 
-  public follow(slug: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('loginSession', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-      }
+  public follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.put, this.url + '/subscription/' + slug);
 
-      return this.http.put(
-        `${environment.backend}/api/v1/publication/subscription/${slug}`,
-        {},
-        {headers: new HttpHeaders({'X-API-TOKEN': authToken})}
-      );
-    }
-  }
-
-  public unfollow(slug: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('loginSession', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-      }
-      const url =
-        environment.backend + `/api/v1/publication/subscription/${slug}`;
-      return this.http.delete(url, {
-        headers: new HttpHeaders({'X-API-TOKEN': authToken})
-      });
-    }
-  }
+  public unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/subscription/' + slug);
 
   deleteMembership(slug) {
     const authToken = this.getAccountToken();

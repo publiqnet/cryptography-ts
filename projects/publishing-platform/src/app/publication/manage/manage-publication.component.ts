@@ -12,6 +12,8 @@ import { AccountService } from '../../core/services/account.service';
 import { Publication } from '../../core/services/models/publication';
 import { parseZone } from 'moment';
 import { ArticleService } from '../../core/services/article.service';
+import { PublicationMemberStatusType } from '../../core/models/enumes';
+import { Publications } from '../../core/services/models/publications';
 
 @Component({
   selector: 'app-manage-publication',
@@ -20,11 +22,11 @@ import { ArticleService } from '../../core/services/article.service';
 })
 export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges {
 
-  @Input('currentUser') currentUser;
-  @Input('dsIdArray') dsIdArray;
-  param: number;
+  // @Input('currentUser') currentUser;
+  // @Input('dsIdArray') dsIdArray: any[];
+  @Input('publication') publication: Publication;
+  slug: string;
   count = 0;
-  publication: Publication;
   coverImage;
   articlesRes;
   rawArticles;
@@ -70,10 +72,24 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
 
   ngOnInit() {
 
+    if (this.nextPub) {
+      this.from = 0;
+      this.to = this.offset;
+      this.articlesRes = null;
+      this.myStatus = 0;
+      this.boostedOffset = 3;
+      this.boostedFrom = 0;
+      this.boostedTo = this.boostedOffset;
+      this.seeMore = false;
+      this.initialLoading = true;
+    }
+
     // this.publicationForm.disable();
+    /*
+
     this.route.params.pipe(
       switchMap((params) => {
-        this.param = params.slug;
+        this.slug = params.slug;
         if (this.nextPub) {
           this.from = 0;
           this.to = this.offset;
@@ -93,7 +109,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
           this.publicationService.getMyPublications();
         }
         this.getFollowers();
-        return this.publicationService.getPublicationBySlug(this.param);
+        return this.publicationService.getPublicationBySlug(this.slug);
       }),
       switchMap((publ: Publication) => {
         this.publication = publ;
@@ -120,8 +136,11 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         if (member && member.length && !this.myStatus) {
           this.getMyStatus(member);
         }
-      }
-    );
+      });
+
+      */
+
+
     this.publicationService.subscribersChanged.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(res => {
@@ -137,18 +156,31 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     });
   }
 
+  get MemberStatus() {
+    return PublicationMemberStatusType;
+  }
+
   ngOnChanges(changes: SimpleChanges) {
-    if ('dsIdArray' in changes) {
-      // Todo: need to be reviewed
-      const previous = changes['dsIdArray'].previousValue;
-      const current = changes['dsIdArray'].currentValue;
-      if (!previous || (previous[0] !== current[0])) {
-        const count = Math.floor(this.dsIdArray.length / 10);
-        this.articleService.loadSponsoredArticles(count, count);
-        const sliced = this.dsIdArray.slice(this.from, this.to);
-        this.publicationService.getContentsByDsId(sliced);
+    if ('publication' in changes) {
+      if (this.publication) {
+        console.log('this.publication --', this.publication);
+        // this.publicationService.loadSubscribers(this.publication.slug);
+        this.slug = this.publication.slug;
+        this.coverImage = this.publication.cover;
+        this.logoImage = this.publication.logo;
       }
 
+      // Todo: need to be reviewed
+      // if (this.dsIdArray && this.dsIdArray.length > 0) {
+      //   const previous = changes['dsIdArray'].previousValue;
+      //   const current = changes['dsIdArray'].currentValue;
+      //   if (!previous || (previous[0] !== current[0])) {
+      //     const count = Math.floor(this.dsIdArray.length / 10);
+      //     this.articleService.loadSponsoredArticles(count, count);
+      //     const sliced = this.dsIdArray.slice(this.from, this.to);
+      //     this.publicationService.getContentsByDsId(sliced);
+      //   }
+      // }
     }
   }
 
@@ -414,7 +446,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       this.boostedTo = this.boostedFrom + this.boostedOffset;
     }
     this.articlesRes = this.articlesRes && this.articlesRes.length ? this.articlesRes.concat(this.rawArticles) : this.rawArticles;
-    this.seeMore = this.dsIdArray.length > this.offset && this.to < this.dsIdArray.length;
+    // this.seeMore = this.dsIdArray.length > this.offset && this.to < this.dsIdArray.length;
     this.initialLoading = false;
     this.articlesLoaded = true;
     this.nextPub = true;
@@ -465,8 +497,8 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   loadMore() {
     this.from = this.to;
     this.to = this.from + this.offset;
-    const sliced = this.dsIdArray.slice(this.from, this.to);
-    this.publicationService.getContentsByDsId(sliced);
+    // const sliced = this.dsIdArray.slice(this.from, this.to);
+    // this.publicationService.getContentsByDsId(sliced);
     this.articlesLoaded = false;
   }
 

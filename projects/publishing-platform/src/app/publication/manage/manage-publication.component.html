@@ -1,310 +1,334 @@
 <div class="publication">
-  <mat-tab-group selectedIndex='{{tabIndex}}' *ngIf="myStatus && myStatus !== 3" (selectedTabChange)="onLinkClick($event)">
-    <mat-tab label="{{'content.stories' | translate}}">
-      <ng-container>
-        <ng-container *ngIf="!initialLoading">
-        <app-article-card-list *ngIf="articlesRes && !(articlesRes.length === 0); else emptyStories"
-                               [fromPublications]="true"
-                               (articleRemove)="removeArticle($event)" [canDelete]="true" [articles]="articlesRes"
-                               [hasSeparator]="false" [calculateViewCount]="true"></app-article-card-list>
-        </ng-container>
-        <div class="text-center mt-3">
-          <div class="empty" *ngIf="!articlesLoaded">
-            <div style="display: inline-block">
-              <mat-spinner></mat-spinner>
-            </div>
-          </div>
-          <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="loadMore()">
-            {{'wallet.see_more' | translate}}
-          </button>
-        </div>
-      </ng-container>
-    </mat-tab>
+    <mat-tab-group selectedIndex='{{tabIndex}}' (selectedTabChange)="onLinkClick($event)">
+        <mat-tab label="{{'content.stories' | translate}}">
+            <ng-container>
+                <ng-container *ngIf="!initialLoading">
+                    <app-article-card-list *ngIf="articlesRes && !(articlesRes.length === 0); else emptyStories"
+                                           [fromPublications]="true"
+                                           (articleRemove)="removeArticle($event)" [canDelete]="true"
+                                           [articles]="articlesRes"
+                                           [hasSeparator]="false" [calculateViewCount]="true">
+                    </app-article-card-list>
+                </ng-container>
+                <div class="text-center mt-3">
+                    <div class="empty" *ngIf="!articlesLoaded">
+                        <div style="display: inline-block">
+                            <mat-spinner></mat-spinner>
+                        </div>
+                    </div>
+                    <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold"
+                            tabindex="0" (click)="loadMore()">
+                        {{'wallet.see_more' | translate}}
+                    </button>
+                </div>
+            </ng-container>
+        </mat-tab>
 
-    <mat-tab label="{{'content.members' | translate}}">
-      <div class="members">
-        <!--<mat-card >-->
-        <div class="member-space pub-members" *ngIf="member">
-          <div class="profile-selector">
-            <div class="small-profile-pic">
-              <div
-                [ngStyle]="{'background-image': member.user.image ? 'url(' + member.user.image   + ')' :  'url(\'/assets/no-image-article.jpg\' )' }">
+        <mat-tab label="{{'content.members' | translate}}">
+            <div class="members">
+                <div class="member-space pub-members" *ngIf="member">
+                    <div class="profile-selector">
+                        <div class="small-profile-pic">
+                            <div [ngStyle]="{'background-image': member.user.image ?
+                                'url(' + member.user.image   + ')' :
+                                'url(\'/assets/no-image-article.jpg\' )' }">
 
-              </div>
-            </div>
-            <div routerLink="/a/{{member?.user.username}}">
-        <p class="position" *ngIf='member.status==1'>{{'content.owner' | translate}}</p>   
-            </div>
-          </div>
+                            </div>
+                        </div>
+                        <div routerLink="/a/{{member?.user.username}}">
+                            <p class="position" *ngIf='member.status==1'>{{'content.owner' | translate}}</p>
+                        </div>
+                    </div>
 
                     <div class="d-flex flex-column click">
-                      <!--{{'content.add_member' | translate}}-->
-                      <button mat-raised-button (click)="addMember()" [disabled]="myStatus === 3"
-                              color="primary" [ngClass]="{'white-button' : addMemberBtn}">{{addMemberBtn ? ('core.cancel' | translate) :('content.invite_member' | translate) }}</button>
+                        <button mat-raised-button color="primary"
+                                (click)="addMember()"
+                                [disabled]="myStatus === 3"
+                                [ngClass]="{'white-button' : addMemberBtn}">
+                            {{addMemberBtn ? ('core.cancel' | translate) : ('content.invite_member' | translate) }}
+                        </button>
 
-                      <div class="show-add-button" *ngIf="addMemberBtn">
-                        <app-search-member (memberInvited)="closeSearchBar()"  [hidden]="!searchBar" [publicationSlug]='publication?.slug' [statuses]="myStatus ===1 ? ['Contributor', 'Editor'] : ['Contributor']" [members]="members"></app-search-member>
-                      </div>
+                        <div class="show-add-button" *ngIf="addMemberBtn">
+                            <app-search-member (memberInvited)="closeSearchBar()" [hidden]="!searchBar"
+                                               [publicationSlug]='publication?.slug'
+                                               [statuses]="myStatus ===1 ? ['Contributor', 'Editor'] : ['Contributor']"
+                                               [members]="members">
+                            </app-search-member>
+                        </div>
                     </div>
-                    <!--<popover-content #myPopover-->
-                                     <!--animation="true"-->
-                                     <!--closeOnClickOutside="true"-->
-                                     <!--placement="left">-->
-
-                    <!--</popover-content>-->
-                    <!--</mat-card>-->
-            </div>
-               </div>
-
-      <div class=" editors container-fluid">
-        <!--//editors-->
-        <h2>{{'content.editors' | translate}}</h2>
-        <div class=" row">
-          <div *ngFor="let editor of editors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
-            <div [routerLink]="editor.user? ['/a', editor.user.username] : []">
-              <div class="member-pic"
-                   [ngStyle]="{ 'background-image': editor.user && editor.user.image ? 'url('+ editor.user.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-
-              </div>
-              <div class="w-100 text-center">
-                <h3 class="member-info" *ngIf="editor.user">
-                  <span>{{editor.user.firstName || ''}} {{editor.user.lastName || ''}}</span>
-                  <!--<span *ngIf="false">user.publiqId</span>-->
-                  <span class="follow" *ngIf="currentUser.name !== editor.user.username">
-                        <i [ngClass]="editor.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
-                    <!--<img src="../../../assets/follow-icon.svg" alt="img">-->
-                         <span *ngIf="editor.user.following === 'follow'"
-                               (click)="follow(editor.user, $event, 'member')">{{'author.follow' | translate}}</span>
-                        <span *ngIf="editor.user.following === 'unfollow'"
-                              (click)="unfollow(editor.user, $event, 'member')">{{'author.unfollow' | translate}}</span>
-                        </span>
-                </h3>
-                <p class="notUserInfo">{{!editor.user && editor.email? editor.email : ''}}</p>
-                <div class="edit" *ngIf="myStatus === 1 && editor.status ===2">
-                  <mat-select [(value)]="editor.status" (click)="stopEventPropagation($event)"
-                              (selectionChange)="changeStatus($event, editor)">
-                    <mat-option [value]='3'>
-                      {{'content.contributor' | translate}}
-                    </mat-option>
-                    <mat-option [value]='2'>
-                      {{'content.editor' | translate}}
-                    </mat-option>
-                  </mat-select>
-                  <a (click)="deleteMember(editor,i, $event)">
-                    <i class="icon-delete"></i>
-                  </a>
                 </div>
-               
-              </div>
             </div>
 
-          </div>
+            <div class=" editors container-fluid">
+
+                <!--editors-->
+                <h2>{{'content.editors' | translate}}</h2>
+                <div class=" row">
+                    <div *ngFor="let editor of editors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                        <div [routerLink]="editor.user? ['/a', editor.user.username] : []">
+                            <div class="member-pic"
+                                 [ngStyle]="{ 'background-image': editor.user && editor.user.image ?
+                                 'url('+ editor.user.image+')' :
+                                 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+
+                            </div>
+                            <div class="w-100 text-center">
+                                <h3 class="member-info" *ngIf="editor.user">
+                                    <span>{{editor.user.firstName || ''}} {{editor.user.lastName || ''}}</span>
+                                    <span class="follow" *ngIf="currentUser.name !== editor.user.username">
+                                        <i [ngClass]="editor.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                        <span *ngIf="editor.user.following === 'follow'"
+                                              (click)="follow(editor.user, $event, 'member')">
+                                            {{'author.follow' | translate}}
+                                        </span>
+                                        <span *ngIf="editor.user.following === 'unfollow'"
+                                              (click)="unfollow(editor.user, $event, 'member')">
+                                            {{'author.unfollow' | translate}}
+                                        </span>
+                                    </span>
+                                </h3>
+                                <p class="notUserInfo">{{!editor.user && editor.email ? editor.email : ''}}</p>
+                                <div class="edit" *ngIf="myStatus === 1 && editor.status === 2">
+                                    <mat-select [(value)]="editor.status"
+                                                (click)="stopEventPropagation($event)"
+                                                (selectionChange)="changeStatus($event, editor)">
+
+                                        <mat-option [value]='3'>
+                                            {{'content.contributor' | translate}}
+                                        </mat-option>
+                                        <mat-option [value]='2'>
+                                            {{'content.editor' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <a (click)="deleteMember(editor,i, $event)">
+                                        <i class="icon-delete"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty empty-space" *ngIf="editors?.length === 0">
+                    <p>{{'publication.no_editors'| translate}}</p>
+                </div>
+
+                <!--contributors-->
+                <h2>{{'content.contributors' | translate}}</h2>
+                <div class=" row">
+                    <div *ngFor="let contributor of contributors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                        <div [routerLink]="contributor.user? ['/a',contributor.user.username] : []">
+                            <div class="member-pic"
+                                 [ngStyle]="{ 'background-image': contributor.user && contributor.user.image ?
+                                 'url('+ contributor.user.image+')' :
+                                 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                            </div>
+                            <div class="w-100 text-center">
+                                <h3 class="member-info" *ngIf="contributor.user">
+                                    <span>{{contributor.user.firstName || ''}} {{contributor.user.lastName || ''}}</span>
+                                    <span class="follow" *ngIf="currentUser.name !== contributor.user.username">
+                                        <i class="mr-2"
+                                           [ngClass]="contributor.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                        <span *ngIf="contributor.user.following === 'follow'"
+                                              (click)="follow(contributor.user, $event, 'member')">
+                                            <a>{{'author.follow' | translate}}</a>
+                                        </span>
+                                        <span *ngIf="contributor.user.following === 'unfollow'"
+                                              (click)="unfollow(contributor.user, $event, 'member')">
+                                            <a>{{'author.unfollow' | translate}}</a>
+                                        </span>
+                                    </span>
+                                </h3>
+                                <p class="notUserInfo">{{!contributor.user && contributor.email ? contributor.email : ''}}</p>
+                                <div class="edit" *ngIf="myStatus === 1 && contributor.status ===3">
+                                    <mat-select [(value)]="contributor.status" (click)="stopEventPropagation($event)"
+                                                [disabled]="myStatus !== 1"
+                                                (selectionChange)="changeStatus($event, contributor)">
+                                        <mat-option [value]='3'>
+                                            {{'content.contributor' | translate}}
+                                        </mat-option>
+                                        <mat-option [value]='2'>
+                                            {{'content.editor' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <a class="" (click)="deleteMember(contributor, i, $event)"
+                                       *ngIf="myStatus ===1 && contributor.status!==1 || myStatus==2 && contributor.status===3 && contributor.status!==1">
+                                        <i class="icon-delete"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="empty empty-space" *ngIf="contributors?.length === 0">
+                    <p>{{'publication.no_contr' | translate}}</p>
+                </div>
+
+                <!--pendings-->
+                <h2>{{'content.pending' | translate}}</h2>
+                <div class=" row">
+                    <div *ngFor="let pending of pendings" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                        <div [routerLink]="pending.user? ['/a',pending.user.username] : []">
+                            <div class="member-pic"
+                                 [ngStyle]="{ 'background-image': pending.user && pending.user.image ?
+                                 'url('+ pending.user.image+')' :
+                                 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                            </div>
+                            <div class="w-100 text-center">
+                                <h3 class="member-info" *ngIf="pending.user">
+                                    <span>{{pending.user.firstName || pending.email || ''}} {{pending.user.lastName || pending.email || ''}}</span>
+                                    <span class="follow" *ngIf="currentUser.name !== pending.user.username">
+                                      <i class="mr-2"
+                                         [ngClass]="pending.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                        <span *ngIf="pending.user.following === 'follow'"
+                                              (click)="follow(pending.user, $event, 'member')">
+                                            <a>{{'author.follow' | translate}}</a>
+                                        </span>
+                                        <span *ngIf="pending.user.following === 'unfollow'"
+                                              (click)="unfollow(pending.user, $event, 'member')">
+                                            <a>{{'author.unfollow' | translate}}</a>
+                                        </span>
+                                    </span>
+                                </h3>
+                                <p class="notUserInfo">{{!pending.user && pending.email ? pending.email : ''}}</p>
+
+                                <div class="edit" *ngIf="myStatus === 1">
+                                    <a class="" (click)="cancelMember(pending,$event)">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty empty-space" *ngIf="pendings?.length === 0">
+                    <p>{{'publication.no_pend' | translate}}</p>
+                </div>
+
+            </div>
+
+        </mat-tab>
+
+        <mat-tab label="{{'content.followers' | translate}}">
+            <div *ngIf="subscribers && subscribers.length, else empty">
+                <mat-card *ngFor='let subscriber of subscribers, let i=index'>
+                    <div class="card-info-row">
+                        <div>
+                            <div class="current-followers">
+                                <div class="profile-pic"
+                                     [ngStyle]="{ 'background-image': subscriber.subscriber.image ? 'url('+ subscriber.subscriber.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                                </div>
+                                <div class="follow-space">
+                                    <h3 routerLink="/a/{{subscriber.subscriber.username}}">
+                                        <span *ngIf="subscriber.subscriber.firstName || subscriber.subscriber.lastName">{{subscriber.subscriber.firstName}} {{subscriber.subscriber.lastName}}</span>
+                                    </h3>
+                                    <span class="follow" *ngIf="currentUser.name !== subscriber.subscriber.username">
+                                       <i class="mr-2" [ngClass]="subscriber.subscriber.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                         <span *ngIf="subscriber.subscriber.following === 'follow'"
+                                               (click)="follow(subscriber.subscriber, $event, 'follower')">
+                                             <a>{{'author.follow' | translate}}</a>
+                                         </span>
+                                        <span *ngIf="subscriber.subscriber.following === 'unfollow'"
+                                              (click)="unfollow(subscriber.subscriber, $event, 'follower')">
+                                            <a>{{'author.unfollow' | translate}}</a>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="{{'content.requests' | translate}}">
+            <div *ngIf="requests && requests.length, else empty">
+                <mat-card *ngFor='let request of requests, let i=index'>
+                    <div class="card-info-row request-row">
+                        <div>
+                            <div class="d-flex align-items-center h4-title">
+                                <div class="profile-pic"
+                                     [ngStyle]="{ 'background-image': request.user.image ?
+                                     'url('+  request.user.image+')' :
+                                     'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                                </div>
+                                <h4 routerLink="/a/{{request.user.username ? request.user.username : request.user.publiqId}}">
+                                    <span *ngIf="request.user.firstName || request.user.lastName">
+                                        {{request.user.firstName}} {{request.user.lastName}}
+                                    </span>
+                                    <span *ngIf="!request.user.firstName && !request.user.lastName">
+                                        {{request.user.username ? request.user.username : request.user.publiqId}}
+                                    </span>
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center" *ngIf="myStatus !==3">
+                            <button mat-raised-button color="primary" (click)="memberRequest(request, 1, i)">CONFIRM</button>
+                            <img class="delete" src="../../../assets/delete-black.svg"
+                                 (click)="memberRequest(request, 0, i)">
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </mat-tab>
+
+        <mat-tab isActive="false">
+            <ng-template mat-tab-label>
+                <div>
+                    <i class="icon-new-story"></i>
+                    <span>{{"header.new_story" | translate}}</span>
+                </div>
+            </ng-template>
+
+        </mat-tab>
+
+    </mat-tab-group>
+    <!--
+
+    <ng-container *ngIf="(!myStatus || myStatus==3)">
+        <ng-container *ngIf="!initialLoading">
+            <app-article-card-list *ngIf="(articlesRes && !(articlesRes.length === 0)); else empty"
+                                   [fromPublications]="true" [articles]="articlesRes" [hasSeparator]="false"
+                                   [calculateViewCount]="true"></app-article-card-list>
+        </ng-container>
+
+        <div class="text-center mt-3">
+            <div class="empty" *ngIf="seeMore && !articlesLoaded">
+                <div style="display: inline-block">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
+            <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold"
+                    tabindex="0" (click)="loadMore()">
+                {{'wallet.see_more' | translate}}
+            </button>
         </div>
-        <div class="empty empty-space" *ngIf="editors?.length === 0">
-          <p>{{'publication.no_editors'| translate}}</p>
-        </div>
-
-
-        <!--contributors-->
-        <h2>{{'content.contributors' | translate}}</h2>
-        <div class=" row">
-          <div *ngFor="let contributor of contributors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
-            <div [routerLink]="contributor.user? ['/a',contributor.user.username] : []">
-              <div class="member-pic"
-                   [ngStyle]="{ 'background-image': contributor.user && contributor.user.image ? 'url('+ contributor.user.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-                <!--<img src="../../../assets/profile.svg" alt="img">-->
-              </div>
-              <div class="w-100 text-center">
-                <h3 class="member-info" *ngIf="contributor.user">
-                  <span>{{contributor.user.firstName || ''}} {{contributor.user.lastName || ''}}</span>
-                  <span class="follow" *ngIf="currentUser.name !== contributor.user.username">
-                          <i class="mr-2"
-                             [ngClass]="contributor.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
-                        <span *ngIf="contributor.user.following === 'follow'"
-                              (click)="follow(contributor.user, $event, 'member')"><a>{{'author.follow' | translate}}</a></span>
-                        <span *ngIf="contributor.user.following === 'unfollow'"
-                              (click)="unfollow(contributor.user, $event, 'member')"><a>{{'author.unfollow' | translate}}</a></span>
-                        </span>
-                </h3>
-                <p class="notUserInfo">{{!contributor.user && contributor.email? contributor.email : ''}}</p>
-                <div class="edit" *ngIf="myStatus === 1 && contributor.status ===3">
-                  <mat-select [(value)]="contributor.status" (click)="stopEventPropagation($event)"
-                              [disabled]="myStatus !== 1" (selectionChange)="changeStatus($event, contributor)">
-                    <mat-option [value]='3'>
-                      {{'content.contributor' | translate}}
-                    </mat-option>
-                    <mat-option [value]='2'>
-                      {{'content.editor' | translate}}
-                    </mat-option>
-                  </mat-select>
-                  <a class="" (click)="deleteMember(contributor, i, $event)"
-                     *ngIf="myStatus ===1 && contributor.status!==1 || myStatus==2 && contributor.status===3 && contributor.status!==1">
-                    <i class="icon-delete"></i>
-                  </a>
-                </div>
-              
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="empty empty-space" *ngIf="contributors?.length === 0">
-          <p>{{'publication.no_contr' | translate}}</p>
-        </div>
-
-
-        <h2>{{'content.pending' | translate}}</h2>
-        <div class=" row">
-          <div *ngFor="let pending of pendings" class="profile-selector col-lg-3 col-md-6 col-sm-12">
-            <div [routerLink]="pending.user? ['/a',pending.user.username] : []">
-              <div class="member-pic"
-                   [ngStyle]="{ 'background-image': pending.user && pending.user.image ? 'url('+ pending.user.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-                <!--<img src="../../../assets/profile.svg" alt="img">-->
-              </div>
-              <div class="w-100 text-center">
-                <h3 class="member-info" *ngIf="pending.user">
-                  <span>{{pending.user.firstName || pending.email || ''}} {{pending.user.lastName || pending.email || ''}}</span>
-                  <span class="follow" *ngIf="currentUser.name !== pending.user.username">
-                          <i class="mr-2"
-                             [ngClass]="pending.user.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
-                        <span *ngIf="pending.user.following === 'follow'"
-                              (click)="follow(pending.user, $event, 'member')"><a>{{'author.follow' | translate}}</a></span>
-                        <span *ngIf="pending.user.following === 'unfollow'"
-                              (click)="unfollow(pending.user, $event, 'member')"><a>{{'author.unfollow' | translate}}</a></span>
-                        </span>
-                </h3>
-                <p class="notUserInfo">{{!pending.user && pending.email? pending.email : ''}}</p>
-               
-                <div class="edit" *ngIf="myStatus === 1">
-                  <a class="" (click)="cancelMember(pending,$event)">
-                    Cancel
-                  </a>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="empty empty-space" *ngIf="pendings?.length === 0">
-            <p>{{'publication.no_pend' | translate}}</p>
-          </div>
-
-      </div>
-
-    </mat-tab>
-
-    <mat-tab label="{{'content.followers' | translate}}">
-      <div *ngIf="subscribers && subscribers.length, else empty">
-        <mat-card *ngFor='let subscriber of subscribers, let i=index'>
-          <div class="card-info-row">
-            <div>
-              <div class="current-followers">
-                <div class="profile-pic"
-                     [ngStyle]="{ 'background-image': subscriber.subscriber.image ? 'url('+ subscriber.subscriber.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-                </div>
-                <div class="follow-space">
-                  <h3 routerLink="/a/{{subscriber.subscriber.username}}">
-                    <span *ngIf="subscriber.subscriber.firstName || subscriber.subscriber.lastName">{{subscriber.subscriber.firstName}} {{subscriber.subscriber.lastName}}</span>
-                    <!--<span *ngIf="!member.user.firstName && !member.user.lastName">{{member?.user.publiqId}}</span>-->
-                    <!--<img src="../../../assets/follow-icon.svg" alt="img">-->
-                    <!--<span>Follow</span>-->
-                    <!--<span *ngIf="!subscriber.subscriber.firstName && !subscriber.subscriber.lastName">{{subscriber.subscriber.publiqId}}</span>-->
-
-                  </h3>
-                  <span class="follow" *ngIf="currentUser.name !== subscriber.subscriber.username">
-                       <i class="mr-2"
-                          [ngClass]="subscriber.subscriber.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
-                         <span *ngIf="subscriber.subscriber.following === 'follow'"
-                               (click)="follow(subscriber.subscriber, $event, 'follower')"><a>{{'author.follow' | translate}}</a></span>
-                        <span *ngIf="subscriber.subscriber.following === 'unfollow'"
-                              (click)="unfollow(subscriber.subscriber, $event, 'follower')"><a>{{'author.unfollow' | translate}}</a></span>
-                      </span>
-                </div>
-
-              </div>
-
-
-            </div>
-          </div>
-        </mat-card>
-      </div>
-    </mat-tab>
-
-    <mat-tab label="{{'content.requests' | translate}}">
-      <div *ngIf="requests && requests.length, else empty">
-        <mat-card *ngFor='let request of requests, let i=index'>
-          <div class="card-info-row request-row">
-            <div>
-              <div class="d-flex align-items-center h4-title">
-                <div class="profile-pic"
-                     [ngStyle]="{ 'background-image': request.user.image ? 'url('+  request.user.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-                  <!--<img src="../../../assets/profile.svg" alt="img">-->
-                </div>
-                <h4 routerLink="/a/{{request.user.username ? request.user.username : request.user.publiqId}}">
-                  <span *ngIf="request.user.firstName || request.user.lastName">{{request.user.firstName}} {{request.user.lastName}}</span>
-                  <span *ngIf="!request.user.firstName && !request.user.lastName">{{request.user.username ? request.user.username : request.user.publiqId}}</span>
-
-                </h4>
-              </div>
-            </div>
-
-            <div class="d-flex align-items-center" *ngIf="myStatus !==3">
-              <button mat-raised-button color="primary" (click)="memberRequest(request, 1, i)">CONFIRM</button>
-              <img class="delete" src="../../../assets/delete-black.svg" (click)="memberRequest(request, 0, i)">
-            </div>
-          </div>
-        </mat-card>
-      </div>
-    </mat-tab>
-
-    <mat-tab isActive="false" >
-         <ng-template mat-tab-label >
-          <div >
-             <i class="icon-new-story"></i>
-            <span>{{"header.new_story" | translate}}</span>
-          </div>
-          </ng-template>
-       
-    </mat-tab>
-  </mat-tab-group>
-
-  <ng-container *ngIf="(!myStatus || myStatus==3)">
-    <ng-container *ngIf="!initialLoading">
-      <app-article-card-list *ngIf="(articlesRes && !(articlesRes.length === 0)); else empty"   [fromPublications]="true" [articles]="articlesRes" [hasSeparator]="false"
-                             [calculateViewCount]="true"></app-article-card-list>
     </ng-container>
 
-    <div class="text-center mt-3">
-      <div class="empty" *ngIf="seeMore && !articlesLoaded">
-        <div style="display: inline-block">
-          <mat-spinner></mat-spinner>
-        </div>
-      </div>
-      <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="loadMore()">
-        {{'wallet.see_more' | translate}}
-      </button>
-    </div>
-  </ng-container>
+    -->
 
-  <ng-container *ngIf="initialLoading">
-    <div class="text-center mt-3">
-      <div class="empty">
-        <div style="display: inline-block">
-          <mat-spinner></mat-spinner>
+    <ng-container *ngIf="initialLoading">
+        <div class="text-center mt-3">
+            <div class="empty">
+                <div style="display: inline-block">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </ng-container>
-  <ng-template #empty>
-    <div class="empty">
-      <img src="/assets//no-materials.svg" alt="">
-      <p>{{'content.empty' | translate}}</p>
-    </div>
-  </ng-template>
-  <ng-template #emptyStories>
-      <div class="empty">
-        <img src="/assets//no-materials.svg" alt="">
-        <p>{{'content.no_stories' | translate}}</p>
-      </div>
+    </ng-container>
+
+    <ng-template #empty>
+        <div class="empty">
+            <img src="/assets//no-materials.svg" alt="">
+            <p>{{'content.empty' | translate}}</p>
+        </div>
+    </ng-template>
+
+    <ng-template #emptyStories>
+        <div class="empty">
+            <img src="/assets//no-materials.svg" alt="">
+            <p>{{'content.no_stories' | translate}}</p>
+        </div>
     </ng-template>
 </div>
