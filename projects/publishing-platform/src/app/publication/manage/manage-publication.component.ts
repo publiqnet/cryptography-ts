@@ -99,15 +99,8 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         this.publication = publ;
 
         this.publicationService.loadSubscribers(this.publication.slug);
-        if (this.publication.cover) {
-          this.coverImage = this.publicationService.getImages(
-            this.publication.cover
-          );
-        }
-
-        this.logoImage = this.publicationService.getImages(
-          this.publication.logo
-        );
+        this.coverImage = this.publication.cover;
+        this.logoImage = this.publication.logo;
         return this.publicationService.myPublications;
       }),
       filter((my: Array<Publication>) => {

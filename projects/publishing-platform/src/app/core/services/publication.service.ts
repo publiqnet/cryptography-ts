@@ -79,11 +79,11 @@ export class PublicationService {
       .pipe(map((data: IPublications) => new Publications(data)));
   }
 
-  getPublicationBySlug(slug: string | number) {
+  getPublicationBySlug(slug: string | number): Observable<Publication> {
     // const channel = this.channelService.channel || 'stage';
     // return this.http.get(environment.backend + '/api/v1/publication/' + slug, {headers: {'X-API-CHANNEL': channel}});
 
-    return this.httpHelper.customCall(HttpMethodTypes.get, this.url + '/' + slug)
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + '/' + slug)
       .pipe(
         filter(data => data != null),
         map(data => new Publication(data))
@@ -121,10 +121,6 @@ export class PublicationService {
           return res;
         })
       );
-  }
-
-  getImages(path) {
-    return environment.backend + '/uploads/publications/' + path;
   }
 
   getPublicationArticles(slug) {
@@ -383,73 +379,6 @@ export class PublicationService {
         }/api/v1/publication/delete-member/${slug}/${publicKey}`,
       header
     );
-  }
-
-  getAverageRGB(pub) {
-    const imageUrl = this.imagePath + pub.logo;
-    this.contentService.getImage(imageUrl).subscribe((data: File) => {
-      if (data) {
-        const image: any = new Image();
-        const file: File = data;
-        const myReader: FileReader = new FileReader();
-        myReader.onloadend = (loadEvent: any) => {
-          image.src = loadEvent.target.result;
-          image.origin = 'anonymus';
-          setTimeout(() => {
-            const imageColor = this.getImageColor(image);
-            this.averageRGBChanged.next({'slug': pub.slug, 'color': imageColor});
-          }, 100);
-        };
-        myReader.onerror = () => {
-          this.errorService.handleError('getImage', {status: 404}, imageUrl);
-        };
-
-        myReader.readAsDataURL(file);
-      } else {
-        this.errorService.handleError('getImage', {status: 404}, imageUrl);
-      }
-    }, error => {
-      this.errorService.handleError('getImage', {status: 404}, imageUrl);
-    });
-  }
-
-  getImageColor(imageEl) {
-    const blockSize = 5; // only visit every 5 pixels
-    const defaultRGB = {r: 0, g: 0, b: 0}; // for non-supporting envs
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext && canvas.getContext('2d');
-    let data,
-      width,
-      height,
-      i = -4,
-      length;
-    const rgb = {r: 0, g: 0, b: 0};
-    let count = 0;
-    if (!context) {
-      return defaultRGB;
-    }
-    height = canvas.height = imageEl.naturalHeight || imageEl.offsetHeight || imageEl.height;
-    width = canvas.width = imageEl.naturalWidth || imageEl.offsetWidth || imageEl.width;
-    context.drawImage(imageEl, 0, 0);
-    try {
-      data = context.getImageData(0, 0, width, height);
-    } catch (e) {
-      /* security error, img on diff domain */
-      console.log(e);
-      return defaultRGB;
-    }
-    length = data.data.length;
-    while ((i += blockSize * 4) < length) {
-      ++count;
-      rgb.r += data.data[i];
-      rgb.g += data.data[i + 1];
-      rgb.b += data.data[i + 2];
-    }
-    // ~~ used to floor values
-    rgb.r = Math.floor(rgb.r / count);
-    rgb.g = Math.floor(rgb.g / count);
-    rgb.b = Math.floor(rgb.b / count);
-    return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
   }
 
   reset() {

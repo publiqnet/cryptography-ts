@@ -6,14 +6,15 @@ export interface PublicationOptions {
     members: any[];
     articles;
     inviter;
-    cover;
-    logo;
+    cover: string;
+    logo: string;
     socialImage?;
     publicationItem?;
-    id?: number;
     slug: string;
     color: string;
-    owner: any;
+    membersCount: number;
+    memberStatus: number;
+    views: number;
 }
 
 export interface PublicationSubscribersResponse {
@@ -27,19 +28,21 @@ export interface PublicationSubscribersResponse {
 }
 
 export class Publication {
-    title;
-    description;
+    title: string;
+    description: string;
     members: any[];
     articles;
     inviter;
-    cover;
-    logo;
-    id;
+    cover: string;
+    logo: string;
     socialImage;
     publicationItem;
     slug: string;
     color: string;
-    owner: any;
+    membersCount: number;
+    memberStatus: number;
+    views: number;
+
     constructor(options?: PublicationOptions) {
         for (const i in options) {
             if (options.hasOwnProperty(i)) {
@@ -47,6 +50,8 @@ export class Publication {
                    this[i] = options[i] ? environment.backend + '/' + options[i] : '';
                 } else if (i === 'color') {
                     this[i] = options[i] ? '#' + options[i] : '';
+                } else if (['membersCount', 'memberStatus'].includes(i)) {
+                    this[i] = options[i];
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }

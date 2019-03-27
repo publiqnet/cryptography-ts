@@ -7,6 +7,7 @@ import { delay, takeUntil, tap } from 'rxjs/operators';
 
 import { PublicationService } from '../../core/services/publication.service';
 import { ValidationService } from '../../core/validator/validator.service';
+import { Publication } from '../../core/services/models/publication';
 
 @Component({
   selector: 'app-new-publication',
@@ -47,21 +48,13 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe((pub: any) => {
+        .subscribe((pub: Publication) => {
           this.publicationForm.patchValue({
             description: pub.description || '',
             title: pub.title || '',
           });
-          if (pub.logo) {
-            this.logoImage = this.publicationService.getImages(
-              pub.logo
-            );
-          }
-          if (pub.cover) {
-            this.coverImage = this.publicationService.getImages(
-              pub.cover
-            );
-          }
+          this.logoImage = pub.logo;
+          this.coverImage = pub.cover;
         });
     }
   }
@@ -74,50 +67,24 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
     this.loading = true;
     const formData = new FormData();
     if (this.isEditing) {
-      formData.append(
-        'title',
-        this.publicationForm.value.title
-      );
-      formData.append(
-        'description',
-        this.publicationForm.value.description
-      );
+      formData.append('title', this.publicationForm.value.title);
+      formData.append('description', this.publicationForm.value.description);
       if (this.coverFile) {
         formData.append('cover', this.coverFile);
       }
       if (this.logoFile) {
         formData.append('logo', this.logoFile);
       }
-      formData.append(
-        'deleteLogo',
-        this.deleteLogo
-      );
-      formData.append(
-        'deleteCover',
-        this.deleteCover
-      );
+      formData.append('deleteLogo', this.deleteLogo);
+      formData.append('deleteCover', this.deleteCover);
     } else {
-      formData.append(
-        'title',
-        this.publicationForm.value.title
-      );
-      formData.append(
-        'description',
-        this.publicationForm.value.description
-      );
+      formData.append('title', this.publicationForm.value.title);
+      formData.append('description', this.publicationForm.value.description);
       if (this.coverFile) {
-        formData.append(
-          'cover',
-          this.coverFile,
-          this.coverFile.name
-        );
+        formData.append('cover', this.coverFile, this.coverFile.name);
       }
       if (this.logoFile) {
-        formData.append(
-          'logo',
-          this.logoFile,
-          this.logoFile.name
-        );
+        formData.append('logo', this.logoFile, this.logoFile.name);
       }
     }
 
@@ -128,7 +95,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(res => {
+        .subscribe(() => {
           this.router.navigate(['/p/my-publications']);
         });
     } else {
@@ -216,10 +183,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
   private buildForm(): void {
     this.publicationForm = this.FormBuilder.group({
       description: new FormControl(this.description, [ValidationService.required, Validators.maxLength(160)]),
-      title: new FormControl(this.title, [
-        ValidationService.required,
-        Validators.maxLength(this.titleMaxLenght)
-      ]),
+      title: new FormControl(this.title, [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
       logo: new FormControl()
     });

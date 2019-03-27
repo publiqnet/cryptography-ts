@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 
-import { combineLatest, forkJoin, ReplaySubject, zip } from 'rxjs';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AccountService } from '../../core/services/account.service';
 import { LoginDialogComponent } from '../../core/login-dialog/login-dialog.component';
@@ -14,6 +14,7 @@ import { Publication, PublicationSubscribersResponse } from '../../core/services
 import { environment } from '../../../environments/environment';
 import { ChannelService } from '../../core/services/channel.service';
 import { SeoService } from '../../core/services/seo.service';
+import { PublicationMemberStatusType } from '../../core/models/enumes';
 
 
 @Component({
@@ -27,18 +28,17 @@ export class PublicationComponent implements OnInit, OnDestroy {
   canFollow = true;
   becomeMem = false;
   notMember = true;
-  averageColor;
   imagePath: string = environment.backend + '/uploads/publications/';
   subscribers: number;
   articles: number;
   articlesResponse;
   dsIdArray: Array<string>;
   publication: Publication;
-  owner;
   membersCount;
   currentUser;
   private unsubscribe$ = new ReplaySubject<void>(1);
   requestId;
+  slug: string;
   myPublication = false;
 
   constructor(
@@ -58,36 +58,28 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
     this.articlesLoaded = true;
 
-    combineLatest(this.route.params, this.accountService.accountUpdated$)
+    this.route.params
       .pipe(
-        switchMap((data: any[]) => {
-          if (data[1]) {
-            this.currentUser = data[1];
-          }
-          return this.publicationService.getPublicationBySlug(data[0].slug);
-        })
+        debounceTime(500),
+        switchMap((data: Params) => { this.slug = data.slug; return this.accountService.accountUpdated$; }),
+        switchMap((data: any) => {this.currentUser = data; return this.publicationService.getPublicationBySlug(this.slug); }),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe((pub: Publication) => {
-        console.log('------ ', pub);
+        this.loadingPublication = false;
+        this.setSeo();
+
+        console.log('data1----', pub);
 
         this.myPublication = false;
         this.publication = pub;
-        this.owner = this.currentUser && this.currentUser.name === this.publication.owner.username;
-       /* if (this.publication.logo && !this.publication.cover) {
-          this.publicationService.getAverageRGB(this.publication);
-        }*/
-        this.publicationService.checkPublication(this.publication.slug).then(
-          res => {
-            this.myPublication = res;
-          }
-        );
-        const title = this.publication.title;
-        const description = this.publication.description;
-        const image = this.publication.socialImage || this.publication.cover ? this.publication.socialImage || this.publication.cover : 'https://publiq.network/media/images/92169.png';
-        const url = environment.main_site_url + this.router.url;
-        this.seoService.generateTags({
-          title, description, image, url
-        });
+        // this.publicationService.checkPublication(this.publication.slug).then(
+        //   res => {
+        //     this.myPublication = res;
+        //   }
+        // );
+
+
         /*if (isPlatformBrowser(this.platformId)) {
           this.getMyRequests();
           this.getMyMembership();
@@ -111,79 +103,23 @@ export class PublicationComponent implements OnInit, OnDestroy {
             }
           );*/
       });
-
-    /* this.route.params
-      .pipe(
-        filter(params => params.slug),
-        switchMap((params) => this.publicationService.getPublicationBySlug(params.slug)),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-        console.log('data --- ', data);
-       this.accountService.accountUpdated$
-          .pipe(
-            switchMap(acc => {
-              this.currentUser = acc;
-              return this.publicationService.getPublicationBySlug(param.slug);
-            }),
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe(pub => {
-            this.myPublication = false;
-            this.publication = pub;
-            this.owner = this.currentUser && this.currentUser.name === this.publication.owner.username;
-            if (this.publication.logo && !this.publication.cover) {
-              this.publicationService.getAverageRGB(this.publication);
-            }
-            this.publicationService.checkPublication(this.publication.slug).then(
-              res => {
-                this.myPublication = res;
-              }
-            );
-            const title = this.publication.title;
-            const description = this.publication.description;
-            const image = this.publication.socialImage || this.publication.cover ? this.imagePath + this.publication.socialImage || this.publication.cover : 'https://publiq.network/media/images/92169.png';
-            const url = environment.main_site_url + this.router.url;
-            this.seoService.generateTags({
-              title, description, image, url
-            });
-            if (isPlatformBrowser(this.platformId)) {
-              this.getMyRequests();
-              this.getMyMembership();
-              this.publicationService.loadSubscribers(this.publication.slug);
-              this.getPublicationArticles();
-            }
-            this.publicationService.subscribersChanged
-              .pipe(
-                takeUntil(this.unsubscribe$)
-              )
-              .subscribe((res: Array<PublicationSubscribersResponse>) => {
-                  if (this.accountService.accountInfo) {
-                    this.subscribers = res.length;
-                    const userName = this.accountService.accountInfo.name;
-                    res.forEach((elem: PublicationSubscribersResponse) => {
-                      if (userName === elem.subscriber.username) {
-                        this.canFollow = false;
-                      }
-                    });
-                  }
-                }
-              );
-          });
-      });
-      */
-
-    /*this.publicationService.averageRGBChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-        this.averageColor = data.color;
-      });*/
   }
 
-  setOwner(owner) {
-    this.owner = owner.user.username === this.currentUser.name;
+  get PublicationMemberStatus() {
+    return PublicationMemberStatusType;
+  }
+
+  private setSeo(): void {
+    if (!this.publication) {
+      return;
+    }
+    const title = this.publication.title;
+    const description = this.publication.description;
+    const image = this.publication.socialImage || this.publication.cover
+      ? this.publication.socialImage || this.publication.cover
+      : 'https://publiq.network/media/images/92169.png';
+    const url = environment.main_site_url + this.router.url;
+    this.seoService.generateTags({title, description, image, url});
   }
 
 
