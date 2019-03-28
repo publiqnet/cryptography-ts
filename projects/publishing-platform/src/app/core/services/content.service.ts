@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { flatMap, map, switchMap } from 'rxjs/operators';
 
 import { AccountService } from './account.service';
 import { environment } from '../../../environments/environment';
@@ -13,6 +13,7 @@ import { ChannelService } from './channel.service';
 import { Account } from './models/account';
 import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
+import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
 
 // import {
 //   Aes,
@@ -49,6 +50,7 @@ export class ContentService {
 
   contentUrl = environment.backend + '/api/v1/content';
   feedbackUrl = environment.backend + '/api/v1/feedback';
+  fileUrl = environment.backend + '/api/file';
 
   private feedback: Feedback;
   feedbackChanged = new Subject<Feedback>();
@@ -101,6 +103,8 @@ export class ContentService {
   }
 
   constructor(
+    private httpHelperService: HttpHelperService,
+    private cryptService: CryptService,
     private accountService: AccountService,
     private errorService: ErrorService,
     private http: HttpClient,
@@ -114,122 +118,122 @@ export class ContentService {
     if (isPlatformBrowser(this.platformId)) {
       this.walletService.initExternalWsService();
 
-      try {
-        CryptService.brainKeyDecrypt(
-          this.accountService.brainKeyEncrypted,
-          password
-        ).subscribe(
-          // brainKey => {
-          //   this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-          //
-          //   if (!this.accountService.accountInfo.pKey) {
-          //     this.errorService.handleError('need_private_key', {
-          //       status: 409,
-          //       error: {message: 'need_private_key'}
-          //     });
-          //     return;
-          //   }
-          //
-          //   // const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
-          //
-          //   // this.walletService.api
-          //   //   .then(apiRes => {
-          //   //     ChainStore.init()
-          //   //       .then(() => {
-          //   //         const boostData = {amount: 0, asset: CoinName};
-          //   //         Promise.all([
-          //   //           FetchChain('getAccount', this.accountService.accountInfo),
-          //   //           FetchChain('getAsset', boostData.asset)
-          //   //         ])
-          //   //           .then(res => {
-          //   //             const [
-          //   //               sponsorAccount,
-          //   //               pbqAsset
-          //   //             ] = res;
-          //   //
-          //   //             const tr = new TransactionBuilder();
-          //   //             // end_date
-          //   //             tr.add_type_operation('cancel_promotion', {
-          //   //               sponsor: sponsorAccount.get('id'),
-          //   //               fee: {
-          //   //                 amount: 0,
-          //   //                 asset_id: pbqAsset.get('id')
-          //   //               },
-          //   //               id: id
-          //   //             });
-          //   //             tr.set_required_fees().then(() => {
-          //   //               tr.add_signer(
-          //   //                 pKey,
-          //   //                 pKey.toPublicKey().toPublicKeyString()
-          //   //               );
-          //   //               tr.broadcast((data) => {
-          //   //                 this.accountService.loadBalance();
-          //   //                 this.pendingProcess.next(false);
-          //   //                 // this.submittedContentChanged.next(this.submittedContentData);
-          //   //                 // this.articleUpLoading = false;
-          //   //               });
-          //   //             });
-          //   //           })
-          //   //           .catch(reason => {
-          //   //             this.errorService.handleError('transfer_failed', {
-          //   //               status: 409,
-          //   //               error: {message: 'transfer_failed'}
-          //   //             });
-          //   //             this.articleUpLoading = false;
-          //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
-          //   //             this.pendingProcess.next(false);
-          //   //             return;
-          //   //           });
-          //   //       })
-          //   //       .catch(reason => {
-          //   //         this.walletService.destroyExternalWsService();
-          //   //         if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
-          //   //             this.walletService.initExternalWsService(environment.daemon_address_second);
-          //   //             this.cancelArticleBoosting(password, id);
-          //   //         } else {
-          //   //             this.errorService.handleError('transfer_failed', {
-          //   //                 status: 409,
-          //   //                 error: {message: 'transfer_failed'}
-          //   //             });
-          //   //             this.articleUpLoading = false;
-          //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
-          //   //             this.pendingProcess.next(false);
-          //   //             return;
-          //   //         }
-          //   //       });
-          //   //   })
-          //   //   .catch(reason => {
-          //   //     this.errorService.handleError('transfer_failed', {
-          //   //       status: 409,
-          //   //       error: {message: 'transfer_failed'}
-          //   //     });
-          //   //     this.articleUpLoading = false;
-          //   //     this.articleUpLoadingChanged.next(this.articleUpLoading);
-          //   //     this.pendingProcess.next(false);
-          //   //     return;
-          //   //   });
-          // },
-          // err => {
-          //   this.errorService.handleError('transfer-password-error', {
-          //     status: 409,
-          //     error: {message: 'password_error'}
-          //   });
-          //   this.articleUpLoading = false;
-          //   this.pendingProcess.next(false);
-          //   this.articleUpLoadingChanged.next(this.articleUpLoading);
-          // }
-        );
-      } catch (MalformedURLException) {
-        console.log('MalformedURLException');
-        this.errorService.handleError('transfer_failed', {
-          status: 409,
-          error: {message: 'transfer_failed'}
-        });
-        this.articleUpLoading = false;
-        this.pendingProcess.next(false);
-        this.articleUpLoadingChanged.next(this.articleUpLoading);
-        return;
-      }
+      // try {
+      //   CryptService.brainKeyDecrypt(
+      //     this.accountService.brainKeyEncrypted,
+      //     password
+      //   ).subscribe(
+      //     // brainKey => {
+      //     //   this.accountService.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
+      //     //
+      //     //   if (!this.accountService.accountInfo.pKey) {
+      //     //     this.errorService.handleError('need_private_key', {
+      //     //       status: 409,
+      //     //       error: {message: 'need_private_key'}
+      //     //     });
+      //     //     return;
+      //     //   }
+      //     //
+      //     //   // const pKey = PrivateKey.fromWif(this.accountService.accountInfo.pKey);
+      //     //
+      //     //   // this.walletService.api
+      //     //   //   .then(apiRes => {
+      //     //   //     ChainStore.init()
+      //     //   //       .then(() => {
+      //     //   //         const boostData = {amount: 0, asset: CoinName};
+      //     //   //         Promise.all([
+      //     //   //           FetchChain('getAccount', this.accountService.accountInfo),
+      //     //   //           FetchChain('getAsset', boostData.asset)
+      //     //   //         ])
+      //     //   //           .then(res => {
+      //     //   //             const [
+      //     //   //               sponsorAccount,
+      //     //   //               pbqAsset
+      //     //   //             ] = res;
+      //     //   //
+      //     //   //             const tr = new TransactionBuilder();
+      //     //   //             // end_date
+      //     //   //             tr.add_type_operation('cancel_promotion', {
+      //     //   //               sponsor: sponsorAccount.get('id'),
+      //     //   //               fee: {
+      //     //   //                 amount: 0,
+      //     //   //                 asset_id: pbqAsset.get('id')
+      //     //   //               },
+      //     //   //               id: id
+      //     //   //             });
+      //     //   //             tr.set_required_fees().then(() => {
+      //     //   //               tr.add_signer(
+      //     //   //                 pKey,
+      //     //   //                 pKey.toPublicKey().toPublicKeyString()
+      //     //   //               );
+      //     //   //               tr.broadcast((data) => {
+      //     //   //                 this.accountService.loadBalance();
+      //     //   //                 this.pendingProcess.next(false);
+      //     //   //                 // this.submittedContentChanged.next(this.submittedContentData);
+      //     //   //                 // this.articleUpLoading = false;
+      //     //   //               });
+      //     //   //             });
+      //     //   //           })
+      //     //   //           .catch(reason => {
+      //     //   //             this.errorService.handleError('transfer_failed', {
+      //     //   //               status: 409,
+      //     //   //               error: {message: 'transfer_failed'}
+      //     //   //             });
+      //     //   //             this.articleUpLoading = false;
+      //     //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+      //     //   //             this.pendingProcess.next(false);
+      //     //   //             return;
+      //     //   //           });
+      //     //   //       })
+      //     //   //       .catch(reason => {
+      //     //   //         this.walletService.destroyExternalWsService();
+      //     //   //         if (environment.daemon_address_second != this.walletService.currentDaemonAddress) {
+      //     //   //             this.walletService.initExternalWsService(environment.daemon_address_second);
+      //     //   //             this.cancelArticleBoosting(password, id);
+      //     //   //         } else {
+      //     //   //             this.errorService.handleError('transfer_failed', {
+      //     //   //                 status: 409,
+      //     //   //                 error: {message: 'transfer_failed'}
+      //     //   //             });
+      //     //   //             this.articleUpLoading = false;
+      //     //   //             this.articleUpLoadingChanged.next(this.articleUpLoading);
+      //     //   //             this.pendingProcess.next(false);
+      //     //   //             return;
+      //     //   //         }
+      //     //   //       });
+      //     //   //   })
+      //     //   //   .catch(reason => {
+      //     //   //     this.errorService.handleError('transfer_failed', {
+      //     //   //       status: 409,
+      //     //   //       error: {message: 'transfer_failed'}
+      //     //   //     });
+      //     //   //     this.articleUpLoading = false;
+      //     //   //     this.articleUpLoadingChanged.next(this.articleUpLoading);
+      //     //   //     this.pendingProcess.next(false);
+      //     //   //     return;
+      //     //   //   });
+      //     // },
+      //     // err => {
+      //     //   this.errorService.handleError('transfer-password-error', {
+      //     //     status: 409,
+      //     //     error: {message: 'password_error'}
+      //     //   });
+      //     //   this.articleUpLoading = false;
+      //     //   this.pendingProcess.next(false);
+      //     //   this.articleUpLoadingChanged.next(this.articleUpLoading);
+      //     // }
+      //   );
+      // } catch (MalformedURLException) {
+      //   console.log('MalformedURLException');
+      //   this.errorService.handleError('transfer_failed', {
+      //     status: 409,
+      //     error: {message: 'transfer_failed'}
+      //   });
+      //   this.articleUpLoading = false;
+      //   this.pendingProcess.next(false);
+      //   this.articleUpLoadingChanged.next(this.articleUpLoading);
+      //   return;
+      // }
     }
   }
 
@@ -938,5 +942,60 @@ export class ContentService {
 
   getImage(imageUrl): Observable<Blob> {
     return this.http.get(imageUrl, {responseType: 'blob'});
+  }
+
+  // new
+  signFile(file, brainKey) {
+    const signData = this.cryptService.getSignedFile(brainKey, file);
+    return {
+      uri: file,
+      signedFile: signData.signedString,
+      signedFileString: signData.signedJson,
+      creationTime: signData.creation,
+      expiryTime: signData.expiry
+    };
+  }
+
+  signFiles(files: Array<string>, password): Observable<any> {
+    const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
+    const data = files.map(f => this.signFile(f, brainKey));
+    const url = this.fileUrl + `/sign`;
+    return this.httpHelperService.call(HttpMethodTypes.post, url, { files: data });
+  }
+
+  unitUpload(content): Observable<any> {
+    const url = environment.backend + '/api/content/unit/upload';
+    // const url = this.contentUrl + `unit/upload`;
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {
+      content
+    });
+  }
+
+  unitSign(channelAddress, contentId, contentUri, files, password): Observable<any> {
+    const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
+    const url = environment.backend + '/api/content/unit/sign';
+    const signData = this.cryptService.getSignUnit(
+      brainKey,
+      contentUri,
+      contentId,
+      channelAddress,
+      files
+    );
+    const requestData = {
+      uri: contentUri,
+      signedContentUnit: signData.signedString,
+      contentId: contentId,
+      creationTime: signData.creation,
+      expiryTime: signData.expiry,
+      fileUris: files
+    };
+    return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
+  }
+
+  uploadContent(contentId, unit, files, password): Observable<any> {
+    return this.unitUpload(unit)
+      .pipe(
+        switchMap((data: any) => this.unitSign(data.channelAddress, contentId, data.uri, files, password))
+      );
   }
 }

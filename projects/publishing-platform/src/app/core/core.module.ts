@@ -48,6 +48,7 @@ import { LinkService } from './services/link.service';
 import { NewstorySubmission2Component } from './newstory-submission2/newstory-submission2.component';
 import { HttpRpcService } from './services/httpRpc.service';
 import { DraftService } from './services/draft.service';
+import { CryptService } from './services/crypt.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -110,6 +111,7 @@ export function createTranslateLoader(http: HttpClient) {
         UserNotificationService,
         DialogService,
         SeoService,
+        CryptService,
         WalletService,
         HttpRpcService,
         NuxService,

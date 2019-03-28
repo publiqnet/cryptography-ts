@@ -113,7 +113,7 @@
                             <i class="publications-icon"></i>
                             <span>{{"header.publications" | translate}}</span>
                         </button>
-                        <button *ngIf="account && account.id" mat-menu-item [routerLink]="['/a/' + account.name ]">
+                        <button *ngIf="account" mat-menu-item [routerLink]="['/a/' + account.publicKey ]">
                             <i class="icon-profile"></i>
                             <span>{{"header.profile" | translate}}</span>
                         </button>

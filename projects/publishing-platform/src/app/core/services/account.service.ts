@@ -17,11 +17,8 @@ import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } fro
 import { HttpRpcService } from './httpRpc.service';
 import { Subscriber } from './models/subscriber';
 
-import { KeyPair } from 'cryptography-ts';
-import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction';
 import { UtilsService } from 'shared-lib';
-
-KeyPair.setPublicKeyPrefix('PBQ');
+import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
 
 
 @Injectable()
@@ -30,8 +27,10 @@ export class AccountService {
   constructor(private http: HttpClient,
               @Inject(PLATFORM_ID) private platformId: Object,
               private httpRpcService: HttpRpcService,
+              private httpHelperService: HttpHelperService,
               private errorService: ErrorService,
               private utilsService: UtilsService,
+              private cryptService: CryptService,
               public translateService: TranslateService) {
   }
 
@@ -242,7 +241,11 @@ export class AccountService {
   }
 
   setAccountInfo(userInfo) {
+
+    const data = (this.accountInfo) ? this.accountInfo : {};
+
     this.accountInfo = {
+      ...data,
       ...userInfo,
       balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
     };
@@ -615,7 +618,18 @@ export class AccountService {
     }
   }
 
-  public updateAccount(newData, password): void {
+  public updateAccount(updateData): Observable<any>  {
+    const url = this.userUrl;
+    return this.httpHelperService.call(HttpMethodTypes.post, url, updateData)
+      .pipe(
+        map((userInfo: any) => {
+          this.setAccountInfo(userInfo);
+          return userInfo;
+        })
+      );
+  }
+
+  public updateAccountOld(newData, password): void {
     if (isPlatformBrowser(this.platformId)) {
       this.profileUpdating = true;
       this.profileUpdatingChanged.next(this.profileUpdating);
@@ -992,20 +1006,7 @@ export class AccountService {
     }
   }
 
-  getSignetString(stringToSign, brainKey) {
-    const now = new Date(new Date(stringToSign * 1000));
-    const now_1h = new Date(now.getTime() + (1 * 60 * 1000));
-    const keyPair = new KeyPair(brainKey);
-    const transactionObj = new PubliqTransaction({
-      creation: +now,
-      expiry: +now_1h,
-      fee: {
-        whole: 0,
-        fraction: 0
-      },
-      action: {}// transferObj,
-    });
-    const signedString = keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
-    return signedString;
+  checkPassword(password: string): boolean {
+    return this.cryptService.checkPassword(this.brainKeyEncrypted, password);
   }
 }

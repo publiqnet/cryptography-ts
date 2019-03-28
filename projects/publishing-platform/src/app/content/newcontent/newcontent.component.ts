@@ -17,7 +17,7 @@ import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { isPlatformBrowser } from '@angular/common';
 import { ENTER } from '@angular/cdk/keycodes';
 
-import { map, debounceTime, filter, takeUntil, flatMap } from 'rxjs/operators';
+import { map, debounceTime, filter, takeUntil, flatMap, switchMap } from 'rxjs/operators';
 import { zip, ReplaySubject, of } from 'rxjs';
 import { now } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
@@ -80,7 +80,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
   @Output() hasPendingChanges: EventEmitter<boolean> = new EventEmitter();
   @Input() draft?: Draft;
-  @Input() draftId = '';
+  @Input() draftId: number;
   @Input() editableContent?: Content;
   @Input() editableContentId?: string;
 
@@ -105,7 +105,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   listImageUrl = '';
   currentTags = [];
   contentUrl = environment.backend + '/api/file/upload';
-  contentId = 0;
+  contentId: number;
   actions = {
     main: 1,
     list: 2,
@@ -135,7 +135,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   @ViewChild('content') contentElement: ElementRef;
   showErrors = false;
 
-  contentUris = [];
+  contentUris: Array<any> = [];
 
   isBrowser;
   updateButtonDisable = true;
@@ -204,7 +204,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       'froalaEditor.image.inserted': (e, editor, img, response) => {
         if (response) {
           const responseData = JSON.parse(response);
-          this.contentUris.push({'uri' : responseData.uri, 'link' : responseData.link});
+          this.contentUris.push(responseData.uri);
           console.log('this.contentUris - ', this.contentUris);
           const uploadedImageOriginal = responseData.content_original_sample_file;
           const uploadedImageThumb = responseData.content_thumb_sample_file;
@@ -566,6 +566,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
               const message = this.translateService.instant('content.draft_saved');
               this.notificationService.autoSave(message);
               this.draftId = draft.id;
+              if (!this.contentId) {
+                this.contentId = this.draftId;
+              }
             }
           }
         );
@@ -699,6 +702,12 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   }
 
   submit(password: string, boostInfo?) {
+    // this.contentService.signFiles(this.contentUris, password)
+    // .pipe(
+    //   switchMap((data: any) => this.contentService.uploadContent(this.contentId, '<p>test</p>', this.contentUris, password))
+    // ).subscribe(data => {
+    //   console.log(data);
+    // });
     if (boostInfo) {
       this.boostInfo = boostInfo;
     }
@@ -1066,7 +1075,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
     const dialogMessages = this.translateService.instant('dialog');
     const message = this.hasEditableContent ? dialogMessages['confirm']['update_story_title'] : dialogMessages['confirm']['new_story_title'];
-    if (!this.accountService.accountInfo.meta.first_name) {
+    if (!this.accountService.accountInfo.firstName) {
       this.dialogService.openInfoDialog('settings', dialogMessages['info']['settings_title'], {
         width: '700px',
         height: '450px',

@@ -38,7 +38,7 @@ export class DraftData {
   reference: string;
   sourceOfMaterial: string;
   title: string;
-  id: string;
+  id: number;
   created: Date;
   updated: Date;
 
