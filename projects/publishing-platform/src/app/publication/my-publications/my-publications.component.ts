@@ -22,6 +22,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   publications: Publication[];
   membership: Publication[];
   invitations: Publication[];
+  requests: Publication[];
   selectedIndex = this.publicationService.tabIndexInv;
   filePath = environment.backend + '/uploads/publications/';
   private unsubscribe$ = new ReplaySubject<void>(1);
@@ -39,9 +40,11 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: Publications) => {
+        console.log('data -- ', data);
         this.publications = data.owned;
         this.membership = data.membership;
         this.invitations = data.invitations;
+        this.requests = data.requests;
       });
 
 

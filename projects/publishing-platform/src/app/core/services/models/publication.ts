@@ -52,7 +52,7 @@ export class Publication {
                     this[i] = options[i] ? '#' + options[i] : '';
                 } else if (['membersCount', 'memberStatus'].includes(i)) {
                     this[i] = options[i];
-                } else {
+                } else if (this.hasOwnProperty(i)) {
                     this[i] = options[i] ? options[i] : '';
                 }
             }

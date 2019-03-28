@@ -145,6 +145,16 @@
                     </div>
                 </ng-container>
             </mat-tab>
+            <mat-tab label="{{'content.requests' | translate}}">
+                <ng-container *ngIf="requests; else loader">
+                    <div style="padding: 50px 5px;" class="main-container clearfix" *ngIf="requests?.length > 0; else noRequests">
+
+                        <div class="cols col-md-12" *ngFor="let request of requests; let index = index">
+                            <p>{{request.title}}</p>
+                        </div>
+                    </div>
+                </ng-container>
+            </mat-tab>
         </mat-tab-group>
     </div>
 </main>
@@ -162,6 +172,14 @@
         <p>{{'content.no_invitations' | translate}}</p>
     </div>
 </ng-template>
+
+<ng-template #noRequests>
+    <div class="empty">
+        <img src="/assets//no-materials.svg" alt="">
+        <p>{{'content.no_requests' | translate}}</p>
+    </div>
+</ng-template>
+
 <ng-template #noMembership>
     <div class="empty">
         <img src="/assets//no-materials.svg" alt="">

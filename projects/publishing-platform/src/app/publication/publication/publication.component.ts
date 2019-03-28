@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
@@ -38,7 +38,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     public dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
-    @Inject(PLATFORM_ID) private platformId,
     private publicationService: PublicationService,
     public channelService: ChannelService,
     private titleService: Title,

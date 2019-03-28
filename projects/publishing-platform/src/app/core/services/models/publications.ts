@@ -1,4 +1,4 @@
-import { Publication } from './publication';
+import { Publication, PublicationOptions } from './publication';
 
 export interface IPublications {
   owned?;
@@ -11,13 +11,13 @@ export class Publications {
   owned?: any[];
   invitations?;
   membership?;
-  requests?;
+  requests?: any[];
 
   constructor(options?: IPublications) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (i == 'owned') {
-          this[i] = options[i] && options[i].length ? options[i].map(data => new Publication(data)) : [];
+        if (['requests', 'owned'].includes(i)) {
+          this[i] = options[i] && options[i].length ? options[i].map((data: PublicationOptions) => new Publication(data)) : [];
         } else {
           this[i] = options[i];
         }
