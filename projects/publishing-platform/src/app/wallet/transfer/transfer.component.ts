@@ -179,7 +179,7 @@ export class TransferComponent implements OnInit, OnDestroy {
   transfer() {
     if (
       parseFloat(this.amount) <= 0 ||
-      parseFloat(this.amount) > parseFloat(this.accountService.accountInfo.balance) / PBQPower
+      parseFloat(this.amount) > this.accountService.accountInfo.balance
     ) {
       this.notificationService.error(
         this.errorService.getError('invalid_amount_error')

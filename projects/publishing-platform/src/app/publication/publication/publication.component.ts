@@ -99,7 +99,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
               .subscribe((res: Array<PublicationSubscribersResponse>) => {
                   if (this.accountService.accountInfo) {
                     this.subscribers = res.length;
-                    const userName = this.accountService.accountInfo.name;
+                    const userName = this.accountService.accountInfo.publicKey;
                     res.forEach((elem: PublicationSubscribersResponse) => {
                       if (userName === elem.subscriber.username) {
                         this.canFollow = false;

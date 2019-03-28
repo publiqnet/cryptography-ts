@@ -95,7 +95,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         .subscribe((author: Account) => {
             this.author = author;
             this.avatarUrl = null;
-            if (this.accountService.accountInfo && this.accountService.accountInfo.id == this.author.id) {
+            if (this.accountService.accountInfo && this.accountService.accountInfo.publicKey == this.author.publicKey) {
               this.yourAccount = true;
             }
             const url = isPlatformServer(this.platformId)
@@ -154,7 +154,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(data => {
-            this.accountService.loadAuthorStats(this.author.name);
+            this.accountService.loadAuthorStats(this.author.publicKey);
             this.canFollow = false;
           }
         );
@@ -164,7 +164,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(data => {
-            this.accountService.loadAuthorStats(this.author.name);
+            this.accountService.loadAuthorStats(this.author.publicKey);
             this.canFollow = true;
           }
         );
@@ -210,7 +210,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.accountService.follow(this.author.name);
+    this.accountService.follow(this.author.publicKey);
   }
 
   unfollow() {
@@ -218,7 +218,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.openLoginDialog();
       return false;
     }
-    this.accountService.unfollow(this.author.name);
+    this.accountService.unfollow(this.author.publicKey);
   }
 
   public openLoginDialog() {
@@ -230,11 +230,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
         if (response) {
           if (
             this.accountService.accountInfo &&
-            this.accountService.accountInfo.id == this.author.id
+            this.accountService.accountInfo.publicKey == this.author.publicKey
           ) {
             this.yourAccount = true;
           }
-          this.accountService.loadAuthorStats(this.author.name);
+          this.accountService.loadAuthorStats(this.author.publicKey);
         }
       });
   }

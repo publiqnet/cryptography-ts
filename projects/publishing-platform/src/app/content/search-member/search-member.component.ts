@@ -117,7 +117,7 @@ export class SearchMemberComponent implements OnInit, OnChanges, OnDestroy {
             .subscribe((response: Account[]) => {
               const existingAccounts = this.tags.concat(this.memberKeys);
               response.forEach((account: Account, index: number) => {
-                if (existingAccounts.includes(account.name)) {
+                if (existingAccounts.includes(account.publicKey)) {
                   response.splice(index, 1);
                 }
               });
@@ -313,7 +313,7 @@ export class SearchMemberComponent implements OnInit, OnChanges, OnDestroy {
     if (account.firstName && account.lastName) {
       name = account.firstName + ' ' + account.lastName;
     } else if (!account.firstName && !account.lastName) {
-      name = account.name;
+      name = account.publicKey;
     } else {
       name = (account.firstName ? account.firstName : '') + ' ' + (account.lastName ? account.lastName : '');
     }

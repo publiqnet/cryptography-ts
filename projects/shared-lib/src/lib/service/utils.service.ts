@@ -7,11 +7,11 @@ export class UtilsService {
 
   constructor() { }
 
-  calculateBalance(whole, fraction, fractionCoif = 100000000) {
-    let balance = `${whole}`;
+  public static calculateBalance(whole: number, fraction: number, fractionCoif = 100000000): number {
+    let balance = whole;
     if (fraction) {
       const _fraction = fraction / fractionCoif;
-      balance = `${whole + _fraction}`;
+      balance = whole + _fraction;
     }
     return balance;
   }

@@ -47,7 +47,7 @@ export class AuthguardService implements CanActivate, CanActivateChild {
             if (
               channelAuthors.length > 0 &&
               this.accountService.accountInfo &&
-              !channelAuthors.includes(this.accountService.accountInfo.name)
+              !channelAuthors.includes(this.accountService.accountInfo.publicKey)
             ) {
               this.dialogService
                 .openChannelNotAllowedDialog()
@@ -82,7 +82,7 @@ export class AuthguardService implements CanActivate, CanActivateChild {
                 if (
                   channelAuthors.length > 0 &&
                   this.accountService.accountInfo &&
-                  !channelAuthors.includes(this.accountService.accountInfo.name)
+                  !channelAuthors.includes(this.accountService.accountInfo.publicKey)
                 ) {
                   this.dialogService
                     .openChannelNotAllowedDialog()

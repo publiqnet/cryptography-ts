@@ -660,7 +660,7 @@ export class ArticleService {
                             this.publicationService.loadStoriesPublicationByDsId(dsIds);
                         }
 
-                        return this.mainPurifyContent(result, this.accountService.getAccount().id);
+                        return this.mainPurifyContent(result, this.accountService.getAccount().publicKey);
                     }
                 )
             )

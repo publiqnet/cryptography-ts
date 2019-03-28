@@ -188,7 +188,7 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
 
   isMyContent(article) {
     return this.accountService.accountInfo && article && article.full_account
-      ? this.accountService.accountInfo.id == article.full_account.id
+      ? this.accountService.accountInfo.publicKey == article.full_account.id
       : false;
   }
 
