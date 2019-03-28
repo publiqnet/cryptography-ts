@@ -26,7 +26,11 @@
                         </div>
                     </mat-list> -->
 
-                    <form class="form" *ngIf="settingsForm" [ngClass]="{'mt-5': hideElement}" novalidate (ngSubmit)="updateSetting()" [formGroup]="settingsForm">
+                    <form class="form" *ngIf="settingsForm"
+                          [ngClass]="{'mt-5': hideElement}"
+                          novalidate
+                          (ngSubmit)="onSubmit()"
+                          [formGroup]="settingsForm">
                         <div class="settings-avatar-container" *ngIf="hideElement">
                             <label for="fileToUpload" class="avatar"
                                    [ngStyle]="{'background-image':currentImage ? 'url('+currentImage+')' : 'url(/assets/no-image-article.jpg)'}">
@@ -48,23 +52,23 @@
                         <div fxFlex class="settings-bio">
                             <div>
                                 <mat-form-field class="full-width">
-                                    <input matInput formControlName="first_name" placeholder="{{'user.first_name_or_nickname' | translate}}"
+                                    <input matInput formControlName="firstName" placeholder="{{'user.first_name_or_nickname' | translate}}"
                                            >
                                 </mat-form-field>
                             </div>
                             <div>
                                 <app-control-message class="warning mb-4 h6"
-                                                     [control]="settingsForm['controls']['first_name']"></app-control-message>
+                                                     [control]="settingsForm['controls']['firstName']"></app-control-message>
                             </div>
 
                             <div>
                                 <mat-form-field class="full-width">
-                                    <input matInput formControlName="last_name" placeholder="{{'user.last_name' | translate}}">
+                                    <input matInput formControlName="lastName" placeholder="{{'user.last_name' | translate}}">
                                 </mat-form-field>
                             </div>
                             <div class="warning mb-4 h6">
                                 <app-control-message
-                                        [control]="settingsForm['controls']['last_name']"></app-control-message>
+                                        [control]="settingsForm['controls']['lastName']"></app-control-message>
                             </div>
 
                           <div>

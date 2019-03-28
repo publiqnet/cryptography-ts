@@ -87,7 +87,10 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
     this.tokenCheckStatus = TokenCheckStatus.Loading;
     this.oauthService.signupComplete(this.stringToSign, this.token, this.configForm.value.password)
       .pipe(
-        switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
+        switchMap((data: any) => {
+          this.accountService.brainKeyEncrypted = data.brainKey;
+          return this.accountService.accountAuthenticate(data.token);
+        }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {

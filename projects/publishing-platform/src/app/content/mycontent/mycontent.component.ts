@@ -243,7 +243,7 @@ export class MycontentComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteDraft(id: string, index: number) {
+  deleteDraft(id: number, index: number) {
     this.dialogService.openConfirmDialog('')
       .pipe(
         filter(result => result),

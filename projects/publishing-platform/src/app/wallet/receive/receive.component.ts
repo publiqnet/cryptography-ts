@@ -13,7 +13,7 @@ import { Broadcaster } from '../../broadcaster/broadcaster';
   styleUrls: ['./receive.component.scss']
 })
 export class ReceiveComponent implements OnInit, OnDestroy {
-  accountId: String;
+  publicKey: String;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
@@ -27,7 +27,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
     // if coming from another page
     const account = this.accountService.getAccount();
     if (account) {
-      this.accountId = account.username;
+      this.publicKey = account.publicKey;
     }
 
     // if the page is opened directly
@@ -37,7 +37,7 @@ export class ReceiveComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(acc => {
-        this.accountId = acc.username;
+        this.publicKey = acc.publicKey;
       });
   }
 

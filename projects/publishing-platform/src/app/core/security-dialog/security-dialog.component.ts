@@ -2,11 +2,9 @@ import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/
 
 import { MatDialogRef } from '@angular/material';
 
-// import { CryptService } from '../services/crypt.service';
+import { CryptService } from '../services/crypt.service';
 import { AccountService } from '../services/account.service';
 import { ErrorService } from '../services/error.service';
-import { KeyPair } from 'cryptography-ts';
-import { throwError } from 'rxjs';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -31,6 +29,7 @@ export class SecurityDialogComponent implements OnInit, OnDestroy {
 
   constructor(public dialogRef: MatDialogRef<SecurityDialogComponent>,
               public accountService: AccountService,
+              public cryptService: CryptService,
               private errorService: ErrorService) {
   }
 
@@ -68,12 +67,9 @@ export class SecurityDialogComponent implements OnInit, OnDestroy {
   }
 
   decryptPK(brainKeyEncrypted) {
-    const brainKeyData = KeyPair.decryptBrainKeyByPassword(brainKeyEncrypted, this.password);
-
-    if (brainKeyData.isValid) {
-      const brainKey = brainKeyData.brainKey;
-      const keyPair = new KeyPair(brainKey);
-      this.decriptedPrivateKey = keyPair.Private.key;
+    if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
+      const brainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
+      this.decriptedPrivateKey = this.cryptService.getPrivateKey(brainKey);
     }
 
     if (this.decriptedPrivateKey) {
@@ -94,10 +90,8 @@ export class SecurityDialogComponent implements OnInit, OnDestroy {
   }
 
   decryptBK(brainKeyEncrypted) {
-    const brainKeyData = KeyPair.decryptBrainKeyByPassword(brainKeyEncrypted, this.password);
-
-    if (brainKeyData.isValid) {
-      this.decryptedBrainKey = brainKeyData.brainKey;
+    if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
+      this.decryptedBrainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
       this.passwordVerified = true;
     } else {
       this.passError = this.errorService.getError('password_error');

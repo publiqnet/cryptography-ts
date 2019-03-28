@@ -1,4 +1,4 @@
-<mat-card class="centered flex-column flex-md-row" *ngIf="accountId">
+<mat-card class="centered flex-column flex-md-row" *ngIf="publicKey">
     <div>
         <div class="receive-header">
             <mat-card-title>{{'wallet.receive' | translate}} PBQ {{'wallet.testnet' | translate}}</mat-card-title>
@@ -6,14 +6,14 @@
 
         <div class="simple-text receive-description mt-4">{{'wallet.in_order_to_receive' | translate}}:
             <div>
-                <span class="acc-id">{{accountId}}</span>
+                <span class="acc-id">{{publicKey}}</span>
             </div>
         </div>
 
 
 
         <div class="image-container">
-            <img class="mt-4 mb-4" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{accountId}}&choe=UTF-8&chld=L|1">
+            <img class="mt-4 mb-4" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{publicKey}}&choe=UTF-8&chld=L|1">
         </div>
         <div class="simple-text bottom-text">{{'wallet.you_can_see' | translate}} <a (click)="showTabTransactions()">{{'wallet.clicking_here' | translate}}</a>.
         </div>

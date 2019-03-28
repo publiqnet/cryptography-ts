@@ -37,7 +37,7 @@ export class DraftService {
       );
   }
 
-  update(id: string, draft: IDraft): void {
+  update(id: number, draft: IDraft): void {
     const url = this.url + `/draft/${id}`;
 
     this.httpHelperService.call(HttpMethodTypes.post, url, draft)
@@ -66,7 +66,7 @@ export class DraftService {
       );
   }
 
-  delete(id: string): Observable<any> {
+  delete(id: number): Observable<any> {
     const url = this.url + `/draft/${id}`;
     return this.httpHelperService.call(HttpMethodTypes.delete, url);
   }
