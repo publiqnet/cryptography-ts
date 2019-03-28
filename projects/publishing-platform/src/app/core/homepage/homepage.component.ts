@@ -317,7 +317,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
             if (result.authors) {
               result.authors.forEach(value => {
-                if (value && value.author && value.author.username && (this.accountService.accountInfo && value.author.username != this.accountService.accountInfo.name)) {
+                if (value && value.author && value.author.username && (this.accountService.accountInfo && value.author.username != this.accountService.accountInfo.publicKey)) {
                   subscribersList.push(value.author.username);
                 }
               });

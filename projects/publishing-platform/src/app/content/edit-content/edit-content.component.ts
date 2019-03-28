@@ -69,7 +69,7 @@ export class EditContentComponent
             document.querySelector('mat-toolbar').classList.remove('shrink');
             if (data) {
               if (data && data.content) {
-                if (data.full_account && this.accountService.accountInfo && data.full_account.name != this.accountService.accountInfo.name) {
+                if (data.full_account && this.accountService.accountInfo && data.full_account.name != this.accountService.accountInfo.publicKey) {
                   this.router.navigate(['/page-not-found']);
                 }
                 this.content = data;

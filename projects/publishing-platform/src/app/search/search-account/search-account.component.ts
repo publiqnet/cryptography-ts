@@ -83,7 +83,7 @@ export class SearchAccountComponent implements OnInit, OnDestroy {
           if (accountsArray && accountsArray.length) {
             const accounts = [];
             accountsArray.forEach((account: Account) => {
-              accounts.push(account.name);
+              accounts.push(account.publicKey);
             });
 
             this.accountService.getIsSubscribedByAuthors(accounts);
@@ -99,9 +99,9 @@ export class SearchAccountComponent implements OnInit, OnDestroy {
             const accounts = (this.filteredAccounts[0]['subscribing'] == undefined) ? this.filteredAccounts : this.loadedAccounts;
             result.forEach((subscriber: any) => {
               accounts.forEach((account: Account) => {
-                if (this.accountService.accountInfo && (account.name == this.accountService.accountInfo.name)) {
+                if (this.accountService.accountInfo && (account.publicKey == this.accountService.accountInfo.publicKey)) {
                   account['subscribing'] = -1;
-                } else if (account.name == subscriber) {
+                } else if (account.publicKey == subscriber) {
                   account['subscribing'] = 1;
                 } else if (account['subscribing'] == undefined) {
                   account['subscribing'] = 0;
@@ -130,7 +130,7 @@ export class SearchAccountComponent implements OnInit, OnDestroy {
           if (this.accountService.loggedIn()) {
             const data = [];
             this.loadedAccounts.forEach((account: Account) => {
-              data.push(account.name);
+              data.push(account.publicKey);
             });
 
             this.accountService.getIsSubscribedByAuthors(data);

@@ -18,7 +18,7 @@ export class IdToUsernamePipe implements PipeTransform {
     // TODO: this seems wrong, if done in a loop, this will return the name of the last authorAccount
     this.api.loadRpcAccount(id);
     return this.api.authorAccountChanged.pipe(
-      map((account: Account) => (account ? account.name : ''))
+      map((account: Account) => (account ? account.publicKey : ''))
     );
   }
 }

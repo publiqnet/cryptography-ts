@@ -20,7 +20,7 @@ export class SecurityComponent implements OnInit, OnDestroy {
   passwordVerified = false;
   showPrivateKeyOpened = false;
   showBackupRecoveryPhraseOpened = false;
-  public brainKey;
+  // public brainKey;
   loading = false;
   account: Account;
 
@@ -39,9 +39,10 @@ export class SecurityComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       if (!this.accountService.accountInfo) {
         this.router.navigate(['/user/login']);
-      } else {
-        this.brainKey = this.accountService.accountInfo.brainKey;
       }
+      // else {
+      //   this.brainKey = this.accountService.accountInfo.brainKey;
+      // }
 
       this.accountService.accountUpdated$
         .pipe(

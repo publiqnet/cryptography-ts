@@ -53,7 +53,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
     if (account.firstName && account.lastName) {
       name = account.firstName + ' ' + account.lastName;
     } else if (!account.firstName && !account.lastName) {
-      name = account.name;
+      name = account.publicKey;
     } else {
       name = (account.firstName ? account.firstName : '') + ' ' + (account.lastName ? account.lastName : '');
     }
@@ -72,7 +72,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       return false;
     }
     this.currentAccount = account;
-    this.accountService.follow(account.name);
+    this.accountService.follow(account.publicKey);
   }
 
   unfollow(account: Account) {
@@ -81,7 +81,7 @@ export class AccountListComponent implements OnInit, OnDestroy {
       return false;
     }
     this.currentAccount = account;
-    this.accountService.unfollow(account.name);
+    this.accountService.unfollow(account.publicKey);
   }
 
   private openLoginDialog() {

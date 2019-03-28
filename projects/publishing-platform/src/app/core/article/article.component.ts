@@ -701,7 +701,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
     return this.accountService.accountInfo &&
     this.article &&
     this.article.full_account
-      ? this.accountService.accountInfo.id == this.article.full_account.id
+      ? this.accountService.accountInfo.publicKey == this.article.full_account.publicKey
       : false;
   }
 

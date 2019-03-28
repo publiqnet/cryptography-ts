@@ -90,7 +90,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       });
 
     this.walletService.loadTransactions(
-      this.account.name,
+      this.account.publicKey,
       this.fromDateUnix,
       this.toDateUnix,
       this.startFromBlock,
@@ -134,7 +134,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         if (data && data.length) {
           setTimeout(() => {
             data.forEach((tr: TransactionDetailObject) => {
-              if (!tr.m_memo_decrypted && this.account.pKey) {
+              if (!tr.m_memo_decrypted && this.account.publicKey) {
                 tr.m_memo_decrypted = tr.m_memo.getMessage(this.account);
               }
             });
@@ -159,7 +159,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     this.transactions = [];
     this.dataSource.data = [];
     this.walletService.loadTransactions(
-      this.account.name,
+      this.account.publicKey,
       this.fromDateUnix,
       this.toDateUnix,
       this.firstBlock,
@@ -176,7 +176,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     this.transactions = [];
     this.dataSource.data = [];
     this.walletService.loadTransactions(
-      this.account.name,
+      this.account.publicKey,
       this.fromDateUnix,
       this.toDateUnix,
       this.firstBlock,
@@ -190,7 +190,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   viewMore() {
     this.seeMoreLoading = true;
     this.walletService.loadTransactions(
-      this.account.name,
+      this.account.publicKey,
       this.fromDateUnix,
       this.toDateUnix,
       this.startFromBlock,

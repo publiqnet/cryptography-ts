@@ -1155,7 +1155,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
 
     const dialogMessages = this.translateService.instant('dialog');
-    if (!this.accountService.accountInfo.meta.first_name) {
+    if (!this.accountService.accountInfo.firstName) {
       this.dialogService.openInfoDialog('settings', dialogMessages['info']['settings_title'], {
         width: '700px',
         height: '450px',

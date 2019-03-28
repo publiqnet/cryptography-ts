@@ -17,8 +17,7 @@
         <div class="post-metadata px-3 px-sm-0">
           <div class="account-name mt-5 row">
             <div class="col-12 col-md-8">
-              <h4>{{(account && account.meta && account.meta.first_name) ? account.meta.first_name : ''}} {{(account &&
-                account.meta && account.meta.last_name) ? account.meta.last_name : ''}}
+              <h4>{{(account && account.firstName) ? account.firstName : ''}} {{(account && account.lastName) ? account.lastName : ''}}
                 <span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">
                   {{'shared.in' | translate}}
                   <a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">

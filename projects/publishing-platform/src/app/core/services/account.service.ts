@@ -36,7 +36,7 @@ export class AccountService {
 
   public api;
 
-  accountInfo: any = null;
+  private accountInfoData: Account = null;
   public userFavouriteTagsKey = 'user_favourite_tags';
   public favouriteAuthorsKey = 'favourite_authors';
 
@@ -192,7 +192,7 @@ export class AccountService {
     if (isPlatformBrowser(this.platformId)) {
       this.httpRpcService
         .call({
-          params: [0, 'get_account_balances', [this.accountInfo.id, ['1.3.0']]]
+          params: [0, 'get_account_balances', [this.accountInfo.publicKey, ['1.3.0']]]
         })
         .subscribe(
           balance => {
@@ -232,7 +232,7 @@ export class AccountService {
     return this.http.get(url, {headers: new HttpHeaders({'X-OAUTH-TOKEN': token})})
       .pipe(
         map((userInfo: any) => {
-          this.setAccountInfo(userInfo);
+          this.SetAccountInfo = userInfo;
           localStorage.setItem('auth', userInfo.token);
           localStorage.setItem('encrypted_brain_key', this.brainKeyEncrypted);
           return userInfo;
@@ -240,19 +240,21 @@ export class AccountService {
       ;
   }
 
-  setAccountInfo(userInfo) {
+  private set SetAccountInfo(userInfo) {
+    if (userInfo != null) {
+      const data = (this.accountInfoData) ? this.accountInfoData : {};
 
-    const data = (this.accountInfo) ? this.accountInfo : {};
+      const accountCurrentInfo = {
+        ...data,
+        ...userInfo,
+        token: (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth')
+      };
 
-    this.accountInfo = {
-      ...data,
-      ...userInfo,
-      balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
-    };
+      this.accountInfoData = new Account(accountCurrentInfo);
+    } else {
+      this.accountInfoData = null;
+    }
 
-    this.accountInfo.token = (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth');
-
-    // this.loadBalance();
     // if (this.accountInfo.language) {
     //   localStorage.setItem('lang', this.accountInfo.language);
     //   this.translateService.use(this.accountInfo.language);
@@ -260,9 +262,39 @@ export class AccountService {
     //   this.changeLang('en');
     // }
 
+    console.log(this.accountInfo);
     this.accountUpdated$.next(this.accountInfo);
-    return userInfo;
   }
+
+  public get accountInfo(): Account {
+    return this.accountInfoData;
+  }
+
+  // setAccountInfo(userInfo) {
+  //
+  //   const data = (this.accountInfo) ? this.accountInfo : {};
+  //
+  //   this.accountInfo = {
+  //     ...data,
+  //     ...userInfo,
+  //     balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
+  //   };
+  //
+  //   this.accountInfo.token = (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth');
+  //
+  //   this.accountInfo = new Account(this.accountInfo);
+  //
+  //   // this.loadBalance();
+  //   // if (this.accountInfo.language) {
+  //   //   localStorage.setItem('lang', this.accountInfo.language);
+  //   //   this.translateService.use(this.accountInfo.language);
+  //   // } else {
+  //   //   this.changeLang('en');
+  //   // }
+  //
+  //   this.accountUpdated$.next(this.accountInfo);
+  //   return userInfo;
+  // }
 
   getAuthenticateData() {
     return this.resForStep2Data ? this.resForStep2Data : '';
@@ -288,7 +320,7 @@ export class AccountService {
       .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
       .pipe(
         map((userInfo: any) => {
-          this.setAccountInfo(userInfo);
+          this.SetAccountInfo = userInfo;
           this.brainKeyEncrypted = localStorage.getItem('encrypted_brain_key');
           return userInfo;
         })
@@ -397,7 +429,7 @@ export class AccountService {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       const token = this.accountInfo.token;
-      this.accountInfo = null;
+      this.SetAccountInfo = null;
       localStorage.removeItem('auth');
       localStorage.removeItem('encrypted_brain_key');
       this.brainKey = '';
@@ -462,8 +494,8 @@ export class AccountService {
     this.http.post(url, {first_name: newData.first_name, last_name: newData.last_name}, header)
       .pipe(
         map(updatedAccount => {
-          this.accountInfo = updatedAccount;
-          this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
+          this.SetAccountInfo = updatedAccount;
+          // this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
           this.accountUpdated$.next(this.accountInfo);
           this.loadBalance();
 
@@ -623,7 +655,7 @@ export class AccountService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, updateData)
       .pipe(
         map((userInfo: any) => {
-          this.setAccountInfo(userInfo);
+          this.SetAccountInfo = userInfo;
           return userInfo;
         })
       );
@@ -675,12 +707,12 @@ export class AccountService {
   public setShortName() {
     if (
       this.accountInfo &&
-      this.accountInfo.first_name &&
-      this.accountInfo.last_name
+      this.accountInfo.firstName &&
+      this.accountInfo.lastName
     ) {
       this.shortName = this.accountInfo.shortName = (
-        this.accountInfo.first_name.charAt(0) +
-        this.accountInfo.last_name.charAt(0)
+        this.accountInfo.firstName.charAt(0) +
+        this.accountInfo.lastName.charAt(0)
       ).toUpperCase();
     }
   }

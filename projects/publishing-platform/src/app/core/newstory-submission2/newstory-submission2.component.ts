@@ -69,7 +69,7 @@ export class NewstorySubmission2Component implements OnInit, OnDestroy {
     const start = +(new Date(new Date().toISOString()).getTime() / 1000).toFixed() + 300;
     const end = start + this.boostTime * 86400;
     this.dialogRef.close({
-      boostOwner: this.accountService.accountInfo.username,
+      boostOwner: this.accountService.accountInfo.publicKey,
       boostStartDate: start,
       boostEndDate: end,
       boostMoney: this.boostMoney * 100000000
