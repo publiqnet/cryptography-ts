@@ -7,17 +7,12 @@ export interface AccountOptions {
   registrar?;
   rights_to_publish?;
   statistics?;
-  top_n_control_flags?;
   publicKey?: string;
-  passwordHint?: string;
-  recoveryPhraseSeen?: boolean;
-  recoveryPhrase?: string;
   token?: string;
   email?: string;
   language?: string;
   loggedIn?: boolean;
   nuxEditor?: boolean;
-  isRecoveryPhraseSaved?: boolean;
   balance?: number;
   fraction: number;
   whole: number;
@@ -27,20 +22,15 @@ export class Account {
   registrar;
   rights_to_publish;
   statistics;
-  top_n_control_flags;
   language: string;
   firstName: string;
   lastName: string;
   shortName: string;
   publicKey?: string;
-  passwordHint?: string;
-  recoveryPhraseSeen?: boolean;
-  recoveryPhrase?: string;
   token?: string;
   email?: string;
   loggedIn?: boolean;
   nuxEditor?: boolean;
-  isRecoveryPhraseSaved?: boolean;
   balance?: number;
   fraction: number;
   whole: number;
@@ -56,8 +46,9 @@ export class Account {
       }
     }
 
-    this.balance = UtilsService.calculateBalance(this.whole, this.fraction);
-    this.token = this.token ? this.token : localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    if (this.hasOwnProperty('whole') && this.hasOwnProperty('fraction')) {
+      this.balance = UtilsService.calculateBalance(this.whole, this.fraction);
+    }
 
     this.shortName = '';
     if (this.firstName || this.lastName) {
