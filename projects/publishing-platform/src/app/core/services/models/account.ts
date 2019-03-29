@@ -56,8 +56,9 @@ export class Account {
       }
     }
 
-    this.balance = UtilsService.calculateBalance(this.whole, this.fraction);
-    this.token = this.token ? this.token : localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    if (this.hasOwnProperty('whole') && this.hasOwnProperty('fraction')) {
+      this.balance = UtilsService.calculateBalance(this.whole, this.fraction);
+    }
 
     this.shortName = '';
     if (this.firstName || this.lastName) {
