@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DraftData, IDraft } from './models/draft';
 import { environment } from '../../../environments/environment';
-import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -11,11 +11,23 @@ export class DraftService {
   draftData$ = new Subject<any>();
   draftData: DraftData = null;
 
+  private observers: object = {
+    'getUserDrafts': { name: '_getUserDrafts', refresh: false }
+  };
+
   private readonly url = `${environment.backend}/api`;
 
   constructor(
-    private httpHelperService: HttpHelperService
+    private httpHelperService: HttpHelperService,
+    private httpObserverService: HttpObserverService
   ) {
+
+  }
+
+  public set RefreshObserver(name: any) {
+    if (this.observers.hasOwnProperty(name)) {
+      this.observers[name].refresh = true;
+    }
   }
 
   private set DraftData(draftData) {
@@ -29,6 +41,7 @@ export class DraftService {
       .subscribe(
         data => {
           this.DraftData = data;
+          this.RefreshObserver = 'getUserDrafts';
         },
         error => {
           console.log(error);
@@ -44,6 +57,7 @@ export class DraftService {
       .subscribe(
         (data) => {
           this.DraftData = data;
+          this.RefreshObserver = 'getUserDrafts';
         },
         error => {
           console.log(error);
@@ -59,11 +73,15 @@ export class DraftService {
 
   getUserDrafts(): Observable<DraftData[]> {
     const url = this.url + `/drafts`;
-    return this.httpHelperService.call(HttpMethodTypes.get, url)
+    const callData = this.observers['getUserDrafts'];
+    return this.httpObserverService.observerCall(callData.name, this.httpHelperService.call(HttpMethodTypes.get, url)
       .pipe(
         filter(data => data != null),
-        map(data => data.map(draft => new DraftData(draft)))
-      );
+        map(data => {
+          callData.refresh = false;
+          return data.map(draft => new DraftData(draft));
+        })
+      ), callData.refresh);
   }
 
   delete(id: number): Observable<any> {
