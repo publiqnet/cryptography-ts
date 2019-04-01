@@ -131,10 +131,23 @@ export class PublicationComponent implements OnInit, OnDestroy {
       return false;
     } else {
       this.publicationService.follow(this.publication.slug)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(() => {
-          this.canFollow = false;
-          this.publicationService.loadSubscribers(this.publication.slug);
+        .pipe(
+          switchMap((data: Params) => {
+            this.canFollow = false;
+            return this.publicationService.getPublicationSubscribers(this.publication.slug);
+          }),
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((res) => {
+          // if (this.accountService.accountInfo) {
+          //   this.subscribers = res.length;
+          //   const publicKey = this.accountService.accountInfo.publicKey;
+          //   res.forEach((elem: PublicationSubscribersResponse) => {
+          //     if (publicKey === elem.subscriber.username) {
+          //       this.canFollow = false;
+          //     }
+          //   });
+          // }
         });
     }
   }
@@ -145,10 +158,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
       return false;
     }
     this.publicationService.unfollow(this.publication.slug)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(() => {
-        this.canFollow = true;
-        this.publicationService.loadSubscribers(this.publication.slug);
+      .pipe(
+        switchMap((data: Params) => {
+          this.canFollow = true;
+          return this.publicationService.getPublicationSubscribers(this.publication.slug);
+        }),
+        takeUntil(this.unsubscribe$))
+      .subscribe((res) => {
+        // if (this.accountService.accountInfo) {
+        //   this.subscribers = res.length;
+        //   const publicKey = this.accountService.accountInfo.publicKey;
+        //   res.forEach((elem: PublicationSubscribersResponse) => {
+        //     if (publicKey === elem.subscriber.username) {
+        //       this.canFollow = false;
+        //     }
+        //   });
+        // }
       });
   }
 

@@ -141,7 +141,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       */
 
 
-    this.publicationService.subscribersChanged.pipe(
+    /*this.publicationService.subscribersChanged.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(res => {
       this.subscribers = res.map(subscriber => {
@@ -153,7 +153,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
           return subscriber;
         }
       });
-    });
+    });*/
   }
 
   get MemberStatus() {
@@ -178,7 +178,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       //     const count = Math.floor(this.dsIdArray.length / 10);
       //     this.articleService.loadSponsoredArticles(count, count);
       //     const sliced = this.dsIdArray.slice(this.from, this.to);
-      //     this.publicationService.getContentsByDsId(sliced);
+      //     this.articleService.getContentsByDsId(sliced);
       //   }
       // }
     }
@@ -424,7 +424,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     if (e) {
       e.stopPropagation();
     }
-    this.publicationService.cnacelInvitation(member.id)
+    this.publicationService.cancelInvitation(member.id)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
@@ -498,7 +498,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     this.from = this.to;
     this.to = this.from + this.offset;
     // const sliced = this.dsIdArray.slice(this.from, this.to);
-    // this.publicationService.getContentsByDsId(sliced);
+    // this.articleService.getContentsByDsId(sliced);
     this.articlesLoaded = false;
   }
 

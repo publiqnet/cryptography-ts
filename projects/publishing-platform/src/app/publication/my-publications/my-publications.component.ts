@@ -7,8 +7,8 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { DialogService } from '../../core/services/dialog.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publication } from '../../core/services/models/publication';
-import { environment } from '../../../environments/environment';
 import { Publications } from '../../core/services/models/publications';
+import { PublicationMemberStatusType } from '../../core/models/enumes';
 
 @Component({
   selector: 'app-my-publications',
@@ -24,7 +24,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   invitations: Publication[];
   requests: Publication[];
   selectedIndex = this.publicationService.tabIndexInv;
-  filePath = environment.backend + '/uploads/publications/';
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
@@ -35,12 +34,11 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.publicationService.getMyPublications2()
+    this.publicationService.getMyPublications()
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: Publications) => {
-        console.log('data -- ', data);
         this.publications = data.owned;
         this.membership = data.membership;
         this.invitations = data.invitations;
@@ -64,24 +62,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
           this.publications = data;
         }
       });
-
-    this.publicationService.myMemberships
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Array<Publication>) => {
-        this.membership = data;
-      });
-
-    this.publicationService.myInvitations
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(
-        (data: Array<Publication>) => {
-          this.invitations = data;
-        }
-      );
     */
   }
 
@@ -124,6 +104,18 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.publicationService.getMyPublications();
       });
+  }
+
+  get MemberStatus() {
+    return PublicationMemberStatusType;
+  }
+
+  cancelRequestBecomeMember(publication: Publication) {
+    this.publicationService.cancelBecomeMember(publication.slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => publication.memberStatus = this.MemberStatus.no_info);
   }
 
   ngOnDestroy() {

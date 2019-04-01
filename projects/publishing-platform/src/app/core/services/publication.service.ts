@@ -1,19 +1,11 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable } from '@angular/core';
 
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { Publication } from './models/publication';
-import { AccountService } from './account.service';
-import { Content, PageOptions } from './models/content';
-import { Account } from './models/account';
-import { ErrorService } from './error.service';
-import { ChannelService } from './channel.service';
-import { ContentService } from './content.service';
-import { HttpRpcService } from './httpRpc.service';
+import { PageOptions } from './models/content';
 import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
 import { IPublications, Publications } from './models/publications';
 
@@ -22,63 +14,39 @@ import { IPublications, Publications } from './models/publications';
 export class PublicationService {
   public tabIndexInv = 0;
   public tabIndexReq = 0;
-  myPublications: ReplaySubject<any>;
-  myMemberships: ReplaySubject<any>;
-  myInvitations: ReplaySubject<any>;
-  myRequests: ReplaySubject<any>;
-  pendingPublications: ReplaySubject<any[]>;
-  private subscribers;
-  subscribersChanged = new Subject<any[]>();
+
+  myPublications$: BehaviorSubject<Publications | null> = new BehaviorSubject(null);
+
   loadStoriesPublicationByDsIdDataChanged = new Subject<any[]>();
   homepageTagStoriesPublicationChanged = new Subject<Publication[]>();
   homepageAuthorStoriesPublicationChanged = new Subject<Publication[]>();
-  imagePath: string = environment.backend + '/uploads/publications/';
-
-  public publicationContent$ = new Subject();
 
   private readonly url = environment.backend + '/api/publication';
 
-  constructor(
-    private http: HttpClient,
-    private httpHelper: HttpHelperService,
-    private accountService: AccountService,
-    private httpRpcService: HttpRpcService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private errorService: ErrorService,
-    private channelService: ChannelService,
-    private contentService: ContentService
-  ) {
-    this.reset();
-  }
+  constructor(private httpHelper: HttpHelperService) {}
 
-  createPublication(data: object | FormData): Observable<any> {
+  createPublication: (data: (object | FormData)) => Observable<any> = (data: object | FormData): Observable<any> => {
     return this.httpHelper.call(HttpMethodTypes.post, this.url + '/create', data);
   }
 
-  editPublication(data: object | FormData, slug: string): Observable<any> {
+  editPublication = (data: object | FormData, slug: string): Observable<any> => {
     return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug, data);
   }
 
-  getMyPublications() {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    this.http
-      .get(environment.backend + '/api/v1/publication/my-publications', header)
-      .subscribe((data: Array<Publication>) => {
-        this.myPublications.next(data['owned']);
-        this.myInvitations.next(data['invitations']);
-        this.myMemberships.next(data['membership']);
-        this.myRequests.next(data['requests']);
-        return true;
-      });
+  getMyPublications = () => {
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
+      .pipe(
+        map((data: IPublications) => new Publications(data)),
+        tap((data: Publications) => this.myPublications$.next(data))
+      );
   }
 
-  getMyPublications2() {
-    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
+  getMyPublicationsByType = (type: string) => {
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's' + `/${type}`)
       .pipe(map((data: IPublications) => new Publications(data)));
   }
 
-  getPublicationBySlug(slug: string | number): Observable<Publication> {
+  getPublicationBySlug = (slug: string | number): Observable<Publication> => {
     return this.httpHelper.call(HttpMethodTypes.get, this.url + '/' + slug)
       .pipe(
         filter(data => data != null),
@@ -86,64 +54,18 @@ export class PublicationService {
       );
   }
 
-  public getAccountToken() {
-    return this.accountService.accountInfo &&
-    this.accountService.accountInfo.token
-      ? this.accountService.accountInfo.token
-      : null;
+  addMember = (body: any, slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invite-a-member', {invitations: body});
   }
 
-  addMember(body, slug) {
-    const authToken = this.getAccountToken();
-    const options: any = {headers: new HttpHeaders({'X-API-TOKEN': authToken}), observe: 'response'};
-    return this.http.post<any>(
-      environment.backend + '/api/v1/publication/' + slug + '/invite-a-member',
-      {invitations: body},
-      options
-    );
+  getMembers: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + `/${slug}/` + 'members');
   }
 
-  getMembers(slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http
-      .get(
-        environment.backend + '/api/v1/publication/' + slug + '/members',
-        header
-      )
-      .pipe(
-        map((res: string) => {
-          return res;
-        })
-      );
-  }
+  getPublicationArticles = (slug: string): Observable<any> => this.httpHelper.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + '/articles');
 
-  getPublicationArticles(slug) {
-    return this.http.get(
-      environment.backend + '/api/v1/publication/' + slug + '/articles'
-    );
-  }
-
-  mainPurifyContent(data: any, filter?: string): Content[] {
-    const contents: Content[] = [];
-    data.map(content => {
-      if (content.full_account) {
-        content.full_account = new Account(content.full_account);
-      }
-      contents.push(new Content(content));
-    });
-
-    return contents;
-  }
-
-  removeArticle(dsId, slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/' + slug + '/remove-article',
-      {dsId: dsId},
-      header
-    );
+  removeArticle: (dsId: string, slug: string) => Observable<any> = (dsId: string, slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', {dsId: dsId});
   }
 
   deletePublication = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug);
@@ -152,75 +74,26 @@ export class PublicationService {
 
   cancelBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/request');
 
-  acceptInvitationBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response');
-
-  rejectInvitationBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/invitation/response');
-
-  getContentsByDsId(dsIdArray: Array<string>) {
-    this.httpRpcService
-      .call({
-        params: [0, 'get_contents', [dsIdArray]]
-      })
-      .pipe(
-        map((result: Array<any>) => {
-          const resArr = result.map(el => el[1]);
-          return this.mainPurifyContent(resArr);
-        })
-      ).subscribe(res => {
-      this.publicationContent$.next(res);
-    });
+  acceptInvitationBecomeMember = (slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response');
   }
 
-  acceptInvitation(body) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/invitation-response',
-      body,
-      header
-    );
+  rejectInvitationBecomeMember = (slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/invitation/response');
   }
 
-  acceptRequest(body) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/publication/membership-response',
-      body,
-      header
-    );
+  acceptInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/invitation-response', body);
+
+  acceptRequest = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/membership-response', body);
+
+  addPublicationToStory(dsId: string, slug: string): Observable<any> {
+    const body = {dsId: dsId, publication_slug: slug == 'none' ? '' : slug};
+    return this.httpHelper.call(HttpMethodTypes.post, environment.backend + '/api/v1/content/change-article-publication', body);
   }
 
-  addPublicationToStory(dsId, slug) {
-    const body = {
-      dsId: dsId,
-      publication_slug: slug == 'none' ? '' : slug
-    };
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend + '/api/v1/content/change-article-publication',
-      body,
-      header
-    );
-  }
+  cancelInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`, );
 
-
-  cnacelInvitation(body) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.delete(
-      `${environment.backend}/api/v1/publication/cancel-invitation/${body}`,
-      header
-    );
-  }
-
-  getArticlePublication(dsArray) {
-    return this.http.post(
-      environment.backend + '/api/v1/content/publications',
-      {articles: dsArray}
-    );
-  }
+  getArticlePublication = (dsArray: any[]): Observable<any> => this.httpHelper.customCall(HttpMethodTypes.post, this.url + 's', {articles: dsArray});
 
   loadStoriesPublicationByDsId(dsArray: string[], forPage: PageOptions = PageOptions.default): void {
     // const url = environment.backend + '/api/v1/content/publications';
@@ -250,68 +123,33 @@ export class PublicationService {
     //     }, error => this.errorService.handleError('loadStoriesPublicationByDsId', error, url));
   }
 
-  changeMemberStatus(member) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.post(
-      environment.backend +
-      `/api/v1/publication/${member.slug}/change-member-status`,
-      {publicKey: member.publicKey, status: member.status},
-      header
-    );
+  changeMemberStatus = (member: any): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + `${member.slug}/change-member-status`, {
+      publicKey: member.publicKey,
+      status: member.status
+    });
   }
 
-  getUserFollowers() {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    const url =
-      environment.backend + `/api/v1/user/subscription/user`;
-    return this.http.get(url, header);
+  getUserFollowers: () => Observable<any> = (): Observable<any> => {
+    const url = environment.backend + `/api/v1/user/subscription/user`;
+    return this.httpHelper.call(HttpMethodTypes.get, url);
   }
 
-  loadSubscribers(slug: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      const url =
-        environment.backend + `/api/v1/publication/subscribers/${slug}`;
-      this.http.get(url).subscribe(
-        res => {
-          this.subscribers = res;
-          this.subscribersChanged.next(this.subscribers.slice());
-        },
-        error => this.errorService.handleError('loadSubscribers', error, url)
-      );
-    }
+  getPublicationSubscribers = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.get, this.url + `/subscribers/${slug}`);
+
+  follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.put, this.url + '/subscription/' + slug);
+
+  unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/subscription/' + slug);
+
+  deleteMembership: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + `/delete-membership/${slug}`);
   }
 
-  public follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.put, this.url + '/subscription/' + slug);
-
-  public unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/subscription/' + slug);
-
-  deleteMembership(slug) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.delete(
-      this.url + `/delete-membership/${slug}`,
-      header
-    );
-  }
-
-  deleteMember(slug, publicKey) {
-    const authToken = this.getAccountToken();
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    return this.http.delete(
-      `${
-        environment.backend
-        }/api/v1/publication/delete-member/${slug}/${publicKey}`,
-      header
-    );
+  deleteMember(slug: string, publicKey: any) {
+    return this.httpHelper.call(HttpMethodTypes.delete, `${this.url}/delete-member/${slug}/${publicKey}`);
   }
 
   reset() {
-    this.myPublications = new ReplaySubject(1);
-    this.myMemberships = new ReplaySubject(1);
-    this.myInvitations = new ReplaySubject(1);
-    this.myRequests = new ReplaySubject(1);
-    this.pendingPublications = new ReplaySubject(1);
+    this.myPublications$ = new BehaviorSubject(null);
   }
 }

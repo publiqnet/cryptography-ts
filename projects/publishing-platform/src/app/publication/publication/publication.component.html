@@ -55,23 +55,27 @@
                                 </ng-container>
 
                                 <ng-container  *ngIf="publication.memberStatus === MemberStatus.requested_to_be_a_contributor">
-                                <span class="mr-5">
-                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                    <span class="align-middle core-cancel"
-                                          (click)="cancelBecomeMember(publication?.slug)">{{'core.cancel' | translate}}</span>
-                                </span>
+                                    <span class="mr-5">
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span class="align-middle core-cancel" (click)="cancelBecomeMember(publication?.slug)">
+                                            {{'core.cancel' | translate}}
+                                        </span>
+                                    </span>
                                 </ng-container>
 
                                 <ng-container *ngIf="[MemberStatus.invited_to_be_a_contributor, MemberStatus.invited_to_be_an_editor].includes(publication.memberStatus)">
-                                <span class="mr-5">
-                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                    <span (click)="acceptInvitationBecomeMember(publication?.slug)">{{'publication.become_member' | translate}}</span>
-                                </span>
                                     <span class="mr-5">
-                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                    <span class="align-middle core-cancel"
-                                          (click)="rejectInvitationBecomeMember(publication?.slug)">{{'core.cancel' | translate}}</span>
-                                </span>
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span (click)="acceptInvitationBecomeMember(publication?.slug)">
+                                            {{'publication.become_member' | translate}}
+                                        </span>
+                                    </span>
+                                    <span class="mr-5">
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span class="align-middle core-cancel" (click)="rejectInvitationBecomeMember(publication?.slug)">
+                                            {{'core.cancel' | translate}}
+                                        </span>
+                                    </span>
                                 </ng-container>
                             </div>
                         </ng-container>
@@ -99,7 +103,7 @@
         </ng-container>
 
         <ng-template #notMember>
-            <p>Articles List then you are not membor of publication</p>
+            <p>List of articles when you are not a member of the publication</p>
         </ng-template>
 
     </div>
