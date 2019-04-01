@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DraftData, IDraft } from './models/draft';
 import { environment } from '../../../environments/environment';
-import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -14,7 +14,8 @@ export class DraftService {
   private readonly url = `${environment.backend}/api`;
 
   constructor(
-    private httpHelperService: HttpHelperService
+    private httpHelperService: HttpHelperService,
+    private httpObserverService: HttpObserverService
   ) {
   }
 
@@ -59,11 +60,11 @@ export class DraftService {
 
   getUserDrafts(): Observable<DraftData[]> {
     const url = this.url + `/drafts`;
-    return this.httpHelperService.call(HttpMethodTypes.get, url)
+    return this.httpObserverService.observerCall('_getUserDrafts', this.httpHelperService.call(HttpMethodTypes.get, url)
       .pipe(
         filter(data => data != null),
         map(data => data.map(draft => new DraftData(draft)))
-      );
+      ));
   }
 
   delete(id: number): Observable<any> {

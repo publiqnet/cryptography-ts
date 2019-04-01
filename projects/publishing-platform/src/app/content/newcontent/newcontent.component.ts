@@ -654,30 +654,30 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(result => {
-          this.nuxSeen = result.nuxEditor;
-          // this.nuxSeen = false;
-          // console.log('nux', this.nuxSeen, result);
-          const currentOptionLang = this.contentOptions.language == 'en_us' ? 'en' : 'jp';
-          if (result.language != currentOptionLang && this.editorObject) {
-            this.contentOptions.language = (result.language == 'en') ? 'en_us' : 'ja';
-
-            const currentContent = this.editorContentObject.html.get();
-            this.editorInitObject.destroy();
-            this.editorInitObject.initialize();
-            if (currentContent) {
-              this.editorContentObject.html.set(currentContent);
-            }
-          }
-
-          this.translateService.get('content')
-            .pipe(
-              takeUntil(this.unsubscribe$)
-            )
-            .subscribe(data => {
-              if (this.editorContentObject && data.content) {
-                this.editorContentObject.$placeholder[0].textContent = data.content;
-              }
-            });
+          // this.nuxSeen = result.nuxEditor;
+          // // this.nuxSeen = false;
+          // // console.log('nux', this.nuxSeen, result);
+          // const currentOptionLang = this.contentOptions.language == 'en_us' ? 'en' : 'jp';
+          // if (result.language != currentOptionLang && this.editorObject) {
+          //   this.contentOptions.language = (result.language == 'en') ? 'en_us' : 'ja';
+          //
+          //   const currentContent = this.editorContentObject.html.get();
+          //   this.editorInitObject.destroy();
+          //   this.editorInitObject.initialize();
+          //   if (currentContent) {
+          //     this.editorContentObject.html.set(currentContent);
+          //   }
+          // }
+          //
+          // this.translateService.get('content')
+          //   .pipe(
+          //     takeUntil(this.unsubscribe$)
+          //   )
+          //   .subscribe(data => {
+          //     if (this.editorContentObject && data.content) {
+          //       this.editorContentObject.$placeholder[0].textContent = data.content;
+          //     }
+          //   });
         });
     }
   }
@@ -708,9 +708,11 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     // ).subscribe(data => {
     //   console.log(data);
     // });
+
     if (boostInfo) {
       this.boostInfo = boostInfo;
     }
+
     // this.isContentUpLoading = true;
     this.isSubmited = true;
     if (this.tags && this.tags.length) {
@@ -730,6 +732,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     const imagesData = contentData.match(
       /<img([^>]+)src="[/]?([^"]+)"([^>]*)>|<( *)img( *)[/>|>]/g
     );
+
     if (imagesData && imagesData.length) {
       let imagesError = 0;
       imagesData.map(image => {

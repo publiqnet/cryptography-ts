@@ -25,7 +25,7 @@ import { PublicationService } from './core/services/publication.service';
 import { LanguageGuard } from './guards/language.guard';
 import { RequestsInterceptor } from './core/services/requests.interceptor';
 import { environment } from '../environments/environment';
-import { OauthService, HttpHelperService } from 'shared-lib';
+import { OauthService, HttpHelperService, HttpObserverService } from 'shared-lib';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -74,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         OauthService,
         { provide: 'oauthUrl', useValue: environment.oauth_backend },
         HttpHelperService,
+        HttpObserverService
     ],
     bootstrap: [AppComponent]
 })
