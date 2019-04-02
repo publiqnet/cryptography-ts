@@ -6,14 +6,19 @@ import { filter, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Publication } from './models/publication';
 import { PageOptions } from './models/content';
-import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
 import { IPublications, Publications } from './models/publications';
+import { DraftData } from './models/draft';
 
 
 @Injectable()
 export class PublicationService {
   public tabIndexInv = 0;
   public tabIndexReq = 0;
+
+  private observers: object = {
+    'getMyPublications': { name: '_getMyPublications', refresh: false }
+  };
 
   myPublications$: BehaviorSubject<Publications | null> = new BehaviorSubject(null);
 
@@ -23,22 +28,41 @@ export class PublicationService {
 
   private readonly url = environment.backend + '/api/publication';
 
-  constructor(private httpHelper: HttpHelperService) {}
+  constructor(private httpHelper: HttpHelperService, private httpObserverService: HttpObserverService) {}
+
+  public set RefreshObserver(name: any) {
+    if (this.observers.hasOwnProperty(name)) {
+      this.observers[name].refresh = true;
+    }
+  }
 
   createPublication: (data: (object | FormData)) => Observable<any> = (data: object | FormData): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/create', data);
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/create', data)
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
   editPublication = (data: object | FormData, slug: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug, data);
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug, data)
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
   getMyPublications = () => {
-    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
+    /*return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
       .pipe(
         map((data: IPublications) => new Publications(data)),
         tap((data: Publications) => this.myPublications$.next(data))
-      );
+      );*/
+
+    const callData: any = this.observers['getMyPublications'];
+    return this.httpObserverService.observerCall(callData.name, this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
+      .pipe(
+        filter(data => data != null),
+        map((data: IPublications) => {
+          callData.refresh = false;
+          return new Publications(data);
+        }),
+        tap((data: Publications) => this.myPublications$.next(data))
+      ), callData.refresh);
   }
 
   getMyPublicationsByType = (type: string) => {
