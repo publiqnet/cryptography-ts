@@ -10,7 +10,7 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { NotificationService } from '../../core/services/notification.service';
-import { OauthService } from 'shared-lib';
+import { OauthService } from 'helper-lib';
 
 @Component({
   selector: 'app-login-password',

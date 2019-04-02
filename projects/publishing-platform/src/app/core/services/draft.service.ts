@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DraftData, IDraft } from './models/draft';
 import { environment } from '../../../environments/environment';
-import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 

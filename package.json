@@ -73,7 +73,8 @@
     "rxjs-compat": "^6.4.0",
     "stream": "0.0.2",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "helper-lib": "file:shared-angular-workspace/dist/helper-lib"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.0",

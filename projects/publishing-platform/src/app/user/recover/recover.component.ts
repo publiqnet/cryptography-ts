@@ -6,7 +6,7 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
-import { OauthService } from 'shared-lib';
+import { OauthService } from 'helper-lib';
 
 @Component({
   selector: 'app-recover',

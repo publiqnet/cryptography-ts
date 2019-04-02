@@ -1,0 +1,3 @@
+[submodule "shared-angular-workspace"]
+	path = shared-angular-workspace
+	url = https://github.com/publiqnet/shared-angular-workspace
