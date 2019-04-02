@@ -10,7 +10,7 @@ export class HttpObserverService {
   constructor() { }
 
   observerCall(name: string, request, refresh: boolean = false): Observable<any> {
-    return (!refresh && this.hasOwnProperty(name)) ? of(this[name]) : request.pipe(map(data => {this[name] = data; return data; }));
+    return (!refresh && this.hasOwnProperty(name)) ? of(this[name]) : request.pipe(map(data => { this[name] = data; return data; }));
   }
 }
 

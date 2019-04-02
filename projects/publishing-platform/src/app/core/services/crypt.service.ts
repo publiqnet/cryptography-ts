@@ -4,6 +4,8 @@ import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction
 import PubliqFile from 'blockchain-models-ts/bin/models/PubliqFile';
 import PubliqContentUnit from 'blockchain-models-ts/bin/models/PubliqContentUnit';
 
+KeyPair.setPublicKeyPrefix('PBQ');
+
 @Injectable()
 export class CryptService {
 
