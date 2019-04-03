@@ -13,7 +13,7 @@ import { ChannelService } from './channel.service';
 import { Account } from './models/account';
 import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
-import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 
 // import {
 //   Aes,

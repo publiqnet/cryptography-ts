@@ -20,7 +20,7 @@ import { ValidationService } from '../../core/validator/validator.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { takeUntil } from 'rxjs/operators';
-import { OauthService } from 'shared-lib';
+import { OauthService } from 'helper-lib';
 
 @Component({
   selector: 'app-register',

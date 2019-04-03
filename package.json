@@ -47,7 +47,6 @@
     "angular-froala-wysiwyg": "^2.7.6",
     "angular2-useful-swiper": "5.0.1",
     "angulartics2": "^5.1.2",
-    "arcnet-js": "git+https://github.com/PUBLIQNetwork/publiq-cript-js.git#3.0.dev",
     "axios": "^0.18.0",
     "blockchain-models-ts": "git+https://github.com/publiqnet/blockchain-models-ts.git",
     "body-parser": "^1.18.3",
@@ -73,7 +72,8 @@
     "rxjs-compat": "^6.4.0",
     "stream": "0.0.2",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "helper-lib": "file:shared-angular-workspace/dist/helper-lib"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.0",

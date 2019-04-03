@@ -8,7 +8,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
-import { OauthService } from 'shared-lib';
+import { OauthService } from 'helper-lib';
 
 @Component({
   selector: 'app-new-password',

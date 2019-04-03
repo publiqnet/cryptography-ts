@@ -122,78 +122,78 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (isPlatformServer(this.platformId)) {
-      const storyId = this.activatedRoute.snapshot.params['id'];
-      const host = this.request.get('host');
-
-      if (host) {
-        const splitHost = host.split('.');
-        const channel = splitHost[0];
-        const articlesDataCache = memoryCache.get(`${channel}_articles`);
-        let articlesData;
-        if (!articlesDataCache) {
-          articlesData = {};
-        } else {
-          articlesData = articlesDataCache;
-        }
-        if (articlesData[storyId]) {
-          const historyList = articlesData[storyId];
-          const currentContent = historyList.find(x => (x.ds_id && x.ds_id == storyId) || (x._id && x._id == storyId));
-          const url = this.request.protocol + '://' + this.request.headers.host + this.request.originalUrl;
-          this.setArticleMetaTags(currentContent, url);
-        } else {
-          // Todo: move into service
-          this.http.post(environment.daemon_https_address, {
-            'id': 0,
-            'method': 'call',
-            'params': [0, 'get_content_history', [storyId]]
-          }).pipe(
-            flatMap((historyData: any) => {
-              const historyList = historyData.result;
-              const currentContent = historyList.find(x => x.ds_id == storyId);
-              if (currentContent.ds_id && currentContent.ds_id === storyId) {
-                return this.http.get(`${environment.ds_backend}/content/${storyId}`).pipe(
-                  map((data: any) => {
-                    if (data && data != 'null' && data.meta) {
-
-                      if (data && data.created && data.created.slice(-1) !== 'Z') {
-                        data.created = data.created + 'Z';
-                      }
-
-                      if (data.content) {
-                        data.meta.tags = AppComponent.generateTags(data.meta.tags);
-                        // Todo: JSON.parse should be inside of try-catch
-                        data.content.data = JSON.parse(new Buffer(new Buffer(data.content.data).toString(), 'hex').toString());
-
-                        data.full_account = currentContent.full_account;
-                        data.created = this.getCorrectDateFormat(currentContent.created);
-                        data.published = this.getCorrectDateFormat(currentContent.published);
-                        data.meta.revision = currentContent.meta.revision;
-                        data.meta.origin = currentContent.meta.origin;
-                        if (data._id) {
-                          data.ds_id = data._id;
-                        }
-
-                        historyList.forEach((obj, key) => {
-                          if ((obj.ds_id && obj.ds_id === storyId) || (obj._id && obj._id === storyId)) {
-                            historyList[key] = data;
-                          }
-                        });
-
-                        articlesData[data._id] = historyList;
-                        this.state.set(CHANNEL_CURRENT_ARTICLE, memoryCache.put(`${channel}_articles`, articlesData[data._id]));
-                        const url = this.request.protocol + '://' + this.request.headers.host + this.request.originalUrl;
-                        this.setArticleMetaTags(data, url);
-                      }
-                    }
-                  })
-                );
-              }
-            })
-          ).subscribe();
-        }
-      }
-    }
+    // if (isPlatformServer(this.platformId)) {
+    //   const storyId = this.activatedRoute.snapshot.params['id'];
+    //   const host = this.request.get('host');
+    //
+    //   if (host) {
+    //     const splitHost = host.split('.');
+    //     const channel = splitHost[0];
+    //     const articlesDataCache = memoryCache.get(`${channel}_articles`);
+    //     let articlesData;
+    //     if (!articlesDataCache) {
+    //       articlesData = {};
+    //     } else {
+    //       articlesData = articlesDataCache;
+    //     }
+    //     if (articlesData[storyId]) {
+    //       const historyList = articlesData[storyId];
+    //       const currentContent = historyList.find(x => (x.ds_id && x.ds_id == storyId) || (x._id && x._id == storyId));
+    //       const url = this.request.protocol + '://' + this.request.headers.host + this.request.originalUrl;
+    //       this.setArticleMetaTags(currentContent, url);
+    //     } else {
+    //       // Todo: move into service
+    //       this.http.post(environment.daemon_https_address, {
+    //         'id': 0,
+    //         'method': 'call',
+    //         'params': [0, 'get_content_history', [storyId]]
+    //       }).pipe(
+    //         flatMap((historyData: any) => {
+    //           const historyList = historyData.result;
+    //           const currentContent = historyList.find(x => x.ds_id == storyId);
+    //           if (currentContent.ds_id && currentContent.ds_id === storyId) {
+    //             return this.http.get(`${environment.ds_backend}/content/${storyId}`).pipe(
+    //               map((data: any) => {
+    //                 if (data && data != 'null' && data.meta) {
+    //
+    //                   if (data && data.created && data.created.slice(-1) !== 'Z') {
+    //                     data.created = data.created + 'Z';
+    //                   }
+    //
+    //                   if (data.content) {
+    //                     data.meta.tags = AppComponent.generateTags(data.meta.tags);
+    //                     // Todo: JSON.parse should be inside of try-catch
+    //                     data.content.data = JSON.parse(new Buffer(new Buffer(data.content.data).toString(), 'hex').toString());
+    //
+    //                     data.full_account = currentContent.full_account;
+    //                     data.created = this.getCorrectDateFormat(currentContent.created);
+    //                     data.published = this.getCorrectDateFormat(currentContent.published);
+    //                     data.meta.revision = currentContent.meta.revision;
+    //                     data.meta.origin = currentContent.meta.origin;
+    //                     if (data._id) {
+    //                       data.ds_id = data._id;
+    //                     }
+    //
+    //                     historyList.forEach((obj, key) => {
+    //                       if ((obj.ds_id && obj.ds_id === storyId) || (obj._id && obj._id === storyId)) {
+    //                         historyList[key] = data;
+    //                       }
+    //                     });
+    //
+    //                     articlesData[data._id] = historyList;
+    //                     this.state.set(CHANNEL_CURRENT_ARTICLE, memoryCache.put(`${channel}_articles`, articlesData[data._id]));
+    //                     const url = this.request.protocol + '://' + this.request.headers.host + this.request.originalUrl;
+    //                     this.setArticleMetaTags(data, url);
+    //                   }
+    //                 }
+    //               })
+    //             );
+    //           }
+    //         })
+    //       ).subscribe();
+    //     }
+    //   }
+    // }
 
 
     if (isPlatformBrowser(this.platformId)) {

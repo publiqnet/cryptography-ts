@@ -25,7 +25,7 @@ import { PublicationService } from './core/services/publication.service';
 import { LanguageGuard } from './guards/language.guard';
 import { RequestsInterceptor } from './core/services/requests.interceptor';
 import { environment } from '../environments/environment';
-import { OauthService, HttpHelperService, HttpObserverService } from 'shared-lib';
+import { OauthService, HttpHelperService, HttpObserverService } from 'helper-lib';
 
 HttpHelperService.setBaseHeaders([
   {

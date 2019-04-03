@@ -13,12 +13,12 @@ import { ErrorService } from './error.service';
 import { Preference } from './models/preference';
 import { AuthorStats, AuthorStatsOptions } from './models/authorStats';
 
-import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } from 'arcnet-js';
+// import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } from 'arcnet-js';
 import { HttpRpcService } from './httpRpc.service';
 import { Subscriber } from './models/subscriber';
 
 import { UtilsService } from 'shared-lib';
-import { HttpHelperService, HttpMethodTypes } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 
 
 @Injectable()
