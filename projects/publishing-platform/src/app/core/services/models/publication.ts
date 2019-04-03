@@ -4,7 +4,6 @@ import { Account } from './account';
 export interface PublicationOptions {
     title: string;
     description: string;
-    members: Account[];
     articles;
     inviter;
     cover: string;
@@ -16,6 +15,12 @@ export interface PublicationOptions {
     membersCount: number;
     memberStatus: number;
     views: number;
+    members: Account[];
+    contributors?: Account[];
+    editors?: Account[];
+    invitations?: Account[];
+    requests?: Account[];
+    owner?: Account;
 }
 
 export interface PublicationSubscribersResponse {
@@ -31,7 +36,6 @@ export interface PublicationSubscribersResponse {
 export class Publication {
     title: string;
     description: string;
-    members: Account[];
     articles;
     inviter;
     cover: string;
@@ -43,6 +47,12 @@ export class Publication {
     membersCount: number;
     memberStatus: number;
     views: number;
+    members: Account[];
+    contributors?: Account[];
+    editors?: Account[];
+    invitations?: Account[];
+    requests?: Account[];
+    owner?: Account;
 
     constructor(options?: PublicationOptions) {
         for (const i in options) {
@@ -53,8 +63,10 @@ export class Publication {
                     this[i] = options[i] ? '#' + options[i] : '';
                 } else if (['membersCount', 'memberStatus'].includes(i)) {
                     this[i] = options[i];
-                } else if (['members'].includes(i)) {
+                } else if (['members', 'contributors', 'editors', 'invitations', 'requests'].includes(i)) {
                     this[i] = options[i] ? options[i].map(data => new Account(data)) : [];
+                } else if (['owner'].includes(i)) {
+                    this[i] = options[i] ? new Account(options[i]) : '';
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }

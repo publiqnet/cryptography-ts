@@ -6,7 +6,7 @@ import { filter, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Publication } from './models/publication';
 import { PageOptions } from './models/content';
-import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { IPublications, Publications } from './models/publications';
 
 
@@ -101,7 +101,15 @@ export class PublicationService {
 
   acceptInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/invitation-response', body);
 
-  acceptRequest = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/membership-response', body);
+  acceptRequest = (slug: string, publicKey: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + `/${slug}/request/response/${publicKey}`)
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+  }
+
+  rejectRequest = (slug: string, publicKey: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + `/${slug}/request/response/${publicKey}`)
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+  }
 
   addPublicationToStory(dsId: string, slug: string): Observable<any> {
     const body = {dsId: dsId, publication_slug: slug == 'none' ? '' : slug};

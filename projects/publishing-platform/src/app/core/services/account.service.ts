@@ -262,7 +262,6 @@ export class AccountService {
     //   this.changeLang('en');
     // }
 
-    console.log(this.accountInfo);
     this.accountUpdated$.next(this.accountInfo);
   }
 

@@ -39,7 +39,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: Publications) => {
-        console.log('data --- ', data);
         this.publications = data.owned;
         this.membership = data.membership;
         this.invitations = data.invitations;

@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { FormBuilder } from '@angular/forms';
 
-import { ReplaySubject, combineLatest } from 'rxjs';
-import { filter, skip, takeUntil, switchMap } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { PublicationService } from '../../core/services/publication.service';
 import { DialogService } from '../../core/services/dialog.service';
@@ -13,7 +13,7 @@ import { Publication } from '../../core/services/models/publication';
 import { parseZone } from 'moment';
 import { ArticleService } from '../../core/services/article.service';
 import { PublicationMemberStatusType } from '../../core/models/enumes';
-import { Publications } from '../../core/services/models/publications';
+import { Account } from '../../core/services/models/account';
 
 @Component({
   selector: 'app-manage-publication',
@@ -36,13 +36,9 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   logoFile;
   searchBar = false;
   member;
-  editors = [];
-  pendings = [];
   initialLoading = true;
-  contributors = [];
   subscribers: Array<any>;
   tabIndex;
-  requests: Array<any>;
   followers: Array<any> = [];
   accountInfo;
   myStatus;
@@ -57,6 +53,8 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   nextPub = false;
   public addMemberBtn = false;
   private unsubscribe$ = new ReplaySubject<void>(1);
+
+  currentUser: Account;
 
   constructor(
     private FormBuilder: FormBuilder,
@@ -83,6 +81,15 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       this.seeMore = false;
       this.initialLoading = true;
     }
+
+    this.accountService.accountUpdated$
+      .pipe(
+        filter(result => result != null),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((account: Account) => {
+        this.currentUser = account;
+      });
 
     // this.publicationForm.disable();
     /*
@@ -168,6 +175,8 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         this.slug = this.publication.slug;
         this.coverImage = this.publication.cover;
         this.logoImage = this.publication.logo;
+
+        this.initialLoading = false;
       }
 
       // Todo: need to be reviewed
@@ -191,33 +200,32 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       )
       .subscribe((followers: any[]) => {
         if (followers) {
-          this.followers = followers.map(f => f.user.username);
+          this.followers = followers.map(f => f.publicKey);
         }
       });
   }
 
-
-  follow(member, e, mode) {
+  follow(member: Account, e, mode) {
     e.preventDefault();
     e.stopPropagation();
-    this.accountService.follow(member.username);
-    member.following = 'unfollow';
+    this.accountService.follow(member.publicKey);
+    member['following'] = 'unfollow';
     if (mode === 'member') {
-      const subscriber = this.subscribers.find(e => e.subscriber.username === member.username);
+      const subscriber = this.subscribers.find(e => e.subscriber.username === member.publicKey);
       if (subscriber) {
         subscriber.subscriber.following = 'unfollow';
       }
     } else if (mode === 'follower') {
-      const editor = this.editors.find(e => e.user.username === member.username);
-      const contributor = this.contributors.find(e => e.user.username === member.username);
+      const editor = this.publication.editors.find(e => e.publicKey === member.publicKey);
+      const contributor = this.publication.contributors.find(e => e.publicKey === member.publicKey);
       if (editor) {
-        editor.user.following = 'unfollow';
+        editor['following'] = 'unfollow';
       }
       if (contributor) {
-        contributor.user.following = 'unfollow';
+        contributor['following'] = 'unfollow';
       }
-      if (this.member.user.username === member.username) {
-        this.member.user.following = 'unfollow';
+      if (this.member.publicKey === member.publicKey) {
+        this.member['following'] = 'unfollow';
       }
     }
   }
@@ -233,16 +241,16 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         subscriber.subscriber.following = 'follow';
       }
     } else if (mode === 'follower') {
-      const editor = this.editors.find(e => e.user.username === member.username);
-      const contributor = this.contributors.find(e => e.user.username === member.username);
+      const editor = this.publication.editors.find(e => e.publicKey === member.username);
+      const contributor = this.publication.contributors.find(e => e.publicKey === member.username);
       if (editor) {
-        editor.user.following = 'follow';
+        editor['following'] = 'follow';
       }
       if (contributor) {
-        contributor.user.following = 'follow';
+        contributor['following'] = 'follow';
       }
-      if (this.member.user.username === member.username) {
-        this.member.user.following = 'follow';
+      if (this.member.publicKey === member.username) {
+        this.member['following'] = 'follow';
       }
     }
   }
@@ -252,9 +260,9 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   }
 
   getMembers() {
-    this.editors = [];
-    this.pendings = [];
-    this.contributors = [];
+    // this.editors = [];
+    // this.pendings = [];
+    // this.contributors = [];
     this.publicationService.getMembers(this.publication.slug)
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -263,34 +271,34 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         this.members = res['invitations'].concat(res['members']);
         this.members.forEach(member => {
             if (member.status === 2) {
-              if (this.followers.includes(member.user.username)) {
-                member.user.following = 'unfollow';
+              if (this.followers.includes(member.publicKey)) {
+                member['following'] = 'unfollow';
               } else {
-                member.user.following = 'follow';
+                member['following'] = 'follow';
               }
-              this.editors.push(member);
+              // this.editors.push(member);
             } else if (member.status === 3) {
-              if (member.user && this.followers.includes(member.user.username)) {
-                member.user.following = 'unfollow';
-              } else if (member.user && !this.followers.includes(member.user.username)) {
-                member.user.following = 'follow';
+              if (member.user && this.followers.includes(member.publicKey)) {
+                member['following'] = 'unfollow';
+              } else if (member.user && !this.followers.includes(member.publicKey)) {
+                member['following'] = 'follow';
               }
-              this.contributors.push(member);
+              // this.contributors.push(member);
             } else if (member.status === 103 || member.status === 102) {
-              if (member.user && this.followers.includes(member.user.username)) {
-                member.user.following = 'unfollow';
-              } else if (member.user && !this.followers.includes(member.user.username)) {
-                member.user.following = 'follow';
+              if (member.user && this.followers.includes(member.publicKey)) {
+                member['following'] = 'unfollow';
+              } else if (member.user && !this.followers.includes(member.publicKey)) {
+                member['following'] = 'follow';
               }
-              this.pendings.push(member);
+              // this.pendings.push(member);
             } else if (member.status === 1) {
               this.member = member;
-              if (this.followers.includes(this.member.user.username)) {
-                this.member.user.following = 'unfollow';
+              if (this.followers.includes(this.member.publicKey)) {
+                this.member['following'] = 'unfollow';
               } else {
-                this.member.user.following = 'follow';
+                this.member['following'] = 'follow';
               }
-              this.requests = res['requests'];
+              // this.requests = res['requests'];
             }
           }
         );
@@ -320,7 +328,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
 
   changeStatus(e, member) {
     const body = {
-      publicKey: member.user.username,
+      publicKey: member.publicKey,
       slug: this.publication.slug,
       status: e.value
     };
@@ -367,7 +375,7 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     this.router.navigate(['/s/' + ds]);
   }
 
-  addMember() {
+  inviteMemberToggle() {
     this.searchBar = true;
 
     this.addMemberBtn = !this.addMemberBtn;
@@ -379,45 +387,32 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     this.getMembers();
   }
 
-  deleteMember(member, i, e) {
+  deleteMember(member: Account, i, e) {
     if (e) {
       e.stopPropagation();
     }
-    // /api/v1/publication/{slug}/delete-member
-    this.dialogService
-      .openConfirmDialog('')
+    this.dialogService.openConfirmDialog('')
       .pipe(
-        filter(result => result !== false),
+        filter(result => result),
+        switchMap(() => this.publicationService.deleteMember(this.slug, member.publicKey)),
+        switchMap(() => this.publicationService.getPublicationBySlug(this.slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-        this.publicationService
-          .deleteMember(this.publication.slug, member.user.username)
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe(res => {
-            this.getMembers();
-          });
-      });
+      .subscribe((pub: Publication) => this.publication = pub);
   }
 
   goToPage() {
     this.router.navigate([`/p/${this.publication.slug}`]);
   }
 
-  memberRequest(request, status, index) {
-    const body = {
-      membershipId: request.id,
-      status: status
-    };
-    this.publicationService.acceptRequest(body)
+  memberRequest(requestAccount: Account, status: 0 | 1, index) {
+    const requestFunction = status ? 'acceptRequest' : 'rejectRequest';
+    this.publicationService[requestFunction](this.slug, requestAccount.publicKey)
       .pipe(
+        switchMap(() => this.publicationService.getPublicationBySlug(this.slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-        this.getMembers();
-      });
+      .subscribe((publication: Publication) => this.publication = publication);
   }
 
   cancelMember(member, e) {

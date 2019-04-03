@@ -129,27 +129,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
     if (!this.accountService.loggedIn()) {
       this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
       return false;
-    } else {
-      this.publicationService.follow(this.publication.slug)
-        .pipe(
-          switchMap((data: Params) => {
-            this.canFollow = false;
-            return this.publicationService.getPublicationSubscribers(this.publication.slug);
-          }),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((res) => {
-          // if (this.accountService.accountInfo) {
-          //   this.subscribers = res.length;
-          //   const publicKey = this.accountService.accountInfo.publicKey;
-          //   res.forEach((elem: PublicationSubscribersResponse) => {
-          //     if (publicKey === elem.subscriber.username) {
-          //       this.canFollow = false;
-          //     }
-          //   });
-          // }
-        });
     }
+    this.publicationService.follow(this.publication.slug)
+      .pipe(
+        switchMap((data: Params) => {
+          this.canFollow = false;
+          return this.publicationService.getPublicationSubscribers(this.publication.slug);
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((res) => {
+        // if (this.accountService.accountInfo) {
+        //   this.subscribers = res.length;
+        //   const publicKey = this.accountService.accountInfo.publicKey;
+        //   res.forEach((elem: PublicationSubscribersResponse) => {
+        //     if (publicKey === elem.subscriber.username) {
+        //       this.canFollow = false;
+        //     }
+        //   });
+          // }
+      });
   }
 
   unfollow() {
