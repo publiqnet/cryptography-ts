@@ -47,7 +47,6 @@
     "angular-froala-wysiwyg": "^2.7.6",
     "angular2-useful-swiper": "5.0.1",
     "angulartics2": "^5.1.2",
-    "arcnet-js": "git+https://github.com/PUBLIQNetwork/publiq-cript-js.git#3.0.dev",
     "axios": "^0.18.0",
     "blockchain-models-ts": "git+https://github.com/publiqnet/blockchain-models-ts.git",
     "body-parser": "^1.18.3",

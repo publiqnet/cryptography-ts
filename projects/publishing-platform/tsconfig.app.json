@@ -10,10 +10,7 @@
     "**/*.ts",
     "src/main.ts",
     "src/main.server.ts",
-    "src/polyfills.ts",
-    "../../node_modules/arcnet-js/index.ts",
-    "../../node_modules/arcnet-js/lib/**/*",
-    "../../node_modules/arcnet-js/typings.d.ts"
+    "src/polyfills.ts"
   ],
   "exclude": [
     "test.ts",
