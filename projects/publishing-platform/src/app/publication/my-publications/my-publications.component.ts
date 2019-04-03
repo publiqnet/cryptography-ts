@@ -39,6 +39,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: Publications) => {
+        console.log('data --- ', data);
         this.publications = data.owned;
         this.membership = data.membership;
         this.invitations = data.invitations;
@@ -91,10 +92,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       });
   }
 
-  goToDetail(slug, status) {
-    this.router.navigate([`/p/${slug}`]);
-  }
-
   invitationResponse(id, accepted) {
     const body = {membershipId: id, accepted: accepted};
     this.publicationService.acceptInvitation(body)
@@ -123,6 +120,5 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
 
 }

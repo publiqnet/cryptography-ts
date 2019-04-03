@@ -1,22 +1,22 @@
 import { Publication, PublicationOptions } from './publication';
 
 export interface IPublications {
-  owned?;
+  owned?: Publication[];
   invitations?;
-  membership?;
-  requests?;
+  membership?: Publication[];
+  requests?: Publication[];
 }
 
 export class Publications {
-  owned?: any[];
+  owned?: Publication[];
   invitations?;
-  membership?;
-  requests?: any[];
+  membership?: Publication[];
+  requests?: Publication[];
 
   constructor(options?: IPublications) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (['requests', 'owned'].includes(i)) {
+        if (['requests', 'owned', 'membership'].includes(i)) {
           this[i] = options[i] && options[i].length ? options[i].map((data: PublicationOptions) => new Publication(data)) : [];
         } else {
           this[i] = options[i];

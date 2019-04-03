@@ -8,7 +8,6 @@ import { Publication } from './models/publication';
 import { PageOptions } from './models/content';
 import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'shared-lib';
 import { IPublications, Publications } from './models/publications';
-import { DraftData } from './models/draft';
 
 
 @Injectable()
@@ -46,22 +45,13 @@ export class PublicationService {
       .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
-  getMyPublications = () => {
-    /*return this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
-      .pipe(
-        map((data: IPublications) => new Publications(data)),
-        tap((data: Publications) => this.myPublications$.next(data))
-      );*/
-
+  getMyPublications: () => Observable<any> = () => {
     const callData: any = this.observers['getMyPublications'];
     return this.httpObserverService.observerCall(callData.name, this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
       .pipe(
         filter(data => data != null),
-        map((data: IPublications) => {
-          callData.refresh = false;
-          return new Publications(data);
-        }),
-        tap((data: Publications) => this.myPublications$.next(data))
+        map((data: IPublications) => new Publications(data)),
+        tap((data: Publications) => { callData.refresh = false; this.myPublications$.next(data); })
       ), callData.refresh);
   }
 
@@ -96,7 +86,10 @@ export class PublicationService {
 
   requestBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
 
-  cancelBecomeMember = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/request');
+  cancelBecomeMember = (slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/request')
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+  }
 
   acceptInvitationBecomeMember = (slug: string): Observable<any> => {
     return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response');

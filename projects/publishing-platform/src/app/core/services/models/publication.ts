@@ -1,9 +1,10 @@
 import { environment } from '../../../../environments/environment';
+import { Account } from './account';
 
 export interface PublicationOptions {
     title: string;
     description: string;
-    members: any[];
+    members: Account[];
     articles;
     inviter;
     cover: string;
@@ -30,7 +31,7 @@ export interface PublicationSubscribersResponse {
 export class Publication {
     title: string;
     description: string;
-    members: any[];
+    members: Account[];
     articles;
     inviter;
     cover: string;
@@ -52,6 +53,8 @@ export class Publication {
                     this[i] = options[i] ? '#' + options[i] : '';
                 } else if (['membersCount', 'memberStatus'].includes(i)) {
                     this[i] = options[i];
+                } else if (['members'].includes(i)) {
+                    this[i] = options[i] ? options[i].map(data => new Account(data)) : [];
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }

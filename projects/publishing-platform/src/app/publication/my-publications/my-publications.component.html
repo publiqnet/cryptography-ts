@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="cols col-lg-4 col-md-6 col-sm-12"
                                  *ngFor="let publication of publications; let index = index">
-                                <div class="card-info" (click)="goToDetail(publication.slug, 1)">
+                                <div class="card-info" routerLink="/p/{{publication.slug}}">
                                     <div class="cover-space"
                                          [ngClass]="{'cover-overlay': !publication.color}"
                                          [ngStyle]="{'background-color': publication.cover ? 'white' : publication.color ? publication.color : 'transparent'}">
@@ -42,10 +42,10 @@
                                             <div class="seen-by">
 
                                                 <div *ngFor="let member of publication.members | slice: 0: 5"
-                                                     [title]="member.user.firstName + ' ' +  member.user.lastName"
-                                                     [routerLink]="['/a', member.user.username]"
-                                                     [ngStyle]="{ 'background-image': member.user.image ?
-                                                                  'url('+ member.user.image + ')' :
+                                                     [title]="member.firstName + ' ' +  member.lastName"
+                                                     [routerLink]="['/a', member.publicKey]"
+                                                     [ngStyle]="{ 'background-image': member.image ?
+                                                                  'url('+ member.image + ')' :
                                                                   'url( \' ../../../assets/no-image-article.jpg\')'}  "
                                                 >
 
@@ -88,9 +88,10 @@
                                 </div>
                                 <div class="title-space">
                                     <div class="info ">
-                                        <h4 (click)="goToDetail(membership.slug, membership.status)">
-                                            {{membership.title}} </h4>
-                                        <span class="number"><b>{{membership.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                        <h4 routerLink="/p/{{membership.slug}}">
+                                            {{membership.title}}
+                                        </h4>
+                                        <span class="number"><b>{{membership?.articles?.length || 0}}</b> {{'content.stories' | translate}}</span>
                                     </div>
                                     <div class="leave-membership leave-item"
                                          (click)="deleteMembership(membership.slug, index)">
@@ -120,7 +121,7 @@
                                 </div>
                                 <div class="title-space">
                                     <div class="info">
-                                        <h4 (click)="goToDetail(invitation.slug)">{{invitation.title}}</h4>
+                                        <h4 routerLink="/p/{{invitation.slug}}">{{invitation.title}}</h4>
                                         <span class="number"><b>{{invitation.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
                                     </div>
                                     <div class="choose">

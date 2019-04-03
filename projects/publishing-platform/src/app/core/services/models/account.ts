@@ -14,8 +14,9 @@ export interface AccountOptions {
   loggedIn?: boolean;
   nuxEditor?: boolean;
   balance?: number;
-  fraction: number;
-  whole: number;
+  fraction?: number;
+  whole?: number;
+  memberStatus?: number;
 }
 export class Account {
   options;
@@ -32,8 +33,9 @@ export class Account {
   loggedIn?: boolean;
   nuxEditor?: boolean;
   balance?: number;
-  fraction: number;
-  whole: number;
+  fraction?: number;
+  whole?: number;
+  memberStatus?: number;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {

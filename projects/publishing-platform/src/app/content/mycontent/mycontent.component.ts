@@ -154,7 +154,7 @@ export class MycontentComponent implements OnInit, OnDestroy {
 
     zip(
       this.publicationService.myPublications$,
-      this.publicationService.myPublications$.pipe(map((res: Publications) => res.membership.map(el => el.publication)))
+      // this.publicationService.myPublications$.pipe(map((res: Publications) => res.membership))
     )
       .pipe(
         map((results: any[]) => results[0].concat(results[1])),
