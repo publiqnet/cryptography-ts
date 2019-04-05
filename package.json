@@ -23,7 +23,7 @@
     "pp:start:prod": "npm run pp:build:prod && node dist/server.js",
     "pp:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=publishing-platform",
     "w:serve": "npm run build:libs && ng serve wallet --port=4201",
-    "w:start:stage": "npm run w:build:stage && node dist/server.js",
+    "w:start:stage": "npm run build:libs && npm run w:build:stage && node dist/server.js",
     "w:build:stage": "ng build wallet --configuration=staging && npm run w:build:stage:ssr",
     "w:build:stage:ssr": "ng run wallet:server && npm run w:webpack:server",
     "w:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=wallet"
