@@ -1,0 +1,73 @@
+<div class="vh-centered" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<div class="inner-wrap">
+    <p class="first-title">Transactions</p>
+    <mat-table class="transactions-table projected-content-wrapper" [dataSource]="dataSource" *ngIf="dataSource">
+        <ng-container matColumnDef="id">
+
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let transaction">
+                <mat-list>
+                    <mat-list-item>
+                        <mat-icon class="arrow_color" matListIcon>{{(transaction.to !=
+                            accountService.accountInfo.publicKey)?"arrow_upward":"arrow_downward"}}
+                        </mat-icon>
+                        <!--h3 matLine>{{(transaction.m_to_name != accountService.accountInfo.publicKey)?"Sent":"Received"}}</h3-->
+                    </mat-list-item>
+                </mat-list>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let transaction">
+                <h3 matLine>
+                    <b>{{transaction.date| date:'dd MMM'}}</b>
+                    <span>{{transaction.date | date: 'y'}}</span>
+                </h3>
+
+                <p matLine>{{transaction.date | date: 'shortTime'}}</p>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="from_to">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let transaction">
+                <mat-list>
+                    <mat-list-item>
+                        <h3 matLine>
+                            <span>{{(transaction.to != accountService.accountInfo.publicKey)?"Sent to":"Received from"}}</span> <a  class="payment-line" href="{{explorerAddress}}/block/account/{{(transaction.m_to_name != accountService.accountInfo.publicKey) ? transaction.m_to_name : transaction.m_from_name}}" target="_blank">
+                                {{(transaction.to != accountService.accountInfo.publicKey) ? transaction.to : transaction.from}}</a>
+                        </h3>
+                        <p matLine title="{{transaction.message}}">
+                            {{transaction.message }}
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let transaction">
+                <span [ngClass]="{'total-amount':true, 'transaction-sent': (transaction.to != accountService.accountInfo.publicKey)}">
+                  {{(transaction.to != accountService.accountInfo.publicKey)
+                    ? ((transaction.feeAmount + transaction.amount) | number:'0.0-8') + ' PBQ'
+                    : (transaction.amount | number:'0.0-8')  + ' PBQ'}}
+                </span>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <div class="no_transactions" *ngIf="!loading && !transactions.length">No transactions</div>
+
+    <div class="text-center mt-3" *ngIf="!loading && seeMoreChecker">
+        <button class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="viewMore()">
+            see more
+        </button>
+    </div>
+    <div class="table-completed"></div>
+</div>

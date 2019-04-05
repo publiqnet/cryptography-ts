@@ -1,0 +1,39 @@
+<mat-card class="centered" *ngIf="formView === 'registerForm'">
+    <mat-card-title>Create PUBLIQ Wallet</mat-card-title>
+    <mat-card-subtitle>Enter your email to create new wallet.</mat-card-subtitle>
+
+    <mat-card-content>
+        <form class="form" novalidate (ngSubmit)="register()" [formGroup]="registerForm">
+            <!--<mat-form-field class="full-width">-->
+                <!--<input matInput formControlName="email" placeholder="Email" required/>-->
+            <!--</mat-form-field>-->
+            <input class="mail-input" formControlName="email" placeholder="Email" required/>
+
+            <div class="warning">
+                <app-control-message class="mb-4 h6" [control]="registerForm.controls['email']"></app-control-message>
+            </div>
+
+            <div class="warning" *ngIf="conditionsWarning">
+                <div class="warning-message" [innerHTML]="conditionsWarning"></div>
+            </div>
+
+            <mat-card-actions class="ml-0 mt-2 ">
+                <button class="submit-button" color="primary" [disabled]="!registerForm.valid" type="submit">CONTINUE</button>
+
+            </mat-card-actions>
+
+
+        </form>
+    </mat-card-content>
+</mat-card>
+
+
+<mat-card class="centered" *ngIf="formView === 'successMessage'" style="max-width:490px;width: 100%;min-height:97px;">
+    <mat-card-content>
+        Please check your email to access your secure link.
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="formView === ''">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>

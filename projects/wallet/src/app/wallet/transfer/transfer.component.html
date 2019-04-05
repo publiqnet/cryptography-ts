@@ -1,0 +1,56 @@
+<mat-card class="centered" *ngIf="!loading">
+    <div class="recovery-header">
+        <mat-card-title class="trans-title">Transfer PBQ</mat-card-title>
+    </div>
+
+    <div class="trans-bottom-title">Send PBQs to the recipient's account.</div>
+
+    <mat-card-content>
+        <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="openConfirmDialog()">
+            <div fxLayout="column" fxLayout.sm="column" fxLayout.xs="column"
+                 fxLayoutGap="20px">
+                <!--AMOUNT INPUT-->
+                <div class="input-div">
+                    <p class="recipient-title"><i class="icon-pbq"></i>Amount to send</p>
+
+                    <input class="trans-input pbq-ammount" matInput placeholder="PBQ Amount" name="amount"
+                           (keypress)="validate($event)"
+                           (paste)="validate($event)"
+                           formControlName="amount"
+                           (focus)="focusFunction()"/>
+                </div>
+                <p class="error-msg" *ngIf="amountErrorMessage" fxLayout="row" [innerHTML]="amountErrorMessage"></p>
+
+                <!--ACCOUNT INPUT-->
+                <div fxFlex="50" class="full-width">
+                    <p class="recipient-title"><i class="icon-mail"></i>Recipient Address</p>
+                    <input class="trans-input" matInput placeholder="PBQ5gTqbdThdUmdSjdhfUjCyF69dfGdGyRDjdCDExDderdXq" name="public_key" formControlName="public_key">
+                    <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address</p>
+                </div>
+            </div>
+            <!--MEMO INPUT-->
+            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
+                <div class="full-width">
+                    <p class="recipient-title"><i class="icon-memo " style="font-size: 19px;  margin-left: 7px;"></i>Message</p>
+                    <div style="position: relative">
+                        <textarea [(ngModel)]="memo" style="resize: none" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
+                                class="trans-input trans-textarea" matInput placeholder="max. 200 characters" name="memo" formControlName="memo"></textarea>
+                        <span class="character" [ngClass]="{'max-char-error': memo.length > 200 }">{{memo.length}} / 200 characters</span>
+                        <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address is not found</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--SUBMIT BUTTON-->
+            <div class="submit-pbq" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="30px">
+                <span style="color: #3366FF; font-size: 14px;">Transaction fee: {{transferFee}} PBQ</span>
+                <button type="submit" class="submit-button generate-btn" [disabled]="!transferForm.valid">Generate Transaction</button>
+            </div>
+        </form>
+    </mat-card-content>
+
+</mat-card>
+
+<mat-card class="centered spinner-div" *ngIf="loading">
+    <mat-spinner style="margin: 80px auto;"></mat-spinner>
+</mat-card>

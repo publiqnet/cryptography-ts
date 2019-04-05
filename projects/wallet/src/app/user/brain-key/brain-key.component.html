@@ -1,0 +1,28 @@
+<mat-card class="centered" *ngIf="loading">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>
+
+<mat-card class="centered" *ngIf="!loading">
+    <mat-card-title>Create your password</mat-card-title>
+
+    <form novalidate (ngSubmit)="register()" [formGroup]="registerForm">
+
+        <p>This password encrypts your Private Key and gives you access to your wallet.</p>
+
+        <input class="mail-input" formControlName="password" placeholder="Password" type="password" required/>
+
+        <input class="mail-input confirm" formControlName="confirmPassword" placeholder="Confirm Password" type="password" required/>
+
+        <div class="warning">
+            <app-control-message [control]="registerForm"></app-control-message>
+        </div>
+
+        <div class="warning">
+            <app-control-message [control]="registerForm.controls['password']"></app-control-message>
+        </div>
+        <mat-card-actions class="ml-0 mt-2">
+            <button class="submit-button" color="primary" [disabled]="!registerForm.valid" type="submit">CREATE</button>
+        </mat-card-actions>
+
+    </form>
+</mat-card>

@@ -1,0 +1,89 @@
+@import '~@angular/material/_theming';
+@include mat-core();
+
+$green: (
+        50: #e0f7fa,
+        100: #b2ebf2,
+        200: #80deea,
+        300: #4dd0e1,
+        400: #2FEE93,
+        500: #1FDA81,
+        600: #1CBC70,
+        700: #DE2800,
+        800: #00838f,
+        900: #006064,
+        A100: #84ffff,
+        A200: #18ffff,
+        A400: #00e5ff,
+        A700: #00b8d4,
+        contrast: (
+                50: $black-87-opacity,
+                100: $black-87-opacity,
+                200: $black-87-opacity,
+                300: $black-87-opacity,
+                400: $black-87-opacity,
+                500: white,
+                600: white,
+                700: white,
+                800: white,
+                900: $white-87-opacity,
+                A100: $black-87-opacity,
+                A200: $black-87-opacity,
+                A400: $black-87-opacity,
+                A700: $black-87-opacity,
+        )
+);
+
+$dark-grey: (
+        50: #e0f7fa,
+        100: #b2ebf2,
+        200: #6C788D,
+        300: #AFBBD1,
+        400: #7F8A9E,
+        500: #1976D2,
+        600: #00acc1,
+        700: #0097a7,
+        800: #00838f,
+        900: #006064,
+        A100: #84ffff,
+        A200: #18ffff,
+        A400: #00e5ff,
+        A700: #00b8d4,
+        contrast: (
+                50: $black-87-opacity,
+                100: $black-87-opacity,
+                200: $black-87-opacity,
+                300: $black-87-opacity,
+                400: #fff,
+                500: white,
+                600: white,
+                700: white,
+                800: white,
+                900: $white-87-opacity,
+                A100: $black-87-opacity,
+                A200: $black-87-opacity,
+                A400: $black-87-opacity,
+                A700: $black-87-opacity,
+        )
+);
+
+$primary: mat-palette($dark-grey, 500);
+$primary-trans: mat-palette($dark-grey, 500);
+$accent: mat-palette($dark-grey, 400);
+
+$theme: mat-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+@include mat-chips-theme($theme);
+
+$dark-primary: mat-palette($green, 600);
+$dark-accent: mat-palette($dark-grey, 500);
+
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent);
+
+//@include angular-material-theme($dark-theme);
+
+.dark-theme {
+  @include angular-material-theme($dark-theme);
+  @include mat-chips-theme($dark-theme);
+}
