@@ -170,7 +170,6 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   ngOnChanges(changes: SimpleChanges) {
     if ('publication' in changes) {
       if (this.publication) {
-        console.log('this.publication --', this.publication);
         // this.publicationService.loadSubscribers(this.publication.slug);
         this.slug = this.publication.slug;
         this.coverImage = this.publication.cover;
@@ -405,9 +404,8 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     this.router.navigate([`/p/${this.publication.slug}`]);
   }
 
-  memberRequest(requestAccount: Account, status: 0 | 1, index) {
-    const requestFunction = status ? 'acceptRequest' : 'rejectRequest';
-    this.publicationService[requestFunction](this.slug, requestAccount.publicKey)
+  memberRequest(requestAccount: Account, action: 0 | 1, index) {
+    this.publicationService.acceptRejectRequest(this.slug, requestAccount.publicKey, action ? 'accept' : 'reject')
       .pipe(
         switchMap(() => this.publicationService.getPublicationBySlug(this.slug)),
         takeUntil(this.unsubscribe$)

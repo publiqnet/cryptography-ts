@@ -2,17 +2,16 @@ import { EventEmitter, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 
-import { BehaviorSubject, Subject, Observable, ReplaySubject, throwError } from 'rxjs';
-import { map, filter, take, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, take, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from '../../../environments/environment';
 import { CryptService } from './crypt.service';
-import { Account } from './models/account';
+import { Account, AccountOptions } from './models/account';
 import { ErrorService } from './error.service';
 import { Preference } from './models/preference';
 import { AuthorStats, AuthorStatsOptions } from './models/authorStats';
-
 // import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } from 'arcnet-js';
 import { HttpRpcService } from './httpRpc.service';
 import { Subscriber } from './models/subscriber';
@@ -1039,5 +1038,10 @@ export class AccountService {
 
   checkPassword(password: string): boolean {
     return this.cryptService.checkPassword(this.brainKeyEncrypted, password);
+  }
+
+  searchAccountByTerm: (term: string) => Observable<Account[]> = (term: string) => {
+    return this.httpHelperService.call(HttpMethodTypes.get, this.userUrl + `/search/${term}`)
+      .pipe(map((accounts: AccountOptions[]) => accounts.map(account => new Account(account))));
   }
 }

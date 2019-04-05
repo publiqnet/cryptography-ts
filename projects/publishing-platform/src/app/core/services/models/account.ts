@@ -1,4 +1,5 @@
 import { UtilsService } from 'shared-lib';
+import { environment } from '../../../../environments/environment';
 
 export interface AccountOptions {
   options?;
@@ -17,6 +18,7 @@ export interface AccountOptions {
   fraction?: number;
   whole?: number;
   memberStatus?: number;
+  image?: string;
 }
 export class Account {
   options;
@@ -36,12 +38,15 @@ export class Account {
   fraction?: number;
   whole?: number;
   memberStatus?: number;
+  image?: string;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
         if (['fraction', 'whole'].includes(i)) {
           this[i] = options[i];
+        } else if (i === 'image') {
+          this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else {
           this[i] = options[i] ? options[i] : '';
         }

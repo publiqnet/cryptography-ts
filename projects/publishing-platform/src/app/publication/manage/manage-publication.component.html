@@ -50,11 +50,7 @@
                         </button>
 
                         <div class="show-add-button" *ngIf="addMemberBtn">
-                            <app-search-member (memberInvited)="closeSearchBar()" [hidden]="!searchBar"
-                                               [publicationSlug]='publication?.slug'
-                                               [statuses]="publication.memberStatus === MemberStatus.owner ? ['Contributor', 'Editor'] : ['Contributor']"
-                                               [members]="members">
-                            </app-search-member>
+                            <app-search-member (memberInvited)="closeSearchBar()" [hidden]="!searchBar" [publication]="publication"></app-search-member>
                         </div>
                     </div>
                 </div>

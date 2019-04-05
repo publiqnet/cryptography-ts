@@ -72,6 +72,10 @@ export class PublicationService {
     return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invite-a-member', {invitations: body});
   }
 
+  inviteBecomeMember = (body: object[], slug: string): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation', {invitations: body});
+  }
+
   getMembers: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
     return this.httpHelper.call(HttpMethodTypes.get, this.url + `/${slug}/` + 'members');
   }
@@ -101,13 +105,9 @@ export class PublicationService {
 
   acceptInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/invitation-response', body);
 
-  acceptRequest = (slug: string, publicKey: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + `/${slug}/request/response/${publicKey}`)
-      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
-  }
-
-  rejectRequest = (slug: string, publicKey: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.delete, this.url + `/${slug}/request/response/${publicKey}`)
+  acceptRejectRequest = (slug: string, publicKey: string, action: 'accept' | 'reject'): Observable<any> => {
+    const method = action == 'accept' ? HttpMethodTypes.post : HttpMethodTypes.delete;
+    return this.httpHelper.call(method, this.url + `/${slug}/request/response/${publicKey}`)
       .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
