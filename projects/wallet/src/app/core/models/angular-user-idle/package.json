@@ -1,0 +1,53 @@
+{
+  "_from": "angular-user-idle@^1.1.0",
+  "_id": "angular-user-idle@1.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-M1qJ2Pp+ALn6YaiLQNPcI5O5Eno6tuUFrBmOn/FMOIZscS8a+Cxe2zjI3jVMR3Zk08vTE8Na7GdYcafE0k/BuQ==",
+  "_location": "/angular-user-idle",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "angular-user-idle@^1.1.0",
+    "name": "angular-user-idle",
+    "escapedName": "angular-user-idle",
+    "rawSpec": "^1.1.0",
+    "saveSpec": null,
+    "fetchSpec": "^1.1.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/angular-user-idle/-/angular-user-idle-1.1.0.tgz",
+  "_shasum": "63f204870a637448a08751f0bebc6f5408e18f7e",
+  "_spec": "angular-user-idle@^1.1.0",
+  "_where": "/usr/local/var/www/vhosts/_localhost/test/wallet-transfers",
+  "author": {
+    "name": "Vasyl Efimenko",
+    "email": "rednez@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/rednez/angular-user-idle/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "User's idle service for Angular 5+",
+  "homepage": "https://github.com/rednez/angular-user-idle#readme",
+  "keywords": [
+    "idle",
+    "angular4"
+  ],
+  "license": "MIT",
+  "main": "user-idle.umd.js",
+  "name": "angular-user-idle",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "rxjs": "^5.5.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rednez/angular-user-idle.git"
+  },
+  "types": "user-idle.d.ts",
+  "version": "1.1.0"
+}

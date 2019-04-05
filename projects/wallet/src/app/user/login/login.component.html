@@ -1,0 +1,33 @@
+<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Init">
+    <mat-card-title>Sign in</mat-card-title>
+    <mat-card-subtitle>Enter you email and password to Sign in.</mat-card-subtitle>
+
+    <mat-card-content>
+        <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
+            <mat-form-field class="full-width">
+                <input matInput formControlName="email" placeholder="Email address" value="">
+            </mat-form-field>
+
+            <div>
+                <app-control-message class="warning mb-4 h6" [control]="loginForm.controls['email']"></app-control-message>
+            </div>
+
+            <mat-card-actions class="ml-0 mt-2">
+                <button mat-raised-button color="primary" [disabled]="!loginForm.valid">Sign in</button>
+            </mat-card-actions>
+
+            <a [routerLink]="['/user/recover']" class="forgot-password">Forgot your password?</a>
+
+        </form>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="authStep === AuthStepStatusEnum.Success">
+    <mat-card-content>
+        Please check your email to access your secure link.
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Loading">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>

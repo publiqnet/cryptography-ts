@@ -1,0 +1,10 @@
+<mat-card class="centered" *ngIf="!confirmed">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>
+
+<mat-card class="centered" *ngIf="confirmed">
+    <mat-card-content>
+        <p>Your account successfully confirmed!</p>
+        <p>Click <a routerLink="/user/login"><b> here for login</b></a></p>
+    </mat-card-content>
+</mat-card>

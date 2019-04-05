@@ -1,0 +1,229 @@
+.public-header {
+  width:100%;
+  display:block;
+  position:fixed;
+  background-color: #fff;
+  box-shadow: 0 2px 1px #eee;
+  color: black;
+  z-index:3;
+  transition: height .4s;
+
+  &.shrink-n {
+    height: 85px;
+  }
+  &.shrink {
+    height: 80px;
+
+    .header-slide-wrapper {
+      transform: translateY(-100%);
+    }
+  }
+}
+
+button {
+  outline: none;
+}
+
+.logo-container {
+  overflow: hidden;
+  transition: .2s;
+}
+
+.header-slide-wrapper-container {
+  overflow:hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.header-slide-wrapper {
+  width:100%;
+  height:100%;
+  transition: transform .4s;
+}
+
+.header-slide {
+  width:100%;
+  height:100%;
+}
+
+.icon {
+  font-size: 28px;
+  padding-left: 12px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.publiq-logo {
+  display: block;
+  max-width: 100%;
+  height: 35px;
+  cursor: pointer;
+
+  &.testnet {
+    height: 46px;
+  }
+}
+
+.popular-tags {
+  padding-right: 100px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.header-article-meta {
+  cursor:pointer;
+
+  h3 {
+    margin-left: 14px;
+  }
+
+  .avatar {
+    display:inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: relative;
+    background-color: #3366FF;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    color:#fff;
+  }
+}
+
+.sign-out {
+  font-size: 16px;
+  text-transform: uppercase;
+  padding-left: 12px;
+  margin-left: 12px;
+  border-left: 1px solid #666;
+  transition: .3s;
+  a:hover{
+    text-decoration: none;
+    color: #3366FF;
+    transition: .3s;
+  }
+  a:focus{
+    text-decoration: none;
+    transition: .3s;
+  }
+}
+
+.selected-tag {
+  color: darkgrey;
+}
+
+.searchIcon, .tagListIcon, .menuIcon {
+  cursor: pointer;
+}
+
+.public-header {
+  height: 80px;
+}
+
+.nopadd-button {
+  min-width: 20px;
+  padding: 7px;
+}
+
+.shield-red {
+  color: #d23d29;
+  position: relative;
+
+  &:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 3px;
+    height: 11px;
+    right: -5px;
+    top: -2px;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iM3B4IiBoZWlnaHQ9IjExcHgiIHZpZXdCb3g9IjAgMCAzIDExIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCA0OC4yICg0NzMyNykgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+CiAgICA8dGl0bGU+ZXhjbGFtYXRpb248L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iSGVhZGVyLW1lbnUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xMDgwLjAwMDAwMCwgLTE1LjAwMDAwMCkiPgogICAgICAgIDxnIGlkPSJleGNsYW1hdGlvbiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTA4MC4wMDAwMDAsIDE1LjAwMDAwMCkiIGZpbGw9IiNEMDAyMUIiIGZpbGwtcnVsZT0ibm9uemVybyI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgcG9pbnRzPSIwIDAgMyAwIDMgMi41NDU0NTQ1NSAyLjI1IDcgMC43NSA3IDAgMi41NDU0NTQ1NSI+PC9wb2x5Z29uPgogICAgICAgICAgICA8cGF0aCBkPSJNMyw5LjUgQzMsMTAuMzI4NzUgMi4zMjg3NSwxMSAxLjUsMTEgQzAuNjcxMjUsMTEgMCwxMC4zMjg3NSAwLDkuNSBDMCw4LjY3MTI1IDAuNjcxMjUsOCAxLjUsOCBDMi4zMjg3NSw4IDMsOC42NzEyNSAzLDkuNSBaIiBpZD0iU2hhcGUiPjwvcGF0aD4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPg==);
+    background-repeat:no-repeat;
+  }
+}
+
+mat-menu {
+  margin-right: 0!important;
+}
+
+.menu-button{
+  margin-left: 10px;
+  font-size: 15px;
+  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: .3s;
+  &:hover{
+    color: #3366FF;
+    transition: .3s;
+  }
+}
+
+@media screen and (max-width: 480px){
+  .public-header{
+
+  }
+  .publiq-logo {
+    height: 28px !important;
+    &.testnet {
+      height: 36px !important;
+    }
+  }
+  .sign-out {
+    font-size: 11px;
+  }
+  .icon {
+    font-size: 20px;
+    padding-left: 12px;
+  }
+  .menu-button{
+    margin-left: 0!important;
+    margin-right: 0!important;
+    font-size: 10px;
+  }
+  .menu-button.register-btn{
+    margin-left: 10px!important;
+  }
+}
+
+@keyframes balance-dots {
+  from {opacity: .2;}
+  to {opacity: 1;}
+}
+
+.loading-balance {
+  display: inline-block;
+  height: 5px;
+  vertical-align: middle;
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    background: #3366ff;
+    border-radius: 50%;
+    vertical-align: middle;
+    display: inline-block;
+    animation: balance-dots 0.6s infinite;
+    float: left;
+    margin-right: 4px;
+
+    &:first-of-type {animation-delay: .2s;}
+    &:nth-of-type(2) {animation-delay: .4s;}
+    &:last-of-type {animation-delay: .6s;}
+  }
+}
+
+@media screen and (max-width: 340px){
+  /*.logo-container {
+    flex: 0 0 70.5px;
+    margin-right: 0!important;
+  }*/
+}

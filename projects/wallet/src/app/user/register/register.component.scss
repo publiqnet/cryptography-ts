@@ -1,0 +1,70 @@
+mat-card.centered {
+  min-width: 150px;
+  max-width: 480px;
+  width: 100%;
+  min-height: 260px;
+  padding: 40px;
+  margin: 10vh auto;
+}
+
+.full-width {
+  width: 100%;
+}
+.mail-input{
+  border: 1px solid #9F9F9F;
+  border-radius: 5px;
+  max-width: 335px;
+  width: 100%;
+  height: 35px;
+  padding: 5px 11px;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+.submit-button{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-color: transparent!important;
+
+  background-color: #3366FF;
+  color: white!important;
+  font-weight: 400;
+  min-width: 120px;
+  min-height: 35px;
+  padding: 0;
+  border-radius: 5px;
+  cursor: pointer!important;
+  transition: background .2s;
+
+  &:focus{
+    outline: none;
+  }
+  &:disabled {
+    background: #A2A2A2;
+    cursor: auto!important;
+  }
+
+  &:not(:disabled):hover {
+    background: #0B39C3;
+  }
+}
+
+//mat-card.centered{
+//  max-width:490px;
+//  width: 100%;
+//  min-height:97px;
+//}
+
+.warning-message /deep/ a {
+  color: #3366FF;
+  text-decoration: none;
+
+  &:hover{color:#0B39C3;}
+}
+
+@media screen and (max-width: 768px) {
+  mat-card {
+    box-shadow: none!important;
+  }
+}
