@@ -1,27 +1,30 @@
-<mat-toolbar color="primary" class="public-header">
+<mat-toolbar color="primary" class="public-header" [ngClass]="{'not-authorised': !account}">
     <div class="header-slide-wrapper-container">
         <div class="header-slide-wrapper">
-            <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
-                <div fxLayout="column" [ngClass]="{'logo-container': true}"
+            <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center">
+                <div *ngIf="account"  fxLayout="column" [ngClass]="{'logo-container': true}"
                      fxLayoutAlign="center center">
-                    <span><img [routerLink]="['/']" class="publiq-logo" [ngClass]="{testnet: !isNotDemo()}" src="{{getLogo()}}"/></span>
+                    <span><img src="assets/publiq_white.svg"  [routerLink]="['/']" class="publiq-logo"></span>
                 </div>
+              <div *ngIf="!account" class="not-authorised-user">
+                <img src="assets/publiq_white.svg"  [routerLink]="['/']" class="publiq-logo">
+              </div>
                 <span class="spacer"></span>
 
                 <div fxLayout="row" fxLayoutGap="10px" style="height: 36px;">
 
 
-                    <span *ngIf="!account && (navTabView !== 'login')" class="menu-button"
-                            [routerLink]="['/user/login']">
-                        Login
-                        <i class="icon icon-locked"></i>
-                    </span>
+                    <!--<span *ngIf="!account && (navTabView !== 'login')" class="menu-button"-->
+                            <!--[routerLink]="['/user/login']">-->
+                        <!--Login-->
+                        <!--<i class="icon icon-locked"></i>-->
+                    <!--</span>-->
 
-                    <span *ngIf="!account && (navTabView !== 'register')" class="menu-button register-btn"
-                          [routerLink]="['/user/register']">
-                        Create
-                        <i class="icon icon-register"></i>
-                    </span>
+                    <!--<span *ngIf="!account && (navTabView !== 'register')" class="menu-button register-btn"-->
+                          <!--[routerLink]="['/user/register']">-->
+                        <!--Create-->
+                        <!--<i class="icon icon-register"></i>-->
+                    <!--</span>-->
 
 
                     <span *ngIf="account" class="menu-button"

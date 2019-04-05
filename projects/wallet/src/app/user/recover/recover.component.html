@@ -1,34 +1,31 @@
-<div class="centered restore" *ngIf="!isPasswordMode">
-  <div class="recovery-header">
-    <h4>PASSWORD RESET</h4>
-    <button routerLink="/user/login">
-            <span class="close-btn">
-                <span class="close-span"></span>
-                <span class="close-span"></span>
-            </span>
-    </button>
-  </div>
+<div class="session-page">
+  <div class="centered restore-form session-form" *ngIf="!isPasswordMode">
+      <h1>Reset Password</h1>
+      <h2>Enter your Recovery phrase to create a new password </h2>
+      <!--<button routerLink="/user/login">-->
+            <!--<span class="close-btn">-->
+                <!--<span class="close-span"></span>-->
+                <!--<span class="close-span"></span>-->
+            <!--</span>-->
+      <!--</button>-->
 
-  <div *ngIf="!loading" class="restore-content">
-    <div>
-      <p>Recovery phrase contains 16 words in a specific order</p>
+    <div *ngIf="!loading" class="restore-content">
+
+      <textarea [(ngModel)]="brainKey" (keyup)="focusFunction()"></textarea>
+
+      <div><span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
+
+        <button class="submit-button" [disabled]="!brainKey" type="submit" (click)="checkBrainKey()">
+          Next
+        </button>
+
+      <p class="have-wallet"><a href="" routerLink="/user/login">Back</a></p>
+
     </div>
 
-    <h5>Enter your Recovery phrase to create new password</h5>
-
-    <textarea [(ngModel)]="brainKey" (keyup)="focusFunction()"></textarea>
-
-    <div><span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
-
-    <mat-card-actions class="submit-div okay-div">
-      <button class="submit-button btn-next" [disabled]="!brainKey" type="submit" (click)="checkBrainKey()">
-          Next
-      </button>
-    </mat-card-actions>
+    <mat-spinner class="centered" *ngIf="loading" style="margin: 50px auto;"></mat-spinner>
   </div>
 
-  <mat-spinner class="centered" *ngIf="loading" style="margin: 50px auto;"></mat-spinner>
+
+  <app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
 </div>
-
-
-<app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
