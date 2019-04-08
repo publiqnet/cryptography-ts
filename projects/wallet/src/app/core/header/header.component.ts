@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { WalletService } from '../services/wallet.service';
 import { NotificationService } from '../services/notification.service';
 import { OauthService } from 'helper-lib';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-header',
@@ -27,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 @Inject(PLATFORM_ID) private platformId: Object,
                 @Inject(DOCUMENT) private document: any,
                 private walletService: WalletService,
+                public translateService: TranslateService,
                 public oauthService: OauthService,
                 private errorService: ErrorService,
                 private notificationService: NotificationService) {
@@ -105,5 +107,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     signout(e) {
         e.preventDefault();
         this.accountService.logout();
+    }
+
+    useLang(lang) {
+      if (this.translateService.currentLang != lang) {
+        this.translateService.use(lang);
+      }
     }
 }

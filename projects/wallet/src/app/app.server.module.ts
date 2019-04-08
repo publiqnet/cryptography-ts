@@ -4,26 +4,30 @@ import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader'
 
 import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { UniversalInterceptor } from './universal.interceptor';
+import { FlexLayoutServerModule } from '@angular/flex-layout/server';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateUniversalLoader } from 'shared-lib';
+
+export function translateFactory() {
+  return new TranslateUniversalLoader('./dist/wallet/assets/i18n', '.json');
+}
 
 @NgModule({
   imports: [
-    // The AppServerModule should import your AppModule followed
-    // by the ServerModule from @angular/platform-server.
     AppModule,
     ServerModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateFactory
+      }
+    }),
     ModuleMapLoaderModule,
-    ServerTransferStateModule
+    ServerTransferStateModule,
+    FlexLayoutServerModule
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: UniversalInterceptor,
-    multi: true
-  }],
-  // Since the bootstrapped component is not inherited from your
-  // imported AppModule, it needs to be repeated here.
-  bootstrap: [AppComponent]
+  providers: [],
+  bootstrap: [AppComponent],
 })
 export class AppServerModule {
 }

@@ -11,12 +11,26 @@ import { NewPasswordComponent } from './new-password/new-password.component';
 import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 import { LoginPasswordComponent } from './login-password/login-password.component';
 import { RegisterConfirmationComponent } from './register-confirmation/register-confirmation.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
-    MatStepperModule
+    MatStepperModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
+      isolate: true
+    })
   ],
   declarations: [
     LoginComponent,

@@ -17,7 +17,13 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ErrorService } from '../core/services/error.service';
 import { FloatPipe } from './pipes/float.pipe';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 @NgModule({
     imports: [
         PerfectScrollbarModule,
@@ -56,7 +62,15 @@ import { FloatPipe } from './pipes/float.pipe';
         MatNativeDateModule,
         FormsModule,
         ReactiveFormsModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        TranslateModule.forChild({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient]
+          },
+          isolate: true
+        })
     ],
     declarations: [
         ControlMessagesComponent,

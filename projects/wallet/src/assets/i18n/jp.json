@@ -58,7 +58,8 @@
         "up_to": "まで",
         "first_name_or_nickname": "名前またはニックネーム",
         "last_name": "苗字",
-        "save": "保存"
+        "save": "保存",
+        "login_title": "Log in to PUBLIQ Wallet japan"
     },
     "wallet": {
         "receive": "受信",

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
@@ -14,6 +14,8 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { environment } from '../environments/environment';
 import { UserIdleModule } from './core/models/angular-user-idle/user-idle.module';
 import { HttpHelperService, OauthService } from 'helper-lib';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -22,6 +24,9 @@ HttpHelperService.setBaseHeaders([
   }
 ]);
 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 @NgModule({
   declarations: [
     AppComponent
@@ -35,7 +40,14 @@ HttpHelperService.setBaseHeaders([
     UserModule,
     WalletModule,
     Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
-    UserIdleModule.forRoot({idle: environment.auto_logout_time, timeout: 5, ping: 5})
+    UserIdleModule.forRoot({idle: environment.auto_logout_time, timeout: 5, ping: 5}),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     WalletService,
