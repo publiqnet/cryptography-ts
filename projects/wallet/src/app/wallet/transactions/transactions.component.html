@@ -1,9 +1,9 @@
-<div class="vh-centered" *ngIf="loading">
+<mat-card class="vh-centered mat__spinner" *ngIf="loading">
     <mat-spinner></mat-spinner>
-</div>
+</mat-card>
 <div class="inner-wrap">
     <p class="first-title">Transactions</p>
-    <mat-table class="transactions-table projected-content-wrapper" [dataSource]="dataSource" *ngIf="dataSource">
+    <mat-table class="transactions-table projected-content-wrapper" [dataSource]="dataSource" *ngIf="dataSource" multiTemplateDataRows>
         <ng-container matColumnDef="id">
 
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -19,32 +19,27 @@
             </mat-cell>
         </ng-container>
 
+      <ng-container matColumnDef="from_to">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let transaction">
+          <mat-list>
+            <mat-list-item>
+              <h3 matLine class="transaction-title">
+                {{(transaction.to != accountService.accountInfo.publicKey)?"Sent":"Received"}}
+              </h3>
+            </mat-list-item>
+          </mat-list>
+        </mat-cell>
+      </ng-container>
+
         <ng-container matColumnDef="date">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let transaction">
-                <h3 matLine>
-                    <b>{{transaction.date| date:'dd MMM'}}</b>
-                    <span>{{transaction.date | date: 'y'}}</span>
+              <p class="time" matLine>{{transaction.date | date: 'shortTime'}}</p>
+              <h3 class="tr-date" matLine>
+                    <b>{{transaction.date | date:'dd MMM'}} </b>
+                    <span> {{transaction.date | date: 'y'}}</span>
                 </h3>
-
-                <p matLine>{{transaction.date | date: 'shortTime'}}</p>
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="from_to">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let transaction">
-                <mat-list>
-                    <mat-list-item>
-                        <h3 matLine>
-                            <span>{{(transaction.to != accountService.accountInfo.publicKey)?"Sent to":"Received from"}}</span> <a  class="payment-line" href="{{explorerAddress}}/block/account/{{(transaction.m_to_name != accountService.accountInfo.publicKey) ? transaction.m_to_name : transaction.m_from_name}}" target="_blank">
-                                {{(transaction.to != accountService.accountInfo.publicKey) ? transaction.to : transaction.from}}</a>
-                        </h3>
-                        <p matLine title="{{transaction.message}}">
-                            {{transaction.message }}
-                        </p>
-                    </mat-list-item>
-                </mat-list>
             </mat-cell>
         </ng-container>
 
@@ -58,9 +53,23 @@
                 </span>
             </mat-cell>
         </ng-container>
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let transaction" >
+          <div class="example-element-detail">
+            <div class="transaction-details">
+              <p matLine title="{{transaction.message}}">
+                {{transaction.message }}
+              </p>
+              <a  class="payment-line" href="{{explorerAddress}}/block/account/{{(transaction.m_to_name != accountService.accountInfo.publicKey) ? transaction.m_to_name : transaction.m_from_name}}" target="_blank">
+                {{(transaction.to != accountService.accountInfo.publicKey) ? transaction.to : transaction.from}}</a>
+            </div>
+          </div>
+        </td>
+      </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </mat-table>
     <div class="no_transactions" *ngIf="!loading && !transactions.length">No transactions</div>
 

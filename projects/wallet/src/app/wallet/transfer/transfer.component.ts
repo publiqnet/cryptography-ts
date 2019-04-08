@@ -1,4 +1,4 @@
-import { Component, Inject, isDevMode, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, Inject, isDevMode, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { AccountService } from '../../core/services/account.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -31,6 +31,9 @@ export class TransferComponent implements OnInit, OnDestroy {
     public loading = false;
     amountErrorMessage = '';
     globalProperties;
+    activeAcc = true;
+    activeAcc1 = false;
+    @ViewChild('accordionTab') accordionTabRef: ElementRef;
 
     private balanceSubscription: Subscription;
     private transferSubscription: Subscription;
@@ -123,6 +126,21 @@ export class TransferComponent implements OnInit, OnDestroy {
                 updateOn: 'change'
             })
         });
+    }
+
+    onActiveAccordion() {
+      this.activeAcc = !this.activeAcc;
+      this.activeAcc1 = false;
+    }
+
+    onActiveAccordion1() {
+      this.activeAcc = false;
+      this.activeAcc1 = !this.activeAcc1;
+      this.accordionTabRef.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      });
+
     }
 
     validateAmount(control: FormControl) {
@@ -254,10 +272,10 @@ export class TransferComponent implements OnInit, OnDestroy {
 
     openConfirmDialog() {
         const message = `
-            <div class="pbq-div">Are you sure you want to make this transaction?</div>
-            <div class="pbq-divs"> <span>PBQ Amount: </span><span>${this.amount}</span> </div>
-            <div class="pbq-divs"> <span>Recipient Public Key: </span><span>${this.public_key}</span></div>
-            <div class="pbq-divs"> <span>Transaction Fee: </span><span>${this.transferFee} PBQ</span></div>
+            <!--<div class="pbq-div">Are you sure you want to make this transaction?</div>-->
+            <div class="pbq-divs"> <span>Amount: </span><span>${this.amount}</span> </div>
+            <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
+            <div class="pbq-divs"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
         `;
         this.dialogService.openConfirmDialog('transfer-confirmation', 'Confirm Your Transfer', message, {}).subscribe(data => {
             if (data) {

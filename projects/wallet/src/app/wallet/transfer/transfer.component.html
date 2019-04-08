@@ -1,56 +1,75 @@
-<mat-card class="centered" *ngIf="!loading">
-    <div class="recovery-header">
-        <mat-card-title class="trans-title">Transfer PBQ</mat-card-title>
+<section class="main-inner-page">
+
+  <div class="wallet-tabs">
+    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer"><img src="../../../assets/wallet.svg" alt=""><span>Wallet</span></div>
+    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase"><img src="../../../assets/security.svg" alt=""><span>Security</span></div>
+  </div>
+
+
+  <!--for receive-->
+  <div class="centered security-form inner-pages active-tab" [class.active-tab]="activeAcc"  *ngIf="!loading">
+    <div class="accordion-title" (click)="onActiveAccordion()" >
+      <h1>Receive</h1>
+    </div>
+    <app-receive></app-receive>
+  </div>
+    <!--for send-->
+  <div class="centered security-form inner-pages" [class.active-tab]="activeAcc1" *ngIf="!loading">
+    <div class="accordion-title" (click)="onActiveAccordion1(accordionTab)" >
+      <h1>Send</h1>
     </div>
 
-    <div class="trans-bottom-title">Send PBQs to the recipient's account.</div>
+    <div class="inner-form" #accordionTab>
+      <h2>Send PBQs to the recipient's account. ????? </h2>
 
-    <mat-card-content>
-        <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="openConfirmDialog()">
-            <div fxLayout="column" fxLayout.sm="column" fxLayout.xs="column"
-                 fxLayoutGap="20px">
-                <!--AMOUNT INPUT-->
-                <div class="input-div">
-                    <p class="recipient-title"><i class="icon-pbq"></i>Amount to send</p>
+      <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="openConfirmDialog()">
+        <div fxLayout="column" fxLayout.sm="column" fxLayout.xs="column">
+          <!--AMOUNT INPUT-->
+          <div class="input-div">
+            <p class="recipient-title">Amount</p>
 
-                    <input class="trans-input pbq-ammount" matInput placeholder="PBQ Amount" name="amount"
-                           (keypress)="validate($event)"
-                           (paste)="validate($event)"
-                           formControlName="amount"
-                           (focus)="focusFunction()"/>
-                </div>
-                <p class="error-msg" *ngIf="amountErrorMessage" fxLayout="row" [innerHTML]="amountErrorMessage"></p>
+            <input class="trans-input pbq-ammount" placeholder="PBQ" name="amount"
+                   (keypress)="validate($event)"
+                   (paste)="validate($event)"
+                   formControlName="amount"
+                   (focus)="focusFunction()"/>
+          </div>
+          <p class="error-msg" *ngIf="amountErrorMessage" fxLayout="row" [innerHTML]="amountErrorMessage"></p>
 
-                <!--ACCOUNT INPUT-->
-                <div fxFlex="50" class="full-width">
-                    <p class="recipient-title"><i class="icon-mail"></i>Recipient Address</p>
-                    <input class="trans-input" matInput placeholder="PBQ5gTqbdThdUmdSjdhfUjCyF69dfGdGyRDjdCDExDderdXq" name="public_key" formControlName="public_key">
-                    <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address</p>
-                </div>
+          <!--ACCOUNT INPUT-->
+          <div fxFlex="50" class="full-width">
+            <p class="recipient-title">Address</p>
+            <input class="trans-input" matInput placeholder="PBQ5gTqbdThdUmdSjdhfUjCyF69dfGdGyRDjdCDExDderdXq" name="public_key" formControlName="public_key">
+            <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address</p>
+          </div>
+        </div>
+        <!--MEMO INPUT-->
+        <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+          <div class="full-width">
+            <p class="recipient-title">Message</p>
+            <div style="position: relative">
+                        <textarea [(ngModel)]="memo" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
+                                  class="trans-input trans-textarea" matInput placeholder="0/200" name="memo" formControlName="memo"></textarea>
+              <!--<span class="character" [ngClass]="{'max-char-error': memo.length > 200 }">{{memo.length}} / 200 characters</span>-->
+              <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address is not found</p>
             </div>
-            <!--MEMO INPUT-->
-            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
-                <div class="full-width">
-                    <p class="recipient-title"><i class="icon-memo " style="font-size: 19px;  margin-left: 7px;"></i>Message</p>
-                    <div style="position: relative">
-                        <textarea [(ngModel)]="memo" style="resize: none" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
-                                class="trans-input trans-textarea" matInput placeholder="max. 200 characters" name="memo" formControlName="memo"></textarea>
-                        <span class="character" [ngClass]="{'max-char-error': memo.length > 200 }">{{memo.length}} / 200 characters</span>
-                        <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address is not found</p>
-                    </div>
-                </div>
-            </div>
+          </div>
+        </div>
 
-            <!--SUBMIT BUTTON-->
-            <div class="submit-pbq" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="30px">
-                <span style="color: #3366FF; font-size: 14px;">Transaction fee: {{transferFee}} PBQ</span>
-                <button type="submit" class="submit-button generate-btn" [disabled]="!transferForm.valid">Generate Transaction</button>
-            </div>
-        </form>
-    </mat-card-content>
+        <!--SUBMIT BUTTON-->
+        <div class="submit-pbq" fxLayout="row" fxLayoutAlign="end center" >
+          <span class="fee">Transaction fee: <span class="blue">{{transferFee}} PBQ</span></span>
+          <button type="submit" class="submit-button generate-btn" [disabled]="!transferForm.valid">Generate Transaction</button>
+        </div>
+      </form>
+    </div>
 
-</mat-card>
+  </div>
 
-<mat-card class="centered spinner-div" *ngIf="loading">
+  <mat-card class="centered spinner-div mat__spinner" *ngIf="loading">
     <mat-spinner style="margin: 80px auto;"></mat-spinner>
-</mat-card>
+  </mat-card>
+
+  <app-transactions></app-transactions>
+
+</section>

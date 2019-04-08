@@ -11,7 +11,7 @@
               </div>
                 <span class="spacer"></span>
 
-                <div fxLayout="row" fxLayoutGap="10px" style="height: 36px;">
+                <div fxLayout="row" fxLayoutGap="10px">
 
 
                     <!--<span *ngIf="!account && (navTabView !== 'login')" class="menu-button"-->
@@ -27,8 +27,7 @@
                     <!--</span>-->
 
 
-                    <span *ngIf="account" class="menu-button"
-                            [matMenuTriggerFor]="bmenu">
+                    <span *ngIf="account">
                         <span>
                             <span *ngIf="balanceLoading; else other" class="loading-balance">
                                 <span class="dot"></span>
@@ -36,30 +35,32 @@
                                 <span class="dot"></span>
                             </span>
                             <ng-template #other>
-                                <span>{{account?.balance | number: '0.0-8'}} PBQ</span>
+                                <span class="pbq-text">
+                                  <span>{{account?.balance | number: '0.0-8'}}</span>
+                                  <span class="num"><b>PBQ</b> <img src="../../../assets/pbq.svg" alt=""></span>
+                                </span>
                             </ng-template>
                         </span>
-                        <i class="icon-wallet icon"></i>
                     </span>
-                    <mat-menu #bmenu="matMenu">
-                        <button mat-menu-item [routerLink]="['/wallet/receive']">
-                            <mat-icon>get_app</mat-icon>
-                            <span>Receive tokens</span>
-                        </button>
-                        <button mat-menu-item [routerLink]="['/wallet/transfer']">
-                            <mat-icon>forward</mat-icon>
-                            <span>Send tokens</span>
-                        </button>
-                        <button mat-menu-item [routerLink]="['/wallet/transactions']">
-                            <mat-icon>reorder</mat-icon>
-                            <span>My transactions</span>
-                        </button>
+                    <!--<mat-menu #bmenu="matMenu">-->
+                        <!--<button mat-menu-item [routerLink]="['/wallet/receive']">-->
+                            <!--<mat-icon>get_app</mat-icon>-->
+                            <!--<span>Receive tokens</span>-->
+                        <!--</button>-->
+                        <!--<button mat-menu-item [routerLink]="['/wallet/transfer']">-->
+                            <!--<mat-icon>forward</mat-icon>-->
+                            <!--<span>Send tokens</span>-->
+                        <!--</button>-->
+                        <!--<button mat-menu-item [routerLink]="['/wallet/transactions']">-->
+                            <!--<mat-icon>reorder</mat-icon>-->
+                            <!--<span>My transactions</span>-->
+                        <!--</button>-->
 
-                    </mat-menu>
+                    <!--</mat-menu>-->
 
-                    <span *ngIf="account" class="menu-button" [routerLink]="['/user/recover-phrase']">
-                        <i [ngClass]="getShieldClass()"></i>
-                    </span>
+                    <!--<span *ngIf="account" class="menu-button" [routerLink]="['/user/recover-phrase']">-->
+                        <!--<i [ngClass]="getShieldClass()"></i>-->
+                    <!--</span>-->
 
                     <span class="sign-out" *ngIf="account">
                         <a href="#" (click)="signout($event)">Sign out</a>

@@ -1,3 +1,6 @@
+mat-row{
+  border: none;
+}
 mat-table mat-cell {
   &:first-of-type {
     flex: 0 0 60px;
@@ -6,6 +9,10 @@ mat-table mat-cell {
       padding: 0 !important;
     }
   }
+  &:nth-of-type(2){
+    min-width: 60px;
+    flex: unset;
+  }
 
   &:nth-of-type(3) {
     flex: 4;
@@ -13,15 +20,16 @@ mat-table mat-cell {
 
   &:last-of-type {
     text-align: right;
+    justify-content: flex-end;
 
     span {
       display: inline-block;
       font-weight: bold;
-      color: green;
+      font-size: 16px;
+      color: #3366FF;
+      text-align: right;
 
       &.transaction-sent {
-        color: red;
-
         &:before {
           content: '-';
         }
@@ -29,41 +37,58 @@ mat-table mat-cell {
     }
   }
 }
+.example-detail-row{
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  display: block;
+  margin-left: 54px;
+  border-bottom: 1px solid #C1C4CB;
+  padding-bottom: 25px;
+  mat-cell:last-of-type td{
+    border: none;
+  }
+}
+.arrow_upward{
+  color:#3DC47E;
+}
+.arrow_downward{
+  color: #3365ff;
+}
 
 .first-title {
-  font-size: 30px;
-  margin-top: 20px;
+  font-size: 25px;
+  color: #2B2B2B;
+  font-weight: 600;
+  padding: 34px;
+  border-bottom: 1px solid rgba(193, 196, 203, .51);
+}
+.transaction-title{
+  font-size: 16px!important;
+  color: #2B2B2B;
+  font-weight: 600!important;
+}
+.transaction-details{
+  p{
+    font-size: 14px;
+    color: #8D929A;
+    margin-bottom: 6px;
+  }
+  a{
+    font-size: 14px;
+    color: #2B2B2B;
+  }
+}
+.mat-list-base{
+  padding-top: 0;
 }
 
-mat-table {
-  font-size: 14px;
+mat-table h3{
+  span{
+    font-size: 12px;
+    color: #565A60;
+  }
 }
-
-mat-table h3 {
-  font-size: 14px !important;
-  //font-weight:bold!important;
-  margin-bottom: 4px;
-  color: #5d5d5d;
-}
-
-mat-table p, mat-table span {
-  font-size: 14px !important;
-  color: #8d8d8d;
-}
-
-mat-table b {
-  font-weight: bold !important;
-  color: #5d5d5d;
-}
-
-mat-table .arrow_color {
-  color: #5d5d5d;
-}
-
-mat-table mat-row:hover {
-  background-color: #F0F0F0;
-}
-
 @media screen and (max-width: 950px) {
   .first-title {
     font-size: 16px;
@@ -72,12 +97,21 @@ mat-table mat-row:hover {
     text-transform: uppercase;
   }
 }
-
+.time{
+  font-size: 12px;
+  color: #565A60;
+  margin-right: 4px;
+  font-weight: 600;
+}
+.tr-date{
+  font-size: 12px;
+  color: #565A60;
+}
 .no_transactions {
-  margin-top: 25px;
-  text-align: left;
   font-size: 20px;
-  color: #808080;
+  color: #C1C4CB;
+  text-align: center;
+  margin-top: 30px;
 }
 
 @media screen and (max-width: 520px) {

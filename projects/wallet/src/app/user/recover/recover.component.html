@@ -22,8 +22,9 @@
       <p class="have-wallet"><a href="" routerLink="/user/login">Back</a></p>
 
     </div>
-
-    <mat-spinner class="centered" *ngIf="loading" style="margin: 50px auto;"></mat-spinner>
+  <mat-card class="centered mat__spinner" *ngIf="loading" >
+    <mat-spinner class="centered"style="margin: 50px auto;"></mat-spinner>
+  </mat-card>
   </div>
 
 

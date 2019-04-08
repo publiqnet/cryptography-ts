@@ -84,11 +84,12 @@
 
 .footer-wrap .copyright p {
   margin-bottom: 0;
-  font-weight: 300;
   color: #979797;
-  font-family: Open Sans;
-  font-size: 12px;
+  font-family: 'Open Sans',sans-serif;
   text-align: center;
+  font-size: 14px;
+  color: rgba(236,240,243,0.40);
+  font-weight: 500;
 }
 
 .footer-wrap .copyright p.copy {
