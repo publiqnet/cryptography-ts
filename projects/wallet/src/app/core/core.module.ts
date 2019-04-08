@@ -15,20 +15,33 @@ import { TemplateComponent } from './template/template.component';
 import { DialogService } from './services/dialog.service';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { CryptService } from './services/crypt.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
 };
 
-
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
         SharedModule,
         PerfectScrollbarModule,
-        UserModule
+        UserModule,
+        TranslateModule.forChild({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient]
+          },
+          isolate: true
+        })
     ],
     declarations: [
         HomepageComponent,

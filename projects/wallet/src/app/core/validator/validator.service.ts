@@ -11,7 +11,7 @@ export class ValidationService {
             'currentPassword': 'validation.currentPassword',
             'primary': 'validation.primary',
             'invalidConfirmPassword': 'Passwords do not match',
-            'invalidPassword': `Password must be at least 8 characters long, contain UPPERCASE and  lowercase letters, a number or a symbol`,
+            'invalidPassword': `Use 8 or more characters with a mix of uppercase and lowercase letters, numbers and symbols.`,
             'maxlength': 'You have exceeded the maximum allowed number of characters',
             'invalidDecimal': 'Invalid value'
         };

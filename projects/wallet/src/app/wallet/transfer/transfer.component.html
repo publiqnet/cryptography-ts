@@ -1,10 +1,12 @@
 <section class="main-inner-page">
 
   <div class="wallet-tabs">
-    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer"><img src="../../../assets/wallet.svg" alt=""><span>Wallet</span></div>
-    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase"><img src="../../../assets/security.svg" alt=""><span>Security</span></div>
+    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+      <span class="i-img wallet-svg"></span>
+      <span>Wallet</span></div>
+    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+      <span class="i-img sec-svg"></span><span>Security</span></div>
   </div>
-
 
   <!--for receive-->
   <div class="centered security-form inner-pages active-tab" [class.active-tab]="activeAcc"  *ngIf="!loading">
@@ -20,7 +22,7 @@
     </div>
 
     <div class="inner-form" #accordionTab>
-      <h2>Send PBQs to the recipient's account. ????? </h2>
+      <!--<h2>Send PBQs to the recipient's account. ????? </h2>-->
 
       <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="openConfirmDialog()">
         <div fxLayout="column" fxLayout.sm="column" fxLayout.xs="column">

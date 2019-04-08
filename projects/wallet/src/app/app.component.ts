@@ -11,6 +11,7 @@ import { NotificationService, NotificationTypeList } from './core/services/notif
 import { ErrorService } from './core/services/error.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { WalletService } from './core/services/wallet.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-root',
@@ -30,10 +31,12 @@ export class AppComponent implements OnInit, OnDestroy {
                 private errorService: ErrorService,
                 private notificationService: NotificationService,
                 private accountService: AccountService,
-                private snackBar: MatSnackBar) {
+                private snackBar: MatSnackBar,
+                public translate: TranslateService) {
     }
 
     ngOnInit() {
+        this.translate.use('en');
         this.routerSubscription = this.router.events
             .filter(event => event instanceof NavigationEnd)
             .subscribe(event => {

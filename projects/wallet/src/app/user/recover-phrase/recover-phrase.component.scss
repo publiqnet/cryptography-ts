@@ -359,7 +359,7 @@ h5{
         }
 
         &.middle {
-          .security-level-range {width: 66.66%; background-color: #F8E71C; color: #000;}
+          .security-level-range {width: 66.66%; background-color: #ffc301;}
         }
 
         .security-level-range {
@@ -421,7 +421,7 @@ h5{
       display: flex;
       align-items: center;
       font-size: 14px;
-      flex: 0 0 40px;
+      flex: 0 0 37px;
       position: relative;
       &:focus{
         outline: none;
@@ -500,6 +500,23 @@ h5{
 .labelled-item > div.pubkey {
   word-wrap: break-word;
   line-height: 25px;
+  position: relative;
+  .copy-btn{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ECF0F3;
+    border-radius: 5px;
+    cursor: pointer;
+    img{
+      width: 24px;
+    }
+  }
 }
 @media screen and (max-width: 840px){
   .backup-btn-container span{

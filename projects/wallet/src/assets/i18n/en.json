@@ -58,7 +58,8 @@
         "up_to": "Up to",
         "first_name_or_nickname": "First name or nickname *",
         "last_name": "Last name",
-        "save": "SAVE"
+        "save": "SAVE",
+        "login_title": "Log in to PUBLIQ Wallet "
     },
     "wallet": {
         "receive": "Receive",

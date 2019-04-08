@@ -21,7 +21,7 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
     public decryptedBrainKey: string;
     public brainKey;
     loading = false;
-    securityStatusName = 'low';
+    securityStatusName = '0/2';
     account;
 
     errorEventEmiterSubscription: Subscription;
@@ -82,10 +82,10 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
 
         if (this.account) {
             if (this.oauthService.privateKeySaved && this.oauthService.brainKeySaved) {
-                this.securityStatusName = 'Strong';
+                this.securityStatusName = '2/2';
                 currentSecurityClass = 'high';
             } else if (this.oauthService.privateKeySaved || this.oauthService.brainKeySaved) {
-                this.securityStatusName = 'Middle';
+                this.securityStatusName = '1/2';
                 currentSecurityClass = 'middle';
             }
         }

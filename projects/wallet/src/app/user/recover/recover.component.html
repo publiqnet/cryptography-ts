@@ -1,7 +1,7 @@
 <div class="session-page">
   <div class="centered restore-form session-form" *ngIf="!isPasswordMode">
       <h1>Reset Password</h1>
-      <h2>Enter your Recovery phrase to create a new password </h2>
+      <h2>Enter your recovery phrase to create a new password </h2>
       <!--<button routerLink="/user/login">-->
             <!--<span class="close-btn">-->
                 <!--<span class="close-span"></span>-->
@@ -19,12 +19,12 @@
           Next
         </button>
 
-      <p class="have-wallet"><a href="" routerLink="/user/login">Back</a></p>
+      <!--<p class="have-wallet"><a href="" routerLink="/user/login">Back</a></p>-->
 
     </div>
-  <mat-card class="centered mat__spinner" *ngIf="loading" >
-    <mat-spinner class="centered"style="margin: 50px auto;"></mat-spinner>
-  </mat-card>
+  <!--<mat-card class="centered mat__spinner"  >-->
+    <mat-spinner class="centered"style="margin: 50px auto;" *ngIf="loading"></mat-spinner>
+  <!--</mat-card>-->
   </div>
 
 

@@ -3264,7 +3264,7 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
 
 .message-table{
   margin: 35px auto;
-  max-width: 70%;
+  max-width: 80%;
   .pbq-divs{
     margin: 18px 0;
     line-height: 1.4;
@@ -3370,7 +3370,7 @@ mat-spinner.centered, mat-card.centered {
     font-weight: 600;
   }
   h2{
-    font-size: 14px;
+    font-size: 16px;
     color: #565A60;
     margin: 0 0 30px;
   }
@@ -3487,29 +3487,36 @@ textarea, input:-ms-input-placeholder {
     color: #565A60;
     padding: 13px 10px 12px;
     text-align: center;
-    transition: .3s ease-in-out;
+    transition:background-color .3s ease-in-out;
     cursor: pointer;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 122px;
-    img{
+    .i-img{
       vertical-align: middle;
       width: 24px;
       height: 24px;
-      display: inline-block;
       margin-right: 10px;
-      transition: .3s ease-in-out;
+      background-size: 100%;
+    }
+    .i-img.wallet-svg{
+      background: url("assets/wallet.svg") no-repeat;
+    }
+    .i-img.sec-svg{
+      background: url("assets/security.svg") no-repeat;
     }
     &.active{
-      background: #FFC300;
+      background-color: #FFC300;
       color: white;
       box-shadow: 0 2px 6px 0 rgba(0,0,0,0.16);
-      transition: .3s ease-in-out;
-      img{
-        filter: brightness(100);
-        transition: .3s ease-in-out;
+      transition: background-color .3s ease-in-out;
+      .i-img.wallet-svg{
+        background: url("assets/wallet_white.svg") no-repeat;
+      }
+      .i-img.sec-svg{
+        background: url("assets/security_white.svg") no-repeat;
       }
     }
   }

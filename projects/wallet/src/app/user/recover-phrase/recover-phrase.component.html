@@ -1,8 +1,11 @@
 <section class="main-inner-page">
 
   <div class="wallet-tabs">
-    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer"><img src="../../../assets/wallet.svg" alt=""><span>Wallet</span></div>
-    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase"><img src="../../../assets/security.svg" alt=""><span>Security</span></div>
+    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+      <span class="i-img wallet-svg"></span>
+        <span>Wallet</span></div>
+    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+      <span class="i-img sec-svg"></span><span>Security</span></div>
   </div>
 
   <mat-card class="vh-centered mat__spinner" [hidden]="!loading">
@@ -16,7 +19,7 @@
           <h4>Security</h4>
         </div>
         <div class="security-level-container">
-          <span>security status:</span>
+          <span>Security steps</span>
           <div [ngClass]="getSecurityClass()">
             <div class="security-level-range">{{securityStatusName}}</div>
           </div>
@@ -27,15 +30,17 @@
 
   <div class="centered profile-inner" *ngIf="(account && !oauthService.brainKeySeen)">
     <div class="recovery-header">
-      <h4>Recovery Phrase <i class="icon-question-mark" style=" top: -1px;"
-                             data-hint="If someone were to find your recovery phrase they could access your wallet."></i>
+      <h4>Recovery Phrase
+        <!--<i class="icon-question-mark" style=" top: -1px;"-->
+                             <!--data-hint="If someone were to find your recovery phrase they could access your wallet."></i>-->
       </h4>
 
     </div>
     <div class="security-inner-content">
       <div style="display: flex">
         <i class="icon-warning"></i>
-        <h2>Your recovery phrase is the only way to reset your web wallet password, make sure you have access to it if necessary.</h2>
+        <h2>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
+        </h2>
       </div>
 
       <div class="textarea">{{oauthService.brainKey}}</div>
@@ -43,8 +48,7 @@
       <p class="text-error"></p>
 
       <div class="submit-div agree-div">
-        <h2>It is strongly recommended that you store backups of your Recovery phrase in physically separate, offline
-          environment. Do not share it with anyone else</h2>
+        <!--<h2> Your recovery phrase is the only way to reset your web wallet password.</h2>-->
         <div>
           <button class="submit-button see-later-btn" type="button" (click)="openLaterConfirmPopup()">LATER</button>
           <button class="submit-button" type="button" (click)="backupFastRecoveryPhrasePopup()">BACKUP</button>
@@ -59,15 +63,19 @@
       <div class="inner-wrap">
         <div>
           <div class="mid-level-warning" fxFlex="70px">
-            <i [class]="getSecurityClass() !== 'security-level high' ? 'icon-warning' : 'icon-success'"></i>
+            <i [class]="getSecurityClass() !== 'security-level high' ? 'icon-warning' : 'icon-success'" [style.color]="getSecurityClass() === 'security-level high' ? 'black' : null"></i>
           </div>
 
           <div fxFlex="100%">
             <p *ngIf="getSecurityClass() !== 'security-level high'">
-              You have to backup your private key and recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your password, private key or recovery phrase they could access your wallet.
+              You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
             </p>
             <p *ngIf="getSecurityClass() === 'security-level high'">
               Thank you for backup. Now you will get the access to your wallet.
+            </p>
+            <p class="status-text" *ngIf="getSecurityClass() === 'security-level middle'">1/2 Backup private key.</p>
+
+            <p class="status-text" *ngIf="getSecurityClass() === 'security-level high'">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span>
             </p>
           </div>
         </div>
@@ -97,6 +105,7 @@
           <div class="pubkey" fxFlex.gt-xs="75%" fxFlex="100%">
             <!--<div class="public-key-view"><strong>{{account.publicKey}}</strong></div>-->
             <input class="public-key-view" type="text" value="{{account.publicKey}}">
+            <span class="copy-btn"><img src="../../../assets/copy.svg" alt="copy"></span>
           </div>
         </div>
 
@@ -129,8 +138,8 @@
 
         <div class="labelled-item fielded">
           <div fxFlex="180px">
-            <span class="line-label">If someone were to find your recovery phrase they could access your wallet.<i class="icon-question-mark"
-                                                         data-hint="Recovery phrase contains 16 words in a specific order. This is the only way to reset your password! Your PBQ tokens can’t be recovered without it."></i></span>
+            <span class="line-label">Recovery phrase<i class="icon-question-mark"
+                                                         data-hint=" If someone were to find your recovery phrase they could access your wallet."></i></span>
           </div>
           <div fxFlex.gt-xs="100%" fxFlex="100%">
             <div class="readonly-field" fxFlex="{{!oauthService.brainKeySaved ? '64%' : '100%'}}" fxFlex.lt-md="{{!oauthService.brainKeySaved ? '64%' : '100%'}}">

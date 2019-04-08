@@ -1,8 +1,8 @@
-<mat-card class="vh-centered mat__spinner" *ngIf="loading">
+<mat-card class="centered mat__spinner" *ngIf="loading">
     <mat-spinner></mat-spinner>
 </mat-card>
 <div class="inner-wrap">
-    <p class="first-title">Transactions</p>
+    <p class="first-title" *ngIf="!loading && transactions.length">My transactions</p>
     <mat-table class="transactions-table projected-content-wrapper" [dataSource]="dataSource" *ngIf="dataSource" multiTemplateDataRows>
         <ng-container matColumnDef="id">
 
@@ -10,7 +10,8 @@
             <mat-cell *matCellDef="let transaction">
                 <mat-list>
                     <mat-list-item>
-                        <mat-icon class="arrow_color" matListIcon>{{(transaction.to !=
+                        <mat-icon class="arrow_color" [class.sent]="transaction.to !=
+                            accountService.accountInfo.publicKey" matListIcon>{{(transaction.to !=
                             accountService.accountInfo.publicKey)?"arrow_upward":"arrow_downward"}}
                         </mat-icon>
                         <!--h3 matLine>{{(transaction.m_to_name != accountService.accountInfo.publicKey)?"Sent":"Received"}}</h3-->

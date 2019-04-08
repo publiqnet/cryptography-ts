@@ -20,7 +20,7 @@
         </div>
 
         <div *ngIf="passwordVerified">
-            <h2 class="message">Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets</h2>
+            <h2 class="message">If someone were to find your private key they could access your wallet. It is strongly recommended to store your private key in physically separate, offline environment.</h2>
 
             <div class="private-key-container">
                 {{decriptedPrivateKey}}
@@ -28,7 +28,9 @@
 
             <div class="checkbox-container">
                 <label><input type="checkbox" class="regular-checkbox" (change)="confirmChanged($event)">
-                    <span class="checkbox-text"> I have copied and saved the Private Key exactly as it is written in a secure folder.</span></label>
+                    <!--<span class="checkbox-text"> I have copied and saved the Private Key exactly as it is written in a secure folder.</span>-->
+                  <span class="checkbox-text">Backed up</span>
+                </label>
             </div>
 
             <div class="text-right">
@@ -76,17 +78,20 @@
 
         </div>
 
+      <!--backup-->
         <div *ngIf="passwordVerified">
             <div *ngIf="recoveryPhrasechecking">
-                <h2 class="message pr-key-msg">This is the only way to reset your password! Your PBQ tokens can’t be recovered without it.</h2>
+                <h2 class="message pr-key-msg">If someone were to find your recovery phrase they could access your wallet. It is strongly recommended to store your recovery phrase in physically separate, offline environment.</h2>
 
-                <div class="private-key-container">
+              <h2 class="mb-0 only-way-text">Your recovery phrase is the only way to reset your web wallet password.</h2>
+                <div class="private-key-container pr-key-text">
                     {{oauthService.brainKey}}
                 </div>
 
                 <div class="submit-container text-right ">
                     <button class="submit-button next-button" (click)="recoveryPhrasechecking = false" type="button">Next</button>
                 </div>
+              <h2>In the next step, you will need to enter four words from the recovery phrase in a random order.</h2>
             </div>
 
             <div class="recovery-verify-steps" [hidden]="recoveryPhrasechecking">
@@ -118,12 +123,12 @@
                             <span>Word {{checkingPhrasesArray[3] + 1}}</span>
                         </div>
                     </div>
-                    <div style=" display: flex; align-items: center;justify-content: flex-end">
-                        <span class="text-error" *ngIf="incorrectRecoverPhrase">{{incorrectRecoverPhrase}}</span>
+                    <div class="see-btns">
                           <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Finish
                           </button>
+                        <button class="submit-button back-btn"  (click)="onCloseCancel()">Back</button>
                     </div>
-
+                  <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in right order.</span>
                 </form>
             </div>
         </div>
@@ -156,11 +161,14 @@
 
     <div *ngSwitchCase="'show-backup-recovery-phrase'" class="backup-private-key">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <h1>{{title}}</h1>
+            <!--<h1>{{title}}</h1>-->
+            <h1>Backup recovery phrase</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
         <div *ngIf="!passwordVerified">
             <h2 [innerHTML]="message" class="message"></h2>
+            <!--<h2 class="message">If someone were to find your recovery phrase they could access your wallet. It is strongly recommended to store your recovery phrase in physically separate, offline environment.-->
+            <!--</h2>-->
 
             <input (focus)="focusFunction()" (keyup)="keyupFunc($event, 'decryptBK')" type="password" [(ngModel)]="password" class="mail-input" placeholder="Password">
 
@@ -171,15 +179,18 @@
 
         <div *ngIf="passwordVerified">
             <div *ngIf="recoveryPhrasechecking">
-                <h2 class="pr-key-msg">This is the only way to reset your password! Your PBQ tokens can’t be recovered without it.</h2>
+                <h2 class="pr-key-msg">If someone were to find your recovery phrase they could access your wallet. It is strongly recommended to store your recovery phrase in physically separate, offline environment.</h2>
 
-                <div class="private-key-container">
+              <h2 class="mb-0 only-way-text">Your recovery phrase is the only way to reset your web wallet password.</h2>
+
+                <div class="private-key-container pr-key-text">
                     {{oauthService.brainKey}}
                 </div>
+              <h2>Your recovery phrase is the only way to reset your web wallet password.</h2>
 
                 <div>
                     <span class="text-error for-error " *ngIf="!oauthService.brainKeySaved">
-                        It is strongly recommended that you store backups of your Recovery phrase in physically separate, offline environment. Do not share it with anyone else
+                        In the next step, you will need to enter four words from the recovery phrase in a random order.
                     </span>
                 </div>
             </div>
@@ -188,13 +199,14 @@
 
     <div *ngSwitchCase="'fast-backup-recovery-phrase'" class="backup-private-key">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <h1>{{title}}</h1>
+            <!--<h1>{{title}}</h1>-->
+            <h1>Backup recovery phrase</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
 
         <div class="recovery-verify-steps">
             <div fxLayout="row" fxLayoutAlign="flex-start center">
-                <h2 class="mb-0">Please enter the words from your Recovery Phrase in the required order.</h2>
+                <h2 class="mb-0">Please enter the words from your recovery phrase in the required order.</h2>
             </div>
 
             <form [formGroup]="checkingFormGroup" (ngSubmit)="onSubmit()">
@@ -220,11 +232,13 @@
                         <span>Word {{checkingPhrasesArray[3] + 1}}</span>
                     </div>
                 </div>
-                <div class="justify" style="width: 100%">
-                    <span class="text-error" *ngIf="incorrectRecoverPhrase">{{incorrectRecoverPhrase}}</span>
+                <div class="justify see-btns" style="width: 100%">
                   <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Finish
                   </button>
+                  <button class="submit-button back-btn" (click)="onCloseCancel()">Back
+                  </button>
                 </div>
+              <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in right order.</span>
 
             </form>
         </div>

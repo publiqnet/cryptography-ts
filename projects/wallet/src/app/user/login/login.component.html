@@ -8,16 +8,16 @@
     <div>
       <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
 
-          <input class="mail-input" formControlName="email" placeholder="Email address" value="">
+          <input class="mail-input" formControlName="email" placeholder="Email" value="">
 
         <div>
           <app-control-message class="warning mb-4 h6" [control]="loginForm.controls['email']"></app-control-message>
         </div>
 
-          <button class="submit-button" [disabled]="!loginForm.valid">Log in</button>
+          <button class="submit-button" [disabled]="!loginForm.valid">Get the link</button>
 
         <!--<a [routerLink]="['/user/recover']" class="forgot-password">Forgot your password?</a>-->
-        <p class="have-wallet">No wallet? <a href="" routerLink="/user/register">Creat one</a></p>
+        <p class="have-wallet">No wallet? <a href="" routerLink="/user/register">Create one</a></p>
 
       </form>
     </div>
@@ -25,7 +25,7 @@
 
   <div class="centered session-form pls-check" *ngIf="authStep === AuthStepStatusEnum.Success">
     <h2>
-      Please check your email to access your secure link.
+      Please check your email to access your authorization link.
     </h2>
   </div>
 

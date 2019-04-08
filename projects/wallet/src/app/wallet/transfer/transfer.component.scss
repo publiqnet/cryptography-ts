@@ -180,11 +180,10 @@ mat-card.centered {
     max-height: 700px;
 
     transition: max-height 0.2s ease-out;
-   .accordion-title{
-     &:after{
-
-     }
-   }
+    .accordion-title:after{
+      transform: rotate(180deg);
+      transition: .2s ease-in;
+    }
   }
   .accordion-title{
     min-height: 100px;
@@ -200,24 +199,14 @@ mat-card.centered {
     &:after{
       content: '';
       position: absolute;
-      top: 50%;
+      background: url("../../../assets/bold_arrow.svg") no-repeat ;
+      background-size: 100%;
+      top: 39%;
       right: 36px;
-      transform: translateX(-50%) rotate(45deg);
-      width: 13px;
-      height: 3px;
-      border-radius: 5px;
-      background-color: #C1C4CB;
-    }
-    &:before{
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 28px;
-      transform: translateX(-50%) rotate(-45deg);
-      width: 13px;
-      height: 3px;
-      border-radius: 5px;
-      background-color: #C1C4CB;
+      width: 24px;
+      height: 24px;
+      z-index: 1;
+      transition: .2s ease-in;
     }
   }
 
