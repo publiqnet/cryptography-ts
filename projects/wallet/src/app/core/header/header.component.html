@@ -23,6 +23,13 @@
                         <i class="icon icon-register"></i>
                     </span>
 
+                    <span class="pointer language" (click)="useLang('en')" *ngIf="(translateService.currentLang == 'jp')">
+                        <span>{{"header.english" | translate}}</span>
+                    </span>
+                    <span class="pointer language" (click)="useLang('jp')" *ngIf="(translateService.currentLang == 'en')">
+                        <span>{{"header.japanese" | translate}}</span>
+                    </span>
+
 
                     <span *ngIf="account" class="menu-button"
                             [matMenuTriggerFor]="bmenu">

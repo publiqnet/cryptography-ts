@@ -17,7 +17,7 @@
     "pp:start": "npm run pp:start:stage",
     "pp:build:stage": "ng build --configuration=staging && npm run pp:build:stage:ssr",
     "pp:build:stage:ssr": "ng run publishing-platform:server && npm run pp:webpack:server",
-    "pp:start:stage": "npm run pp:build:stage && node dist/server.js",
+    "pp:start:stage": "npm run build:libs && npm run pp:build:stage && node dist/server.js",
     "pp:build:prod": "ng build --configuration=production && npm run pp:build:prod:ssr",
     "pp:build:prod:ssr": "ng run publishing-platform:server --configuration=production && npm run pp:webpack:server",
     "pp:start:prod": "npm run pp:build:prod && node dist/server.js",

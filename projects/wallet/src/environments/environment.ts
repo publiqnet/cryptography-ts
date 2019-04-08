@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  backend: 'http://192.168.20.107:8004',
-  oauth_backend: 'http://192.168.20.107:8001',
+  backend: 'https://stage-mainnet-wallet-api.publiq.network',
+  oauth_backend: 'https://stage-mainnet-oauth.publiq.network',
   explorerAddress: 'https://explorer.publiq.network',
   blockchain_api_url: 'https://north.publiq.network/publiq/api',
   auto_logout_time: 300
