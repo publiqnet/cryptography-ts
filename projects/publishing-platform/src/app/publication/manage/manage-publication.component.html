@@ -194,10 +194,10 @@
                                             </span>
                                         </span>
                                     </h3>
-                                    <p class="notUserInfo">{{!pending && pending.email ? pending.email : ''}}</p>
+                                    <p class="notUserInfo">{{pending.email ? pending.email : ''}}</p>
 
                                     <div class="edit" *ngIf="publication.memberStatus === MemberStatus.owner">
-                                        <a class="" (click)="cancelMember(pending, $event)">
+                                        <a class="" (click)="cancelInvitationBecomeMember(pending, $event)">
                                             Cancel
                                         </a>
                                     </div>

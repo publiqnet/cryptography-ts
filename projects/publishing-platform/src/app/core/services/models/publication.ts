@@ -5,7 +5,6 @@ export interface PublicationOptions {
     title: string;
     description: string;
     articles;
-    inviter;
     cover: string;
     logo: string;
     socialImage?;
@@ -21,6 +20,7 @@ export interface PublicationOptions {
     invitations?: Account[];
     requests?: Account[];
     owner?: Account;
+    inviter?: Account;
 }
 
 export interface PublicationSubscribersResponse {
@@ -37,7 +37,6 @@ export class Publication {
     title: string;
     description: string;
     articles;
-    inviter;
     cover: string;
     logo: string;
     socialImage;
@@ -53,6 +52,7 @@ export class Publication {
     invitations?: Account[];
     requests?: Account[];
     owner?: Account;
+    inviter: Account;
 
     constructor(options?: PublicationOptions) {
         for (const i in options) {
@@ -65,7 +65,7 @@ export class Publication {
                     this[i] = options[i];
                 } else if (['members', 'contributors', 'editors', 'invitations', 'requests'].includes(i)) {
                     this[i] = options[i] ? options[i].map(data => new Account(data)) : [];
-                } else if (['owner'].includes(i)) {
+                } else if (['owner', 'inviter'].includes(i)) {
                     this[i] = options[i] ? new Account(options[i]) : '';
                 } else {
                     this[i] = options[i] ? options[i] : '';

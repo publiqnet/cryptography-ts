@@ -73,7 +73,7 @@ export class PublicationService {
   }
 
   inviteBecomeMember = (body: object[], slug: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation', {invitations: body});
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation', {invitations: body}, [], true);
   }
 
   getMembers: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
@@ -96,11 +96,13 @@ export class PublicationService {
   }
 
   acceptInvitationBecomeMember = (slug: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response');
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation/response')
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
   rejectInvitationBecomeMember = (slug: string): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/invitation/response');
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + '/' + slug + '/invitation/response')
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
   acceptInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + '/invitation-response', body);
@@ -108,6 +110,11 @@ export class PublicationService {
   acceptRejectRequest = (slug: string, publicKey: string, action: 'accept' | 'reject'): Observable<any> => {
     const method = action == 'accept' ? HttpMethodTypes.post : HttpMethodTypes.delete;
     return this.httpHelper.call(method, this.url + `/${slug}/request/response/${publicKey}`)
+      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+  }
+
+  cancelInvitationBecomeMember = (slug: string, identifier: string) => {
+    return this.httpHelper.call(HttpMethodTypes.delete, this.url + `/${slug}/invitation/${identifier}`)
       .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 

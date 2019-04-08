@@ -12,6 +12,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { Account } from '../../core/services/models/account';
 import { Publication } from '../../core/services/models/publication';
 import { PublicationMemberStatusType } from '../../core/models/enumes';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-search-member',
@@ -344,42 +345,37 @@ export class SearchMemberComponent implements OnInit, OnChanges, OnDestroy {
     );
     const body = bodyNames.concat(bodyMails);
 
-    console.log('body -- ', body);
-
     this.publicationService
       .inviteBecomeMember(body, this.publication.slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe((res: any) => {
-          console.log('res --- ', res);
-          // if (res.status == 204) {
-          //   const messages = this.translateService.instant('success');
-          //   this.notificationService.success(messages['request_sended']);
-          // }
-          // if (res.status == 200) {
-          //   let names = '';
-          //   this.allTags.forEach(el => {
-          //       res.body.forEach((resel, index) => {
-          //         if (el.name == resel && index == res.body.length - 1) {
-          //           names += `${el.firstName} ${el.lastName} `;
-          //         } else if (el.name == resel && index !== res.body.length - 1) {
-          //           names += `${el.firstName} ${el.lastName}, `;
-          //         }
-          //
-          //       });
-          //
-          //     }
-          //   );
-          //   const messages = this.translateService.instant('warning');
-          //   this.notificationService.warning(messages['publication_invitation'] + names);
-          // }
-          // this.tags = [];
-          // this.allTags = [];
-          // this.tagsEmail = [];
-          // this.searchedAccountsList = [];
-          // this.memberInvited.emit(true);
-          // this.clicked = false;
+          if (res.status == 204) {
+            const messages = this.translateService.instant('success');
+            this.notificationService.success(messages['request_sended']);
+          } else if (res.status == 200) {
+            let names = '';
+            this.allTags.forEach(el => {
+                res.body.forEach((resel, index) => {
+                  if (el.name == resel && index == res.body.length - 1) {
+                    names += `${el.firstName} ${el.lastName} `;
+                  } else if (el.name == resel && index !== res.body.length - 1) {
+                    names += `${el.firstName} ${el.lastName}, `;
+                  }
+
+                });
+              }
+            );
+            const messages = this.translateService.instant('warning');
+            this.notificationService.warning(messages['publication_invitation'] + names);
+          }
+          this.tags = [];
+          this.allTags = [];
+          this.tagsEmail = [];
+          this.searchedAccountsList = [];
+          this.memberInvited.emit(true);
+          this.clicked = false;
         },
         () => {
           const messages = this.translateService.instant('error');

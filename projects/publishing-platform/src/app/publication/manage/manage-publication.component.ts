@@ -254,9 +254,9 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     }
   }
 
-  cancel() {
-    this.ngOnInit();
-  }
+  // cancel() {
+  //   this.ngOnInit();
+  // }
 
   getMembers() {
     // this.editors = [];
@@ -304,26 +304,26 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       });
   }
 
-  getMyStatus(pubs) {
-    pubs.forEach(pub => {
-      if (pub.slug && pub.slug === this.publication.slug) {
-        if (!pub.status) {
-          this.myStatus = 1;
-          this.getMembers();
-        }
-      } else if (
-        pub.publication &&
-        pub.publication.slug === this.publication.slug
-      ) {
-        this.myStatus = pub.status;
-        if (this.myStatus == 2) {
-          this.getMembers();
-        }
-      }
-    });
-
-    this.tabIndex = this.publicationService.tabIndexReq;
-  }
+  // getMyStatus(pubs) {
+  //   pubs.forEach(pub => {
+  //     if (pub.slug && pub.slug === this.publication.slug) {
+  //       if (!pub.status) {
+  //         this.myStatus = 1;
+  //         this.getMembers();
+  //       }
+  //     } else if (
+  //       pub.publication &&
+  //       pub.publication.slug === this.publication.slug
+  //     ) {
+  //       this.myStatus = pub.status;
+  //       if (this.myStatus == 2) {
+  //         this.getMembers();
+  //       }
+  //     }
+  //   });
+  //
+  //   this.tabIndex = this.publicationService.tabIndexReq;
+  // }
 
   changeStatus(e, member) {
     const body = {
@@ -338,41 +338,41 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       .subscribe(() => this.getMembers());
   }
 
-  selectCover(e) {
-    const reader = new FileReader();
-    const file = e.target.files[0];
-    reader.addEventListener(
-      'load',
-      () => {
-        this.coverImage = reader.result;
-        this.coverFile = file;
-      },
-      false
-    );
-    reader.readAsDataURL(file);
-  }
+  // selectCover(e) {
+  //   const reader = new FileReader();
+  //   const file = e.target.files[0];
+  //   reader.addEventListener(
+  //     'load',
+  //     () => {
+  //       this.coverImage = reader.result;
+  //       this.coverFile = file;
+  //     },
+  //     false
+  //   );
+  //   reader.readAsDataURL(file);
+  // }
 
-  selectLogo(e) {
-    const reader = new FileReader();
-    const file = e.target.files[0];
-    reader.addEventListener(
-      'load',
-      () => {
-        this.logoImage = reader.result;
-        this.logoFile = file;
-      },
-      false
-    );
-    reader.readAsDataURL(file);
-  }
+  // selectLogo(e) {
+  //   const reader = new FileReader();
+  //   const file = e.target.files[0];
+  //   reader.addEventListener(
+  //     'load',
+  //     () => {
+  //       this.logoImage = reader.result;
+  //       this.logoFile = file;
+  //     },
+  //     false
+  //   );
+  //   reader.readAsDataURL(file);
+  // }
 
   stopEventPropagation(e) {
     e.stopPropagation();
   }
 
-  openArticle(ds) {
-    this.router.navigate(['/s/' + ds]);
-  }
+  // openArticle(ds) {
+  //   this.router.navigate(['/s/' + ds]);
+  // }
 
   inviteMemberToggle() {
     this.searchBar = true;
@@ -383,7 +383,9 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   closeSearchBar() {
     this.searchBar = false;
     this.addMemberBtn = !this.addMemberBtn;
-    this.getMembers();
+    this.publicationService.getPublicationBySlug(this.slug)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((data: Publication) => this.publication = data);
   }
 
   deleteMember(member: Account, i, e) {
@@ -400,9 +402,9 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       .subscribe((pub: Publication) => this.publication = pub);
   }
 
-  goToPage() {
-    this.router.navigate([`/p/${this.publication.slug}`]);
-  }
+  // goToPage() {
+  //   this.router.navigate([`/p/${this.publication.slug}`]);
+  // }
 
   memberRequest(requestAccount: Account, action: 0 | 1, index) {
     this.publicationService.acceptRejectRequest(this.slug, requestAccount.publicKey, action ? 'accept' : 'reject')
@@ -413,18 +415,21 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
       .subscribe((publication: Publication) => this.publication = publication);
   }
 
-  cancelMember(member, e) {
+  cancelInvitationBecomeMember(account: Account, e) {
     if (e) {
       e.stopPropagation();
     }
-    this.publicationService.cancelInvitation(member.id)
+    console.log(account);
+    const identifier = account.publicKey ? account.publicKey : account.email;
+    if (!identifier) {
+      return;
+    }
+    this.publicationService.cancelInvitationBecomeMember(this.slug, identifier)
       .pipe(
+        switchMap(() => this.publicationService.getPublicationBySlug(this.slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-          this.getMembers();
-        }
-      );
+      .subscribe((publication: Publication) => this.publication = publication);
   }
 
   getArticles(data) {

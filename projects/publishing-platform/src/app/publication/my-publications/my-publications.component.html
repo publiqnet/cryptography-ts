@@ -122,18 +122,18 @@
                                 <div class="title-space">
                                     <div class="info">
                                         <h4 routerLink="/p/{{invitation.slug}}">{{invitation.title}}</h4>
-                                        <span class="number"><b>{{invitation.articles.length || 0}}</b> {{'content.stories' | translate}}</span>
+                                        <span class="number"><b>{{invitation?.articles?.length || 0}}</b> {{'content.stories' | translate}}</span>
                                     </div>
                                     <div class="choose">
-                                        <span *ngIf="invitation.inviter" [routerLink]="['/a', invitation.inviter.username]">
-                                            <b>{{invitation.inviter.firstName && invitation.inviter.lastName ? invitation.inviter.firstName + ' ' + invitation.inviter.lastName : invitation.inviter.username}}</b>
+                                        <span *ngIf="invitation.inviter" [routerLink]="['/a', invitation.inviter.publicKey]">
+                                            <b>{{invitation.inviter.fullName ? invitation.inviter.fullName : invitation.inviter.publicKey}}</b>
                                             {{'publication.invite' | translate}}
                                         </span>
                                         <span class="acc-span">
-                                            <button mat-raised-button color="primary" (click)="invitationResponse(invitation.id,true)">
+                                            <button mat-raised-button color="primary" (click)="acceptInvitationBecomeMember(invitation.slug, true)">
                                                 {{'content.accept' | translate}}
                                             </button>
-                                            <a (click)="invitationResponse(invitation.id,false)">
+                                            <a (click)="rejectInvitationBecomeMember(invitation.slug,false)">
                                                 <img src="../../../assets/delete_pub.svg" alt="img">
                                             </a>
                                         </span>

@@ -9,6 +9,7 @@ import { PublicationService } from '../../core/services/publication.service';
 import { Publication } from '../../core/services/models/publication';
 import { Publications } from '../../core/services/models/publications';
 import { PublicationMemberStatusType } from '../../core/models/enumes';
+import { AccountService } from '../../core/services/account.service';
 
 @Component({
   selector: 'app-my-publications',
@@ -30,6 +31,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     public router: Router,
     public dialogService: DialogService,
     public publicationService: PublicationService,
+    private accountService: AccountService
   ) {
   }
 
@@ -38,12 +40,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((data: Publications) => {
-        this.publications = data.owned;
-        this.membership = data.membership;
-        this.invitations = data.invitations;
-        this.requests = data.requests;
-      });
+      .subscribe((data: Publications) => this.PublicationsData = data);
 
 
     /*this.publicationService.myPublications
@@ -65,6 +62,17 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     */
   }
 
+  set PublicationsData(data: Publications) {
+    this.publications = data.owned;
+    this.membership = data.membership;
+    this.invitations = data.invitations;
+    this.requests = data.requests;
+  }
+
+  get MemberStatus() {
+    return PublicationMemberStatusType;
+  }
+
   deletePublication(slug, index, e) {
     e.stopPropagation();
 
@@ -74,9 +82,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
         switchMap(() => this.publicationService.deletePublication(slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-        this.publications.splice(index, 1);
-      });
+      .subscribe(() => this.publications.splice(index, 1));
   }
 
   deleteMembership(slug, index) {
@@ -86,24 +92,43 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
         switchMap(() => this.publicationService.deleteMembership(slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
-        this.publications.splice(index, 1);
-      });
+      .subscribe(() => this.publications.splice(index, 1));
   }
 
-  invitationResponse(id, accepted) {
-    const body = {membershipId: id, accepted: accepted};
-    this.publicationService.acceptInvitation(body)
+  // invitationResponse(id, accepted) {
+  //   const body = {membershipId: id, accepted: accepted};
+  //   this.publicationService.acceptInvitation(body)
+  //     .pipe(
+  //       switchMap(() => this.publicationService.getMyPublications()),
+  //       takeUntil(this.unsubscribe$)
+  //     )
+  //     .subscribe((data: Publications) =>  this.PublicationsData = data);
+  // }
+
+  acceptInvitationBecomeMember(slug: string) {
+    if (!this.accountService.loggedIn()) {
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
+      return false;
+    }
+    this.publicationService.acceptInvitationBecomeMember(slug)
       .pipe(
+        switchMap(() => this.publicationService.getMyPublications()),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(res => {
-        this.publicationService.getMyPublications();
-      });
+      .subscribe((data: Publications) =>  this.PublicationsData = data);
   }
 
-  get MemberStatus() {
-    return PublicationMemberStatusType;
+  rejectInvitationBecomeMember(slug: string) {
+    if (!this.accountService.loggedIn()) {
+      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
+      return false;
+    }
+    this.publicationService.rejectInvitationBecomeMember(slug)
+      .pipe(
+        switchMap(() => this.publicationService.getMyPublications()),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: Publications) =>  this.PublicationsData = data);
   }
 
   cancelRequestBecomeMember(publication: Publication) {

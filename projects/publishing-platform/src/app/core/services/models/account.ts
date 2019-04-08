@@ -5,6 +5,8 @@ export interface AccountOptions {
   options?;
   firstName?;
   lastName?;
+  shortName: string;
+  fullName: string;
   registrar?;
   rights_to_publish?;
   statistics?;
@@ -29,6 +31,7 @@ export class Account {
   firstName: string;
   lastName: string;
   shortName: string;
+  fullName: string;
   publicKey?: string;
   token?: string;
   email?: string;
@@ -67,5 +70,16 @@ export class Account {
       }
       this.shortName = this.shortName.toUpperCase();
     }
+
+    this.fullName = '';
+    if (this.firstName && this.lastName) {
+      this.fullName = this.firstName + ' ' + this.lastName;
+    } else if (!this.firstName && !this.lastName) {
+      this.fullName = '';
+    } else {
+      this.fullName = (this.firstName ? this.firstName : '') + ' ' + (this.lastName ? this.lastName : '');
+      this.fullName.trim();
+    }
+
   }
 }
