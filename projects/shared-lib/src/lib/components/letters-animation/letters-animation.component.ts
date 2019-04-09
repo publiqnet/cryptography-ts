@@ -3,7 +3,6 @@ import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 
 function initializeLettersAnimation() {
-  console.log('initttttt');
   let app = {
     chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ճ', 'դ', 'գ', 'վ', 'ո', 'ֆ', 'ծ', 'զ', 'ր', '会', '联', '伴', '作', '团', '用', '式', '新', '者', '我', '员', '的', '各'],
 
@@ -41,7 +40,6 @@ function initializeLettersAnimation() {
 }
 
 function destroyLettersAnimation() {
-    console.log('destroyyyyy');
     if (typeof (window as any).initializeLettersAnimation !== 'undefined') {
       clearInterval((window as any).initializeLettersAnimation.interval);
       (window as any).initializeLettersAnimation.interval = null;
