@@ -107,7 +107,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     signout(e) {
         e.preventDefault();
         this.accountService.logout();
-        window.initializeLettersAnimation();
     }
 
     useLang(lang) {

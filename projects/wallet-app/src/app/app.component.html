@@ -1,1 +1,4 @@
 <router-outlet></router-outlet>
+<ng-container *ngIf="isBrowser && !accountService.loggedIn()">
+  <publiq-letters-animation></publiq-letters-animation>
+</ng-container>

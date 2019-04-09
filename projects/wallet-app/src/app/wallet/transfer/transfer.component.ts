@@ -12,246 +12,234 @@ import { DialogService } from '../../core/services/dialog.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { CryptService } from '../../core/services/crypt.service';
 import { UtilsService } from 'shared-lib';
+
 // import { WsService } from '../../core/services/ws.service';
 
 @Component({
-    selector: 'app-transfer',
-    templateUrl: './transfer.component.html',
-    styleUrls: ['./transfer.component.scss']
+  selector: 'app-transfer',
+  templateUrl: './transfer.component.html',
+  styleUrls: ['./transfer.component.scss']
 })
 export class TransferComponent implements OnInit, OnDestroy {
-    public_key = '';
-    memo = '';
-    amount: any;
-    balance: any = 0;
-    transferFee = 0.01;
-    public transferForm: FormGroup;
-    public accountInfo;
-    public loading = false;
-    amountErrorMessage = '';
-    globalProperties;
-    receiveTab = true;
-    transferTab = false;
-    @ViewChild('accordionTab') accordionTabRef: ElementRef;
+  public_key = '';
+  memo = '';
+  amount: any;
+  balance: any = 0;
+  transferFee = 0.01;
+  public transferForm: FormGroup;
+  public accountInfo;
+  public loading = false;
+  amountErrorMessage = '';
+  globalProperties;
+  receiveTab = true;
+  transferTab = false;
+  @ViewChild('accordionTab') accordionTabRef: ElementRef;
 
-    private balanceSubscription: Subscription;
-    private transferSubscription: Subscription;
-    private errorEventEmiterSubscription: Subscription;
-    private globalPropertiesSubscription: Subscription;
+  private balanceSubscription: Subscription;
+  private transferSubscription: Subscription;
+  private errorEventEmiterSubscription: Subscription;
+  private globalPropertiesSubscription: Subscription;
 
-    constructor(private formBuilder: FormBuilder,
-                private accountService: AccountService,
-                private notificationService: NotificationService,
-                protected errorService: ErrorService,
-                private walletService: WalletService,
-                private cryptService: CryptService,
-                private router: Router,
-                @Inject(PLATFORM_ID) private platformId: Object,
-                private dialogService: DialogService) {
-    }
+  constructor(private formBuilder: FormBuilder,
+              private accountService: AccountService,
+              private notificationService: NotificationService,
+              protected errorService: ErrorService,
+              private walletService: WalletService,
+              private cryptService: CryptService,
+              private router: Router,
+              @Inject(PLATFORM_ID) private platformId: Object,
+              private dialogService: DialogService) {
+  }
 
-    ngOnInit(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            // this.accountService.loadBalance();
-
-            this.accountInfo = this.accountService.accountInfo;
-            this.buildForm();
-            this.transferForm.valueChanges.subscribe(data => {
-                this.public_key = data.public_key;
-                this.amount = data.amount;
-                this.memo = data.memo;
-            });
-
-            this.errorEventEmiterSubscription = this.errorService.errorEventEmiter.subscribe((data: ErrorEvent) => {
-                if (data.action === 'transfer-password-error') {
-                    this.loading = false;
-                    this.notificationService.error(data.message);
-                } else if (data.action === 'need_private_key') {
-                    this.loading = false;
-                    console.log(data.message);
-                } else if (data.action === 'transfer_failed') {
-                    this.loading = false;
-                    this.notificationService.error(data.message);
-                } else if (data.action === 'notifyInTransfer') {
-                    this.loading = false;
-                    console.log(data.message);
-                } else if (data.action === 'load_balance_error') {
-                    console.log('load_balance_error----', data.message);
-                } else if (data.action === 'load_global_error') {
-                    console.log('load_global_error----', data.message);
-                } else if (data.action === 'loadRpcAccount') {
-                    this.loading = false;
-                    console.log('loadRpcAccount----', data.message);
-                }
-            });
-
-            this.destroyLettersAnimation();
-        }
-    }
-
-    destroyLettersAnimation() {
-        if (typeof window.initializeLettersAnimation !== 'undefined') {
-            clearInterval(window.initializeLettersAnimation.interval);
-            window.initializeLettersAnimation.interval = null;
-            const animContainer = document.querySelector('.animation-container');
-            if (animContainer) { animContainer.remove(); }
-        }
-    }
-
-    buildForm() {
-        this.transferForm = this.formBuilder.group({
-            'memo': new FormControl(this.memo),
-            'public_key': new FormControl('', [Validators.required]),
-            'amount': new FormControl(this.amount, {
-                validators: [
-                    Validators.required,
-                    Validators.pattern(/^([0-9]+\.?[0-9]{0,8})$/),
-                    this.validateAmount.bind(this),
-                ],
-                updateOn: 'change'
-            })
-        });
-    }
-
-    onActiveAccordion() {
-      this.receiveTab = !this.receiveTab;
-      this.transferTab = false;
-    }
-
-    onActiveAccordion1() {
-      this.receiveTab = false;
-      this.transferTab = !this.transferTab;
-      this.accordionTabRef.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end'
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.accountInfo = this.accountService.accountInfo;
+      this.buildForm();
+      this.transferForm.valueChanges.subscribe(data => {
+        this.public_key = data.public_key;
+        this.amount = data.amount;
+        this.memo = data.memo;
       });
 
+      this.errorEventEmiterSubscription = this.errorService.errorEventEmiter.subscribe((data: ErrorEvent) => {
+        if (data.action === 'transfer-password-error') {
+          this.loading = false;
+          this.notificationService.error(data.message);
+        } else if (data.action === 'need_private_key') {
+          this.loading = false;
+          console.log(data.message);
+        } else if (data.action === 'transfer_failed') {
+          this.loading = false;
+          this.notificationService.error(data.message);
+        } else if (data.action === 'notifyInTransfer') {
+          this.loading = false;
+          console.log(data.message);
+        } else if (data.action === 'load_balance_error') {
+          console.log('load_balance_error----', data.message);
+        } else if (data.action === 'load_global_error') {
+          console.log('load_global_error----', data.message);
+        } else if (data.action === 'loadRpcAccount') {
+          this.loading = false;
+          console.log('loadRpcAccount----', data.message);
+        }
+      });
     }
+  }
 
-    validateAmount(control: FormControl) {
-        const amount = control.value;
-        if (amount) {
-          if (amount <= 0) {
-            return {
-              invalidAmount: {
-                parsedAmount: amount
-              }
-            };
-          } else if (UtilsService.calcAmount(amount) > (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
-            this.amountErrorMessage = this.errorService.getError('ins_invalid_amount_error');
-            return {
-              invalidAmount: {
-                parsedAmount: amount
-              }
-            };
-          } else {
-            this.amountErrorMessage = '';
+  buildForm() {
+    this.transferForm = this.formBuilder.group({
+      'memo': new FormControl(this.memo),
+      'public_key': new FormControl('', [Validators.required]),
+      'amount': new FormControl(this.amount, {
+        validators: [
+          Validators.required,
+          Validators.pattern(/^([0-9]+\.?[0-9]{0,8})$/),
+          this.validateAmount.bind(this),
+        ],
+        updateOn: 'change'
+      })
+    });
+  }
+
+  onActiveAccordion() {
+    this.receiveTab = !this.receiveTab;
+    this.transferTab = false;
+  }
+
+  onActiveAccordion1() {
+    this.receiveTab = false;
+    this.transferTab = !this.transferTab;
+    this.accordionTabRef.nativeElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end'
+    });
+
+  }
+
+  validateAmount(control: FormControl) {
+    const amount = control.value;
+    if (amount) {
+      if (amount <= 0) {
+        return {
+          invalidAmount: {
+            parsedAmount: amount
           }
-
-          // const comparedData = this.cryptService.compareCoins(this.accountService.accountInfo.balance - this.transferFee, amount);
-          // debugger;
-          // if ([0, 1].includes(comparedData)) {
-          //   console.log(comparedData);
-          // } else {
-          //   return {
-          //     invalidAmount: {
-          //       parsedAmount: amount
-          //     }
-          //   };
-          // }
-        }
-        return null;
-    }
-
-    validate(event: any) {
-        ValidationService.decimal(event, this.transferForm.value.amount);
-
-        if (this.transferForm.valid && (event.code === 'Enter' || event.code === 'NumpadEnter')) {
-            this.openConfirmDialog();
-        }
-    }
-
-    validateMemoText(event: any) {
-        if (event.type === 'paste') {
-            const value = event.clipboardData.getData('Text');
-            if ((this.memo +  value).length > 200) {
-                this.transferForm.value.memo = this.memo = (this.memo +  value).substr(0, 200);
-                event.preventDefault();
-            }
-        }
-        if (this.memo.length >= 200) {
-            event.preventDefault();
-        }
-    }
-
-    focusFunction() {
+        };
+      } else if (UtilsService.calcAmount(amount) > (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
+        this.amountErrorMessage = this.errorService.getError('ins_invalid_amount_error');
+        return {
+          invalidAmount: {
+            parsedAmount: amount
+          }
+        };
+      } else {
         this.amountErrorMessage = '';
+      }
+
+      // const comparedData = this.cryptService.compareCoins(this.accountService.accountInfo.balance - this.transferFee, amount);
+      // debugger;
+      // if ([0, 1].includes(comparedData)) {
+      //   console.log(comparedData);
+      // } else {
+      //   return {
+      //     invalidAmount: {
+      //       parsedAmount: amount
+      //     }
+      //   };
+      // }
+    }
+    return null;
+  }
+
+  validate(event: any) {
+    ValidationService.decimal(event, this.transferForm.value.amount);
+
+    if (this.transferForm.valid && (event.code === 'Enter' || event.code === 'NumpadEnter')) {
+      this.openConfirmDialog();
+    }
+  }
+
+  validateMemoText(event: any) {
+    if (event.type === 'paste') {
+      const value = event.clipboardData.getData('Text');
+      if ((this.memo + value).length > 200) {
+        this.transferForm.value.memo = this.memo = (this.memo + value).substr(0, 200);
+        event.preventDefault();
+      }
+    }
+    if (this.memo.length >= 200) {
+      event.preventDefault();
+    }
+  }
+
+  focusFunction() {
+    this.amountErrorMessage = '';
+  }
+
+  transfer() {
+    if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) >
+      (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
+      this.notificationService.error(this.errorService.getError('invalid_amount_error'));
+      return;
+    }
+    if (this.accountService.accountInfo.publicKey == this.public_key) {
+      this.notificationService.error(this.errorService.getError('cant_transfer_in_same_account'));
+      return;
     }
 
-    transfer() {
-        if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) >
-            (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
-            this.notificationService.error(this.errorService.getError('invalid_amount_error'));
-            return;
+    this.loading = true;
+
+    this.walletService.transfer(this.public_key, this.amount, this.memo)
+      .subscribe(data => {
+        const isValidData = this.cryptService.checkBlockChainResponse(data);
+        if (isValidData.success) {
+          this.loading = false;
+          this.notificationService.success('The transaction was successful');
+          this.transferTab = false;
+        } else {
+          this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
         }
-        if (this.accountService.accountInfo.publicKey == this.public_key) {
-            this.notificationService.error(this.errorService.getError('cant_transfer_in_same_account'));
-            return;
-        }
+      }, error => {
+        console.log('error', error);
+      });
+  }
 
-        this.loading = true;
+  calcPBQ(amount) {
+    return amount * Math.pow(10, CoinPrecision);
+  }
 
-        this.walletService.transfer(this.public_key, this.amount, this.memo)
-          .subscribe(data => {
-            const isValidData = this.cryptService.checkBlockChainResponse(data);
-            if (isValidData.success) {
-                this.loading = false;
-                this.notificationService.success('The transaction was successful');
-                this.transferTab = false;
-            } else {
-                this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
-            }
-          }, error => {
-            console.log('error', error);
-          });
-    }
+  calcTransferPBQFee() {
+    // const feeParameters = this.globalProperties.parameters;
+    // const fee = (feeParameters &&
+    //     feeParameters.current_fees &&
+    //     feeParameters.current_fees.parameters &&
+    //     feeParameters.current_fees.parameters[0] &&
+    //     feeParameters.current_fees.parameters[0][1] &&
+    //     feeParameters.current_fees.parameters[0][1].fee) ?
+    //     feeParameters.current_fees.parameters[0][1].fee : 1000000;
+    // return fee / Math.pow(10, CoinPrecision);
+  }
 
-    calcPBQ(amount) {
-        return amount * Math.pow(10, CoinPrecision);
-    }
-
-    calcTransferPBQFee() {
-        // const feeParameters = this.globalProperties.parameters;
-        // const fee = (feeParameters &&
-        //     feeParameters.current_fees &&
-        //     feeParameters.current_fees.parameters &&
-        //     feeParameters.current_fees.parameters[0] &&
-        //     feeParameters.current_fees.parameters[0][1] &&
-        //     feeParameters.current_fees.parameters[0][1].fee) ?
-        //     feeParameters.current_fees.parameters[0][1].fee : 1000000;
-        // return fee / Math.pow(10, CoinPrecision);
-    }
-
-    openConfirmDialog() {
-        const message = `
+  openConfirmDialog() {
+    const message = `
             <!--<div class="pbq-div">Are you sure you want to make this transaction?</div>-->
             <div class="pbq-divs"> <span>Amount: </span><span>${this.amount}</span> </div>
             <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
             <div class="pbq-divs"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
         `;
-        this.dialogService.openConfirmDialog('transfer-confirmation', 'Confirm Your Transfer', message, {}).subscribe(data => {
-            if (data) {
-                this.transfer();
-            }
-        });
-    }
+    this.dialogService.openConfirmDialog('transfer-confirmation', 'Confirm Your Transfer', message, {}).subscribe(data => {
+      if (data) {
+        this.transfer();
+      }
+    });
+  }
 
-    ngOnDestroy() {
-        // if (isPlatformBrowser(this.platformId)) {
-        //     this.transferSubscription.unsubscribe();
-        //     this.balanceSubscription.unsubscribe();
-        //     this.errorEventEmiterSubscription.unsubscribe();
-        //     this.globalPropertiesSubscription.unsubscribe();
-        // }
-    }
+  ngOnDestroy() {
+    // if (isPlatformBrowser(this.platformId)) {
+    //     this.transferSubscription.unsubscribe();
+    //     this.balanceSubscription.unsubscribe();
+    //     this.errorEventEmiterSubscription.unsubscribe();
+    //     this.globalPropertiesSubscription.unsubscribe();
+    // }
+  }
 }
