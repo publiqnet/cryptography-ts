@@ -22,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     routerSubscription: Subscription;
     private actionClass: string;
+    public isBrowser = false;
 
     constructor(private router: Router,
                 private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
@@ -30,12 +31,13 @@ export class AppComponent implements OnInit, OnDestroy {
                 private walletService: WalletService,
                 private errorService: ErrorService,
                 private notificationService: NotificationService,
-                private accountService: AccountService,
+                public accountService: AccountService,
                 private snackBar: MatSnackBar,
                 public translate: TranslateService) {
     }
 
     ngOnInit() {
+        this.isBrowser = isPlatformBrowser(this.platformId);
         this.translate.use('en');
         this.routerSubscription = this.router.events
             .filter(event => event instanceof NavigationEnd)

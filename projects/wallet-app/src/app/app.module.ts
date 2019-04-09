@@ -17,6 +17,7 @@ import { HttpHelperService, OauthService } from 'helper-lib';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ClipboardModule } from 'ngx-clipboard';
+import { SharedLibModule } from 'shared-lib';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -40,6 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     ClipboardModule,
     UserModule,
+    SharedLibModule,
     WalletModule,
     Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
     UserIdleModule.forRoot({idle: environment.auto_logout_time, timeout: 5, ping: 5}),
