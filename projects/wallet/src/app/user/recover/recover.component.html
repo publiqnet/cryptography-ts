@@ -13,7 +13,7 @@
 
       <textarea [(ngModel)]="brainKey" (keyup)="focusFunction()"></textarea>
 
-      <div><span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
+      <div><span style="margin: 0 0 15px" class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
 
         <button class="submit-button" [disabled]="!brainKey" type="submit" (click)="checkBrainKey()">
           Next

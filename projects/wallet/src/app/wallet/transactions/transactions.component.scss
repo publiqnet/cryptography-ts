@@ -97,6 +97,9 @@ mat-table mat-cell {
     line-height: normal;
   }
 }
+.loader mat-spinner{
+  margin: 0 auto;
+}
 .mat-list-base{
   padding-top: 0;
 }
