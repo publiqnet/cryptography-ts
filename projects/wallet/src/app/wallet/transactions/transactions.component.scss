@@ -9,7 +9,8 @@ mat-table{
 }
 mat-table mat-cell {
   &:first-of-type {
-    flex: 0 0 60px;
+    flex: 0 0 30px;
+    padding-left: 0!important;
 
     /deep/ .mat-list-item-content {
       padding: 0 !important;
@@ -49,7 +50,7 @@ mat-table mat-cell {
   min-width: 100%;
   max-width: 100%;
   display: block;
-  margin-left: 76px;
+  margin-left: 46px;
   border-bottom:1px solid rgba(193, 196, 203, 0.51);
   height: auto;
   padding-bottom: 25px;
@@ -76,7 +77,7 @@ mat-table mat-cell {
   font-weight: 600;
   padding: 34px 0;
   border-bottom: 1px solid rgba(193, 196, 203, 0.51);
-  margin: 0 0 10px 74px;
+  margin: 0 0 10px 44px;
 }
 .transaction-title{
   font-size: 16px!important;
@@ -97,6 +98,9 @@ mat-table mat-cell {
     line-height: normal;
   }
 }
+.loader mat-spinner{
+  margin: 0 auto;
+}
 .mat-list-base{
   padding-top: 0;
 }
@@ -107,14 +111,7 @@ mat-table h3{
     color: #565A60;
   }
 }
-@media screen and (max-width: 950px) {
-  .first-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-left: 15px;
-    text-transform: uppercase;
-  }
-}
+
 .time{
   font-size: 12px;
   color: #565A60;
@@ -129,7 +126,7 @@ mat-table h3{
   font-size: 20px;
   color: #C1C4CB;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 @media screen and (max-width: 540px) {
@@ -140,6 +137,9 @@ mat-table h3{
   .example-detail-row{
     min-width: 70%;
     margin-left: 16px;
+  }
+  .footer-wrap.authenticated-footer .line{
+    width: 80%;
   }
 }
 //@media screen and (max-width: 520px) {

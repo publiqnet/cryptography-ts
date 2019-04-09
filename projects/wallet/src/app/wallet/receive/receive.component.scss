@@ -78,10 +78,13 @@ mat-card.centered {
     }
 
   }
+  .qr-code-parent{
+    flex: 0 0 145px;
+  }
   .qr-code-img{
     width: 145px;
     height: 145px;
-    flex: 1;
+    object-fit: contain;
   }
 }
 @media screen and (max-width: 767px){
