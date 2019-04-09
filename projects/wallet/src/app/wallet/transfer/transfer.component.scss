@@ -45,14 +45,13 @@ mat-card.centered {
   color: #242424
 }
 .trans-input{
-  border: 1px solid #9A9A9A;
-  height: 35px;
-  padding: 10px;
-  border-radius: 5px;
-  //background: #F3F3F3;
+  border: none;
   width: 100%;
-  margin-bottom: 15px;
-  position: relative;
+  height: 45px;
+  padding: 5px 15px;
+  margin-bottom: 25px;
+  background: #ECF0F3;
+  border-radius: 5px;
 }
 .error-msg{
   margin-bottom: 20px;
@@ -61,68 +60,15 @@ mat-card.centered {
   color: #FF0000;
   line-height: 20px;
 }
-.close-span:nth-of-type(1){
-  transform: rotate(45deg);
-  width: 20px;
-  height: 1px;
-  background-color: gray;
-  position: absolute;
-  bottom: 0;
-}
-.close-span:nth-of-type(2){
-  transform: rotate(-45deg);
-  width: 20px;
-  height: 1px;
-  background-color: gray;
-  position: absolute;
-  bottom: 0;
-}
-.trans-title{
-  font-size: 16px;
-  margin-bottom: 0;
-  color: #242424;
-  text-transform: uppercase;
-}
 .full-width {
   width: 100%;
   margin-bottom: 0!important;
 }
-.submit-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
 
-  border-color: transparent!important;
-
-  background-color:#3366FF;
-  color: white !important;
-  font-weight: 400;
-  min-width: 120px;
-  min-height: 35px;
-  padding: 0;
-  border-radius: 5px;
-  cursor: pointer !important;
-  transition: background .2s;
-  font-size: 14px;
-  text-transform: uppercase;
-
-  margin-right: 2%;
-
-  &:focus{
-    outline: none;
-  }
-  &:disabled{
-    background-color:  #A2A2A2;
-    cursor: auto!important;
-  }
-  &:focus{
-    outline: none;
-  }
-
-}
 .submit-button.generate-btn{
-  max-width: 230px!important;
+  max-width: 206px!important;
   width: 100%;
+  margin-bottom: 0;
 }
 
 .centered.spinner-div{
@@ -147,19 +93,21 @@ mat-card.centered {
   color: #3366FF;
 }
 .recipient-title{
-  margin: 18px 0;
+  margin: 0 0 10px;
   font-size: 14px;
-  margin-left: 15px;
-  i{
-    font-size: 12px;
-    margin-right: 15px;
-    vertical-align: middle;
-  }
+  color: #2B2B2B;
+  font-weight: 600;
 }
 .trans-textarea{
   min-height: 74px;
   position: relative;
   resize: none;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #ECF0F3;
+  border-radius: 5px;
   &:focus{
     outline: none;
   }
@@ -170,16 +118,9 @@ mat-card.centered {
   vertical-align: middle;
 }
 
-.character{
-  position: absolute;
-  right: 0;
-  bottom: -3px;
-  font-size: 14px;
-  color: #A2A2A2;
-}
 .submit-pbq{
   justify-content: space-between!important;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 .full-width.input-div{
   display: flex;
@@ -209,4 +150,78 @@ mat-card.centered {
   .cur-balance{
     display: none!important;
   }
+}
+
+.fee{
+  margin-right: 30px;
+  font-size: 14px;
+  color: #565A60;
+  font-weight: 300;
+  span.blue{
+    font-size: 14px;
+    color: #3366FF;
+    font-weight: 700;
+  }
+}
+.inner-pages{
+  background: #FFFFFF;
+  box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
+  border-radius: 10px;
+  max-width: 780px;
+  margin: 10px auto;
+  font-family: 'Open Sans',sans-serif;
+
+  max-height: 100px;
+  overflow: hidden;
+
+  transition: max-height 0.2s ease-out;
+
+  &.active-tab{
+    max-height: 700px;
+
+    transition: max-height 0.2s ease-out;
+    .accordion-title:after{
+      transform: rotate(180deg);
+      transition: .2s ease-in;
+    }
+  }
+  .accordion-title{
+    min-height: 100px;
+    padding: 36px 35px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+    h1{
+      font-size: 25px;
+      color: #2B2B2B;
+      font-weight: 600;
+    }
+    &:after{
+      content: '';
+      position: absolute;
+      background: url("../../../assets/bold_arrow.svg") no-repeat ;
+      background-size: 100%;
+      top: 39%;
+      right: 36px;
+      width: 24px;
+      height: 24px;
+      z-index: 1;
+      transition: .2s ease-in;
+    }
+  }
+
+}
+.inner-form{
+  max-width: 490px;
+  margin: 0 auto;
+  padding: 0 30px 35px;
+  h2{
+    font-size: 16px;
+    color: #565A60;
+    font-weight: 300;
+  }
+  form{
+    width: 100%;
+  }
+
 }

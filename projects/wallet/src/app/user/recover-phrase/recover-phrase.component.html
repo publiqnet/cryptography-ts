@@ -1,155 +1,173 @@
-<div class="vh-centered" [hidden]="!loading">
+<section class="main-inner-page">
+
+  <div class="wallet-tabs">
+    <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+      <span class="i-img wallet-svg"></span>
+        <span>Wallet</span></div>
+    <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+      <span class="i-img sec-svg"></span><span>Security</span></div>
+  </div>
+
+  <mat-card class="vh-centered mat__spinner" [hidden]="!loading">
     <mat-spinner></mat-spinner>
-</div>
+  </mat-card>
 
-<div class="inner-wrap" [hidden]="loading">
+  <div class="inner-wrap" [hidden]="loading">
     <div class="mt-3" [hidden]="passwordVerified">
-        <div class="security">
-            <div class="security-title">
-                <h4>Security</h4>
-            </div>
-            <div class="security-level-container">
-                <span>security status:</span>
-                <div [ngClass]="getSecurityClass()">
-                    <div class="security-level-range">{{securityStatusName}}</div>
-                </div>
-            </div>
+      <div class="security">
+        <div class="security-title">
+          <h4>Security</h4>
         </div>
+        <div class="security-level-container">
+          <span>Security steps</span>
+          <div [ngClass]="getSecurityClass()">
+            <div class="security-level-range">{{securityStatusName}}</div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="centered secure" *ngIf="(account && !oauthService.brainKeySeen)">
-    <div class="recovery-header">
-        <h4>RECOVERY PHRASE <i class="icon-question-mark" style="font-size: 12px; top: -1px;" data-hint="Recovery Phrase is a random string of words that acts as a backup of your PBQ tokens."></i></h4>
+  <div class="colored-wrap"  *ngIf="(account && !oauthService.brainKeySeen)">
+    <div class="inner-wrap">
+      <div class="recovery-header" style="width: 100%">
+        <div style="display: flex">
+          <i class="icon-warning step-1"></i>
+          <p>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.Your recovery phrase is the only way to reset your web wallet password.
 
+          </p>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="centered profile-inner" *ngIf="(account && !oauthService.brainKeySeen)">
     <div class="security-inner-content">
+      <h4 class="recovery-title">Recovery Phrase</h4>
+
+      <div class="textarea">{{oauthService.brainKey}}</div>
+
+      <p class="text-error"></p>
+
+      <div class="submit-div agree-div">
+        <!--<h2> Your recovery phrase is the only way to reset your web wallet password.</h2>-->
         <div>
-            <i class="icon-warning"></i>
-            <p><span>This is the <b>only way</b> to <b>reset</b> your <b>password</b>!</span>
-                <span>Your PBQ tokens can't be recovered without it</span>
+          <button class="submit-button see-later-btn" type="button" (click)="openLaterConfirmPopup()">LATER</button>
+          <button class="submit-button" type="button" (click)="backupFastRecoveryPhrasePopup()">BACKUP</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="account && oauthService.brainKeySeen">
+    <div class="colored-wrap" [ngClass]="{'success': getSecurityClass() === 'security-level high'}"
+         *ngIf="firstTimeFullBackuped">
+      <div class="inner-wrap">
+        <div>
+          <div class="mid-level-warning" fxFlex="70px">
+            <i [class]="getSecurityClass() !== 'security-level high' ? 'icon-warning' : 'icon-success'" [style.color]="getSecurityClass() === 'security-level high' ? 'black' : null"></i>
+          </div>
+
+          <div fxFlex="100%">
+            <p *ngIf="getSecurityClass() !== 'security-level high'">
+              You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
             </p>
+            <p *ngIf="getSecurityClass() === 'security-level high'">
+              Thank you for backup. Now you will get the access to your wallet.
+            </p>
+            <p class="status-text" *ngIf="getSecurityClass() === 'security-level middle'">1/2 Backup private key.</p>
+
+            <p class="status-text" *ngIf="getSecurityClass() === 'security-level high'">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span>
+            </p>
+          </div>
         </div>
-
-        <div class="textarea">{{oauthService.brainKey}}</div>
-
-        <p class="text-error"></p>
-
-        <div class="submit-div agree-div">
-            <p>It is strongly recommended that you store backups of your Recovery phrase in physically separate, offline environment. Do not share it with anyone else</p>
-            <div>
-                <button class="submit-button see-later-btn" type="button" (click)="openLaterConfirmPopup()">LATER</button>
-                <button class="submit-button" type="button" (click)="backupFastRecoveryPhrasePopup()">BACKUP</button>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
+    <div class="inner-wrap profile-inner" [hidden]="loading">
+      <div class="mt-3" [hidden]="passwordVerified">
 
-<div *ngIf="account && oauthService.brainKeySeen">
-    <div class="colored-wrap" [ngClass]="{'success': getSecurityClass() === 'security-level high'}" *ngIf="firstTimeFullBackuped">
-        <div class="inner-wrap">
-            <div>
-                <div class="mid-level-warning" fxFlex="70px">
-                    <i [class]="getSecurityClass() !== 'security-level high' ? 'icon-warning' : 'icon-success'"></i>
-                </div>
-
-                <div fxFlex="75">
-                    <p *ngIf="getSecurityClass() !== 'security-level high'">
-                        You must backup your unique recovery phrase. Please store it in a physically separate, offline environment. This is the only way to reset your password and access your wallet.
-                    </p>
-                    <p *ngIf="getSecurityClass() === 'security-level high'">
-                        Thank you for backup. Now you will get the access to your wallet.
-                    </p>
-                </div>
-                <!-- Yete successfull a, hide anel ".paclock-container"-y -->
-                <div fxFlex="25" class="padlock-container" *ngIf="getSecurityClass() !== 'security-level high'">
-                    <div class="icon-padlock"></div>
-                </div>
-            </div>
+        <div class="labelled-item" >
+          <div fxFlex="180px">
+            <span class="line-label">Email: </span>
+          </div>
+          <div fxFlex.gt-xs="50%" fxFlex="100%">
+            <span class="email-space">{{account.email}}</span>
+          </div>
+          <!--<div fxFlex.gt-xs="25%" fxFlex="100%">-->
+            <!--<div class="status-info">-->
+              <!--<i class="icon-success"></i> Done-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
-    </div>
-    <div class="inner-wrap" [hidden]="loading">
-        <div class="mt-3" [hidden]="passwordVerified">
-
-            <div class="labelled-item" fxLayout.lt-sm="column">
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <span class="line-label">Email: </span>
-                </div>
-                <div fxFlex.gt-xs="50%" fxFlex="100%">
-                    <span>{{account.email}}</span>
-                </div>
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <div class="status-info">
-                        <i class="icon-success"></i> Done
-                    </div>
-                </div>
-            </div>
-            <div class="labelled-item" fxLayout.lt-sm="column">
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <span class="line-label">Address: <i class="icon-question-mark" data-hint="Address (Public key) is used for user identification, it can be freely shared, allowing users to verify digital signatures."></i></span>
-                </div>
-                <div class="pubkey" fxFlex.gt-xs="60%" fxFlex="100%">
-                    <span class="public-key-view"><strong>{{account.publicKey}}</strong></span>
-                </div>
-                <div fxFlex.gt-xs="15%" fxFlex="100%">
-
-                </div>
-            </div>
-
-            <div class="labelled-item" fxLayout.lt-sm="column">
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <span class="line-label">Private Key: <i class="icon-question-mark" data-hint="Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets."></i></span>
-                </div>
-                <div fxFlex.gt-xs="50%" fxFlex="100%">
-                    <div class="readonly-field" fxFlex="{{!oauthService.privateKeySaved ? '60%' : '100%'}}" fxFlex.lt-md="70%">
-                        <input type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
-                        <div class="show-hide-btn" (click)="showPrivateKey()">
-                            <i [ngClass]="!showPrivateKeyOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
-                        </div>
-                    </div>
-                    <div *ngIf="!oauthService.privateKeySaved" class="backup-btn-container" fxFlex="40%" fxFlex.lt-md="30%">
-                        <div class="backup-btn" (click)="backupPrivateKeyPopup()">
-                            <i class="icon-recover-key"></i>
-                        </div>
-                        <span>Backup private key</span>
-                    </div>
-                </div>
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <div class="status-info">
-                        <i [ngClass]="oauthService.privateKeySaved ? 'icon-success' : 'icon-failure'"></i>
-                        <span *ngIf="oauthService.privateKeySaved">Done</span>
-                        <span *ngIf="!oauthService.privateKeySaved">Not Backed Up</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="labelled-item fielded" fxLayout.lt-sm="column">
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <span class="line-label">Recovery Phrase: <i class="icon-question-mark" data-hint="Recovery phrase contains 16 words in a specific order. This is the only way to reset your password! Your PBQ tokens can’t be recovered without it."></i></span>
-                </div>
-                <div fxFlex.gt-xs="50%" fxFlex="100%">
-                    <div class="readonly-field" fxFlex="{{!oauthService.brainKeySaved ? '60%' : '100%'}}" fxFlex.lt-md="70%">
-                        <input type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
-                        <div class="show-hide-btn" (click)="showBackupRecoveryPhrase()">
-                            <i [ngClass]="!showBackupRecoveryPhraseOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
-                        </div>
-                    </div>
-                    <div *ngIf="!oauthService.brainKeySaved" class="backup-btn-container" fxLayout="column" fxFlex="40%" fxFlex.lt-md="30%">
-                        <div class="backup-btn" (click)="backupRecoveryPhrasePopup()">
-                            <i class="icon-padlock"></i>
-                        </div>
-                        <span>Backup recovery phrase</span>
-                    </div>
-                </div>
-                <div fxFlex.gt-xs="25%" fxFlex="100%">
-                    <div class="status-info">
-                        <i [ngClass]="oauthService.brainKeySaved ? 'icon-success' : 'icon-failure'"></i>
-                        <span *ngIf="oauthService.brainKeySaved">Done</span>
-                        <span *ngIf="!oauthService.brainKeySaved">Not Backed Up</span>
-                    </div>
-                </div>
-            </div>
+        <div class="labelled-item">
+          <div fxFlex="180px">
+            <span class="line-label">Address: <i class="icon-question-mark"
+                                                 data-hint="Public key is your address to receive tokens."></i></span>
+          </div>
+          <div class="pubkey" fxFlex.gt-xs="75%" fxFlex="100%">
+            <!--<div class="public-key-view"><strong>{{account.publicKey}}</strong></div>-->
+            <input class="public-key-view" type="text" value="{{account.publicKey}}">
+            <span class="copy-btn" (click)="copy(account.publicKey)">
+                <img src="../../../assets/copy.svg" alt="copy">
+            </span>
+          </div>
         </div>
+
+        <div class="labelled-item">
+          <div fxFlex="180px">
+            <span class="line-label">Private Key: <i class="icon-question-mark"
+                                                     data-hint="If someone were to find your private key they could access your wallet."></i></span>
+          </div>
+          <div fxFlex.gt-xs="100%" fxFlex="100%">
+            <div class="readonly-field" fxFlex="{{!oauthService.privateKeySaved ? '64%' : '100%'}}" fxFlex.lt-md="{{!oauthService.privateKeySaved ? '64%' : '100%'}}">
+              <input class="key-input" type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
+              <div class="show-hide-btn" (click)="showPrivateKey()">
+                <i [ngClass]="!showPrivateKeyOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
+              </div>
+            </div>
+            <div *ngIf="!oauthService.privateKeySaved" class="backup-btn-container" fxFlex="36%" fxFlex.lt-md="30%">
+              <div class="backup-btn" (click)="backupPrivateKeyPopup()">
+                <span>Backup private key</span>
+              </div>
+            </div>
+          </div>
+          <!--<div fxFlex.gt-xs="25%" fxFlex="100%">-->
+            <!--<div class="status-info">-->
+              <!--<i [ngClass]="oauthService.privateKeySaved ? 'icon-success' : 'icon-failure'"></i>-->
+              <!--<span *ngIf="oauthService.privateKeySaved">Done</span>-->
+              <!--<span *ngIf="!oauthService.privateKeySaved">Not Backed Up</span>-->
+            <!--</div>-->
+          <!--</div>-->
+        </div>
+
+        <div class="labelled-item fielded">
+          <div fxFlex="180px">
+            <span class="line-label">Recovery phrase<i class="icon-question-mark"
+                                                         data-hint=" If someone were to find your recovery phrase they could access your wallet."></i></span>
+          </div>
+          <div fxFlex.gt-xs="100%" fxFlex="100%">
+            <div class="readonly-field" fxFlex="{{!oauthService.brainKeySaved ? '64%' : '100%'}}" fxFlex.lt-md="{{!oauthService.brainKeySaved ? '64%' : '100%'}}">
+              <input class="key-input" type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
+              <div class="show-hide-btn" (click)="showBackupRecoveryPhrase()">
+                <i [ngClass]="!showBackupRecoveryPhraseOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
+              </div>
+            </div>
+            <div *ngIf="!oauthService.brainKeySaved" class="backup-btn-container" fxLayout="column" fxFlex="36%"
+                 fxFlex.lt-md="30%">
+              <div class="backup-btn" (click)="backupRecoveryPhrasePopup()">
+                <span>Backup recovery phrase</span>
+              </div>
+            </div>
+          </div>
+          <!--<div fxFlex.gt-xs="25%" fxFlex="100%">-->
+            <!--<div class="status-info">-->
+              <!--<i [ngClass]="oauthService.brainKeySaved ? 'icon-success' : 'icon-failure'"></i>-->
+              <!--<span *ngIf="oauthService.brainKeySaved">Done</span>-->
+              <!--<span *ngIf="!oauthService.brainKeySaved">Not Backed Up</span>-->
+            <!--</div>-->
+          <!--</div>-->
+        </div>
+      </div>
     </div>
-</div>
-<!-- Yete success a, tal ".colored-wrap"-in "success" class -->
+  </div>
+  <!-- Yete success a, tal ".colored-wrap"-in "success" class -->
+</section>

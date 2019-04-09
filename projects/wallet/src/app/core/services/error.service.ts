@@ -42,7 +42,7 @@ export class ErrorService {
         load_balance_error: 'Seems like we’re having technical problems. Please try again later',
         transactions_not_found: 'Transactions Not Found',
         incorrect_recover_phrase: 'Incorrect recovery phrase. Please, make sure you entered recovery phrase correctly',
-        ins_invalid_amount_error: 'Insufficient PBQ Amount',
+        ins_invalid_amount_error: 'Insufficient funds',
         account_already_exist: 'It seems you already have a PUBLIQ Wallet, try to <a href="/user/login">Login</a>',
         init_external_ws_service: 'init External WsService Connection Error',
         form_not_submitted: 'The form was filled in incorrectly',

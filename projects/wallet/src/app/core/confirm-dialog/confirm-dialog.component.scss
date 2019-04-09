@@ -1,17 +1,38 @@
 .info-container {
   font-family: 'Open Sans', sans-serif;
-
-  .title-container {
-    padding-bottom: 8px;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
-
-    h3 {
-      text-transform: uppercase;
-      font-size: 16px;
-      font-weight: bold;
-    }
+  padding-top: 25px;
+  position: relative;
+  mat-icon{
+    position: absolute;
+    top: 3px;
+    right: -38px;
   }
+
+  h1{
+    font-size: 24px;
+    color: #191B1E;
+    text-align: center;
+    margin:0 auto 10px;
+    font-weight: 600;
+  }
+  h2{
+    font-size: 14px;
+    color: #565A60;
+    margin: 0 0 30px;
+    text-align: center;
+    line-height: normal;
+  }
+
+  .mail-input{
+    border: none;
+    width: 100%;
+    height: 45px;
+    padding: 5px 15px;
+    margin-bottom: 15px;
+    background: #ECF0F3;
+    border-radius: 5px;
+  }
+
 
   /deep/ p.message {
     margin: 30px 0 10px;
@@ -23,23 +44,15 @@
       font-weight: bold;
     }
   }
-
-  .mail-input {
-    border: 1px solid #9F9F9F;
-    border-radius: 5px;
-    max-width: 335px;
-    width: 100%;
-    height: 35px;
-    padding: 5px 11px;
-    margin: 18px 0 9px;
-  }
-
   .text-error {
     display: block;
     //margin: 5px 0 15px;
-    font-size: 14px;
-    color: #FF0000;
-    margin: 20px 0;
+    font-size: 14px!important;
+    color: #FF0000!important;
+    line-height: normal;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+    text-align: center;
   }
   .for-error{
     margin-top: 20px;
@@ -53,38 +66,7 @@
     color: #FF0000;
   }
 
-  .submit-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
 
-    border-color: transparent!important;
-
-    background-color: #3366FF;
-    color: white !important;
-    font-weight: 400;
-    font-size: 14px;
-    min-width: 120px;
-    min-height: 35px;
-    padding: 0;
-    border-radius: 5px;
-    cursor: pointer !important;
-    transition: background .2s;
-    text-transform: uppercase;
-
-    &:disabled {
-      background: #A2A2A2;
-      cursor: auto!important;
-    }
-
-    &:not(:disabled):hover {
-      background: #0B39C3;
-    }
-    &:focus{
-      outline: none;
-    }
-
-  }
   .submit-button.next-button{
     margin-top: 19px!important;
   }
@@ -93,17 +75,16 @@
     .private-key-container {
       margin-top: 40px;
       margin-bottom: 18px;
-      padding: 12px;
       text-align: center;
-      font-weight: bold;
-      border: 1px solid #212121;
       word-break: break-word;
-      line-height: 20px;
-    }
+      min-height: 80px;
+      border: 1px solid #3C3C3C;
+      border-radius: 5px;
+      padding: 10px 15px;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.4;
 
-    .checkbox-text {
-      color: #f00;
-      font-size: 12px;
     }
 
     .recovery-verify-steps {
@@ -133,37 +114,131 @@
     }
   }
 }
+.see-btns{
+  display: flex;
+  padding: 0;
+  >button{
+    flex: 1;
+    &:first-child{
+      margin-right: 10px;
+    }
+    &:last-child{
+      margin: 0 0 15px;
+    }
+  }
+  .back-btn{
+    background-color: white!important;
+    color: #696969!important;
+    margin-right: 20px;
+    transition: .2s;
+    cursor: pointer;
+    &:hover{
+      background-color: #3366FF!important;
+      color: #ffffff!important;
+      transition: .2s;
+    }
+    &:focus{
+      outline: none;
+    }
+
+    border: 1px solid #3366FF!important;
+
+  }
+}
+
 .pr-key-msg{
   line-height: 20px;
   margin: 22px 0 10px;
   font-size: 14px;
   color: #6B6B6B;
 }
+.only-way-text{
+  font-weight: 600;
+  text-align: left;
+}
+.pr-key-text{
+  margin-top: 10px!important;
+}
+.mat-dialog-container{
+  background: #FFFFFF;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.17);
+  border-radius: 10px;
+}
 .mat-dialog-container, .popap-padding .mat-dialog-container{
   padding-top: 11px!important;
+}
+.trans-confirm{
+  mat-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .transaction-btns{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 25px auto 0;
+    button:first-child{
+      margin-right: 10px;
+    }
+    .cancel-btn{
+      background-color: white!important;
+      color: #696969!important;
+      transition: .2s;
+      cursor: pointer;
+      &:hover{
+        background-color: #3366FF!important;
+        color: #ffffff!important;
+        transition: .2s;
+      }
+      &:focus{
+        outline: none;
+      }
+
+      border: 1px solid #3366FF!important;
+
+    }
+  }
+}
+@media screen and (max-width: 540px){
+  .trans-confirm .transaction-btns{
+    width: 90%;
+  }
+  .see-btns{
+    flex-direction: column;
+    >button{
+      &:first-child{
+        margin-right: 0;
+      }
+    }
+  }
+  .info-container .backup-private-key .recovery-verify-steps form .verify-inputs-container input{
+    width: 100%;
+  }
 }
 
 .regular-checkbox {
   -webkit-appearance: none;
   background-color: #ffffff;
-  border: 1px solid #1b1d1e;
+  border: 1px solid #99a1a7;
   padding: 0;
   display: inline-block;
   vertical-align: middle;
   position: relative;
   height: 20px;
   width: 20px;
+  border-radius: 5px;
   &:checked {
     background-color: #ffffff;
-    border: 1px solid #1b1d1e;
+    border: 1px solid #99a1a7;
     color: #99a1a7;
     &:after {
       content: '';
       display: block;
       width: 9px;
       height: 5px;
-      border-bottom: 1px solid #1b1d1e;
-      border-left: 1px solid #1b1d1e;
+      border-bottom: 1px solid #99a1a7;
+      border-left: 1px solid #99a1a7;
       transform: rotate(-45deg);
       position: absolute;
       top: 5px;
@@ -178,6 +253,17 @@
 
 .checkbox-container {
   margin: 25px 0;
+  label{
+    display: flex;
+    align-items: center;
+    .checkbox-text{
+      color: #f00;
+      font-size: 14px;
+      margin-left: 15px;
+      flex: 1;
+      line-height: normal;
+    }
+  }
 }
 
 .keys-text {
@@ -201,6 +287,9 @@
 .error-pbq{
   margin: 20px 0!important;
 }
+.submit-button{
+  min-height: 45px;
+}
 @media screen and (max-width: 450px){
   .last-btn-div{
     display: flex;
@@ -217,12 +306,11 @@
   justify-content: flex-end;
   padding-right: 4px;
 }
-.transfer-confirmation.trans-confirm{
 
-}
 @media screen and (max-width: 530px){
   .justify{
     flex-direction: column!important;
     align-items: flex-end!important;
   }
 }
+

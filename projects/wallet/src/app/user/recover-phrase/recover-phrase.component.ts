@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { OauthService } from 'helper-lib';
+import { ClipboardService } from 'ngx-clipboard';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-recover',
@@ -21,7 +23,7 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
     public decryptedBrainKey: string;
     public brainKey;
     loading = false;
-    securityStatusName = 'low';
+    securityStatusName = '0/2';
     account;
 
     errorEventEmiterSubscription: Subscription;
@@ -29,6 +31,8 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
     constructor(public accountService: AccountService,
                 public oauthService: OauthService,
                 private router: Router,
+                private notificationService: NotificationService,
+                private _clipboardService: ClipboardService,
                 private errorService: ErrorService,
                 private dialogService: DialogService) {
 
@@ -82,10 +86,10 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
 
         if (this.account) {
             if (this.oauthService.privateKeySaved && this.oauthService.brainKeySaved) {
-                this.securityStatusName = 'Strong';
+                this.securityStatusName = '2/2';
                 currentSecurityClass = 'high';
             } else if (this.oauthService.privateKeySaved || this.oauthService.brainKeySaved) {
-                this.securityStatusName = 'Middle';
+                this.securityStatusName = '1/2';
                 currentSecurityClass = 'middle';
             }
         }
@@ -118,6 +122,11 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
             maxWidth: '600px',
             panelClass: 'modal-padding'
         });
+    }
+
+    copy(text: string) {
+      this._clipboardService.copyFromContent(text);
+      this.notificationService.success('Copied');
     }
 
     ngOnDestroy() {
