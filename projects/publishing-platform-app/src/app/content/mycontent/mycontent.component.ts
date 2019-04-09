@@ -20,6 +20,7 @@ import { AuthorStats } from '../../core/services/models/authorStats';
 import { Content } from '../../core/services/models/content';
 import { DraftService } from '../../core/services/draft.service';
 import { DraftData } from '../../core/services/models/draft';
+import { Publications } from '../../core/services/models/publications';
 
 
 @Component({
@@ -152,8 +153,8 @@ export class MycontentComponent implements OnInit, OnDestroy {
       );
 
     zip(
-      this.publicationService.myPublications,
-      this.publicationService.myMemberships.pipe(map((res: any[]) => res.map(el => el.publication)))
+      this.publicationService.myPublications$,
+      // this.publicationService.myPublications$.pipe(map((res: Publications) => res.membership))
     )
       .pipe(
         map((results: any[]) => results[0].concat(results[1])),

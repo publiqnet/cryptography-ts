@@ -1,32 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { PublicationComponent } from './publication/publication.component';
 import { PublicationRoutingModule } from './publication-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { MyPublicationComponent } from './my-publication/my-publication.component';
+import { ManagePublicationComponent } from './manage/manage-publication.component';
+import { MyPublicationsComponent } from './my-publications/my-publications.component';
+import { NewPublicationComponent } from './new/new-publication.component';
 
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/home/', '.json');
-}
+
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
     PublicationRoutingModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      },
-      isolate: true
-    })
+    TranslateModule.forChild()
   ],
-  declarations: [PublicationComponent, MyPublicationComponent]
+  declarations: [
+    PublicationComponent,
+    ManagePublicationComponent,
+    MyPublicationsComponent,
+    NewPublicationComponent
+  ]
 })
 export class PublicationModule {}

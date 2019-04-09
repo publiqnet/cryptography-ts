@@ -7,7 +7,6 @@ import { TemplateComponent } from './core/template/template.component';
 import { ArticleComponent } from './core/article/article.component';
 import { AuthorComponent } from './author/author/author.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
-import { PublicationComponent } from './publication/publication/publication.component';
 import { LanguageGuard } from './guards/language.guard';
 
 const routes: Routes = [
@@ -35,13 +34,8 @@ const routes: Routes = [
                 component: AuthorComponent
             },
             {
-                path: 'publication/:slug',
-                redirectTo: '/p/:slug'
-            },
-            {
-                path: 'p/:slug',
-                pathMatch: 'full',
-                component: PublicationComponent
+                path: 'p',
+                loadChildren: './publication/publication.module#PublicationModule'
             },
             {
                 path: 'content',

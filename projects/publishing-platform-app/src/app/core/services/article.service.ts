@@ -1071,4 +1071,17 @@ export class ArticleService {
                 );
         }
     }
+
+    getContentsByDsId(dsIdArray: string[]) {
+        return this.httpRpcService
+          .call({
+              params: [0, 'get_contents', [dsIdArray]]
+          })
+          .pipe(
+            map((result: Array<any>) => {
+                const resArr = result.map(el => el[1]);
+                return this.mainPurifyContent(resArr);
+            })
+          );
+    }
 }

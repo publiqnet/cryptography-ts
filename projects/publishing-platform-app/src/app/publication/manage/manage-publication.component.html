@@ -1,0 +1,340 @@
+<div class="publication">
+    <mat-tab-group selectedIndex='{{tabIndex}}' (selectedTabChange)="onLinkClick($event)">
+        <mat-tab label="{{'content.stories' | translate}}">
+            <ng-container>
+                <ng-container *ngIf="!initialLoading">
+                    <app-article-card-list *ngIf="articlesRes && !(articlesRes.length === 0); else emptyStories"
+                                           [fromPublications]="true"
+                                           (articleRemove)="removeArticle($event)" [canDelete]="true"
+                                           [articles]="articlesRes"
+                                           [hasSeparator]="false" [calculateViewCount]="true">
+                    </app-article-card-list>
+                </ng-container>
+                <div class="text-center mt-3">
+                    <div class="empty" *ngIf="!articlesLoaded">
+                        <div style="display: inline-block">
+                            <mat-spinner></mat-spinner>
+                        </div>
+                    </div>
+                    <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold"
+                            tabindex="0" (click)="loadMore()">
+                        {{'wallet.see_more' | translate}}
+                    </button>
+                </div>
+            </ng-container>
+        </mat-tab>
+
+        <mat-tab label="{{'content.members' | translate}}">
+            <div class="members">
+                <div class="member-space pub-members">
+                    <ng-container *ngIf="publication.owner as owner">
+                        <div class="profile-selector">
+                            <div class="small-profile-pic">
+                                <div [ngStyle]="{'background-image': owner.image ?
+                                    'url(' + owner.image   + ')' :
+                                    'url(\'/assets/no-image-article.jpg\' )' }">
+                                </div>
+                            </div>
+                            <div routerLink="/a/{{owner?.publicKey}}">
+                                <p class="position">{{'content.owner' | translate}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <div class="d-flex flex-column click">
+                        <button mat-raised-button color="primary"
+                                (click)="inviteMemberToggle()"
+                                [disabled]="publication.memberStatus === MemberStatus.contributor"
+                                [ngClass]="{'white-button' : addMemberBtn}">
+                            {{addMemberBtn ? ('core.cancel' | translate) : ('content.invite_member' | translate) }}
+                        </button>
+
+                        <div class="show-add-button" *ngIf="addMemberBtn">
+                            <app-search-member (memberInvited)="closeSearchBar()" [hidden]="!searchBar" [publication]="publication"></app-search-member>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class=" editors container-fluid">
+
+                <!--editors-->
+                <h2>{{'content.editors' | translate}}</h2>
+                <div class=" row">
+                    <ng-container *ngIf="publication.editors as editors">
+                        <div *ngFor="let editor of editors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                            <div [routerLink]="editor ? ['/a', editor.publicKey] : []">
+                                <div class="member-pic"
+                                     [ngStyle]="{ 'background-image': editor && editor.image ?
+                                 'url('+ editor.image +')' :
+                                 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+
+                                </div>
+                                <div class="w-100 text-center">
+                                    <h3 class="member-info" *ngIf="editor">
+                                        <span>{{editor.firstName || ''}} {{editor.lastName || ''}}</span>
+                                        <span class="follow" *ngIf="currentUser.publicKey !== editor.publicKey">
+                                        <i [ngClass]="editor.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                        <span *ngIf="editor.following === 'follow'" (click)="follow(editor, $event, 'member')">
+                                            {{'author.follow' | translate}}
+                                        </span>
+                                        <span *ngIf="editor.following === 'unfollow'"
+                                              (click)="unfollow(editor, $event, 'member')">
+                                            {{'author.unfollow' | translate}}
+                                        </span>
+                                    </span>
+                                    </h3>
+                                    <p class="notUserInfo">{{!editor && editor.email ? editor.email : ''}}</p>
+                                    <div class="edit" *ngIf="publication.memberStatus === MemberStatus.owner && editor.memberStatus === MemberStatus.editor">
+                                        <mat-select [(value)]="editor.memberStatus"
+                                                    (click)="stopEventPropagation($event)"
+                                                    (selectionChange)="changeStatus($event, editor)">
+
+                                            <mat-option [value] = MemberStatus.contributor>
+                                                {{'content.contributor' | translate}}
+                                            </mat-option>
+                                            <mat-option [value] = MemberStatus.editor>
+                                                {{'content.editor' | translate}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <a (click)="deleteMember(editor,i, $event)">
+                                            <i class="icon-delete"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="empty empty-space" *ngIf="publication.editors?.length === 0">
+                    <p>{{'publication.no_editors'| translate}}</p>
+                </div>
+
+                <!--contributors-->
+                <h2>{{'content.contributors' | translate}}</h2>
+                <div class=" row">
+                    <ng-container *ngIf="publication.contributors as contributors">
+                        <div *ngFor="let contributor of contributors" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                        <div [routerLink]="contributor? ['/a',contributor.publicKey] : []">
+                            <div class="member-pic"
+                                 [ngStyle]="{ 'background-image': contributor && contributor.image ?
+                                 'url('+ contributor.image+')' :
+                                 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                            </div>
+                            <div class="w-100 text-center">
+                                <h3 class="member-info" *ngIf="contributor">
+                                    <span>{{contributor.firstName || ''}} {{contributor.lastName || ''}}</span>
+                                    <span class="follow" *ngIf="currentUser.publicKey !== contributor.publicKey">
+                                        <i class="mr-2"
+                                           [ngClass]="contributor.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                        <span *ngIf="contributor.following === 'follow'"
+                                              (click)="follow(contributor, $event, 'member')">
+                                            <a>{{'author.follow' | translate}}</a>
+                                        </span>
+                                        <span *ngIf="contributor.following === 'unfollow'"
+                                              (click)="unfollow(contributor, $event, 'member')">
+                                            <a>{{'author.unfollow' | translate}}</a>
+                                        </span>
+                                    </span>
+                                </h3>
+                                <p class="notUserInfo">{{!contributor && contributor.email ? contributor.email : ''}}</p>
+                                <div class="edit" *ngIf="publication.memberStatus === MemberStatus.owner && contributor.memberStatus === MemberStatus.contributor">
+                                    <mat-select [(value)]="contributor.memberStatus" (click)="stopEventPropagation($event)"
+                                                [disabled]="publication.memberStatus !== MemberStatus.owner"
+                                                (selectionChange)="changeStatus($event, contributor)">
+                                        <mat-option [value] = MemberStatus.contributor>
+                                            {{'content.contributor' | translate}}
+                                        </mat-option>
+                                        <mat-option [value] = MemberStatus.editor>
+                                            {{'content.editor' | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <a class="" (click)="deleteMember(contributor, i, $event)"
+                                       *ngIf="publication.memberStatus === MemberStatus.owner
+                                           && (contributor.memberStatus !== MemberStatus.owner || publication.memberStatus === MemberStatus.editor)
+                                           && contributor.memberStatus === MemberStatus.contributor
+                                           && contributor.memberStatus !== MemberStatus.owner">
+                                        <i class="icon-delete"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    </ng-container>
+                </div>
+                <div class="empty empty-space" *ngIf="publication.contributors.length === 0">
+                    <p>{{'publication.no_contr' | translate}}</p>
+                </div>
+
+                <!--pendings-->
+                <h2>{{'content.pending' | translate}}</h2>
+                <div class=" row">
+                    <ng-container *ngIf="publication.invitations as pendings">
+                        <div *ngFor="let pending of pendings" class="profile-selector col-lg-3 col-md-6 col-sm-12">
+                            <div [routerLink]="pending ? ['/a', pending.publicKey] : []">
+                                <div class="member-pic"
+                                     [ngStyle]="{ 'background-image': pending && pending.image ?
+                                     'url('+ pending.image +')' :
+                                     'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                                </div>
+                                <div class="w-100 text-center">
+                                    <h3 class="member-info" *ngIf="pending">
+                                        <span>{{pending.firstName || pending.email || ''}} {{pending.lastName || pending.email || ''}}</span>
+                                        <span class="follow" *ngIf="currentUser.publicKey !== pending.publicKey">
+                                          <i class="mr-2"
+                                             [ngClass]="pending.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                            <span *ngIf="pending.following === 'follow'"
+                                                  (click)="follow(pending, $event, 'member')">
+                                                <a>{{'author.follow' | translate}}</a>
+                                            </span>
+                                            <span *ngIf="pending.following === 'unfollow'"
+                                                  (click)="unfollow(pending, $event, 'member')">
+                                                <a>{{'author.unfollow' | translate}}</a>
+                                            </span>
+                                        </span>
+                                    </h3>
+                                    <p class="notUserInfo">{{pending.email ? pending.email : ''}}</p>
+
+                                    <div class="edit" *ngIf="publication.memberStatus === MemberStatus.owner">
+                                        <a class="" (click)="cancelInvitationBecomeMember(pending, $event)">
+                                            Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="empty empty-space" *ngIf="publication.invitations?.length === 0">
+                    <p>{{'publication.no_pend' | translate}}</p>
+                </div>
+
+            </div>
+
+        </mat-tab>
+
+        <mat-tab label="{{'content.followers' | translate}}">
+            <div *ngIf="subscribers && subscribers.length, else empty">
+                <mat-card *ngFor='let subscriber of subscribers, let i=index'>
+                    <div class="card-info-row">
+                        <div>
+                            <div class="current-followers">
+                                <div class="profile-pic"
+                                     [ngStyle]="{ 'background-image': subscriber.subscriber.image ? 'url('+ subscriber.subscriber.image+')' : 'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                                </div>
+                                <div class="follow-space">
+                                    <h3 routerLink="/a/{{subscriber.subscriber.publicKey}}">
+                                        <span *ngIf="subscriber.subscriber.firstName || subscriber.subscriber.lastName">{{subscriber.subscriber.firstName}} {{subscriber.subscriber.lastName}}</span>
+                                    </h3>
+                                    <span class="follow" *ngIf="currentUser.publicKey !== subscriber.subscriber.publicKey">
+                                       <i class="mr-2" [ngClass]="subscriber.subscriber.following === 'follow' ? 'icon-follow' : 'icon-unfollow'"></i>
+                                         <span *ngIf="subscriber.subscriber.following === 'follow'"
+                                               (click)="follow(subscriber.subscriber, $event, 'follower')">
+                                             <a>{{'author.follow' | translate}}</a>
+                                         </span>
+                                        <span *ngIf="subscriber.subscriber.following === 'unfollow'"
+                                              (click)="unfollow(subscriber.subscriber, $event, 'follower')">
+                                            <a>{{'author.unfollow' | translate}}</a>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="{{'content.requests' | translate}}">
+            <ng-container *ngIf="publication.requests as requests">
+                <div *ngIf="requests && requests.length, else empty">
+                    <mat-card *ngFor='let request of requests, let i=index'>
+                        <div class="card-info-row request-row">
+                            <div>
+                                <div class="d-flex align-items-center h4-title">
+                                    <div class="profile-pic"
+                                         [ngStyle]="{ 'background-image': request.image ?
+                                         'url('+  request.image +')' :
+                                         'url( \' ../../../assets/no-image-article.jpg\')'}  ">
+                                    </div>
+                                    <h4 routerLink="/a/{{request.publicKey}}">
+                                        <span *ngIf="request.firstName || request.lastName">
+                                            {{request.firstName}} {{request.lastName}}
+                                        </span>
+                                        <span *ngIf="!request.firstName && !request.lastName">
+                                            {{request.publicKey}}
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center" *ngIf="publication.memberStatus !== MemberStatus.contributor">
+                                <button mat-raised-button color="primary" (click)="memberRequest(request, 1, i)">CONFIRM</button>
+                                <img class="delete" src="../../../assets/delete-black.svg" (click)="memberRequest(request, 0, i)" alt="delete-icon">
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+            </ng-container>
+        </mat-tab>
+
+        <mat-tab isActive="false">
+            <ng-template mat-tab-label>
+                <div>
+                    <i class="icon-new-story"></i>
+                    <span>{{"header.new_story" | translate}}</span>
+                </div>
+            </ng-template>
+
+        </mat-tab>
+
+    </mat-tab-group>
+    <!--
+
+    <ng-container *ngIf="(!publication.memberStatus || publication.memberStatus == MemberStatus.contributor)">
+        <ng-container *ngIf="!initialLoading">
+            <app-article-card-list *ngIf="(articlesRes && !(articlesRes.length === 0)); else empty"
+                                   [fromPublications]="true" [articles]="articlesRes" [hasSeparator]="false"
+                                   [calculateViewCount]="true"></app-article-card-list>
+        </ng-container>
+
+        <div class="text-center mt-3">
+            <div class="empty" *ngIf="seeMore && !articlesLoaded">
+                <div style="display: inline-block">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
+            <button *ngIf="seeMore && articlesLoaded" class="button button-fill text-uppercase font-weight-bold"
+                    tabindex="0" (click)="loadMore()">
+                {{'wallet.see_more' | translate}}
+            </button>
+        </div>
+    </ng-container>
+
+    -->
+
+    <ng-container *ngIf="initialLoading">
+        <div class="text-center mt-3">
+            <div class="empty">
+                <div style="display: inline-block">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #empty>
+        <div class="empty">
+            <img src="/assets//no-materials.svg" alt="">
+            <p>{{'content.empty' | translate}}</p>
+        </div>
+    </ng-template>
+
+    <ng-template #emptyStories>
+        <div class="empty">
+            <img src="/assets//no-materials.svg" alt="">
+            <p>{{'content.no_stories' | translate}}</p>
+        </div>
+    </ng-template>
+</div>

@@ -114,7 +114,7 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
             this.router.navigate([`/s/${uNotification.notification.data}`]);
         } else if (uNotification.notification.type.id === UserNotificationType.PUBLICATION_INVITATION) {
             this.publicationsService.tabIndexInv = 2;
-            this.router.navigate([`/content/publications`]);
+            this.router.navigate([`/p/my-publications`]);
         } else if (uNotification.notification.type.id === UserNotificationType.PUBLICATION_REQUESTS) {
             this.publicationsService.tabIndexReq = 3;
             this.router.navigate([

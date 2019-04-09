@@ -13,3 +13,4 @@ export * from './RoleTypes';
 export * from './WidgetInputTypes';
 export * from './WorkInTypes';
 export * from './UserNotificationType';
+export * from './PublicationMemberStatusType';

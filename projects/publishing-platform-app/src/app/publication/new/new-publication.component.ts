@@ -7,6 +7,7 @@ import { delay, takeUntil, tap } from 'rxjs/operators';
 
 import { PublicationService } from '../../core/services/publication.service';
 import { ValidationService } from '../../core/validator/validator.service';
+import { Publication } from '../../core/services/models/publication';
 
 @Component({
   selector: 'app-new-publication',
@@ -40,83 +41,50 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.route.snapshot.params['pub']) {
+    if (this.route.snapshot.params['slug']) {
       this.isEditing = true;
-      this.slug = this.route.snapshot.params['pub'];
+      this.slug = this.route.snapshot.params['slug'];
       this.publicationService.getPublicationBySlug(this.slug)
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe((pub: any) => {
+        .subscribe((pub: Publication) => {
           this.publicationForm.patchValue({
             description: pub.description || '',
             title: pub.title || '',
           });
-          if (pub.logo) {
-            this.logoImage = this.publicationService.getImages(
-              pub.logo
-            );
-          }
-          if (pub.cover) {
-            this.coverImage = this.publicationService.getImages(
-              pub.cover
-            );
-          }
+          this.logoImage = pub.logo;
+          this.coverImage = pub.cover;
         });
     }
   }
 
-  openDialog() {
+  onSubmit() {
     if (this.publicationForm.invalid) {
       return;
     }
+
     this.loading = true;
     const formData = new FormData();
     if (this.isEditing) {
-      formData.append(
-        'publication_update[title]',
-        this.publicationForm.value.title
-      );
-      formData.append(
-        'publication_update[description]',
-        this.publicationForm.value.description
-      );
+      formData.append('title', this.publicationForm.value.title);
+      formData.append('description', this.publicationForm.value.description);
       if (this.coverFile) {
-        formData.append('publication_update[cover]', this.coverFile);
+        formData.append('cover', this.coverFile);
       }
       if (this.logoFile) {
-        formData.append('publication_update[logo]', this.logoFile);
+        formData.append('logo', this.logoFile);
       }
-      formData.append(
-        'publication_update[deleteLogo]',
-        this.deleteLogo
-      );
-      formData.append(
-        'publication_update[deleteCover]',
-        this.deleteCover
-      );
+      formData.append('deleteLogo', this.deleteLogo);
+      formData.append('deleteCover', this.deleteCover);
     } else {
-      formData.append(
-        'publication_create[title]',
-        this.publicationForm.value.title
-      );
-      formData.append(
-        'publication_create[description]',
-        this.publicationForm.value.description
-      );
+      formData.append('title', this.publicationForm.value.title);
+      formData.append('description', this.publicationForm.value.description);
       if (this.coverFile) {
-        formData.append(
-          'publication_create[cover]',
-          this.coverFile,
-          this.coverFile.name
-        );
+        formData.append('cover', this.coverFile, this.coverFile.name);
       }
       if (this.logoFile) {
-        formData.append(
-          'publication_create[logo]',
-          this.logoFile,
-          this.logoFile.name
-        );
+        formData.append('logo', this.logoFile, this.logoFile.name);
       }
     }
 
@@ -127,21 +95,18 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(res => {
-          this.router.navigate(['/content/publications']);
+        .subscribe(() => {
+          this.router.navigate(['/p/my-publications']);
         });
     } else {
       this.publicationService.createPublication(formData)
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(res => {
-          this.router.navigate(['/content/publications']);
-          this.publicationService.getMyPublications();
+        .subscribe(() => {
+          this.router.navigate(['/p/my-publications']);
           this.loading = false;
-        }, err => {
-          this.loading = false;
-        });
+        }, () => this.loading = false);
     }
 
 
@@ -218,10 +183,7 @@ export class NewPublicationComponent implements OnInit, OnDestroy {
   private buildForm(): void {
     this.publicationForm = this.FormBuilder.group({
       description: new FormControl(this.description, [ValidationService.required, Validators.maxLength(160)]),
-      title: new FormControl(this.title, [
-        ValidationService.required,
-        Validators.maxLength(this.titleMaxLenght)
-      ]),
+      title: new FormControl(this.title, [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
       logo: new FormControl()
     });

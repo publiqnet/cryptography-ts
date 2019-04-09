@@ -5,7 +5,7 @@
 ## Publishing Platform App
 
 ### Development
-Run `npm run start:publishing-platform-app`
+Run `npm run start:publishing-platform`
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 

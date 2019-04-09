@@ -519,8 +519,8 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
       this.account = this.accountService.getAccount();
       zip(
-        this.publicationService.myPublications,
-        this.publicationService.myMemberships.pipe(map((res: any[]) => res.map(el => el.publication)))
+        this.publicationService.myPublications$,
+        // this.publicationService.myMemberships.pipe(map((res: any[]) => res.map(el => el.publication)))
       )
         .pipe(
           map((results: any[]) => results[0].concat(results[1])),

@@ -63,7 +63,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { SafeHtmlPipe } from '../core/pipes/safeHtml.pipe';
 import { HrefToRouterLinkDirective } from '../core/directives/href-to-routerlink.directive';
 import { PubTitlePipe } from '../core/pipes/pub-title.pipe';
-import { SearchMemberComponent } from '../content/search-member/search-member.component';
+import { SearchMemberComponent } from '../publication/search-member/search-member.component';
 import { NuxComponent } from './nux/nux.component';
 
 export function createTranslateLoader(http: HttpClient) {

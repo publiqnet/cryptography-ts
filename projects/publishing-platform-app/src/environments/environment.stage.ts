@@ -1,8 +1,8 @@
 
 export const environment = {
   production: false,
-  backend: 'http://192.168.20.109:8003',
-  oauth_backend: 'http://192.168.20.109:8001',
+  backend: 'http://192.168.20.115:8003',
+  oauth_backend: 'http://192.168.20.115:8001',
   ds_backend: 'https://stage-ds.publiq.network',
   daemon_address_first: 'wss://south.publiq.network:443/websocket_stage',
   daemon_address_second: 'wss://south.publiq.network:8092/websocket_stage',

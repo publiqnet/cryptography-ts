@@ -1,82 +1,111 @@
-<div class="vh-centered" *ngIf="loadingPublication">
-    <mat-spinner></mat-spinner>
-</div>
-<div class="author-header-wrap transparent-wrap" *ngIf="!loadingPublication">
-  <div class="d-flex " [ngClass]="{'for-overlay':!averageColor}">
-    <div class="background vh-centered  "
-         [class.cover-opacity]="publication && !publication.cover && !publication.logo"
-         [class.cover-filter]="publication && !publication.cover && !publication.logo" [style.background-image]="publication && publication.cover ? 'url(' + imagePath + publication.cover + ')' : null" [style.background-color]="publication && !publication.cover ? averageColor : null" ></div>
-
-    <div class="inner-wrap title-wrap">
-
-      <div class="avatar-wrap">
-        <div class="avatar" [ngStyle]="{'background-image': publication && publication.logo ? 'url(' + imagePath + publication.logo + ')' : 'url(/assets/no-image-article.jpg)', 'background-color':  publication?.logo ? 'white' : '#36f' }">
-            <span *ngIf="!publication?.logo">{{publication.title | pubTitle}}</span>
-            </div>
-        </div>
-        <div class="pub-info-container">
-            <h1 id="a-title">{{publication?.title}}</h1>
-            <p class="pub-description">{{publication?.description}}</p>
-            <h3>
-                {{'publication.followers' | translate}}
-                <span id="followers-count">{{(subscribers && subscribers > 0) ? subscribers : 0}}</span>
-                {{'publication.articles' | translate}}
-                <span>{{articles ? articles : 0}}</span>
-                {{'publication.views' | translate}}
-                <span>{{publication?.views}}</span>
-                {{'publication.members' | translate}}
-                <span>{{publication?.membersCount -1}}</span>
-            </h3>
-          <div class="text-center text-md-left mt-3 align-middle">
-            <div class="follow-button mr-5 d-inline-block align-middle" tabindex="0" *ngIf="owner" [routerLink]="['/content/editpublication', publication.slug]" >
-              <i class="icon-settings"></i>
-              <span>{{'header.settings' | translate}}</span>
-            </div>
-          <div *ngIf="!myPublication" class="d-inline-block follow-button align-middle ">
-
-              <span class="mr-5" *ngIf="!becomeMem && notMember">
-                <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-                <span (click)="becomeMember(publication?.slug)">{{'publication.become_member' | translate}}</span>
-              </span>
-            <span *ngIf="becomeMem && notMember" class="mr-5">
-               <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-                 <span class="align-middle core-cancel" (click)="cancelBecomeMember(publication?.slug)">{{'core.cancel' | translate}}</span>
-              </span>
-          </div>
-          <div *ngIf="myPublication == 3" class="d-inline-block follow-button align-middle noHover">
-              <span class="mr-5 ">
-                  {{'content.you_are_member' | translate}}
-                </span>
-          </div>
-
-          <div *ngIf="publication" class="text-center text-md-left mr-5 d-inline-block align-middle follow-button">
-            <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
-              <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-              <span>{{(canFollow ? 'publication.follow' : 'publication.unfollow') | translate}}</span>
-            </div>
-          </div>
-
-
-        </div>
-      </div>
+<ng-container *ngIf="loading; else noLoading">
+    <div class="vh-centered">
+        <mat-spinner></mat-spinner>
     </div>
-  </div>
+</ng-container>
+<ng-template #noLoading>
+    <div class="author-header-wrap transparent-wrap">
+        <div class="d-flex " [ngClass]="{'for-overlay':!publication.color}">
+            <div class="background vh-centered  "
+                 [class.cover-opacity]="publication && !publication.cover && !publication.logo"
+                 [class.cover-filter]="publication && !publication.cover && !publication.logo"
+                 [style.background-image]="publication && publication.cover ? 'url(' + publication.cover + ')' : null"
+                 [style.background-color]="publication && !publication.cover ? publication.color : null">
+            </div>
 
+            <div class="inner-wrap title-wrap">
+                <div class="avatar-wrap">
+                    <div class="avatar"
+                         [ngStyle]="{'background-image': publication && publication.logo ?
+                     'url(' + publication.logo + ')' : 'url(/assets/no-image-article.jpg)',
+                     'background-color':  publication?.logo ? 'white' : '#36f' }">
+                        <span *ngIf="!publication?.logo">{{publication.title | pubTitle}}</span>
+                    </div>
+                </div>
+                <div class="pub-info-container">
+                    <h1 id="a-title">{{publication?.title}}</h1>
+                    <p class="pub-description">{{publication?.description}}</p>
+                    <h3>
+                        {{'publication.followers' | translate}}
+                        <span id="followers-count">{{subscribers ? subscribers : 0}}</span>
+                        {{'publication.articles' | translate}}
+                        <span>{{articles ? articles : 0}}</span>
+                        {{'publication.views' | translate}}
+                        <span>{{publication?.views ? publication?.views : 0}}</span>
+                        {{'publication.members' | translate}}
+                        <span>{{publication?.membersCount ? publication?.membersCount : 0}}</span>
+                    </h3>
+                    <div class="text-center text-md-left mt-3 align-middle">
+                        <ng-container *ngIf="publication.memberStatus === MemberStatus.owner">
+                            <div class="follow-button mr-5 d-inline-block align-middle" tabindex="0"
+                                 [routerLink]="['/p/edit', publication.slug]">
+                                <i class="icon-settings"></i>
+                                <span>{{'header.settings' | translate}}</span>
+                            </div>
+                        </ng-container>
 
-<app-my-publication [currentUser]="currentUser" [dsIdArray]="dsIdArray"  ></app-my-publication>
+                        <ng-container
+                                *ngIf="![MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else iAmMember">
+                            <div class="d-inline-block follow-button align-middle ">
+                                <ng-container *ngIf="publication.memberStatus === MemberStatus.no_info">
+                                <span class="mr-5">
+                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                    <span (click)="requestBecomeMember(publication?.slug)">{{'publication.become_member' | translate}}</span>
+                                </span>
+                                </ng-container>
 
-<!--<div *ngIf="((publicationArticles && publicationArticles?.length || loadingPublication) && articlesLoaded);else no_content">-->
-    <!--<app-article-card-list [articles]="publicationArticles" [hasSeparator]="false" [calculateViewCount]="true"></app-article-card-list>-->
-<!--</div>-->
+                                <ng-container  *ngIf="publication.memberStatus === MemberStatus.requested_to_be_a_contributor">
+                                    <span class="mr-5">
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span class="align-middle core-cancel" (click)="cancelBecomeMember(publication?.slug)">
+                                            {{'core.cancel' | translate}}
+                                        </span>
+                                    </span>
+                                </ng-container>
 
-<mat-spinner style="margin: 50px auto;" *ngIf="!loadingPublication && !articlesLoaded"></mat-spinner>
+                                <ng-container *ngIf="[MemberStatus.invited_to_be_a_contributor, MemberStatus.invited_to_be_an_editor].includes(publication.memberStatus)">
+                                    <span class="mr-5">
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span (click)="acceptInvitationBecomeMember(publication?.slug)">
+                                            {{'publication.become_member' | translate}}
+                                        </span>
+                                    </span>
+                                    <span class="mr-5">
+                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
+                                        <span class="align-middle core-cancel" (click)="rejectInvitationBecomeMember(publication?.slug)">
+                                            {{'core.cancel' | translate}}
+                                        </span>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </ng-container>
 
-<!-- <ng-template #no_content> -->
-    <!--<div *ngIf="!loadingPublication && articlesLoaded">-->
-        <!--<div class="empty">-->
-            <!--<img src="/assets//no-materials.svg" alt="">-->
-            <!--<p>{{'publication.you_have_no_content' | translate}}</p>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</ng-template> -->
-</div>
+                        <ng-template #iAmMember>
+                            <div class="d-inline-block follow-button align-middle noHover">
+                                <span class="mr-5 ">{{'content.you_are_member' | translate}}</span>
+                            </div>
+                        </ng-template>
+
+                        <div *ngIf="publication"
+                             class="text-center text-md-left mr-5 d-inline-block align-middle follow-button">
+                            <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
+                                <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
+                                <span>{{(canFollow ? 'publication.follow' : 'publication.unfollow') | translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-container *ngIf="[MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else notMember">
+            <app-manage-publication [publication]="publication"></app-manage-publication>
+        </ng-container>
+
+        <ng-template #notMember>
+            <p>List of articles when you are not a member of the publication</p>
+        </ng-template>
+
+    </div>
+</ng-template>
+
