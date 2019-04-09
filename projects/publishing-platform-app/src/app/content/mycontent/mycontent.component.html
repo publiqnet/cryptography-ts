@@ -1,0 +1,161 @@
+<main class="materials">
+    <div class="container-fluid">
+        <h1 class="header-h1">{{'content.content' | translate}}</h1>
+
+        <mat-tab-group (selectedTabChange)="onTabChange($event)">
+            <!--TAB1-->
+            <mat-tab label="{{'content.published' | translate}} ({{allStoriesCount}})">
+                <ng-container *ngIf="!loading">
+                    <mat-accordion *ngIf="publishedContent?.length > 0;else no_content">
+                        <mat-expansion-panel *ngFor="let publishedContentItem of publishedContent" [disabled]="publishedContentItem.meta.origin.length === 0"
+                            (opened)="showContentHistoryList(publishedContentItem)" hideToggle="{{!publishedContentItem.meta.origin.length}}">
+                            <mat-expansion-panel-header class="header-panel" [ngClass]="{'disabled-header': publishedContentItem.meta.origin.length === 0}">
+                                <div class="pic-space">
+                                    <div class="background-options" [ngStyle]="{'background-image':'url(' + getImage(publishedContentItem)  + ')'}"></div>
+                                </div>
+                                <div class=title-pic-space>
+                                    <div class="title-space">
+                                        <span>
+                                            <a class="blank-title" (click)="redirectArticle(publishedContentItem, $event)">
+                                                {{publishedContentItem.meta.title}} </a>
+                                            <span *ngIf="publishedContentItem.meta.publicationId">in</span>
+                                            <a *ngIf="publishedContentItem.meta.publicationId" [href]="'/p/'+publishedContentItem.meta.publicationId" target="_blank">{{publishedContentItem.meta.publicationId}}</a>
+                                        </span>
+                                        <div class="edit" style="float: right" >
+                                            <p *ngIf="publishedContentItem && publishedContentItem['boosts']">
+                                              <span>{{'content.ad_will_end' | translate}}</span>
+                                              <span> {{ publishedContentItem['boosts'][0]['valid_before'] | date }} </span>
+                                            </p>
+                                          <button mat-raised-button color="primary" *ngIf="!publishedContentItem['boosts']"  (click)="openDialogSubmission2(publishedContentItem.ds_id)">{{'content.boost_story' | translate}}</button>
+                                          <button mat-raised-button color="primary" *ngIf="publishedContentItem['boosts'] && publishedContentItem['boosts']" (click)="cancelPromotion(publishedContentItem['boosts'][0]['id'])">{{'dialog.confirm.cancel_story' | translate}}</button>
+                                            <a (click)="editArticle(publishedContentItem, $event)"><i class="icon-edit"></i></a>
+                                        </div>
+                                    </div>
+                                    <mat-form-field *ngIf="publications && publications.length">
+                                        <mat-select (click)="publicationSelectClick($event)" (selectionChange)="changePublication(publishedContentItem.ds_id,$event)" [value]="publishedContentItem.publication?.slug || 'none'">
+                                          <mat-option [value]="'none'" class="selected-option">
+                                            <!--&#45;&#45;{{'content.none' | translate}}&#45;&#45;-->
+                                            {{'content.select_pub' | translate}}
+                                          </mat-option>
+                                          <mat-option *ngFor="let publication of publications" [value]="publication.slug">
+                                            {{publication?.title}}
+                                          </mat-option>
+                                        </mat-select>
+                                      </mat-form-field>
+                                    <div class="info">
+                                        <div class="date-space">
+                                            <i class="icon-uploaded" style="font-style: normal;"></i>
+                                            <span>
+                                                {{'content.published1' | translate}}:
+                                                {{getCorrectDateFormat(publishedContentItem.created) | date:'HH:mm '}}
+                                                {{('months.' + (getCorrectDateFormat(publishedContentItem.created)| date:'MMM')) | translate}},
+                                                {{getCorrectDateFormat(publishedContentItem.created) | date: ' dd, y'}}
+                                            </span>
+                                        </div>
+                                        <!--<div>-->
+                                        <!--<i class="icon-views"></i><span>Views: 20</span>-->
+                                        <!--</div>-->
+                                        <div *ngIf="publishedContentItem.meta.origin.length">
+                                            <i class="icon-appointment" style="font-style: normal;"></i>
+                                            <span>
+                                                {{'content.last_updated' | translate}}:
+                                                {{getCorrectDateFormat(publishedContentItem.published) | date:'HH:mm '}}
+                                                {{('months.' + (getCorrectDateFormat(publishedContentItem.published)| date:'MMM')) | translate}},
+                                                {{getCorrectDateFormat(publishedContentItem.published) | date: ' dd, y'}}
+                                            </span>
+                                            <!--<div class="triangle"></div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel-header>
+
+                            <div *ngIf="openedContents[publishedContentItem.ds_id]">
+                                <ul>
+                                    <ng-container *ngFor="let nextHostory of openedContents[publishedContentItem.ds_id]">
+                                        <li *ngIf="nextHostory.ds_id != publishedContentItem.ds_id">
+                                            <a [href]="'/s/' + nextHostory.ds_id" target="_blank"> {{nextHostory.meta.title}} </a>
+                                            <span>
+                                                {{'content.updated' | translate}}:
+                                                {{getCorrectDateFormat(nextHostory.created) | date:'HH:mm '}}
+                                                {{('months.' + (getCorrectDateFormat(nextHostory.created)| date:'MMM')) | translate}},
+                                                {{getCorrectDateFormat(nextHostory.created) | date: ' dd, y'}}
+                                            </span>
+                                        </li>
+                                    </ng-container>
+                                </ul>
+                            </div>
+
+                            <mat-spinner style="margin: 50px auto;" *ngIf="publishedContentItem.meta.origin.length && !openedContents[publishedContentItem.ds_id] "></mat-spinner>
+
+                        </mat-expansion-panel>
+
+                        <div class="text-center mt-3" *ngIf="seeMoreChecker">
+                            <div class="empty" *ngIf="seeMoreLoading">
+                                <div style="display: inline-block">
+                                    <mat-spinner></mat-spinner>
+                                </div>
+                            </div>
+                            <button [hidden]="seeMoreLoading" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="seeMore()">
+                                {{'wallet.see_more' | translate}}
+                            </button>
+                        </div>
+
+                    </mat-accordion>
+                </ng-container>
+            </mat-tab>
+
+            <!--TAB2-->
+            <mat-tab label="{{'content.drafts' | translate}}">
+                <ng-container *ngIf="!loading">
+                    <button *ngIf="drafts && drafts.length" color="primary" mat-raised-button type="submit" (click)="deleteAllDrafts()" class="mat-raised-button mat-primary delete-all-drafts mt-5">{{'content.delete_all_drafts' | translate}}</button>
+                    <div style="clear: both"></div>
+                    <div style="padding: 50px 5px;" class="main-container clearfix" *ngIf="drafts && drafts.length > 0;else no_content">
+                        <mat-card class="post closed clearfix" *ngFor="let oDraft of drafts; let index = index">
+                            <div class="card-info">
+                                <div class="title-space">
+                                    <span class="pointer" (click)="editDraft(oDraft.id)" style="font-weight: normal; font-size: 24px; margin-bottom: 24px;"> {{oDraft.title}} </span>
+                                    <div class="edit" style="float: right">
+                                        <a (click)="editDraft(oDraft.id)">
+                                            <i class="icon-edit"></i>
+                                        </a>
+                                        <a (click)="deleteDraft(oDraft.id, index)" class="delete-item">
+                                            <i class="icon-delete"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="date-space">
+                                    <i class="icon-uploaded"></i>
+                                    <span>
+                                        {{'content.created' | translate}}:
+                                        {{oDraft.lastModifiedDate * 1000 | date:'HH:mm '}}
+                                        {{('months.' + ((oDraft.lastModifiedDate * 1000) | date:'MMM') | translate)}},
+                                        {{(oDraft.lastModifiedDate * 1000) | date: ' dd, y'}}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </mat-card>
+                    </div>
+                </ng-container>
+            </mat-tab>
+
+        </mat-tab-group>
+
+    </div>
+</main>
+
+<ng-template #no_content>
+    <div class="empty">
+        <img src="/assets//no-materials.svg" alt="">
+        <p>{{'content.no_content' | translate}}</p>
+    </div>
+</ng-template>
+
+<ng-container *ngIf="loading">
+    <div class="empty">
+        <div style="display: inline-block">
+            <mat-spinner></mat-spinner>
+        </div>
+    </div>
+</ng-container>

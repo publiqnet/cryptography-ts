@@ -1,0 +1,23 @@
+<div class="vh-centered" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+</div>
+
+<div class="main-wrap" *ngIf="tagStories && tagStories.length && !loading">
+    <div class="inner-wrap-main">
+        <div class="main-wrap">
+            <app-article-card-list [articles]="tagStories" [hasSeparator]="false" [calculateViewCount]="false"></app-article-card-list>
+
+            <div class="text-center mt-3" *ngIf="seeMoreChecker">
+                <div class="empty" *ngIf="seeMoreLoading">
+                    <div style="display: inline-block">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                </div>
+
+                <button [hidden]="seeMoreLoading" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="viewMore()">
+                    {{'wallet.see_more' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

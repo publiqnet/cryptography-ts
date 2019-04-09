@@ -1,0 +1,7 @@
+<div class="tag-content">
+  <ul class="drop-nav">
+    <li class="drop-item" *ngFor="let tag of tags">
+      <a *ngIf="tag.name" (click)="tagListToggle(tag)">{{ tag.name }}</a>
+    </li>
+  </ul>
+</div>

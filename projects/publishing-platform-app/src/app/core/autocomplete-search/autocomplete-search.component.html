@@ -1,0 +1,86 @@
+<div class="autocomplete-full-width">
+    <form class="autocomplete-for autocomplete-center">
+        <mat-form-field class="autocomplete-full-width">
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let tagInput of tags" [selectable]="selectable"
+                          [removable]="removable" (removed)="remove(tagInput)">
+                    {{tagInput}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input matInput [attr.placeholder]="'core.search' | translate" aria-label="Search" #tagInput
+                       (keyup)='keyUp.next($event)'
+                       [matChipInputFor]="chipList"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       [matChipInputAddOnBlur]="addOnBlur"
+                       (matChipInputTokenEnd)="add($event)" value=""
+                       [matAutocomplete]="auto">
+            </mat-chip-list>
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
+                <ng-container *ngIf="filteredContent?.length > 0">
+                    <mat-option *ngFor="let content of filteredContent"
+                          [disabled]="(content.accounts_list || content.contents_list || content.publications_list)  && !content.more_accounts"
+                        [attr.data-is_account]="content.isAccount"
+                        [attr.data-is_content]="content.isContent"
+                        [attr.data-is_publication]="content.isPublication"
+                        [attr.data-more_contents]="content?.more_contents"
+                        [attr.data-more_accounts]="content?.more_accounts"
+                        [attr.data-more_publications]="content?.more_publications"
+                        [value]="content"
+                        [ngClass] = "(content.more_publications || content.more_accounts || content.more_contents) ? 'has_more_option' : ''"
+                        class="mat_option"
+                        #option>
+                            <div *ngIf="content.isAccount">
+                                <div *ngIf="content.accounts_list || content.more_accounts">
+                                    <span class="title">{{'core.people' | translate}}</span>
+                                    <span *ngIf="content.more_accounts" class="more_text">{{'core.more' | translate}}</span>
+                                </div>
+
+                                <div *ngIf="!content.more_accounts && !content.accounts_list">
+                                    <div class="avatar"
+                                        [ngStyle]="{'background-image':checkImageHashExist(content) ? 'url('+ content.meta.image_hash + ')' : 'none'}">
+                                        <span *ngIf="!checkImageHashExist(content)" class="vh-centered">{{content.shortName}}</span>
+                                    </div>
+                                    <span class="name">{{content.firstName}} {{content.lastName}}</span>
+                                </div>
+                            </div>
+                            <div *ngIf="content.isContent">
+                                <div *ngIf="content.contents_list || content.more_contents">
+                                    <span class="title">{{'core.story' | translate}}</span>
+                                    <span *ngIf="content.more_contents" class="more_text">{{'core.more' | translate}}</span>
+                                </div>
+                                <div *ngIf="!content.more_contents && !content.contents_list">
+                                    <div class="avatar"
+                                        [ngStyle]="{'background-image':checkContentImageHashExist(content) ? 'url('+ content.meta.thumbnail_hash+')' : 'none'}">
+                                        <span *ngIf="!checkContentImageHashExist(content)" class="vh-centered">{{ content.meta.title.substr(0, 1).toUpperCase() }}</span>
+                                    </div>
+                                    <span class="name">{{content.meta.title}}</span> |
+                                    <small>{{content.full_account?.firstName}} {{content.full_account?.lastName}}</small>
+                                </div>
+                            </div>
+                            <div *ngIf="content.isPublication">
+                                <div *ngIf="content.more_publications || content.publications_list">
+                                    <span class="title">{{'core.publication' | translate}}</span>
+                                    <span *ngIf="content.more_publications" class="more_text">{{'core.more' | translate}}</span>
+                                </div>
+                                <div *ngIf="!content.more_publications && !content.publications_list">
+                                    <div class="avatar"
+                                         [ngStyle]="{'background-image':checkPublicationImageExist(content) ? 'url('+ imagePath + content.logo +')' : 'none'}">
+                                        <span *ngIf="!checkPublicationImageExist(content)" class="vh-centered">{{ content.title.substr(0, 1).toUpperCase() }}</span>
+                                    </div>
+                                    <span class="name">{{content.title}}</span>
+                                </div>
+                            </div>
+                    </mat-option>
+                </ng-container>
+                <ng-container *ngIf="(currentTags.length && !filteredContent?.length) || (tagInput.value && !filteredContent?.length && contentReady)">
+                    <mat-option class="mat_option">
+                        <div>
+                            <span class="title">{{'core.data_not_found' | translate}}</span>
+                        </div>
+                    </mat-option>
+                </ng-container>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+</div>

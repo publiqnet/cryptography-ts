@@ -1,0 +1,118 @@
+
+.footer-wrap .inner-wrap {
+  width: 100%;
+  max-width: 1160px;
+  position: relative;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-wrap .line {
+  width: calc(100% - 10px);
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 1px;
+  background: #999999;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.footer-wrap .copyright {
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  flex: 2;
+}
+.footer-wrap .copyright p {
+  margin-bottom: 0;
+  font-weight: 300;
+  color: #979797;
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  text-align: center;
+}
+
+.footer-wrap .copyright a {
+  color: #979797;
+}
+
+.footer-wrap .copyright p.copy {
+  font-weight: bold;
+}
+
+.footer-wrap {
+  margin: 0;
+  padding: 25px 15px 50px;
+
+  &.gray {
+    background: #f0f0f0;
+  }
+}
+
+.content-wrap {
+  position: relative;
+}
+
+.footer-wrap .inner-wrap {
+  padding-top: 40px;
+}
+
+.footer-wrap .footer-navigation {
+  display: block;
+  text-align: center;
+}
+
+.footer-wrap .footer-navigation a,
+.footer-wrap .footer-navigation span {
+  font-size: 12px;
+  font-family: Open Sans;
+  font-weight: 700;
+  margin: 0 8px;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.footer-wrap .footer-navigation a,
+.footer-wrap .footer-navigation span {
+  font-size: 12px;
+  font-family: Open Sans;
+  font-weight: 700;
+  margin: 0 8px;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.footer-wrap .copyright .social-icon {
+  display: inline-block;
+  margin: 0 10px 20px 10px;
+  font-size: 18px;
+}
+
+.footer-wrap .copyright a {
+  color: #ccc;
+}
+
+.footer-wrap .copyright .social-icon {
+  display: inline-block;
+  margin: 0 10px 20px 10px;
+  font-size: 18px;
+}
+
+.footer-wrap .copyright p.copy {
+  font-weight: bold;
+}
+.language{
+  font-family: "Open Sans", sans-serif;
+}
+@media screen and (max-width: 768px){
+  .language{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .footer-wrap .inner-wrap{
+    flex-direction: column;
+  }
+}

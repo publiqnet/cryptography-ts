@@ -1,0 +1,140 @@
+.newstory-submission{
+  position: absolute;
+  width: 100%;
+  max-width: 600px;
+  top: 50%;
+  left: 50%;
+  padding: 38px 40px;
+  transform: translate(-50%, -50%);
+
+}
+.submit-story{
+  font-family: "Open Sans", sans-serif;
+  padding: 0 15px;
+}
+.boost{
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  h2{
+    display: flex;
+    flex-direction: column;
+    margin-left: 24px;
+    b{
+      font-weight: 400;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    span{
+      font-size: 12px;
+    }
+  }
+}
+.button-toggle {
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: scroll;
+  padding: 5px 3px;
+
+  .mat-button-toggle-checked button{
+    background-color: #ffffff;
+    border-radius: 2px;
+    font-weight: 600;
+    color: #3366FF;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.30);
+    cursor: default;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+}
+.mat-button-toggle-group{
+  box-shadow: none;
+  background: #F8F8F8;
+  border-radius: 2px;
+  overflow: visible;
+  width: 100%;
+}
+mat-button-toggle.button-toggle-items {
+  width: 33.333%;
+
+  .mat-button-toggle-button {
+    display: inline-block;
+    padding: 0px 27px;
+    height: 40px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+.boost-slider{
+  position: relative;
+  margin: 20px 0 10px;
+  p{
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    span{
+      font-size: 10px;
+      color: #757575;
+    }
+  }
+}
+.will-spend{
+  background: rgba(51,102,255,0.08);
+  border: 1px solid #C0CEFE;
+  border-radius: 2px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  p{
+    font-size: 14px;
+    color: #4C4C4C;
+    letter-spacing: 0;
+    line-height: 20px;
+  }
+}
+.total{
+  font-size: 14px;
+  color: #4C4C4C;
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 0;
+}
+b{
+  font-weight: bold;
+}
+.button-space{
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  button{
+    font-size: 16px;
+    &:focus{
+      outline: none;
+    }
+    &:first-child{
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    &:last-child{
+      color: #757575;
+    }
+  }
+}
+@media screen and (max-width: 767px){
+  .submit-story{
+    padding: 0;
+  }
+}
+

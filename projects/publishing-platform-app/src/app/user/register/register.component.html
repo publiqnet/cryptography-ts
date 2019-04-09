@@ -1,0 +1,36 @@
+<mat-card class="centered" *ngIf="formView === 'registerForm'">
+    <mat-card-title>{{'user.join' | translate}}</mat-card-title>
+    <mat-card-subtitle>{{'user.pleaser_enter_to_join' | translate}}</mat-card-subtitle>
+
+    <mat-card-content>
+        <form class="form" novalidate (ngSubmit)="register()" [formGroup]="registerForm">
+            <mat-form-field class="full-width">
+                <input matInput formControlName="email" placeholder="{{'user.email_address' | translate}}" required/>
+            </mat-form-field>
+
+            <div class="warning">
+                <app-control-message class="mb-4 h6" [control]="registerForm.controls['email']"></app-control-message>
+            </div>
+
+            <div class="warning">
+                <app-control-message [control]="registerForm"></app-control-message>
+            </div>
+
+            <mat-card-actions class="ml-0 mt-2">
+                <button mat-raised-button color="primary" [disabled]="!registerForm.valid" type="submit">{{'user.continue' | translate}}
+                </button>
+            </mat-card-actions>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+
+<mat-card class="centered" *ngIf="formView === 'successMessage'">
+    <mat-card-content>
+        {{'user.please_check_email' | translate}}
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="formView === ''">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
+</mat-card>
