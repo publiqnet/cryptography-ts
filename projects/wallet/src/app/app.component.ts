@@ -54,10 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
             // Start watch when time is up.
             this.userIdle.onTimeout().subscribe(() => {
-                // if (this.accountService.loggedIn()) {
-                //     this.accountService.automaticallyLoggedOut = true;
-                //     this.accountService.logout();
-                // }
+                if (this.accountService.loggedIn()) {
+                    this.accountService.autoLogOut = true;
+                    this.accountService.logout();
+                }
             });
 
             this.notificationService.message.subscribe(data => {

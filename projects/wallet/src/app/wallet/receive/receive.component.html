@@ -1,31 +1,31 @@
-<mat-card class="centered flex-column flex-md-row" *ngIf="accountId">
-    <div style="width: 100%">
-        <div class="recovery-header">
-            <mat-card-title>Receive PBQ</mat-card-title>
-        </div>
-        <div class="small-conainer">
-            <div>
-                <div class="simple-text receive-description mt-4">In order to receive PBQ tokens from another user
-                    you must provide them with your Address:
-                    <div>
-                        <span class="acc-id">{{accountId}}</span>
-                    </div>
-                </div>
-                <div class="simple-text bottom-text">You can see your transactions by <a routerLink="/wallet/transactions">clicking
-                    here</a>.
-                </div>
+<div class="inner-form" *ngIf="accountId">
+  <div class="small-container">
+    <div>
+      <h2>Your address can also be known as you public key. It is what you share with people so they can send you
+        tokens.</h2>
 
-            </div>
-            <img class="mt-4 mb-4"
-                 src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{accountId}}&choe=UTF-8&chld=L|1">
+      <div class="copy-address-input">
+        <span>Your address</span>
+        <label class="acc-parent">
+          <input disabled class="acc-id" value="{{accountId}}">
+          <span class="copy-btn" (click)="copy(accountId)">
+              <img src="../../../assets/copy.svg" alt="copy">
+          </span>
+        </label>
 
-        </div>
-
-
-    </div>
-    <div class="chartImage d-flex align-items-center justify-content-center" *ngIf="false">
-        <img class="ml-md-3 mx-auto mt-5"
-             src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{accountId}}&choe=UTF-8&chld=L|1">
+      </div>
     </div>
 
-</mat-card>
+    <div class="qr-code-parent mr-0">
+      <img class="qr-code-img"
+           src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{accountId}}&choe=UTF-8&chld=L|1">
+    </div>
+
+  </div>
+
+  <div class="chartImage d-flex align-items-center justify-content-center" *ngIf="false">
+    <img class="ml-md-3 mx-auto mt-5"
+         src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{accountId}}&choe=UTF-8&chld=L|1">
+  </div>
+
+</div>

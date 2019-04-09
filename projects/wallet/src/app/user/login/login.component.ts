@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public authStep = TokenCheckStatus.Init;
 
   constructor(
-    private accountService: AccountService,
+    public accountService: AccountService,
     private oauthService: OauthService,
     public notificationService: NotificationService,
     private errorService: ErrorService,

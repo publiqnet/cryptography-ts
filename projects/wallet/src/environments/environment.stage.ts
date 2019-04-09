@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   backend: 'https://stage-mainnet-wallet-api.publiq.network',
   oauth_backend: 'https://stage-mainnet-oauth.publiq.network',
   explorerAddress: 'https://explorer.publiq.network',

@@ -52,23 +52,5 @@ export class WalletService {
     const signTransfer: any = this.cryptService.getSignTransfer(this.oauthService.brainKey, publicKey, amount, memo);
 
     return this.httpHelperService.customCall(HttpMethodTypes.post, environment.blockchain_api_url, signTransfer.toJson());
-
-    // .subscribe(data => {
-    //
-    //   const dataModel = createInstanceFromJson(data);
-    //   console.log(dataModel);
-    //
-    //   if (dataModel.constructor === PubliqDone) {
-    //     this.transferDataChanged.next(data);
-    //   } else {
-    //     this.errorService.handleError('transfer_failed',
-    //       {
-    //         status: 409,
-    //         error: 'transfer_failed'
-    //       }, this.blockchainApiUrl);
-    //   }
-    // },
-    // error => this.errorService.handleError('transfer error', error, this.blockchainApiUrl));
-    console.log('signTransfer - ', signTransfer);
   }
 }

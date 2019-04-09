@@ -7,124 +7,102 @@ mat-card.centered {
   min-height: 190px;
   padding: 0 30px 30px 30px;
   margin: 10vh auto;
-
-  .small-conainer{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  mat-card-title {
-    margin-bottom: 0;
+}
+.acc-parent{
+  max-width: 460px;
+  width: 100%;
+  position: relative;
+}
+.inner-form{
+  max-width: 690px;
+  margin: 0 auto;
+  padding: 0 30px 35px;
+  h2{
     font-size: 16px;
+    color: #565A60;
+    font-weight: 300;
+    margin: 0 0 20px;
+    line-height: 1.4;
   }
 
-  .receive-description {
-    margin-bottom: 15px;
-
-    div{
-      padding: 10px;
-      border: 1px solid #9A9A9A;
-      border-radius: 5px;
-      margin-top: 47px;
-      min-height: 35px;
-      font-size: 16px;
-      line-height: 26px;
+  .small-container{
+    display: flex;
+    display: flex;
+    >div{
+      margin-right: 20px;
     }
+  }
+
+  .copy-address-input{
     .acc-id {
-      word-break: break-all;
+      //word-break: break-all;
       width: 100%;
       display: inline-block;
-
-    }
-  }
-
-  img {
-    display: block;
-    width: 100%;
-    max-width: 200px;
-  }
-
-}
-
-.recovery-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(0,0,0,.32);
-  width: 100%;
-  height: 55px;
-  text-transform: uppercase;
-
-  mat-card-title /deep/ {
-    font-weight: 700 !important;
-  }
-
-  button{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    border-color: transparent!important;
-
-    background: none;
-    border: none;
-    height: 40px;
-    width: 38px;
-    cursor: pointer;
-    &:focus{
-      outline: none;
-    }
-    .close-btn{
+      border: none;
+      min-height: 45px;
+      padding:15px 35px 15px 15px;
+      background: #ECF0F3;
+      border-radius: 5px;
+      font-size: 15px;
+      color: #1F2742;
       position: relative;
-      width: 20px;
-      height: 20px;
+      word-break: break-all;
+      line-height: 1.4;
 
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+    span{
+      font-size: 14px;
+      color: #2B2B2B;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .copy-btn{
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      background-color: #ECF0F3;
+      border-radius: 5px;
+      cursor: pointer;
+      img{
+        width: 24px;
+      }
+    }
+
+  }
+  .qr-code-parent{
+    flex: 0 0 145px;
+  }
+  .qr-code-img{
+    width: 145px;
+    height: 145px;
+    object-fit: contain;
   }
 }
-
-.close-span:nth-of-type(1){
-  transform: rotate(45deg);
-  width: 20px;
-  height: 1px;
-  background-color: gray;
-  position: absolute;
-  bottom: 0;
-}
-.close-span:nth-of-type(2){
-  transform: rotate(-45deg);
-  width: 20px;
-  height: 1px;
-  background-color: gray;
-  position: absolute;
-  bottom: 0;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.simple-text {
-  max-width: 700px;
-  width: 100%;
-  font-size: 14px;
-  color: #242424;
-
-  span {
-    font-weight: 700;
-  }
-
-  a {
-    font-weight: 700;
-  }
-}
-.bottom-text{
-  font-size: 12px;
-}
-@media screen and (max-width: 560px) {
-  mat-card {
-    box-shadow: none!important;
+@media screen and (max-width: 767px){
+  .inner-form{
+    .small-container{
+      flex-direction: column-reverse;
+      align-items: center;
+      .qr-code-img{
+        margin-bottom: 25px;
+      }
+      >div{
+        margin-right: 0;
+      }
+    }
+    >div{
+      margin: 0;
+    }
+    .acc-parent {
+      max-width: 100%;
+    }
   }
 }

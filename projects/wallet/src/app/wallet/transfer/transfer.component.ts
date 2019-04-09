@@ -1,4 +1,4 @@
-import { Component, Inject, isDevMode, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, Inject, isDevMode, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { AccountService } from '../../core/services/account.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -31,6 +31,9 @@ export class TransferComponent implements OnInit, OnDestroy {
     public loading = false;
     amountErrorMessage = '';
     globalProperties;
+    receiveTab = true;
+    transferTab = false;
+    @ViewChild('accordionTab') accordionTabRef: ElementRef;
 
     private balanceSubscription: Subscription;
     private transferSubscription: Subscription;
@@ -82,30 +85,6 @@ export class TransferComponent implements OnInit, OnDestroy {
                     console.log('loadRpcAccount----', data.message);
                 }
             });
-
-            // this.transferSubscription = this.walletService.transferDataChanged.subscribe(data => {
-            //     this.loading = false;
-            //     this.notificationService.success('The transaction was successful');
-            //     this.router.navigate(['/wallet/transactions']);
-            // });
-
-            // balance subscription
-            // this.balance = this.accountService.getBalance();
-            // this.balanceSubscription = this.accountService.balanceChanged.subscribe((balance: number) => (this.balance = balance));
-            //
-            // this.globalProperties = this.accountService.getGlobalProperties();
-            // if (!this.globalProperties) {
-            //     if (this.wsService.isWsConnectedData) {
-            //         this.accountService.loadGlobalProperties();
-            //     }
-            // } else {
-            //     this.transferFee = this.calcTransferPBQFee();
-            // }
-            //
-            // this.globalPropertiesSubscription = this.accountService.globalPropertiesChanged.subscribe(data => {
-            //     this.globalProperties = data;
-            //     this.transferFee = this.calcTransferPBQFee();
-            // });
         }
 
     }
@@ -123,6 +102,21 @@ export class TransferComponent implements OnInit, OnDestroy {
                 updateOn: 'change'
             })
         });
+    }
+
+    onActiveAccordion() {
+      this.receiveTab = !this.receiveTab;
+      this.transferTab = false;
+    }
+
+    onActiveAccordion1() {
+      this.receiveTab = false;
+      this.transferTab = !this.transferTab;
+      this.accordionTabRef.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      });
+
     }
 
     validateAmount(control: FormControl) {
@@ -157,30 +151,6 @@ export class TransferComponent implements OnInit, OnDestroy {
           //   };
           // }
         }
-        // console.log(amountData, this.accountService.accountInfo.balance);
-
-
-        // let tmpArr;
-        // if (amount) {
-        //     tmpArr = amount.split('.');
-        // }
-        //
-        // if (amount <= 0 || (tmpArr && tmpArr.length == 2 && tmpArr[1].length > 8) || (tmpArr && tmpArr.length > 2)) {
-        //     return {
-        //         invalidAmount: {
-        //             parsedAmount: amount
-        //         }
-        //     };
-        // } else if (this.calcPBQ(amount) > this.balance - this.calcPBQ(this.transferFee)) {
-        //     this.amountErrorMessage = this.errorService.getError('ins_invalid_amount_error');
-        //     return {
-        //         balanceExceeded: {
-        //             parsedAmount: amount
-        //         }
-        //     };
-        // } else {
-        //     this.amountErrorMessage = '';
-        // }
         return null;
     }
 
@@ -210,7 +180,8 @@ export class TransferComponent implements OnInit, OnDestroy {
     }
 
     transfer() {
-        if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) > (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
+        if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) >
+            (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
             this.notificationService.error(this.errorService.getError('invalid_amount_error'));
             return;
         }
@@ -227,7 +198,7 @@ export class TransferComponent implements OnInit, OnDestroy {
             if (isValidData.success) {
                 this.loading = false;
                 this.notificationService.success('The transaction was successful');
-                this.router.navigate(['/wallet/transactions']);
+                this.transferTab = false;
             } else {
                 this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
             }
@@ -254,10 +225,10 @@ export class TransferComponent implements OnInit, OnDestroy {
 
     openConfirmDialog() {
         const message = `
-            <div class="pbq-div">Are you sure you want to make this transaction?</div>
-            <div class="pbq-divs"> <span>PBQ Amount: </span><span>${this.amount}</span> </div>
-            <div class="pbq-divs"> <span>Recipient Public Key: </span><span>${this.public_key}</span></div>
-            <div class="pbq-divs"> <span>Transaction Fee: </span><span>${this.transferFee} PBQ</span></div>
+            <!--<div class="pbq-div">Are you sure you want to make this transaction?</div>-->
+            <div class="pbq-divs"> <span>Amount: </span><span>${this.amount}</span> </div>
+            <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
+            <div class="pbq-divs"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
         `;
         this.dialogService.openConfirmDialog('transfer-confirmation', 'Confirm Your Transfer', message, {}).subscribe(data => {
             if (data) {

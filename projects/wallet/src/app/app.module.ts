@@ -16,6 +16,7 @@ import { UserIdleModule } from './core/models/angular-user-idle/user-idle.module
 import { HttpHelperService, OauthService } from 'helper-lib';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ClipboardModule } from 'ngx-clipboard';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -37,6 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     CoreModule,
     AppRoutingModule,
+    ClipboardModule,
     UserModule,
     WalletModule,
     Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),

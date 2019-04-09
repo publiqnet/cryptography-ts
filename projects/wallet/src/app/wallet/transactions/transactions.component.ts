@@ -16,7 +16,7 @@ import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 })
 export class TransactionsComponent implements OnInit, OnDestroy {
 
-  readonly displayedColumns = ['id', 'date', 'from_to', 'total'];
+  readonly displayedColumns = ['id', 'from_to', 'date', 'total'];
   account: Account;
   loading = false;
   readonly explorerAddress = environment.explorerAddress;

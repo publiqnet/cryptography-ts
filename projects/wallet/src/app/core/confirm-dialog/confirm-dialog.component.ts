@@ -244,7 +244,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
       this.passwordVerified = this.recoveryPhrasechecking = true;
       this.loading = false;
     }
-    console.log('action: ', this.action, this.oauthService.brainKey);
   }
 
   shuffle(array) {
@@ -286,7 +285,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
         });
       } else {
         this.incorrectRecoverPhrase = this.errorService.getError('incorrect_recover_phrase');
-        console.log('incorrectRecoverPhrase', this.incorrectRecoverPhrase);
         this.loading = false;
       }
     }
@@ -309,7 +307,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
 
   confirmRecoveyPhraseSeen() {
     this.oauthService.setBrainKeySeen(this.oauthService.brainKey).subscribe(data => {
-      console.log(data);
       this.decryptedBrainKey = '';
       this.onCloseConfirm();
 

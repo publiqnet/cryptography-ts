@@ -1,11 +1,9 @@
-<div class="content-wrap footer-wrap mt-4">
+<div class="content-wrap footer-wrap" [ngClass]="{'authenticated-footer': accountService.loggedIn()}">
     <div class="line"></div>
     <div class="inner-wrap">
 
         <div class="copyright">
-            <p class="copy">© 2019 PUBLIQ
-            </p>
-            <mat-icon>copyright</mat-icon>
+            <p class="copy">© 2019 PUBLIQ</p>
         </div>
     </div>
 </div>

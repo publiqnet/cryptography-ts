@@ -146,8 +146,6 @@ export class CryptService {
         package: signedTransactionObj
       });
 
-      console.log('request: ', brotcastObj.toJson());
-
       return brotcastObj;
   }
 
