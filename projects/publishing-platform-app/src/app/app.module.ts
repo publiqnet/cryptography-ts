@@ -40,7 +40,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
     declarations: [AppComponent],
     imports: [
-        BrowserModule.withServerTransition({ appId: 'publishing-platform' }),
+        BrowserModule.withServerTransition({ appId: 'publishing-platform-app' }),
         TransferHttpCacheModule,
         FormsModule,
         AppRoutingModule,
