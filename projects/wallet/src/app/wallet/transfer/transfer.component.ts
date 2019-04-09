@@ -14,7 +14,6 @@ import { CryptService } from '../../core/services/crypt.service';
 import { UtilsService } from 'shared-lib';
 // import { WsService } from '../../core/services/ws.service';
 
-
 @Component({
     selector: 'app-transfer',
     templateUrl: './transfer.component.html',
@@ -87,6 +86,12 @@ export class TransferComponent implements OnInit, OnDestroy {
             });
         }
 
+        if (typeof window.initializeLettersAnimation !== 'undefined') {
+            clearInterval(window.initializeLettersAnimation.interval);
+            window.initializeLettersAnimation.interval = null;
+            const animContainer = document.querySelector('.animation-container');
+            if (animContainer) { animContainer.remove(); }
+        }
     }
 
     buildForm() {

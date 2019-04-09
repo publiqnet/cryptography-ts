@@ -16,5 +16,51 @@
 </head>
 <body>
 <app-root></app-root>
+<script>
+function initializeLettersAnimation() {
+    var app = {
+
+        chars: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'ճ', 'դ', 'գ', 'վ', 'ո', 'ֆ', 'ծ', 'զ', 'ր', '会', '联', '伴', '作', '团', '用', '式', '新', '者', '我', '员', '的', '各'],
+
+        init: function () {
+            app.container = document.createElement('div');
+            app.container.className = 'animation-container';
+            document.body.appendChild(app.container);
+            window.initializeLettersAnimation.interval = window.setInterval(app.add, 100);
+        },
+
+        add: function () {
+            var element = document.createElement('span');
+            app.container.appendChild(element);
+            app.animate(element);
+        },
+
+        animate: function (element) {
+            var character = app.chars[Math.floor(Math.random() * app.chars.length)];
+            var duration = Math.floor(Math.random() * 15) + 1;
+            var offset = Math.floor(Math.random() * (100 - duration * 2)) + 3;
+            var size = 10 + (15 - duration);
+            element.style.cssText = 'right:' + offset + 'vw; font-size:' + size + 'px;animation-duration:' + duration + 's';
+            element.innerHTML = character;
+            window.setTimeout(app.remove, duration * 1000, element);
+        },
+
+        remove: function (element) {
+            element.parentNode.removeChild(element);
+        }
+
+    };
+
+    console.log(window.initializeLettersAnimation.interval);
+
+    if(!window.initializeLettersAnimation.interval)
+        app.init();
+
+}
+window.initializeLettersAnimation.interval = null;
+
+document.addEventListener('DOMContentLoaded', window.initializeLettersAnimation);
+
+</script>
 </body>
 </html>
