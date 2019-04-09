@@ -9,14 +9,14 @@
   </div>
 
   <!--for receive-->
-  <div class="centered security-form inner-pages active-tab" [class.active-tab]="activeAcc"  *ngIf="!loading">
+  <div class="centered security-form inner-pages active-tab" [class.active-tab]="receiveTab" *ngIf="!loading">
     <div class="accordion-title" (click)="onActiveAccordion()" >
       <h1>Receive</h1>
     </div>
     <app-receive></app-receive>
   </div>
     <!--for send-->
-  <div class="centered security-form inner-pages" [class.active-tab]="activeAcc1" *ngIf="!loading">
+  <div class="centered security-form inner-pages" [class.active-tab]="transferTab" *ngIf="!loading">
     <div class="accordion-title" (click)="onActiveAccordion1(accordionTab)" >
       <h1>Send</h1>
     </div>

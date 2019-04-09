@@ -31,8 +31,8 @@ export class TransferComponent implements OnInit, OnDestroy {
     public loading = false;
     amountErrorMessage = '';
     globalProperties;
-    activeAcc = true;
-    activeAcc1 = false;
+    receiveTab = true;
+    transferTab = false;
     @ViewChild('accordionTab') accordionTabRef: ElementRef;
 
     private balanceSubscription: Subscription;
@@ -85,30 +85,6 @@ export class TransferComponent implements OnInit, OnDestroy {
                     console.log('loadRpcAccount----', data.message);
                 }
             });
-
-            // this.transferSubscription = this.walletService.transferDataChanged.subscribe(data => {
-            //     this.loading = false;
-            //     this.notificationService.success('The transaction was successful');
-            //     this.router.navigate(['/wallet/transactions']);
-            // });
-
-            // balance subscription
-            // this.balance = this.accountService.getBalance();
-            // this.balanceSubscription = this.accountService.balanceChanged.subscribe((balance: number) => (this.balance = balance));
-            //
-            // this.globalProperties = this.accountService.getGlobalProperties();
-            // if (!this.globalProperties) {
-            //     if (this.wsService.isWsConnectedData) {
-            //         this.accountService.loadGlobalProperties();
-            //     }
-            // } else {
-            //     this.transferFee = this.calcTransferPBQFee();
-            // }
-            //
-            // this.globalPropertiesSubscription = this.accountService.globalPropertiesChanged.subscribe(data => {
-            //     this.globalProperties = data;
-            //     this.transferFee = this.calcTransferPBQFee();
-            // });
         }
 
     }
@@ -129,13 +105,13 @@ export class TransferComponent implements OnInit, OnDestroy {
     }
 
     onActiveAccordion() {
-      this.activeAcc = !this.activeAcc;
-      this.activeAcc1 = false;
+      this.receiveTab = !this.receiveTab;
+      this.transferTab = false;
     }
 
     onActiveAccordion1() {
-      this.activeAcc = false;
-      this.activeAcc1 = !this.activeAcc1;
+      this.receiveTab = false;
+      this.transferTab = !this.transferTab;
       this.accordionTabRef.nativeElement.scrollIntoView({
         behavior: 'smooth',
         block: 'end'
@@ -175,30 +151,6 @@ export class TransferComponent implements OnInit, OnDestroy {
           //   };
           // }
         }
-        // console.log(amountData, this.accountService.accountInfo.balance);
-
-
-        // let tmpArr;
-        // if (amount) {
-        //     tmpArr = amount.split('.');
-        // }
-        //
-        // if (amount <= 0 || (tmpArr && tmpArr.length == 2 && tmpArr[1].length > 8) || (tmpArr && tmpArr.length > 2)) {
-        //     return {
-        //         invalidAmount: {
-        //             parsedAmount: amount
-        //         }
-        //     };
-        // } else if (this.calcPBQ(amount) > this.balance - this.calcPBQ(this.transferFee)) {
-        //     this.amountErrorMessage = this.errorService.getError('ins_invalid_amount_error');
-        //     return {
-        //         balanceExceeded: {
-        //             parsedAmount: amount
-        //         }
-        //     };
-        // } else {
-        //     this.amountErrorMessage = '';
-        // }
         return null;
     }
 
@@ -228,7 +180,8 @@ export class TransferComponent implements OnInit, OnDestroy {
     }
 
     transfer() {
-        if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) > (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
+        if (UtilsService.calcAmount(this.amount) <= 0 || UtilsService.calcAmount(this.amount) >
+            (UtilsService.calcAmount(this.accountService.accountInfo.balance) - UtilsService.calcAmount(this.transferFee))) {
             this.notificationService.error(this.errorService.getError('invalid_amount_error'));
             return;
         }
@@ -245,7 +198,7 @@ export class TransferComponent implements OnInit, OnDestroy {
             if (isValidData.success) {
                 this.loading = false;
                 this.notificationService.success('The transaction was successful');
-                this.router.navigate(['/wallet/transactions']);
+                this.transferTab = false;
             } else {
                 this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
             }
