@@ -84,8 +84,12 @@ export class TransferComponent implements OnInit, OnDestroy {
                     console.log('loadRpcAccount----', data.message);
                 }
             });
-        }
 
+            this.destroyLettersAnimation();
+        }
+    }
+
+    destroyLettersAnimation() {
         if (typeof window.initializeLettersAnimation !== 'undefined') {
             clearInterval(window.initializeLettersAnimation.interval);
             window.initializeLettersAnimation.interval = null;

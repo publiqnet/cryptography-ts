@@ -229,7 +229,9 @@
               "projects/wallet-app/src/assets/css/publiq.icons.css",
               "projects/wallet-app/src/assets/css/reset.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "projects/wallet-app/src/assets/js/letters-animation.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
