@@ -9,7 +9,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateUniversalLoader } from 'shared-lib';
 
 export function translateFactory() {
-  return new TranslateUniversalLoader('./dist/wallet/assets/i18n', '.json');
+  return new TranslateUniversalLoader('./dist/wallet-app/assets/i18n', '.json');
 }
 
 @NgModule({
