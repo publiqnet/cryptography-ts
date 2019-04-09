@@ -170,13 +170,13 @@
 .trans-confirm{
   mat-icon{
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -10px;
+    right: -10px;
   }
   .transaction-btns{
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 90%;
     margin: 25px auto 0;
     button:first-child{
       margin-right: 10px;
