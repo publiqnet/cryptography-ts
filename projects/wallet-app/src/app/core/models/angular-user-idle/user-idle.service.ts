@@ -1,10 +1,9 @@
 import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
 import { Observable, Subject, Subscription, merge, fromEvent, from, interval, timer, of } from 'rxjs';
-import { bufferTime, filter, switchMap, takeUntil, tap, finalize, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { bufferTime, filter, switchMap, takeUntil, tap, finalize, distinctUntilChanged, map, take, scan } from 'rxjs/operators';
 
 import { UserIdleServiceConfig } from './user-idle.config';
 import { isPlatformBrowser } from '@angular/common';
-import { scan } from 'rxjs/internal/operators';
 
 /**
  * User's idle service.
