@@ -3,9 +3,9 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "publishing-platform-app": {
-      "root": "projects/publishing-platform-app/",
-      "sourceRoot": "projects/publishing-platform-app/src",
+    "publishing-platform": {
+      "root": "projects/publishing-platform/",
+      "sourceRoot": "projects/publishing-platform/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
@@ -14,20 +14,20 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "outputPath": "dist/publishing-platform-app",
-            "index": "projects/publishing-platform-app/src/index.html",
-            "main": "projects/publishing-platform-app/src/main.ts",
-            "polyfills": "projects/publishing-platform-app/src/polyfills.ts",
-            "tsConfig": "projects/publishing-platform-app/tsconfig.app.json",
+            "outputPath": "dist/publishing-platform",
+            "index": "projects/publishing-platform/src/index.html",
+            "main": "projects/publishing-platform/src/main.ts",
+            "polyfills": "projects/publishing-platform/src/polyfills.ts",
+            "tsConfig": "projects/publishing-platform/tsconfig.app.json",
             "assets": [
-              "projects/publishing-platform-app/src/favicon.ico",
-              "projects/publishing-platform-app/src/assets"
+              "projects/publishing-platform/src/favicon.ico",
+              "projects/publishing-platform/src/assets"
             ],
             "styles": [
-              "projects/publishing-platform-app/src/styles.scss",
-              "projects/publishing-platform-app/src/assets/css/publiq.icons.css",
-              "projects/publishing-platform-app/src/assets/css/reset.css",
-              "projects/publishing-platform-app/src/assets/css/icon.css",
+              "projects/publishing-platform/src/styles.scss",
+              "projects/publishing-platform/src/assets/css/publiq.icons.css",
+              "projects/publishing-platform/src/assets/css/reset.css",
+              "projects/publishing-platform/src/assets/css/icon.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/froala-editor/css/froala_editor.pkgd.css"
             ],
@@ -37,11 +37,11 @@
               "node_modules/froala-editor/js/froala_editor.pkgd.min.js",
               "node_modules/froala-editor/js/languages/ja.js",
               "node_modules/hammerjs/hammer.min.js",
-              "projects/publishing-platform-app/src/assets/js/swiper.min.js",
-              "projects/publishing-platform-app/src/assets/js/masonry.pkgd.min.js",
-              "projects/publishing-platform-app/src/assets/js/isotope.pkgd.min.js",
-              "projects/publishing-platform-app/src/assets/js/imagesloaded.pkgd.min.js",
-              "projects/publishing-platform-app/src/assets/js/share_buttons.js"
+              "projects/publishing-platform/src/assets/js/swiper.min.js",
+              "projects/publishing-platform/src/assets/js/masonry.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/isotope.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/imagesloaded.pkgd.min.js",
+              "projects/publishing-platform/src/assets/js/share_buttons.js"
             ],
             "es5BrowserSupport": true
           },
@@ -49,8 +49,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/publishing-platform-app/src/environments/environment.ts",
-                  "with": "projects/publishing-platform-app/src/environments/environment.prod.ts"
+                  "replace": "projects/publishing-platform/src/environments/environment.ts",
+                  "with": "projects/publishing-platform/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -73,8 +73,8 @@
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "projects/publishing-platform-app/src/environments/environment.ts",
-                  "with": "projects/publishing-platform-app/src/environments/environment.stage.ts"
+                  "replace": "projects/publishing-platform/src/environments/environment.ts",
+                  "with": "projects/publishing-platform/src/environments/environment.stage.ts"
                 }
               ],
               "optimization": true,
@@ -99,34 +99,34 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "publishing-platform-app:build"
+            "browserTarget": "publishing-platform:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "publishing-platform-app:build:production"
+              "browserTarget": "publishing-platform:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "publishing-platform-app:build"
+            "browserTarget": "publishing-platform:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/publishing-platform-app/src/test.ts",
-            "polyfills": "projects/publishing-platform-app/src/polyfills.ts",
-            "tsConfig": "projects/publishing-platform-app/tsconfig.spec.json",
-            "karmaConfig": "projects/publishing-platform-app/karma.conf.js",
+            "main": "projects/publishing-platform/src/test.ts",
+            "polyfills": "projects/publishing-platform/src/polyfills.ts",
+            "tsConfig": "projects/publishing-platform/tsconfig.spec.json",
+            "karmaConfig": "projects/publishing-platform/karma.conf.js",
             "styles": [
-              "projects/publishing-platform-app/src/styles.css"
+              "projects/publishing-platform/src/styles.css"
             ],
             "scripts": [],
             "assets": [
-              "projects/publishing-platform-app/src/favicon.ico",
-              "projects/publishing-platform-app/src/assets"
+              "projects/publishing-platform/src/favicon.ico",
+              "projects/publishing-platform/src/assets"
             ]
           }
         },
@@ -134,8 +134,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/publishing-platform-app/tsconfig.app.json",
-              "projects/publishing-platform-app/tsconfig.spec.json"
+              "projects/publishing-platform/tsconfig.app.json",
+              "projects/publishing-platform/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -146,23 +146,23 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/server",
-            "main": "projects/publishing-platform-app/src/main.server.ts",
-            "tsConfig": "projects/publishing-platform-app/tsconfig.server.json"
+            "main": "projects/publishing-platform/src/main.server.ts",
+            "tsConfig": "projects/publishing-platform/tsconfig.server.json"
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/publishing-platform-app/src/environments/environment.ts",
-                  "with": "projects/publishing-platform-app/src/environments/environment.prod.ts"
+                  "replace": "projects/publishing-platform/src/environments/environment.ts",
+                  "with": "projects/publishing-platform/src/environments/environment.prod.ts"
                 }
               ]
             },
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "projects/publishing-platform-app/src/environments/environment.ts",
-                  "with": "projects/publishing-platform-app/src/environments/environment.stage.ts"
+                  "replace": "projects/publishing-platform/src/environments/environment.ts",
+                  "with": "projects/publishing-platform/src/environments/environment.stage.ts"
                 }
               ]
             }
@@ -358,5 +358,5 @@
       }
     }
   },
-  "defaultProject": "publishing-platform-app"
+  "defaultProject": "publishing-platform"
 }
