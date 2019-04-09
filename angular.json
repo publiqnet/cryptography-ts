@@ -205,9 +205,9 @@
         }
       }
     },
-    "wallet": {
-      "root": "projects/wallet/",
-      "sourceRoot": "projects/wallet/src",
+    "wallet-app": {
+      "root": "projects/wallet-app/",
+      "sourceRoot": "projects/wallet-app/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
@@ -215,19 +215,19 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/wallet",
-            "index": "projects/wallet/src/index.html",
-            "main": "projects/wallet/src/main.ts",
-            "polyfills": "projects/wallet/src/polyfills.ts",
-            "tsConfig": "projects/wallet/tsconfig.app.json",
+            "outputPath": "dist/wallet-app",
+            "index": "projects/wallet-app/src/index.html",
+            "main": "projects/wallet-app/src/main.ts",
+            "polyfills": "projects/wallet-app/src/polyfills.ts",
+            "tsConfig": "projects/wallet-app/tsconfig.app.json",
             "assets": [
-              "projects/wallet/src/favicon.ico",
-              "projects/wallet/src/assets"
+              "projects/wallet-app/src/favicon.ico",
+              "projects/wallet-app/src/assets"
             ],
             "styles": [
-              "projects/wallet/src/styles.scss",
-              "projects/wallet/src/assets/css/publiq.icons.css",
-              "projects/wallet/src/assets/css/reset.css"
+              "projects/wallet-app/src/styles.scss",
+              "projects/wallet-app/src/assets/css/publiq.icons.css",
+              "projects/wallet-app/src/assets/css/reset.css"
             ],
             "scripts": [],
             "es5BrowserSupport": true
@@ -236,8 +236,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/wallet/src/environments/environment.ts",
-                  "with": "projects/wallet/src/environments/environment.prod.ts"
+                  "replace": "projects/wallet-app/src/environments/environment.ts",
+                  "with": "projects/wallet-app/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -260,8 +260,8 @@
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "projects/wallet/src/environments/environment.ts",
-                  "with": "projects/wallet/src/environments/environment.stage.ts"
+                  "replace": "projects/wallet-app/src/environments/environment.ts",
+                  "with": "projects/wallet-app/src/environments/environment.stage.ts"
                 }
               ],
               "optimization": true,
@@ -286,34 +286,34 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "wallet:build"
+            "browserTarget": "wallet-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "wallet:build:production"
+              "browserTarget": "wallet-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "wallet:build"
+            "browserTarget": "wallet-app:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/wallet/src/test.ts",
-            "polyfills": "projects/wallet/src/polyfills.ts",
-            "tsConfig": "projects/wallet/tsconfig.spec.json",
-            "karmaConfig": "projects/wallet/karma.conf.js",
+            "main": "projects/wallet-app/src/test.ts",
+            "polyfills": "projects/wallet-app/src/polyfills.ts",
+            "tsConfig": "projects/wallet-app/tsconfig.spec.json",
+            "karmaConfig": "projects/wallet-app/karma.conf.js",
             "styles": [
-              "projects/wallet/src/styles.css"
+              "projects/wallet-app/src/styles.css"
             ],
             "scripts": [],
             "assets": [
-              "projects/wallet/src/favicon.ico",
-              "projects/wallet/src/assets"
+              "projects/wallet-app/src/favicon.ico",
+              "projects/wallet-app/src/assets"
             ]
           }
         },
@@ -321,8 +321,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/wallet/tsconfig.app.json",
-              "projects/wallet/tsconfig.spec.json"
+              "projects/wallet-app/tsconfig.app.json",
+              "projects/wallet-app/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -333,23 +333,23 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/server",
-            "main": "projects/wallet/src/main.server.ts",
-            "tsConfig": "projects/wallet/tsconfig.server.json"
+            "main": "projects/wallet-app/src/main.server.ts",
+            "tsConfig": "projects/wallet-app/tsconfig.server.json"
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/wallet/src/environments/environment.ts",
-                  "with": "projects/wallet/src/environments/environment.prod.ts"
+                  "replace": "projects/wallet-app/src/environments/environment.ts",
+                  "with": "projects/wallet-app/src/environments/environment.prod.ts"
                 }
               ]
             },
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "projects/wallet/src/environments/environment.ts",
-                  "with": "projects/wallet/src/environments/environment.stage.ts"
+                  "replace": "projects/wallet-app/src/environments/environment.ts",
+                  "with": "projects/wallet-app/src/environments/environment.stage.ts"
                 }
               ]
             }

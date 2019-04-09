@@ -33,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({appId: 'wallet'}),
+    BrowserModule.withServerTransition({appId: 'wallet-app'}),
     HttpClientModule,
     BrowserAnimationsModule,
     CoreModule,
