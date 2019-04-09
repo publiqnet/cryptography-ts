@@ -17,7 +17,22 @@ mat-card {
     text-decoration: none;
   }
 }
-
+.positioned.position-top{
+  margin-top: 50px;
+}
+.autologout{
+  background: #FFFFFF;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 10vh auto 0;
+  padding: 30px 40px;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  line-height: 1.4;
+  font-size: 16px;
+  color: #565A60;
+}
 @media screen and (max-width: 560px) {
   mat-card {
     box-shadow: none !important;

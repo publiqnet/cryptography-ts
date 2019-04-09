@@ -105,7 +105,7 @@
           </div>
           <div class="pubkey" fxFlex.gt-xs="75%" fxFlex="100%">
             <!--<div class="public-key-view"><strong>{{account.publicKey}}</strong></div>-->
-            <input class="public-key-view" type="text" value="{{account.publicKey}}">
+            <input disabled class="public-key-view" type="text" value="{{account.publicKey}}">
             <span class="copy-btn" (click)="copy(account.publicKey)">
                 <img src="../../../assets/copy.svg" alt="copy">
             </span>
@@ -119,7 +119,7 @@
           </div>
           <div fxFlex.gt-xs="100%" fxFlex="100%">
             <div class="readonly-field" fxFlex="{{!oauthService.privateKeySaved ? '64%' : '100%'}}" fxFlex.lt-md="{{!oauthService.privateKeySaved ? '64%' : '100%'}}">
-              <input class="key-input" type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
+              <input class="key-input" type="password" disabled value="ub035e40d09c7797e3b04a49bc01948a8">
               <div class="show-hide-btn" (click)="showPrivateKey()">
                 <i [ngClass]="!showPrivateKeyOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
               </div>

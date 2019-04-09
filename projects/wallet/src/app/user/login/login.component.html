@@ -1,16 +1,17 @@
 <div class="session-page">
-  <div class="centered session-form" *ngIf="authStep == AuthStepStatusEnum.Init">
+  <!--accountService.autoLogOut-->
+  <div class="header-text autologout" *ngIf="accountService.autoLogOut">
+      <span>
+          Looks like you have left
+      </span>
+    <p>
+      We have logged you out to keep your wallet safe. To start working again, just log back in.
+    </p>
+  </div>
+  <div class="centered session-form positioned" [ngClass]="{'position-top':accountService.autoLogOut }" *ngIf="authStep == AuthStepStatusEnum.Init">
     <h1>Log in to PUBLIQ Wallet</h1>
     <h2>Enter you email to get authorization link.</h2>
 
-    <div class="header-text" *ngIf="accountService.autoLogOut">
-      <span>
-          Looks like you've left
-      </span>
-      <p>
-        We've logged you out to keep your Wallet safe. To start working again, just log back in.
-      </p>
-    </div>
 
     <div>
       <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
