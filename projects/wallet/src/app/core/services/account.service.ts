@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { ErrorService } from './error.service';
-import { CryptService } from './crypt.service';
 import { UtilsService } from 'shared-lib';
 import { Account } from './models/account';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { isPlatformBrowser } from '@angular/common';
+import { UserIdleService } from '../models/angular-user-idle/user-idle.service';
 
 @Injectable()
 export class AccountService {
 
   constructor(
     private httpHelperService: HttpHelperService,
-    private errorService: ErrorService,
-    private utilsService: UtilsService,
+    private userIdle: UserIdleService
   ) {}
 
   private accountInfoData: Account = null;
@@ -58,6 +55,7 @@ export class AccountService {
         map((userInfo: any) => {
           this.SetAccountInfo = userInfo;
           localStorage.setItem('auth', userInfo.token);
+          this.userIdle.resetTimer();
           return userInfo;
         }))
       ;

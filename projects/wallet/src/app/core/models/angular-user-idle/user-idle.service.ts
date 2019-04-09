@@ -1,8 +1,10 @@
 import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, merge, fromEvent, from, interval, timer, of } from 'rxjs';
+import { bufferTime, filter, switchMap, takeUntil, tap, finalize, distinctUntilChanged, map, take } from 'rxjs/operators';
 
 import { UserIdleServiceConfig } from './user-idle.config';
 import { isPlatformBrowser } from '@angular/common';
+import { scan } from 'rxjs/internal/operators';
 
 /**
  * User's idle service.
@@ -52,15 +54,15 @@ export class UserIdleService {
       this.ping = config.ping;
     }
 
-      // if (isPlatformBrowser(this.platformId)) {
-      //     // console.log('window console', window);
-      //     this.activityEvents$ = Observable.merge(
-      //         Observable.fromEvent(window, 'mousemove'),
-      //         Observable.fromEvent(window, 'resize'),
-      //         Observable.fromEvent(document, 'keydown'));
-      //
-      //     this.idle$ = Observable.from(this.activityEvents$);
-      // }
+      if (isPlatformBrowser(this.platformId)) {
+          // console.log('window console', window);
+          this.activityEvents$ = merge(
+              fromEvent(window, 'mousemove'),
+              fromEvent(window, 'resize'),
+              fromEvent(document, 'keydown'));
+
+          this.idle$ = from(this.activityEvents$);
+      }
 
   }
 
@@ -71,19 +73,19 @@ export class UserIdleService {
     /**
      * If any of user events is not active for idle-seconds when start timer.
      */
-    // this.idleSubscription = this.idle$
-    //   .bufferTime(5000)  // Starting point of detecting of user's inactivity
-    //   .filter(arr => !arr.length && !this.isInactivityTimer)
-    //   .switchMap(() => {
-    //     this.isInactivityTimer = true;
-    //     return Observable.interval(1000)
-    //       .takeUntil(Observable.merge(
-    //         this.activityEvents$,
-    //         Observable.timer(this.idle * 1000)
-    //           .do(() => this.timerStart$.next(true))))
-    //       .finally(() => this.isInactivityTimer = false);
-    //   })
-    //   .subscribe();
+    this.idleSubscription = this.idle$
+      .pipe(bufferTime(5000))  // Starting point of detecting of user's inactivity
+      .pipe(filter(arr => !arr.length && !this.isInactivityTimer))
+      .pipe(switchMap(() => {
+        this.isInactivityTimer = true;
+        return interval(1000)
+          .pipe(takeUntil(merge(
+            this.activityEvents$,
+            timer(this.idle * 1000)
+              .pipe(tap(() => this.timerStart$.next(true))))))
+          .pipe(finalize(() => this.isInactivityTimer = false));
+      }))
+      .subscribe();
 
     this.setupTimer(this.timeout);
     this.setupPing(this.ping);
@@ -110,10 +112,9 @@ export class UserIdleService {
    * @return {Observable<number>}
    */
   onTimerStart(): Observable<number> {
-    // return this.timerStart$
-    //   .distinctUntilChanged()
-    //   .switchMap(start => start ? this.timer$ : Observable.of(null));
-    return of(null);
+    return this.timerStart$
+      .pipe(distinctUntilChanged())
+      .pipe(switchMap(start => start ? this.timer$ : of(null)));
   }
 
   /**
@@ -121,13 +122,12 @@ export class UserIdleService {
    * @return {Observable<boolean>}
    */
   onTimeout(): Observable<boolean> {
-    // return this.timeout$
-    //   .filter(timeout => !!timeout)
-    //   .map(() => {
-    //     this.isTimeout = true;
-    //     return true;
-    //   });
-    return of(null);
+    return this.timeout$
+      .pipe(filter(timeout => !!timeout))
+      .pipe(map(() => {
+        this.isTimeout = true;
+        return true;
+      }));
   }
 
   getConfigValue(): UserIdleServiceConfig {
@@ -145,16 +145,16 @@ export class UserIdleService {
    * @param timeout Timeout in seconds.
    */
   private setupTimer(timeout: number) {
-    // this.timer$ = Observable.interval(1000)
-    //   .take(timeout)
-    //   .map(() => 1)
-    //   .scan((acc, n) => acc + n)
-    //   .map(count => {
-    //     if (count === timeout) {
-    //       this.timeout$.next(true);
-    //     }
-    //     return count;
-    //   });
+    this.timer$ = interval(1000)
+      .pipe(take(timeout))
+      .pipe(map(() => 1))
+      .pipe(scan((acc, n) => acc + n))
+      .pipe(map(count => {
+        if (count === timeout) {
+          this.timeout$.next(true);
+        }
+        return count;
+      }));
   }
 
   /**
@@ -164,6 +164,6 @@ export class UserIdleService {
    * @param {number} ping
    */
   private setupPing(ping: number) {
-    // this.ping$ = Observable.interval(ping * 1000).filter(() => !this.isTimeout);
+    this.ping$ = interval(ping * 1000).pipe(filter(() => !this.isTimeout));
   }
 }
