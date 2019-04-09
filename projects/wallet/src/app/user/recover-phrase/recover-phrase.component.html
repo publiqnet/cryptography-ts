@@ -105,7 +105,9 @@
           <div class="pubkey" fxFlex.gt-xs="75%" fxFlex="100%">
             <!--<div class="public-key-view"><strong>{{account.publicKey}}</strong></div>-->
             <input class="public-key-view" type="text" value="{{account.publicKey}}">
-            <span class="copy-btn"><img src="../../../assets/copy.svg" alt="copy"></span>
+            <span class="copy-btn" (click)="copy(account.publicKey)">
+                <img src="../../../assets/copy.svg" alt="copy">
+            </span>
           </div>
         </div>
 

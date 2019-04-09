@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { OauthService } from 'helper-lib';
+import { ClipboardService } from 'ngx-clipboard';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
     selector: 'app-recover',
@@ -29,6 +31,8 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
     constructor(public accountService: AccountService,
                 public oauthService: OauthService,
                 private router: Router,
+                private notificationService: NotificationService,
+                private _clipboardService: ClipboardService,
                 private errorService: ErrorService,
                 private dialogService: DialogService) {
 
@@ -118,6 +122,11 @@ export class RecoverPhraseComponent implements OnInit, OnDestroy {
             maxWidth: '600px',
             panelClass: 'modal-padding'
         });
+    }
+
+    copy(text: string) {
+      this._clipboardService.copyFromContent(text);
+      this.notificationService.success('Copied');
     }
 
     ngOnDestroy() {

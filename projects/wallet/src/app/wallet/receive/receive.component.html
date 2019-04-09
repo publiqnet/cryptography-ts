@@ -8,7 +8,9 @@
         <span>Your address</span>
         <label class="acc-parent">
           <input class="acc-id" value="{{accountId}}">
-          <span class="copy-btn"><img src="../../../assets/copy.svg" alt="copy"></span>
+          <span class="copy-btn" (click)="copy(accountId)">
+              <img src="../../../assets/copy.svg" alt="copy">
+          </span>
         </label>
 
       </div>
