@@ -1,0 +1,99 @@
+<div class="vh-centered" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+</div>
+
+<div class="inner-wrap">
+  
+    <form class="form form-field-div" novalidate (ngSubmit)="_filter()" [formGroup]="filterForm">
+        <div class="from_date">
+          <mat-form-field class="example-full-width">
+            <input matInput  [max]="maxDate" formControlName="from_date" [matDatepicker]="fromDate" placeholder="{{'wallet.choose_from_date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+            <mat-datepicker #fromDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="to_date">
+          <mat-form-field class="example-full-width">
+            <input matInput [min]="minDate" [max]="maxPosibleDate" formControlName="to_date" [matDatepicker]="toDate" placeholder="{{'wallet.choose_to_date' | translate}}">
+            <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+            <mat-datepicker #toDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+      <div>
+        <button mat-raised-button color="primary" [disabled]="!filterForm.valid">{{'wallet.filter' | translate}}</button>
+        <span class="pointer" (click)="resetFilter()">{{'wallet.reset_filter' | translate}}</span>
+      </div>
+       </form>
+
+    <mat-table class="transactions-table projected-content-wrapper" [dataSource]="dataSource" *ngIf="dataSource">
+        <ng-container matColumnDef="id">
+            <!-- <mat-header-cell *matHeaderCellDef ></mat-header-cell> -->
+            <mat-cell *matCellDef="let transaction">
+                <mat-list>
+                    <mat-list-item>
+                        <mat-icon class="arrow_color" matListIcon>{{(transaction.m_to_account !=
+                            account.id)?"arrow_upward":"arrow_downward"}}
+                        </mat-icon>
+                    </mat-list-item>
+                </mat-list>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+            <mat-cell *matCellDef="let transaction">
+                <h3 matLine>
+                    <b>{{transaction.m_timestamp| date:'dd'}} {{('months.' + (transaction.m_timestamp| date:'MMM')) | translate}}</b>
+                    <span> {{transaction.m_timestamp | date: 'y'}}</span>
+                </h3>
+
+                <p matLine>{{transaction.m_timestamp | date: 'shortTime'}}</p>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="from_to">
+            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+            <mat-cell *matCellDef="let transaction">
+                <mat-list>
+                    <mat-list-item>
+                        <h3 matLine>
+                            <span>{{(transaction.m_to_account != account.id) ? ('wallet.sent_to' | translate) : ('wallet.received_from' | translate)}}</span>
+                            <a href="{{explorerAddress}}/block/account/{{ (transaction['m_'+((transaction.m_to_account != account.id) ? 'to': 'from')+'_account']) }}">{{transaction['m_'+((transaction.m_to_account
+                                != account.id) ? "to": "from")+'_account'] }}</a>
+                        </h3>
+                        <p matLine title="{{transaction.m_memo_decrypted}}">
+                            {{transaction.m_memo_decrypted}}
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <!-- <mat-header-cell *matHeaderCellDef></mat-header-cell> -->
+            <mat-cell *matCellDef="let transaction">
+                <span [ngClass]="{'total-amount':true, 'transaction-sent': (transaction.m_to_account != account.id)}">
+                  {{(transaction.m_to_account != account.id)
+                    ? ((((transaction.m_transaction_fee.amount | float) + (transaction.m_transaction_amount.amount | float)) | PBQ | number:'0.0-8') + " PBQ")
+                    : ((transaction.m_transaction_amount.amount | float) | PBQ | number:'0.0-8') + " PBQ"}}
+                </span>
+            </mat-cell>
+        </ng-container>
+
+        <!-- <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row> -->
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <div class="text-center mt-3" *ngIf="!loading && seeMoreChecker && transactions.length">
+        <div class="empty" *ngIf="seeMoreLoading">
+            <div style="display: inline-block">
+                <mat-spinner></mat-spinner>
+            </div>
+        </div>
+        <button [hidden]="seeMoreLoading" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="viewMore()">
+            {{'wallet.see_more' | translate}}
+        </button>
+    </div>
+    <div class="table-completed"></div>
+</div>

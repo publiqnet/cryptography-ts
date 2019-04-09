@@ -325,17 +325,18 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
   //   this.tabIndex = this.publicationService.tabIndexReq;
   // }
 
-  changeStatus(e, member) {
+  changeStatus(e, member: Account) {
     const body = {
       publicKey: member.publicKey,
-      slug: this.publication.slug,
       status: e.value
     };
-    this.publicationService.changeMemberStatus(body)
+
+    this.publicationService.changeMemberStatus(this.slug, body)
       .pipe(
+        switchMap(() => this.publicationService.getPublicationBySlug(this.slug)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => this.getMembers());
+      .subscribe((publication: Publication) => this.publication = publication);
   }
 
   // selectCover(e) {
@@ -419,7 +420,6 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
     if (e) {
       e.stopPropagation();
     }
-    console.log(account);
     const identifier = account.publicKey ? account.publicKey : account.email;
     if (!identifier) {
       return;

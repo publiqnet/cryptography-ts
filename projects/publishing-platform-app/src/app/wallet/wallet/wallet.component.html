@@ -1,0 +1,44 @@
+<div class="inner-wrap">
+    <mat-tab-group dynamicHeight [selectedIndex]="walletService.selectedTabIndex" (selectedTabChange)="onLinkClick($event)">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="icon-receive"></i>
+                <span>&nbsp;{{"header.receive_tokens" | translate}} </span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-receive></app-receive>
+            </ng-template>
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="icon-send"></i>
+                <span>&nbsp;{{"header.send_tokens" | translate}}</span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-transfer></app-transfer>
+            </ng-template>
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="icon-transaction-history"></i>
+                <span>&nbsp;{{"header.my_transactions" | translate}}</span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-transactions></app-transactions>
+            </ng-template>
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <!--<i class="icon-transaction-history"></i>-->
+              <img class="transaction-history" src="../../../assets/shield.svg" alt="security">
+                <span>&nbsp;{{"header.security" | translate}}</span>
+            </ng-template>
+            <ng-template matTabContent>
+                <app-security></app-security>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</div>

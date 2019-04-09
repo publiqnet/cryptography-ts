@@ -1,0 +1,30 @@
+<div class="content-wrap footer-wrap" [ngClass]="{'gray': isGray}">
+    <div class="inner-wrap">
+        <div class="line"></div>
+      
+        <div class="pages" *ngIf="channelService.pages">
+            <a *ngFor="let page of channelService.pages" href="{{page.url}}" target="_blank">{{page.title}}</a>
+        </div>
+       <!-- <div [ngClass]="{'hidden-sm-down': searchBar}" [matMenuTriggerFor]="langMenu">
+            <i style="margin-left:10px;cursor: pointer;color:rgba(0, 0, 0, 0.7);" class="material-icons">language</i>
+        </div>
+        <mat-menu #langMenu="matMenu" [overlapTrigger]="false">
+            <button mat-menu-item (click)="useLang('en')">
+                <span>{{"header.english" | translate}}</span>
+            </button>
+            <button mat-menu-item (click)="useLang('jp')">
+                <span>{{"header.japanese" | translate}}</span>
+            </button>
+        </mat-menu>-->
+
+        <span class="pointer language" (click)="useLang('en')" *ngIf="(translateService.currentLang == 'jp')">
+            <span>{{"header.english" | translate}}</span>
+        </span>
+        <span class="pointer language" (click)="useLang('jp')" *ngIf="(translateService.currentLang == 'en')">
+            <span>{{"header.japanese" | translate}}</span>
+        </span>
+        <div class="copyright">
+            <p class="copy">© {{channelService.copyright ? channelService.copyright : ''}} {{ channelService.copyright ? '' : 'core.footer_text' | translate}}</p>
+        </div>
+    </div>
+</div>

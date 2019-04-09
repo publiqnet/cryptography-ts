@@ -1,0 +1,10 @@
+<div class="dialog-wrapper">
+    <mat-icon class="mat-18 pointer icon_close" (click)="onCloseCancel()">close</mat-icon>
+
+    <div class="info-container">
+        <div class="fullsized" appHrefToRouterLink [overrideCallback]="onCloseCancel">
+            <h3 mat-dialog-title class="infoText messageTitleText" [innerHTML]="title"></h3>
+            <p [innerHTML]="message"></p>
+        </div>
+    </div>
+</div>

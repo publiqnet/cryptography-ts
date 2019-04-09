@@ -1,0 +1,6 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<mat-dialog-content>{{'core.are_you_want_to_proceed' | translate}}</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="flex-end">
+  <button mat-raised-button [mat-dialog-close]="true">{{'core.yes' | translate}}</button>
+  <button mat-button [mat-dialog-close]="false">{{'core.no' | translate}}</button>
+</mat-dialog-actions>

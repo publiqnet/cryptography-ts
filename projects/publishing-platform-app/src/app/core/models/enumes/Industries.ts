@@ -1,0 +1,22 @@
+export enum Industries {
+  aerospace = 1,
+  agriculture,
+  chemical,
+  computer,
+  construction,
+  defense,
+  education,
+  energy,
+  entertainment,
+  financialServices,
+  food,
+  health,
+  care,
+  hospitality,
+  information,
+  manufacturing,
+  massMedia,
+  telecommunications,
+  transport,
+  water
+}

@@ -1,0 +1,76 @@
+<mat-card class="centered" *ngIf="!loading">
+    <div class="transfer-header">
+        <mat-card-title>{{'wallet.security.title' | translate}} {{'wallet.testnet' | translate}}</mat-card-title>
+    </div>
+    <div class="security-description">{{'wallet.security.sub_title' | translate}}</div>
+
+    <mat-card-content>
+        <div>
+            <div class="inner-wrap" [hidden]="loading">
+                <div class="mt-3">
+                    <div class="labelled-item" fxLayout.lt-sm="column">
+                        <div fxFlex="25%">
+                            <span class="line-label">
+                                {{'wallet.security.address' | translate }}
+                              <img class="question-mark" src="../../../assets/ic_alert-black.svg"
+                                   matTooltip="{{ 'wallet.security.address_hint' | translate }}"
+                                   matTooltipClass="tooltip"
+                                   matTooltipPosition="after">
+                            </span>
+                        </div>
+                        <div class="pubkey" fxFlex="75%">
+                            <span class="public-key-view"><strong>{{account.name}}</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="labelled-item" fxLayout.lt-sm="column">
+                        <div fxFlex="25%">
+                            <span class="line-label">
+                                {{'wallet.security.private_key' | translate}}
+                              <img class="question-mark" src="../../../assets/ic_alert-black.svg"
+                                   matTooltip="{{'wallet.security.private_key_hint' | translate}}"
+                                   matTooltipClass="tooltip"
+                                   matTooltipPosition="after"
+                              >
+                            </span>
+                        </div>
+                        <div fxFlex="75%" fxLayout="row">
+                            <div class="readonly-field">
+                                <input type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
+                                <div class="show-hide-btn pointer" (click)="showPrivateKey()">
+                                  <span [ngClass]="!showPrivateKeyOpened ? 'show' : 'show hidden'">
+                                    <img src="../../../assets/views.svg" alt="icon">
+                                  </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="labelled-item fielded" fxLayout.lt-sm="column">
+                        <div fxFlex.gt-xs="25%" fxFlex="100%">
+                            <span class="line-label">
+                                {{'wallet.security.recovery_phrase' | translate}}
+                                <img class="question-mark" src="../../../assets/ic_alert-black.svg"
+                                     matTooltip="{{'wallet.security.recovery_phrase_hint' | translate}}"
+                                     matTooltipClass="tooltip"
+                                     matTooltipPosition="after"
+                                >
+                            </span>
+                        </div>
+                        <div fxFlex.gt-xs="100%" fxFlex="100%" fxLayout="row">
+                            <div class="readonly-field" fxFlex.lt-md="100%">
+                                <input type="password" readonly value="ub035e40d09c7797e3b04a49bc01948a8">
+                                <div class="show-hide-btn pointer" (click)="showBackupRecoveryPhrase()">
+                                    <span [ngClass]="!showBackupRecoveryPhraseOpened ? 'show' : 'show hidden'">
+                                       <img src="../../../assets/views.svg" alt="icon">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+
+</mat-card>

@@ -155,9 +155,11 @@ export class PublicationService {
     //     }, error => this.errorService.handleError('loadStoriesPublicationByDsId', error, url));
   }
 
-  changeMemberStatus = (slug: string, requestData: object): Observable<any> => {
-    return this.httpHelper.call(HttpMethodTypes.post, this.url + `/${slug}/change-member-status`, requestData)
-      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+  changeMemberStatus = (member: any): Observable<any> => {
+    return this.httpHelper.call(HttpMethodTypes.post, this.url + `${member.slug}/change-member-status`, {
+      publicKey: member.publicKey,
+      status: member.status
+    });
   }
 
   getUserFollowers: () => Observable<any> = (): Observable<any> => {
