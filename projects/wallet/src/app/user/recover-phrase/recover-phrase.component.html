@@ -28,20 +28,20 @@
     </div>
   </div>
 
-  <div class="centered profile-inner" *ngIf="(account && !oauthService.brainKeySeen)">
-    <div class="recovery-header">
-      <h4>Recovery Phrase
-        <!--<i class="icon-question-mark" style=" top: -1px;"-->
-                             <!--data-hint="If someone were to find your recovery phrase they could access your wallet."></i>-->
-      </h4>
-
-    </div>
-    <div class="security-inner-content">
-      <div style="display: flex">
-        <i class="icon-warning"></i>
-        <h2>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
-        </h2>
+  <div class="colored-wrap"  *ngIf="(account && !oauthService.brainKeySeen)">
+    <div class="inner-wrap">
+      <div class="recovery-header" style="width: 100%">
+        <div style="display: flex">
+          <i class="icon-warning step-1"></i>
+          <p>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
+          </p>
+        </div>
       </div>
+    </div>
+  </div>
+  <div class="centered profile-inner" *ngIf="(account && !oauthService.brainKeySeen)">
+    <div class="security-inner-content">
+      <h4 class="recovery-title">Recovery Phrase</h4>
 
       <div class="textarea">{{oauthService.brainKey}}</div>
 
