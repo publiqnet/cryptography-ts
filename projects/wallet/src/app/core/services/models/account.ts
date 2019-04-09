@@ -48,7 +48,6 @@ export class Account {
 
     if (this.hasOwnProperty('whole') && this.hasOwnProperty('fraction')) {
       this.balance = UtilsService.getBalanceString(this.whole, this.fraction);
-      console.log(this.balance);
     }
 
     this.shortName = '';

@@ -23,6 +23,7 @@ export class AccountService {
   public userUrl = `${environment.backend}/api/user`;
 
   public brainKeyEncrypted: string;
+  public autoLogOut = false;
 
   public accountUpdated$: BehaviorSubject<any> = new BehaviorSubject(null);
   logoutDataChanged = new Subject<any>();
@@ -37,14 +38,12 @@ export class AccountService {
         token: (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth')
       };
 
-      console.log(1);
+      this.autoLogOut = false;
       this.accountInfoData = new Account(accountCurrentInfo);
-      console.log(2);
     } else {
       this.accountInfoData = null;
     }
 
-    console.log('accountInfo - ', this.accountInfo);
     this.accountUpdated$.next(this.accountInfo);
   }
 
@@ -57,7 +56,6 @@ export class AccountService {
     return this.httpHelperService.customCall(HttpMethodTypes.get, url, null, [ { key: 'X-OAUTH-TOKEN', value: token } ])
       .pipe(
         map((userInfo: any) => {
-          console.log('userInfo - ', userInfo);
           this.SetAccountInfo = userInfo;
           localStorage.setItem('auth', userInfo.token);
           return userInfo;
