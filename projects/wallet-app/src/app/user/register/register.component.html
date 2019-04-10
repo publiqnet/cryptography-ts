@@ -27,9 +27,15 @@
   </div>
 
 
-  <div class="centered session-form" *ngIf="formView === 'successMessage'">
+  <div class="centered session-form" *ngIf="formView === 'successRegisterMessage'">
     <h2>
       Please check your email to access your authentication link.
+    </h2>
+  </div>
+
+  <div class="centered session-form" *ngIf="formView === 'needLoginMessage'">
+    <h2>
+      It seems you already have a PUBLIQ Wallet, please check your email to access your authorization link.
     </h2>
   </div>
 

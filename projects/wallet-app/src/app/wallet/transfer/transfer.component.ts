@@ -25,7 +25,7 @@ export class TransferComponent implements OnInit, OnDestroy {
   memo = '';
   amount: any;
   balance: any = 0;
-  transferFee = 0.01;
+  transferFee = 0;
   public transferForm: FormGroup;
   public accountInfo;
   public loading = false;
