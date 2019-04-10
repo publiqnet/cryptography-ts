@@ -3,13 +3,13 @@
     <div *ngSwitchCase="'backup-private-key'" class="backup-private-key">
 
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <h1>{{title}}</h1>
+          <h1 *ngIf="passwordVerified">Backup private key</h1>
+          <h1 *ngIf="!passwordVerified">Private key</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
 
         <div *ngIf="!passwordVerified">
-            <h2 [innerHTML]="message" class="message"></h2>
-
+          <h2>Enter your password to see your private key.</h2>
             <input (focus)="focusFunction()" (keyup)="keyupFunc($event, 'generatePrivateKey')" type="password" [(ngModel)]="password" class="mail-input"
                    placeholder="Password">
 
@@ -48,8 +48,8 @@
         </div>
 
         <div>
-            <h2 class="message">Are you sure you want to postpone your Recovery Phrase backup?</h2>
-            <div class="keys-text">In case you press "Yes" and forget your password until next login, there will be no way to restore your wallet</div>
+            <h2 class="message">Are you sure you want to postpone your recovery phrase backup?</h2>
+            <div class="keys-text">In case you press "Yes" and forget your password until next login, there will be no way to restore your wallet.</div>
 
             <div class="btn-div">
                 <button (click)="onCloseCancel()" class="submit-button ">NO</button>
@@ -62,12 +62,13 @@
     <div *ngSwitchCase="'backup-recovery-phrase'" class="backup-private-key">
 
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <h1>{{title}}</h1>
+            <h1 *ngIf="passwordVerified">Backup recovery phrase</h1>
+            <h1 *ngIf="!passwordVerified">Recovery phrase</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
 
         <div *ngIf="!passwordVerified">
-            <h2 [innerHTML]="message" class="message"></h2>
+            <h2>Enter your password to see your recovery phrase</h2>
 
             <input (focus)="focusFunction()" (keyup)="keyupFunc($event, 'decryptBK')" type="password" [(ngModel)]="password" class="mail-input"
                    placeholder="Password">
@@ -88,16 +89,16 @@
                     {{oauthService.brainKey}}
                 </div>
 
-                <div class="submit-container text-right ">
-                    <button class="submit-button next-button" (click)="recoveryPhrasechecking = false" type="button">Next</button>
-                </div>
-              <h2>In the next step, you will need to enter four words from the recovery phrase in a random order.</h2>
+              <h2 class="mb-0">In the next step, you will need to enter four words from the recovery phrase in a random order.</h2>
+              <div class="submit-container text-right ">
+                <button class="submit-button next-button" (click)="recoveryPhrasechecking = false" type="button">Next</button>
+              </div>
             </div>
 
             <div class="recovery-verify-steps" [hidden]="recoveryPhrasechecking">
                 <div fxLayout="row" fxLayoutAlign="flex-start center">
                     <!--<i class="icon-padlock"></i>-->
-                    <h2 class="pr-key-msg mb-0">Please enter the words from your recovery Phrase in the required order.</h2>
+                    <h2 class="pr-key-msg mb-0">Please enter the words from your recovery phrase in the required order.</h2>
                 </div>
 
                 <form [formGroup]="checkingFormGroup" (ngSubmit)="onSubmit()">
@@ -124,11 +125,11 @@
                         </div>
                     </div>
                     <div class="see-btns">
-                          <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Finish
+                          <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Done
                           </button>
                         <button class="submit-button back-btn"  (click)="onCloseCancel()">Back</button>
                     </div>
-                  <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in right order.</span>
+                  <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in correct order.</span>
                 </form>
             </div>
         </div>
@@ -136,13 +137,13 @@
 
     <div *ngSwitchCase="'show-private-key'" class="backup-private-key">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <h1>{{title}}</h1>
+            <h1>Private key</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
         <div *ngIf="!passwordVerified">
-            <h2 [innerHTML]="message" class="message"></h2>
+          <h2>Enter your password to see your private key.</h2>
 
-            <input (focus)="focusFunction()" (keyup)="keyupFunc($event, 'decryptPK')" type="password" [(ngModel)]="password" class="mail-input" placeholder="Password">
+          <input (focus)="focusFunction()" (keyup)="keyupFunc($event, 'decryptPK')" type="password" [(ngModel)]="password" class="mail-input" placeholder="Password">
 
             <div><span class="text-error" *ngIf="passError">{{passError}}</span></div>
 
@@ -161,12 +162,12 @@
 
     <div *ngSwitchCase="'show-backup-recovery-phrase'" class="backup-private-key">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
-            <!--<h1>{{title}}</h1>-->
-            <h1>Backup recovery phrase</h1>
+            <h1>Recovery phrase</h1>
+
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
         <div *ngIf="!passwordVerified">
-            <h2 [innerHTML]="message" class="message"></h2>
+            <h2>Enter your password to see your recovery phrase</h2>
             <!--<h2 class="message">If someone were to find your recovery phrase they could access your wallet. It is strongly recommended to store your recovery phrase in physically separate, offline environment.-->
             <!--</h2>-->
 
@@ -186,13 +187,12 @@
                 <div class="private-key-container pr-key-text">
                     {{oauthService.brainKey}}
                 </div>
-              <h2>Your recovery phrase is the only way to reset your web wallet password.</h2>
 
-                <div>
-                    <span class="text-error for-error " *ngIf="!oauthService.brainKeySaved">
-                        In the next step, you will need to enter four words from the recovery phrase in a random order.
-                    </span>
-                </div>
+                <!--<div>-->
+                    <!--<span class="text-error for-error " *ngIf="!oauthService.brainKeySaved">-->
+                        <!--In the next step, you will need to enter four words from the recovery phrase in a random order.-->
+                    <!--</span>-->
+                <!--</div>-->
             </div>
         </div>
     </div>
@@ -200,7 +200,7 @@
     <div *ngSwitchCase="'fast-backup-recovery-phrase'" class="backup-private-key">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="title-container">
             <!--<h1>{{title}}</h1>-->
-            <h1>Backup recovery phrase</h1>
+            <h1>Recovery phrase</h1>
             <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
         </div>
 

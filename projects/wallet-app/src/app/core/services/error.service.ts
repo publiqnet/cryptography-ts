@@ -41,7 +41,7 @@ export class ErrorService {
         need_private_key: 'Transfer needs a private key!',
         load_balance_error: 'Seems like we’re having technical problems. Please try again later',
         transactions_not_found: 'Transactions Not Found',
-        incorrect_recover_phrase: 'Incorrect recovery phrase. Please, make sure you entered recovery phrase correctly',
+        incorrect_recover_phrase: 'Incorrect recovery phrase.',
         ins_invalid_amount_error: 'Insufficient funds',
         account_already_exist: 'It seems you already have a PUBLIQ Wallet, try to <a href="/user/login">Login</a>',
         init_external_ws_service: 'init External WsService Connection Error',

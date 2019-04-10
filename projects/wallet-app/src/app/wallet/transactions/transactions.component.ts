@@ -25,7 +25,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   loading = false;
   readonly explorerAddress = environment.explorerAddress;
   public seeMoreChecker = false;
-  defaultLimit = 50;
+  defaultLimit = 10;
   nextTransactionHash = '';
 
   dataSource: MatTableDataSource<TransactionDetailObject>;
