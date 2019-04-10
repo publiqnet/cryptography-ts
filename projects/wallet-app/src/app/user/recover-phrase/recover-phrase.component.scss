@@ -446,10 +446,20 @@ h5{
       }
     }
   }
+  .email-checked{
+    padding-left: 33px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .backup-btn-container {
     padding-left: 16px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .backup-btn {
       width: 100%;
@@ -473,15 +483,18 @@ h5{
         background: #000000;
       }
     }
+    .backup-btn-checked{
+
+    }
   }
 
   .status-info {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 30%;
+    //width: 100%;
+    //height: 100%;
+    //display: flex;
+    //align-items: center;
+    //justify-content: flex-start;
+    //padding-left: 30%;
     color: #696969;
 
     .icon-success {
