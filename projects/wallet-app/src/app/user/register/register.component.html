@@ -2,8 +2,8 @@
   <div class="centered session-form" *ngIf="formView === 'registerForm'">
     <!--<mat-card-title>Create PUBLIQ Wallet</mat-card-title>-->
     <!--<mat-card-subtitle>Enter your email to create new wallet.</mat-card-subtitle>-->
-    <h1>Create Publiq Wallet</h1>
-    <h2>Enter you email to get authentication link.</h2>
+    <h1>Create PUBLIQ Wallet</h1>
+    <h2>Enter your email to get authentication link.</h2>
 
     <div>
       <form class="form" novalidate (ngSubmit)="register()" [formGroup]="registerForm">
@@ -29,7 +29,7 @@
 
   <div class="centered session-form" *ngIf="formView === 'successMessage'">
     <h2>
-      Please check your email to access your secure link.
+      Please check your email to access your authentication link.
     </h2>
   </div>
 

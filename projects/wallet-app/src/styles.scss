@@ -89,7 +89,7 @@ input {
   font-size: 14px;
   div{
     padding: 0 4px 15px 4px;
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 
@@ -3338,6 +3338,13 @@ snack-bar-container.notification-warning {
 mat-spinner.centered, mat-card.centered {
   background-color: transparent!important;
   box-shadow: none!important;
+  position: relative;
+  z-index: 1;
+}
+mat-dialog-container{
+  background: #FFFFFF!important;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17)!important;
+  border-radius: 10px!important;
 }
 
 .session-page{
@@ -3548,6 +3555,7 @@ mat-card.mat__spinner{
   right: 0;
   bottom: 0;
   z-index: 0;
+  opacity: .6;
 }
 
 .animation-container span {

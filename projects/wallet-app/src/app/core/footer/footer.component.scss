@@ -111,3 +111,8 @@ mat-icon {
   top:-9999px;
   left:-9999px;
 }
+@media screen and (max-width: 560px){
+  .footer-wrap.authenticated-footer .line{
+    width: 80%;
+  }
+}
