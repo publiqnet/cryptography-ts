@@ -50,7 +50,7 @@
           <div class="full-width">
             <p class="recipient-title">Message</p>
             <div style="position: relative">
-                        <textarea [(ngModel)]="memo" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
+                        <textarea maxlength="200" [(ngModel)]="memo" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
                                   class="trans-input trans-textarea" matInput placeholder="0/200" name="memo" formControlName="memo"></textarea>
               <!--<span class="character" [ngClass]="{'max-char-error': memo.length > 200 }">{{memo.length}} / 200 characters</span>-->
               <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address is not found</p>
@@ -61,7 +61,7 @@
         <!--SUBMIT BUTTON-->
         <div class="submit-pbq" fxLayout="row" fxLayoutAlign="end center" >
           <span class="fee">Transaction fee: <span class="blue">{{transferFee}} PBQ</span></span>
-          <button type="submit" class="submit-button generate-btn" [disabled]="!transferForm.valid">Generate Transaction</button>
+          <button type="submit" class="submit-button generate-btn" [disabled]="!transferForm.valid">Send</button>
         </div>
       </form>
     </div>

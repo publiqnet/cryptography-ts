@@ -72,7 +72,7 @@
               You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.
             </p>
             <p *ngIf="getSecurityClass() === 'security-level high'">
-              Thank you for backup. Now you will get the access to your wallet.
+              You have to backup your private key and recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your password, private key or recovery phrase they could access your wallet.
             </p>
             <p class="status-text" *ngIf="getSecurityClass() === 'security-level middle'">1/2 Backup private key.</p>
 
@@ -114,7 +114,7 @@
 
         <div class="labelled-item">
           <div fxFlex="180px">
-            <span class="line-label">Private Key: <i class="icon-question-mark"
+            <span class="line-label">Private key: <i class="icon-question-mark"
                                                      data-hint="If someone were to find your private key they could access your wallet."></i></span>
           </div>
           <div fxFlex.gt-xs="100%" fxFlex="100%">
@@ -124,9 +124,10 @@
                 <i [ngClass]="!showPrivateKeyOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
               </div>
             </div>
-            <div *ngIf="!oauthService.privateKeySaved" class="backup-btn-container" fxFlex="36%" fxFlex.lt-md="30%">
-              <div class="backup-btn" (click)="backupPrivateKeyPopup()">
-                <span>Backup private key</span>
+            <div  class="backup-btn-container" fxFlex="36%" fxFlex.lt-md="30%">
+              <div [class.disabled-btn]="oauthService.privateKeySaved" class="backup-btn" (click)="backupPrivateKeyPopup()">
+                <span *ngIf="!oauthService.privateKeySaved">Backed</span>
+                <span *ngIf="oauthService.privateKeySaved">Backed up</span>
               </div>
             </div>
           </div>
@@ -151,10 +152,11 @@
                 <i [ngClass]="!showBackupRecoveryPhraseOpened ? 'icon-eye' : 'icon-eye hdn'"></i>
               </div>
             </div>
-            <div *ngIf="!oauthService.brainKeySaved" class="backup-btn-container" fxLayout="column" fxFlex="36%"
+            <div  class="backup-btn-container" fxLayout="column" fxFlex="36%"
                  fxFlex.lt-md="30%">
-              <div class="backup-btn" (click)="backupRecoveryPhrasePopup()">
-                <span>Backup recovery phrase</span>
+              <div class="backup-btn" [class.disabled-btn]="oauthService.brainKeySaved" (click)="backupRecoveryPhrasePopup()">
+                <span *ngIf="!oauthService.brainKeySaved">Backed</span>
+                <span *ngIf="oauthService.brainKeySaved">Backed up</span>
               </div>
             </div>
           </div>
