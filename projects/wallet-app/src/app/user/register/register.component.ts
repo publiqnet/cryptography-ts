@@ -1,23 +1,12 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  Inject,
-  PLATFORM_ID
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { Component, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ValidationService } from '../../core/validator/validator.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
-import { takeUntil } from 'rxjs/operators';
 import { OauthService } from 'helper-lib';
 
 @Component({

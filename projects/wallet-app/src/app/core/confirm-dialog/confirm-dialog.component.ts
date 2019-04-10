@@ -1,12 +1,15 @@
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { CryptService } from '../services/crypt.service';
 import { AccountService } from '../services/account.service';
 import { ErrorService } from '../services/error.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OauthService } from 'helper-lib';
 
-const ESCAPE_KEYCODE = 27;
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -26,7 +29,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
   decriptedPrivateKey: string;
   passError = '';
   incorrectRecoverPhrase = '';
-  // setBrainKeySubscription: Subscription;
 
   public decryptedBrainKey: string;
   decryptedBrainKeySplited;
@@ -41,6 +43,8 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
   @ViewChild('fourthInput') private fourthInput;
 
   checkingFormGroup: FormGroup;
+
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent>,
               public accountService: AccountService,
@@ -59,26 +63,10 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
       fourth: ['', Validators.required]
     });
 
-
-    // this.setBrainKeySubscription = this.accountService.brainKeySavedDataChanged.subscribe(data => {
-    //     this.decryptedBrainKey = '';
-    //     this.onCloseConfirm();
-    // });
-    //
-    // this.accountService.brainKeySeenDataChanged.subscribe(data => {
-    //     this.onCloseConfirm();
-    // });
-
     if (this.action && this.action == 'fast-backup-recovery-phrase') {
       this.fastDecryptBK();
     }
   }
-
-  // @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-  // if (event.keyCode === ESCAPE_KEYCODE) {
-  //     this.onCloseCancel();
-  // }
-  // }
 
   onCloseCancel() {
     this.dialogRef.close(false);
@@ -110,25 +98,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
       this.passError = this.errorService.getError('password_error');
       this.passwordVerified = false;
     }
-
-    // try {
-    //     const authData = this.accountService.getAuthenticateData();
-    //     CryptService.brainKeyDecrypt(authData.brainKey, this.password).subscribe(brainKey => {
-    //         const privateKey = CryptService.generatePrivateKey(brainKey);
-    //         this.decriptedPrivateKey = privateKey.toWif();
-    //         if (this.decriptedPrivateKey) {
-    //             this.passwordVerified = true ;
-    //         } else {
-    //             this.passError = this.errorService.getError('password_error');
-    //             this.passwordVerified = false;
-    //         }
-    //     });
-    //
-    // } catch (MalformedURLException) {
-    //     this.passError = this.errorService.getError('password_error');
-    //     this.passwordVerified = false;
-    //     this.loading = false;
-    // }
   }
 
   decryptPK() {
@@ -174,55 +143,6 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
       this.passError = this.errorService.getError('password_error');
       this.passwordVerified = false;
     }
-
-    // const brainKey = this.oauthService.brainKey;
-    // this.decryptedBrainKey = brainKey;
-    // this.decryptedBrainKeySplited = brainKey.split(' ');
-    // if (Array.isArray(this.decryptedBrainKeySplited)) {
-    //   this.chuckedBrainKeyArray = [];
-    //   let nextChunckedList;
-    //   let randomPhrasekey;
-    //   for (let i = 0; i < this.decryptedBrainKeySplited.length; i += this.chuckSize) {
-    //     nextChunckedList = this.decryptedBrainKeySplited.slice(i, this.chuckSize + i);
-    //     const rand = nextChunckedList[Math.floor(Math.random() * nextChunckedList.length)];
-    //     this.decryptedBrainKeySplited.map((k, v) => (rand == k) ? randomPhrasekey = v : '');
-    //     this.checkingPhrasesArray.push(randomPhrasekey);
-    //     this.chuckedBrainKeyArray.push(nextChunckedList);
-    //   }
-    //   this.checkingPhrasesArray = this.shuffle(this.checkingPhrasesArray);
-    //   this.passwordVerified = this.recoveryPhrasechecking = true;
-    //   this.loading = false;
-    // }
-
-    // try {
-    //     this.loading = true;
-    //     const authData = this.accountService.getAuthenticateData();
-    //     CryptService.brainKeyDecrypt(authData.brainKey, this.password).subscribe(brainKey => {
-    //             this.decryptedBrainKey = brainKey;
-    //             this.decryptedBrainKeySplited = brainKey.split(' ');
-    //             if (Array.isArray(this.decryptedBrainKeySplited)) {
-    //                 this.chuckedBrainKeyArray = [];
-    //                 let nextChunckedList;
-    //                 let randomPhrasekey;
-    //                 for (let i = 0; i < this.decryptedBrainKeySplited.length; i += this.chuckSize) {
-    //                     nextChunckedList = this.decryptedBrainKeySplited.slice(i, this.chuckSize + i);
-    //                     const rand = nextChunckedList[Math.floor(Math.random() * nextChunckedList.length)];
-    //                     this.decryptedBrainKeySplited.map((k, v) => (rand == k) ? randomPhrasekey = v : '');
-    //                     this.checkingPhrasesArray.push(randomPhrasekey);
-    //                     this.chuckedBrainKeyArray.push(nextChunckedList);
-    //                 }
-    //                 this.checkingPhrasesArray = this.shuffle(this.checkingPhrasesArray);
-    //                 this.passwordVerified = this.recoveryPhrasechecking = true;
-    //                 this.loading = false;
-    //             }
-    //         }, error => {
-    //             this.passError = this.errorService.getError('password_error');
-    //         }
-    //     );
-    // } catch (MalformedURLException) {
-    //     this.passError = this.errorService.getError('password_error');
-    //     this.loading = false;
-    // }
   }
 
   fastDecryptBK() {
@@ -279,10 +199,14 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
         && (this.decryptedBrainKeySplited[thirdInputIndex].trim() == this.checkingFormGroup.value.third.trim())
         && (this.decryptedBrainKeySplited[fourthInputIndex].trim() == this.checkingFormGroup.value.fourth.trim())
       ) {
-        this.oauthService.setBrainKeySaved(this.oauthService.brainKey).subscribe(data => {
-          this.decryptedBrainKey = '';
-          this.onCloseConfirm();
-        });
+        this.oauthService.setBrainKeySaved(this.oauthService.brainKey)
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe(data => {
+            this.decryptedBrainKey = '';
+            this.onCloseConfirm();
+          });
       } else {
         this.incorrectRecoverPhrase = this.errorService.getError('incorrect_recover_phrase');
         this.loading = false;
@@ -306,27 +230,30 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
   }
 
   confirmRecoveyPhraseSeen() {
-    this.oauthService.setBrainKeySeen(this.oauthService.brainKey).subscribe(data => {
+    this.oauthService.setBrainKeySeen(this.oauthService.brainKey)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
       this.decryptedBrainKey = '';
       this.onCloseConfirm();
-
-      // this.accountInfo.brainKeySaved = true;
-      // this.accountInfo.brainKeySeen = true;
-      // this.decryptedBrainKey = '';
-      // this.accountUpdated.next(this.accountInfo);
-      // this.brainKeySavedDataChanged.next(data);
     });
   }
 
   setPrivateKeySaved() {
-    this.oauthService.setPrivateKeySaved(this.oauthService.brainKey).subscribe(data => {
+    this.oauthService.setPrivateKeySaved(this.oauthService.brainKey)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
       this.onCloseConfirm();
     });
   }
 
   ngOnDestroy() {
     this.confirmClicked = false;
-    // this.setBrainKeySubscription.unsubscribe();
 
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

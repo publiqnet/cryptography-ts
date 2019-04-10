@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '../../core/services/account.service';
-import { Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -26,8 +25,7 @@ export class RecoverComponent implements OnInit, OnDestroy {
 
   constructor(private accountService: AccountService,
               private errorService: ErrorService,
-              private oauthService: OauthService,
-              private router: Router) {
+              private oauthService: OauthService) {
   }
 
   ngOnInit() {
@@ -42,15 +40,6 @@ export class RecoverComponent implements OnInit, OnDestroy {
           this.brainKeyError = this.errorService.getError('incorrect_recover_phrase');
         }
       });
-
-    // this.accountService.signedStringChanged
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe(stringToSign => {
-    //   // this.router.navigate(['/user/new-password']);
-    //   this.isPasswordMode = true;
-    // });
   }
 
   focusFunction() {

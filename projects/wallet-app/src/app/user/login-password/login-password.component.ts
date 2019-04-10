@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
-import { filter, flatMap, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';

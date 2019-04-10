@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AccountService } from '../../core/services/account.service';
-import { environment } from '../../../environments/environment';
-import { WalletService } from '../../core/services/wallet.service';
-import { Subscription } from 'rxjs/Subscription';
 import { MatTableDataSource } from '@angular/material';
+
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+
 import { Account } from '../../core/services/models/account';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { TransactionDetailObject } from '../../core/services/models/transaction.detail.object';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { AccountService } from '../../core/services/account.service';
+import { environment } from '../../../environments/environment';
+import { WalletService } from '../../core/services/wallet.service';
+
+
 
 @Component({
   selector: 'app-transactions',
@@ -26,8 +30,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   dataSource: MatTableDataSource<TransactionDetailObject>;
   transactions: TransactionDetailObject[] = [];
-  accountUpdatedSubscription: Subscription;
-  errorEventEmiterSubscription: Subscription;
+
+  private unsubscribe$ = new ReplaySubject<void>(1);
 
 
   constructor(private accountService: AccountService,
@@ -40,14 +44,17 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
     this.dataSource = new MatTableDataSource<TransactionDetailObject>(this.transactions);
 
-    this.errorEventEmiterSubscription = this.errorService.errorEventEmiter.subscribe((error: ErrorEvent) => {
-      if (error.action === 'transactions_not_found') {
-        this.loading = false;
-        console.log(error.message);
-      }
-    });
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((error: ErrorEvent) => {
+        if (error.action === 'transactions_not_found') {
+          this.loading = false;
+        }
+      });
 
-    this.accountUpdatedSubscription = this.accountService.accountUpdated$
+    this.accountService.accountUpdated$
       .pipe(
         filter(account => (account != null)),
         map(account => {
@@ -56,7 +63,8 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         }),
         switchMap(params => {
           return this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, '', this.defaultLimit);
-        })
+        }),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
         this.setTransactionData(data);
@@ -74,6 +82,9 @@ export class TransactionsComponent implements OnInit, OnDestroy {
 
   viewMore() {
     this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, this.nextTransactionHash, this.defaultLimit)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
       .subscribe(data => {
         this.setTransactionData(data);
       });
@@ -99,8 +110,9 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.accountUpdatedSubscription.unsubscribe();
-    this.errorEventEmiterSubscription.unsubscribe();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+
     this.dataSource.data = [];
     this.transactions = [];
   }
