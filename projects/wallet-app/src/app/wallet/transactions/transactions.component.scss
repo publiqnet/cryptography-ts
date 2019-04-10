@@ -7,6 +7,11 @@ mat-header-row{
 mat-table{
   overflow: hidden;
 }
+.see-more-btn{
+  max-width: 180px;
+  width: 100%;
+  margin: 0 auto;
+}
 mat-table mat-cell {
   &:first-of-type {
     flex: 0 0 30px;

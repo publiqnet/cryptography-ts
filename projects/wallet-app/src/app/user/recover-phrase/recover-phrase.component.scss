@@ -552,6 +552,11 @@ h5{
     }
   }
 }
+.disabled-btn{
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
 @media screen and (max-width: 540px){
   .inner-wrap.profile-inner .labelled-item{
     flex-direction: column!important;
