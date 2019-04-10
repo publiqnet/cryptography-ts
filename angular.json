@@ -356,6 +356,156 @@
           }
         }
       }
+    },
+    "explorer-app": {
+      "root": "projects/explorer-app/",
+      "sourceRoot": "projects/explorer-app/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/explorer-app",
+            "index": "projects/explorer-app/src/index.html",
+            "main": "projects/explorer-app/src/main.ts",
+            "polyfills": "projects/explorer-app/src/polyfills.ts",
+            "tsConfig": "projects/explorer-app/tsconfig.app.json",
+            "assets": [
+              "projects/explorer-app/src/favicon.ico",
+              "projects/explorer-app/src/assets"
+            ],
+            "styles": [
+              "projects/explorer-app/src/styles.css"
+            ],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/explorer-app/src/environments/environment.ts",
+                  "with": "projects/explorer-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/explorer-app/src/environments/environment.ts",
+                  "with": "projects/explorer-app/src/environments/environment.stage.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "explorer-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "explorer-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "explorer-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/explorer-app/src/test.ts",
+            "polyfills": "projects/explorer-app/src/polyfills.ts",
+            "tsConfig": "projects/explorer-app/tsconfig.spec.json",
+            "karmaConfig": "projects/explorer-app/karma.conf.js",
+            "styles": [
+              "projects/explorer-app/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/explorer-app/src/favicon.ico",
+              "projects/explorer-app/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/explorer-app/tsconfig.app.json",
+              "projects/explorer-app/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/server",
+            "main": "projects/explorer-app/src/main.server.ts",
+            "tsConfig": "projects/explorer-app/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/explorer-app/src/environments/environment.ts",
+                  "with": "projects/explorer-app/src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/explorer-app/src/environments/environment.ts",
+                  "with": "projects/explorer-app/src/environments/environment.stage.ts"
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "publishing-platform-app"
