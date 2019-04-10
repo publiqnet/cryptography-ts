@@ -92,8 +92,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
-        this.router.navigate(['/wallet/transfer']);
-        // this.router.navigate(['/user/complete-registration']);
+        this.router.navigate(['/user/recover-phrase']);
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
       });
