@@ -26,7 +26,12 @@
     "w:start:stage": "npm run build:libs && npm run w:build:stage && node dist/server.js",
     "w:build:stage": "ng build wallet-app --configuration=staging && npm run w:build:stage:ssr",
     "w:build:stage:ssr": "ng run wallet-app:server && npm run w:webpack:server",
-    "w:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=wallet-app"
+    "w:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=wallet-app",
+    "e:serve": "npm run build:libs && ng serve explorer-app --port=4202",
+    "e:start:stage": "npm run build:libs && npm run e:build:stage && node dist/server.js",
+    "e:build:stage": "ng build explorer-app --configuration=staging && npm run e:build:stage:ssr",
+    "e:build:stage:ssr": "ng run explorer-app:server && npm run e:webpack:server",
+    "e:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=explorer-app"
   },
   "private": true,
   "dependencies": {
