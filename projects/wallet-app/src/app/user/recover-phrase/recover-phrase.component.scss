@@ -421,7 +421,7 @@ h5{
       display: flex;
       align-items: center;
       font-size: 14px;
-      flex: 0 0 37px;
+      flex: 0 0 40px;
       position: relative;
       &:focus{
         outline: none;
@@ -505,7 +505,7 @@ h5{
     position: absolute;
     top: 0;
     right: 0;
-    width: 40px;
+    width: 37px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -552,6 +552,11 @@ h5{
     }
   }
 }
+.disabled-btn{
+  opacity: .4;
+  cursor: default;
+  pointer-events: none;
+}
 @media screen and (max-width: 540px){
   .inner-wrap.profile-inner .labelled-item{
     flex-direction: column!important;
@@ -560,7 +565,7 @@ h5{
       flex: 1 !important;
       min-height: auto!important;
       .readonly-field{
-        margin: 15px 0;
+        //margin: 15px 0;
         max-width: 100%!important;
       }
     }
@@ -568,6 +573,16 @@ h5{
       max-width: 100%!important;
       padding: 0;
     }
+  }
+  .inner-wrap .backup-btn-container .backup-btn{
+    margin-top: 16px;
+  }
+  .security-inner-content{
+    width: 100%;
+  }
+  .inner-wrap .labelled-item .line-label{
+    display: block;
+    margin-bottom: 12px;
   }
   .security-inner-content .submit-div.agree-div{
     >div{
@@ -579,7 +594,7 @@ h5{
   .profile-inner .public-key-view:not(.key-input),
   .profile-inner .email-space{
     display: block;
-    margin: 15px 0 0;
+    //margin: 15px 0 0;
   }
 }
 
@@ -619,7 +634,7 @@ h5{
       position: absolute;
       top: 0;
       right: 0;
-      width: 40px;
+      width: 37px;
       height: 100%;
       display: flex;
       align-items: center;
