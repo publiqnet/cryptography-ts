@@ -8,6 +8,7 @@ export const environment = {
   oauth_backend: 'https://stage-mainnet-oauth.publiq.network',
   explorerAddress: 'https://explorer.publiq.network',
   blockchain_api_url: 'https://north.publiq.network/publiq/api',
+  coinName: 'TPBQ',
   auto_logout_time: 300
 };
 
