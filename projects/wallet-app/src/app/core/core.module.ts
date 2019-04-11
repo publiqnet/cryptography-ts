@@ -8,7 +8,6 @@ import { AuthguardService } from './services/authguard.service';
 import { NotificationService } from './services/notification.service';
 import { SharedModule } from '../shared/shared.module';
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarConfigInterface, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { RegisterGuardService } from '../guards/register-guard.service';
 import { LoginCheckGuardService } from '../guards/check-login-guard.service';
 import { UserModule } from '../user/user.module';
 import { TemplateComponent } from './template/template.component';
@@ -52,7 +51,6 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     providers: [
         AuthguardService,
-        RegisterGuardService,
         LoginCheckGuardService,
         CryptService,
         NotificationService,

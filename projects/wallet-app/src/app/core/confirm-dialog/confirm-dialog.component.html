@@ -125,9 +125,10 @@
                         </div>
                     </div>
                     <div class="see-btns">
-                          <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Done
+                      <button class="submit-button back-btn"  (click)="onCloseCancel()">Back</button>
+
+                      <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Done
                           </button>
-                        <button class="submit-button back-btn"  (click)="onCloseCancel()">Back</button>
                     </div>
                   <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in correct order.</span>
                 </form>
@@ -233,9 +234,9 @@
                     </div>
                 </div>
                 <div class="justify see-btns" style="width: 100%">
-                  <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Finish
-                  </button>
                   <button class="submit-button back-btn" (click)="onCloseCancel()">Back
+                  </button>
+                  <button class="submit-button" [disabled]="!checkingFormGroup.valid" type="submit">Finish
                   </button>
                 </div>
               <span class="text-error" *ngIf="incorrectRecoverPhrase">Something went wrong. Make sure you entered the words from recovery phrase in right order.</span>
@@ -249,7 +250,7 @@
             <h1>Review and confirm your transfer</h1>
           <h2>Please note, there is no way to cancel confirmed transaction.</h2>
 
-          <mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>
+          <!--<mat-icon class="mat-18 pointer" (click)="onCloseCancel()">close</mat-icon>-->
 
         <div class="message-table" innerHtml="{{message}}"></div>
 

@@ -2,72 +2,28 @@
     <div class="header-slide-wrapper-container">
         <div class="header-slide-wrapper">
             <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center">
-                <div *ngIf="account"  fxLayout="column" [ngClass]="{'logo-container': true}"
+                <div *ngIf="account" fxLayout="column" [ngClass]="{'logo-container': true}"
                      fxLayoutAlign="center center">
-                    <span><img src="assets/publiq_white.svg"  [routerLink]="['/']" class="publiq-logo"></span>
+                    <span><img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo"></span>
                 </div>
-              <div *ngIf="!account" class="not-authorised-user">
-                <img src="assets/publiq_white.svg"  [routerLink]="['/']" class="publiq-logo">
-              </div>
+                <div *ngIf="!account" class="not-authorised-user">
+                    <img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo">
+                </div>
                 <span class="spacer"></span>
 
                 <div fxLayout="row" fxLayoutGap="10px">
 
+                    <div *ngIf="account" class="header-tools">
+                        <div class="wallet-tabs">
+                            <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+                                <span class="i-img wallet-svg"></span>
+                                <span>Wallet</span></div>
+                            <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+                                <span class="i-img sec-svg"></span><span>Security</span>
+                            </div>
+                        </div>
 
-                    <!--<span *ngIf="!account && (navTabView !== 'login')" class="menu-button"-->
-                            <!--[routerLink]="['/user/login']">-->
-                        <!--Login-->
-                        <!--<i class="icon icon-locked"></i>-->
-                    <!--</span>-->
-
-                    <!--<span *ngIf="!account && (navTabView !== 'register')" class="menu-button register-btn"-->
-                          <!--[routerLink]="['/user/register']">-->
-                        <!--Create-->
-                        <!--<i class="icon icon-register"></i>-->
-                    <!--</span>-->
-
-                    <!--<span class="pointer language" (click)="useLang('en')" *ngIf="(translateService.currentLang == 'jp')">-->
-                        <!--<span>{{"header.english" | translate}}</span>-->
-                    <!--</span>-->
-                    <!--<span class="pointer language" (click)="useLang('jp')" *ngIf="(translateService.currentLang == 'en')">-->
-                        <!--<span>{{"header.japanese" | translate}}</span>-->
-                    <!--</span>-->
-
-
-                    <span *ngIf="account">
-                        <span>
-                            <span *ngIf="balanceLoading; else other" class="loading-balance">
-                                <span class="dot"></span>
-                                <span class="dot"></span>
-                                <span class="dot"></span>
-                            </span>
-                            <ng-template #other>
-                                <span class="pbq-text">
-                                  <span>{{account?.balance | number: '0.0-8'}}</span>
-                                  <span class="num"><b>PBQ</b> <img src="../../../assets/pbq.svg" alt=""></span>
-                                </span>
-                            </ng-template>
-                        </span>
-                    </span>
-                    <!--<mat-menu #bmenu="matMenu">-->
-                        <!--<button mat-menu-item [routerLink]="['/wallet/receive']">-->
-                            <!--<mat-icon>get_app</mat-icon>-->
-                            <!--<span>Receive tokens</span>-->
-                        <!--</button>-->
-                        <!--<button mat-menu-item [routerLink]="['/wallet/transfer']">-->
-                            <!--<mat-icon>forward</mat-icon>-->
-                            <!--<span>Send tokens</span>-->
-                        <!--</button>-->
-                        <!--<button mat-menu-item [routerLink]="['/wallet/transactions']">-->
-                            <!--<mat-icon>reorder</mat-icon>-->
-                            <!--<span>My transactions</span>-->
-                        <!--</button>-->
-
-                    <!--</mat-menu>-->
-
-                    <!--<span *ngIf="account" class="menu-button" [routerLink]="['/user/recover-phrase']">-->
-                        <!--<i [ngClass]="getShieldClass()"></i>-->
-                    <!--</span>-->
+                    </div>
 
                     <span class="sign-out" *ngIf="account">
                         <a href="#" (click)="signout($event)">Sign out</a>

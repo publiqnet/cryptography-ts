@@ -2,9 +2,6 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { RecoverComponent } from './recover/recover.component';
-// import { RegisterConfirmationComponent } from './register-confirmation/register-confirmation.component';
-// import { BrainKeyComponent } from './brain-key/brain-key.component';
-// import { RegisterGuardService } from '../guards/register-guard.service';
 import { LoginCheckGuardService } from '../guards/check-login-guard.service';
 import { RecoverPhraseComponent } from './recover-phrase/recover-phrase.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
@@ -60,23 +57,6 @@ export const userRoutes: Routes = [
           pathMatch: 'full',
           component: RegistrationPasswordComponent
         },
-        // {
-        //   path: 'confirmation/:code',
-        //   pathMatch: 'full',
-        //   component: RegisterConfirmationComponent,
-        // },
-        // {
-        //     path: 'set-new-password/:code',
-        //     pathMatch: 'full',
-        //     component: RecoverComponent,
-        //     canActivate: [LoginCheckGuardService]
-        // },
-        // {
-        //   path: 'complete-registration',
-        //   pathMatch: 'full',
-        //   component: BrainKeyComponent
-        //   // canActivate: [RegisterGuardService]
-        // },
         {
           path: 'recover-phrase',
           pathMatch: 'full',

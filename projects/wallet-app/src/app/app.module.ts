@@ -13,18 +13,11 @@ import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { environment } from '../environments/environment';
 import { UserIdleModule } from './core/models/angular-user-idle/user-idle.module';
-import { HttpHelperService, OauthService } from 'helper-lib';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { OauthService } from 'helper-lib';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ClipboardModule } from 'ngx-clipboard';
 import { SharedLibModule } from 'shared-lib';
-
-HttpHelperService.setBaseHeaders([
-  {
-    headerKay: 'X-API-TOKEN',
-    getHeaderValue: () => localStorage.getItem('auth')
-  }
-]);
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
