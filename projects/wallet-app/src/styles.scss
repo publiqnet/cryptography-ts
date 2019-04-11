@@ -3247,12 +3247,7 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
     font-size: 20px;
   }
 }
-@media screen and (max-width: 560px){
-  mat-card.centered{
-    margin: 50px auto!important;
 
-  }
-}
 
 .modal-padding .mat-dialog-container {
   padding: 15px 50px 33px;
@@ -3261,7 +3256,17 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
   margin-left: 15px;
   margin-right: 15px;
 }
+@media screen and (max-width: 540px){
+  mat-card.centered{
+    margin: 50px auto!important;
 
+  }
+  .modal-padding .mat-dialog-container{
+    padding-right: 34px;
+    padding-left: 34px;
+  }
+
+}
 .message-table{
   margin: 35px auto;
   max-width: 80%;
@@ -3528,7 +3533,7 @@ textarea, input:-ms-input-placeholder {
 
 .main-inner-page{
   padding: 12px;
-  max-width: 804px;
+  max-width: 940px;
   margin: 0 auto 60px;
 
 }
@@ -3577,6 +3582,12 @@ mat-card.mat__spinner{
 }
 @media screen and (max-width: 650px){
   .wallet-tab{
+    min-width: auto;
+    padding-left: 4px;
+    padding-right: 4px;
+    .i-img{
+      margin: 0;
+    }
     span:last-child{
       display: none;
     }

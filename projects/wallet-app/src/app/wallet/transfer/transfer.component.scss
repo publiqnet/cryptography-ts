@@ -141,12 +141,14 @@ textarea:-moz-placeholder{ /* Firefox 18- */
   vertical-align: middle;
 }
 .balance-text{
-  margin: 30px 0 40px;
+  //max-width: 840px;
   text-align: right;
   font-family: 'Open Sans', sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   color: #696969;
+  margin: 25px 0;
+  min-height: 18px;
   span{
     font-weight: 600;
   }
@@ -201,7 +203,7 @@ textarea:-moz-placeholder{ /* Firefox 18- */
   background: #FFFFFF;
   box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
   border-radius: 10px;
-  max-width: 780px;
+  //max-width: 840px;
   margin: 10px auto;
   font-family: 'Open Sans',sans-serif;
 
@@ -221,7 +223,7 @@ textarea:-moz-placeholder{ /* Firefox 18- */
   }
   .accordion-title{
     min-height: 100px;
-    padding: 36px 35px;
+    padding: 36px 50px;
     margin-bottom: 10px;
     cursor: pointer;
     position: relative;
@@ -246,7 +248,7 @@ textarea:-moz-placeholder{ /* Firefox 18- */
 
 }
 .inner-form{
-  max-width: 490px;
+  max-width: 780px;
   margin: 0 auto;
   padding: 0 30px 35px;
   h2{
