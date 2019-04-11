@@ -12,6 +12,7 @@ import { DialogService } from '../../core/services/dialog.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { CryptService } from '../../core/services/crypt.service';
 import { UtilsService } from 'shared-lib';
+import { Account } from '../../core/services/models/account';
 
 
 @Component({
