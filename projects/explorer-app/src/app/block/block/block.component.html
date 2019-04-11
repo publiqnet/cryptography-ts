@@ -1,0 +1,99 @@
+<!--<div>-->
+    <!--<h2 class="mb-3">Block</h2>-->
+    <!--<div class="row justify-content-center align-items-center spinner no-gutters">-->
+        <!--<mat-spinner></mat-spinner>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="container-fluid main-grid mb-5">
+    <div class="mt-50">
+        <h2 class="mb-3">Block #{{ block.block_number }}</h2>
+        <div class="row mb-5">
+            <div class="col-sm-6">
+                <table>
+                    <thead>
+                    <tr class="text-capitalize">
+                        <th>Summary</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Number of transactions</td>
+                        <td>{{block.transactions.length}}</td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td>{{ block.block_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Timestamp</td>
+                        <td>{{ block.timestamp }}</td>
+                    </tr>
+                    <tr>
+                        <td>Miner</td>
+                        <td>{{ block.miner }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Hashes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="font-weight-bold mb-2">Block id</div>
+                            <div>{{ block.block_id }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="font-weight-bold mb-2">Previous Block</div>
+                            <div>{{ block.previous }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="font-weight-bold mb-2">Merkle Root</div>
+                            <div>{{ block.transaction_merkle_root }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="font-weight-bold mb-2">Miner signature</div>
+                            <div style="word-break: break-all;">{{ block.miner_signature }}</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-3">Blocks transactions</h2>
+
+    <div *ngIf="block.transactions.length">
+        <div *ngFor="let transaction of block.transactions; index as i">
+            <h3 class="transaction-number mb-2">Transaction # {{i + 1}}</h3>
+
+            <div *ngFor="let operation of transaction.operations">
+                <!--<div class="operation mb-5">Operation: <strong>{{ operation[0] | OperationName }}</strong></div>-->
+
+                <div class="text-capitalize row table-header no-gutters">
+                    <div class="col-6">Key</div>
+                    <div class="col-6 text-right">Data</div>
+                </div>
+
+                <json-viewer class="viewer" [json]="operation[1]" [showObjectSummery]="false"
+                             [showArraySummery]="false"></json-viewer>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!block.transactions.length">No transactions found</div>
+</div>

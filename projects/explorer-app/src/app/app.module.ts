@@ -9,14 +9,42 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpHelperService, HttpObserverService, OauthService } from 'helper-lib';
+import { SharedModule } from './shared/shared.module';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { Angulartics2Module } from 'angulartics2';
+
+import {
+  MatButtonModule,
+  MatIconModule,
+  MatInputModule,
+  MatProgressSpinnerModule,
+  MatSidenavModule,
+  MatToolbarModule,
+  MatListModule,
+  MatGridListModule,
+  MatCardModule,
+  MatMenuModule,
+  MatTableModule,
+  MatSortModule,
+  MatExpansionModule, MatPaginatorModule
+} from '@angular/material';
+
+import { AppRoutingModule } from './app-routing.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LayoutModule } from '@angular/cdk/layout';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
+import { TemplateComponent } from './template/template.component';
+import { HomepageComponent } from './homepage/homepage.component';
+import { DecimalPipe } from '@angular/common';
+import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
+import { ApiService } from './api.service';
+import { ArticleService } from './services/article.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'explorer-app' }),
     TransferHttpCacheModule,
@@ -29,13 +57,44 @@ export function HttpLoaderFactory(http: HttpClient) {
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+    SharedModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    SharedModule,
+    AppRoutingModule,
+    NgbModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatGridListModule,
+    MatCardModule,
+    MatMenuModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatExpansionModule
+  ],
+  declarations: [
+    AppComponent,
+    HomepageComponent,
+    TemplateComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   providers: [
     OauthService,
     HttpHelperService,
     HttpObserverService,
-    TranslateService
+    TranslateService,
+    ApiService,
+    ArticleService,
+    PbqPipe,
+    DecimalPipe
   ],
   bootstrap: [AppComponent]
 })

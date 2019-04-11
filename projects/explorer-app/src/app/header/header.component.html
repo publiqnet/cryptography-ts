@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" class="public-header header" [ngClass]="{'has-revisions': isHistoryArticle}">
+    <div class="header-slide-wrapper-container">
+        <div class="header-slide-wrapper">
+            <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px">
+                <div fxLayout="column" [ngClass]="{'logo-open': searchBarOpen, 'logo-container': true, 'explorer-logo-container': true, 'logo': true}" fxLayoutAlign="center center">
+                    <a href="/" (click)="redirectToHomePage($event)">
+                        <span class="explorer-logo explorer"  aria-label="PUBLIQ" style='background-image: url("../assets/img/explorer-logo.svg")'></span>
+                    </a>
+                </div>
+                <div class="search-bar col" [ngClass]="{'search-open': searchBarOpen}">
+                    <span (click)="toggleSearch()"></span>
+                    <input type="text" placeholder="Search" #search (keyup.enter)="doSearch(search.value)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isHistoryArticle" class="has-revisions-info">
+        <div class="inner-wrap">
+            <span >This is an old version of this story, a new one is available <a href="#" (click)="articleUpdatedVersion($event)">here</a>.</span>
+        </div>
+    </div>
+    <div class="reading-progress"></div>
+</mat-toolbar>

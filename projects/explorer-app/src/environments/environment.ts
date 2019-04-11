@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  ds_backend: 'https://stage-api.publiq.network:8088',
+  socket_endpoint: 'wss://north.publiq.network:3080/'
 };
 
 /*
