@@ -43,11 +43,6 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
         this.formView = 'formView';
         this.errorMessage = data.message;
       });
-
-    // this.accountService.recoverDataChanged.subscribe(() => {
-    //   this.formView = 'success';
-    //
-    // });
   }
 
   recover() {

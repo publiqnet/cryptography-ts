@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
-import { ErrorService } from './error.service';
-import { UtilsService } from 'shared-lib';
 import { Account } from './models/account';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -32,7 +30,7 @@ export class AccountService {
       const accountCurrentInfo = {
         ...data,
         ...userInfo,
-        token: (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth')
+        token: (userInfo.hasOwnProperty('token')) ? userInfo.token : ''
       };
 
       this.autoLogOut = false;
@@ -54,7 +52,6 @@ export class AccountService {
       .pipe(
         map((userInfo: any) => {
           this.SetAccountInfo = userInfo;
-          localStorage.setItem('auth', userInfo.token);
           this.userIdle.resetTimer();
           return userInfo;
         }))
@@ -63,16 +60,8 @@ export class AccountService {
 
   logout() {
       this.SetAccountInfo = null;
-      localStorage.removeItem('auth');
       this.brainKeyEncrypted = '';
-
-      // localStorage.removeItem('for_adult');
-      // localStorage.setItem('lang', 'en');
-      // localStorage.removeItem(this.userFavouriteTagsKey);
-
       this.accountUpdated$.next(null);
-      // this.unsetBalance();
-      // this.logoutData = null;
       this.logoutDataChanged.next(null);
   }
 

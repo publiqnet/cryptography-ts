@@ -1,6 +1,6 @@
-.footer-wrap{
-  background-color: #191B1E;
-}
+//.footer-wrap{
+//  background-color: #191B1E;
+//}
 .inner-wrap {
   width: 100%;
   max-width: 1160px;
@@ -87,14 +87,10 @@
   color: #979797;
   font-family: 'Open Sans',sans-serif;
   text-align: center;
-  font-size: 14px;
-  color: rgba(236,240,243,0.40);
+  font-size: 12px;
   font-weight: 500;
 }
 
-.footer-wrap .copyright p.copy {
-  font-weight: bold;
-}
 .footer-wrap.authenticated-footer{
   .line{
     border: 1px solid #C1C4CB;
@@ -102,7 +98,7 @@
   }
   background-color: transparent;
   p{
-    font-size: 14px;
+    font-size: 12px;
     color: #8D929A!important;
   }
 }

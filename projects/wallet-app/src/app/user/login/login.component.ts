@@ -42,19 +42,16 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(data => {
-          this.errorMessages = '';
-          this.conditionsWarning = '';
-      },
-    err => console.log(err)
-      );
+      .subscribe(() => {
+        this.errorMessages = '';
+        this.conditionsWarning = '';
+      }, err => console.log(err));
 
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(
-      (data: ErrorEvent) => {
+      .subscribe((data: ErrorEvent) => {
         if (data.action === 'login' || data.action === 'authenticate') {
           this.authStep = TokenCheckStatus.Loading;
           this.notificationService.error(data.message);
@@ -78,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(userData => {
+      .subscribe(() => {
         this.authStep = TokenCheckStatus.Success;
       }, error => {
         console.log('error - ', error);

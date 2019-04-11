@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../core/services/account.service';
-import { Account } from '../../core/services/models/account';
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '../../core/services/notification.service';
 

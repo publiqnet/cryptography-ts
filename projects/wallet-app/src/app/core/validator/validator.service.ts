@@ -5,7 +5,7 @@ export class ValidationService {
 
     static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
         const config = {
-            'email': `Email type is not correct`,
+            'email': `Invalid email`,
             'required': 'Required field',
             'invalidEmailAddress': 'validation.invalidEmailAddress',
             'currentPassword': 'validation.currentPassword',

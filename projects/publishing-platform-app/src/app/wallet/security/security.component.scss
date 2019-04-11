@@ -277,6 +277,7 @@ h5 {
 .colored-wrap.success {
   background: #7ed321;
   color: #fff;
+  display: none;
 }
 .colored-wrap .icon-warning {
   font-size: 32px;
@@ -451,7 +452,7 @@ img.question-mark{
 }
 .inner-wrap .readonly-field input[type="password"] {
   color: #979797;
-  letter-spacing: 5px;
+  letter-spacing: 6px;
 }
 .inner-wrap .readonly-field .show-hide-btn {
   display: flex;
