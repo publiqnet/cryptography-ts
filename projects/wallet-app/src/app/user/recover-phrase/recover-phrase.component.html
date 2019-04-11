@@ -102,7 +102,7 @@
             <span class="line-label backup-title">Address: <i class="icon-question-mark"
                                                  data-hint="Public key is your address to receive tokens."></i></span>
           </div>
-          <div class="pubkey" fxFlex="{{oauthService.brainKeySaved || oauthService.privateKeySaved ? '70%' : '100%'}}">
+          <div class="pubkey" fxFlex="{{oauthService.brainKeySaved && oauthService.privateKeySaved ? '70%' : '100%'}}">
             <!--<div class="public-key-view"><strong>{{account.publicKey}}</strong></div>-->
             <input disabled class="public-key-view" type="text" value="{{account.publicKey}}">
             <span class="copy-btn" (click)="copy(account.publicKey)">
