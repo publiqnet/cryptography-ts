@@ -3491,56 +3491,6 @@ textarea, input:-ms-input-placeholder {
   color: #6b6b6bf5;
   font-weight: 300;
 }
-.wallet-tabs{
-  display: flex;
-  font-family: 'Open Sans', sans-serif;
-  align-items: center;
-}
-.wallet-tab{
-  background-color: transparent;
-  border-radius: 7px;
-  //flex: 0 0 122px;
-  margin-right: 8px;
-  font-size: 16px;
-  color: #333333;
-  opacity: 0.6;
-  padding: 13px 10px 12px;
-  text-align: center;
-  cursor: pointer;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 90px;
-  transition: .2s ease-in;
-  &:hover{
-    opacity: 1;
-    transition: .2s ease-in;
-  }
-  .i-img{
-    vertical-align: middle;
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    background-size: 100%;
-  }
-  .i-img.wallet-svg{
-    background: url("assets/wallet.svg") no-repeat;
-  }
-  .i-img.sec-svg{
-    background: url("assets/security.svg") no-repeat;
-  }
-  &.active{
-    opacity: 1;
-    transition: .2s ease-in;
-    //.i-img.wallet-svg{
-    //  background: url("assets/wallet_white.svg") no-repeat;
-    //}
-    //.i-img.sec-svg{
-    //  background: url("assets/security_white.svg") no-repeat;
-    //}
-  }
-}
 
 .main-inner-page{
   padding: 12px;
@@ -3590,19 +3540,6 @@ mat-card.mat__spinner{
   will-change: transform, opacity;
   animation-timing-function: ease-out;
   animation-name: letters-move;
-}
-@media screen and (max-width: 650px){
-  .wallet-tab{
-    min-width: auto;
-    padding-left: 4px;
-    padding-right: 4px;
-    .i-img{
-      margin: 0;
-    }
-    span:last-child{
-      display: none;
-    }
-  }
 }
 .cdk-overlay-pane{
   overflow: auto;

@@ -1,36 +1,57 @@
-<mat-toolbar color="primary" class="public-header" [ngClass]="{'not-authorised': !account}">
-    <div class="header-slide-wrapper-container">
-        <div class="header-slide-wrapper">
-            <div class="header-slide inner-wrap" fxLayout="row" fxLayoutAlign="space-between center">
-                <div *ngIf="account"  fxLayout="column" [ngClass]="{'logo-container': true}"
-                     fxLayoutAlign="center center">
-                    <span><img src="assets/publiq.svg"  [routerLink]="['/']" class="publiq-logo"></span>
-                </div>
-              <div *ngIf="!account" class="not-authorised-user">
-                <img src="assets/publiq.svg"  [routerLink]="['/']" class="publiq-logo">
-              </div>
-                <span class="spacer"></span>
-
-                <div fxLayout="row" fxLayoutGap="10px">
-
-                    <div *ngIf="account" class="header-tools">
-                       <div class="wallet-tabs">
-                          <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
-                            <span class="i-img wallet-svg"></span>
-                              <span>Wallet</span></div>
-                          <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
-                            <span class="i-img sec-svg"></span><span>Security</span>
-                          </div>
-                        </div>
-
-                    </div>
-
-                    <span class="sign-out" *ngIf="account">
-                        <a href="#" (click)="signout($event)">Sign out</a>
-                    </span>
-                </div>
-            </div>
+<mat-toolbar color="primary" class="public-header" [ngClass]="{'not-authorised': !account}" >
+  <div class="header-slide-wrapper-container">
+    <div class="header-slide-wrapper" style="width: 100%">
+      <div class="header-slide inner-wrap" style="width: 100%" fxLayout="row" fxLayoutAlign="space-between center">
+        <div *ngIf="account" fxLayout="column" [ngClass]="{'logo-container': true}"
+             fxLayoutAlign="center center">
+          <span><img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo"></span>
         </div>
+        <div *ngIf="!account" class="not-authorised-user" style="width: 100%">
+          <img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo desktop-logo">
+          <img  src="assets/Publiq_logo.svg" [routerLink]="['/']" class="publiq-logo mobile-logo">
+        </div>
+
+        <div fxLayout="row" *ngIf="account"  fxLayoutGap="10px" style="width: 100%">
+          <div class="header-tools" style="width: 100%">
+            <div class="wallet-tabs">
+              <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+                <span class="i-img wallet-svg"></span>
+                <span>Wallet</span></div>
+              <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+                <span class="i-img sec-svg"></span><span>Security</span>
+              </div>
+            </div>
+
+            <div class="menu-desk-items">
+                <span *ngIf="balanceLoading; else other" class="loading-balance">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </span>
+                <ng-template #other>
+                    <span class="pbq-text">
+                      <span class="balance">{{account?.balance | number: '0.0-8'}}</span>
+                      <span class="num"><b>PBQ</b></span>
+                    </span>
+                </ng-template>
+                <span class="sign-out" *ngIf="account">
+                  <a href="#" (click)="signout($event)">
+                    <img src="../../../assets/log_out.svg" alt="">
+                  </a>
+                </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="account" class="wallet-tabs mobile-header" id="header" >
+        <div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">
+          <span class="i-img wallet-svg"></span>
+          <span>Wallet</span></div>
+        <div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">
+          <span class="i-img sec-svg"></span><span>Security</span>
+        </div>
+      </div>
     </div>
+  </div>
 
 </mat-toolbar>

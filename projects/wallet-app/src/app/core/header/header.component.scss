@@ -20,8 +20,11 @@
   }
 }
 .pbq-text{
-  display: flex;align-items: center;justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 13px;
+  padding: 0 10px;
   span{
     vertical-align: middle;
   }
@@ -67,7 +70,6 @@ button {
 }
 
 .header-slide-wrapper-container {
-  overflow:hidden;
   width: 100%;
   height: 100%;
 }
@@ -97,18 +99,90 @@ button {
   max-width: 100%;
   height: 32px;
   cursor: pointer;
-
-  &.testnet {
-    height: 46px;
+  &.mobile-logo{
+    display: none;
   }
 }
 .header-tools{
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 .popular-tags {
   padding-right: 100px;
 }
+.wallet-tabs{
+  display: flex;
+  font-family: 'Open Sans', sans-serif;
+  align-items: center;
+  height: 100%;
+  padding-bottom: 2px;
+}
+.menu-desk-items{
+  display: flex;
+  align-items: center;
+  border: 1px solid #DEE2E6;
+  border-radius: 4px;
+  height: 36px;
+  margin-left: 20px;
+  span{
+    font-size: 13px;
+  }
+  .balance{
+    font-weight: 600;
+  }
+  .sign-out{
+    height: 100%;
+    padding: 5px;
+    a{
+      display: flex;
+      height: 100%;
+    }
+  }
+}
+.wallet-tab{
+  height: 100%;
+  background-color: transparent;
+  //flex: 0 0 122px;
+  //margin-right: 8px;
+  font-size: 15px;
+  color: #565A60;
+  padding: 16px 20px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  border-bottom: 2px solid transparent;
+  .i-img{
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+    background-size: 100%;
+  }
+  .i-img.wallet-svg{
+    background: url("../../../assets/wallet.svg") no-repeat;
+  }
+  .i-img.sec-svg{
+    background: url("../../../assets/security.svg") no-repeat;
+  }
+  &.active, &:hover{
+    color: #3366FF;
+    background-color: #E9EFFF;
+    .i-img.wallet-svg{
+      background: url("../../../assets/wallet_blue.svg") no-repeat;
+    }
+    .i-img.sec-svg{
+      background: url("../../../assets/security_blue.svg") no-repeat;
+    }
+  }
+  &:not(.active):hover{
+    background-color: transparent;
+  }
+}
+
 
 ul {
   margin: 0;
@@ -138,11 +212,7 @@ ul {
 }
 
 .sign-out {
-  padding-left: 20px;
-  margin-left: 6px;
-  border-left: 1px solid #666;
-  font-size: 16px;
-  color: #333333;
+  border-left: 1px solid #DEE2E6;
   opacity: .6;
   vertical-align: middle;
   display: flex;
@@ -150,18 +220,15 @@ ul {
   transition: .2s ease-in;
   &:hover{
     opacity: 1;
-    color: #333333;
     transition: .2s ease-in;
   }
   a:hover{
     text-decoration: none;
     transition: .2s ease-in;
-    color: #333333;
   }
   a:focus{
     text-decoration: none;
     opacity: 1;
-    color: #333333;
     transition: .2s ease-in;
   }
 }
@@ -271,10 +338,62 @@ mat-menu {
     &:last-of-type {animation-delay: .6s;}
   }
 }
+.mobile-header{
+  display: none;
+}
+.fixed-header{
+  position: fixed;
+  transition: .2s ease-in;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.16);
+}
+@media screen and (max-width: 767px){
+  .header-tools .wallet-tabs{
+    display: none;
+  }
+  .wallet-tabs .wallet-tab.active{
+    background-color: transparent;
+    color: #3366FF;
+    border-bottom: 2px solid #3366FF;
+    transition: .2s ease-in;
+    padding-bottom: 0;
+  }
 
+  .public-header:not(.not-authorised){
+    height: auto;
+    position: static;
+    padding: 0;
+    .header-slide{
+      height: 60px;
+      padding: 0 20px;
+    }
+    .header-slide-wrapper{
+      height: 120px;
+    }
+  }
+  .mobile-header{
+    transition: .2s ease-in;
+    display: flex;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    height: 60px;
+    top: 0;
+    >div{
+      width: 100%;
+    }
+  }
+}
 @media screen and (max-width: 540px){
   .sign-out{
     margin-left: 0;
     padding-left: 10px;
+  }
+  .publiq-logo.mobile-logo{
+    display: block;
+  }
+  .publiq-logo.desktop-logo{
+    display: none;
   }
 }

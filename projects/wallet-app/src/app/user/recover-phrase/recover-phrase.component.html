@@ -12,31 +12,50 @@
     <mat-spinner></mat-spinner>
   </mat-card>
 
-  <div class="inner-wrap pr-0 pl-0" [hidden]="loading">
-    <div class="mt-3" [hidden]="passwordVerified">
-      <div class="security">
-        <div class="security-title">
-          <!--<h4>Security</h4>-->
-        </div>
-        <div class="security-level-container">
-          <span>Security steps</span>
-          <div [ngClass]="getSecurityClass()">
-            <div class="security-level-range">{{securityStatusName}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!--<div class="inner-wrap pr-0 pl-0" [hidden]="loading">-->
+    <!--<div class="mt-3" [hidden]="passwordVerified">-->
+      <!--<div class="security">-->
+        <!--<div class="security-title">-->
+          <!--&lt;!&ndash;<h4>Security</h4>&ndash;&gt;-->
+        <!--</div>-->
+        <!--<div class="security-level-container">-->
+          <!--<span>Security steps</span>-->
+          <!--<div [ngClass]="getSecurityClass()">-->
+            <!--<div class="security-level-range">{{securityStatusName}}</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
 
   <div class="colored-wrap"  *ngIf="(account && !oauthService.brainKeySeen)">
     <div class="inner-wrap">
       <div class="recovery-header" style="width: 100%">
         <div style="display: flex">
           <i class="icon-warning step-1"></i>
-          <p>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.Your recovery phrase is the only way to reset your web wallet password.
-            <span class="d-block">1/2 Backup private key.</span>
-            <span class="d-block">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span></span>
-          </p>
+          <div>
+            <p>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.Your recovery phrase is the only way to reset your web wallet password.</p>
+            <div class="inner-wrap pr-0 pl-0" [hidden]="loading">
+              <div class="mt-3" [hidden]="passwordVerified">
+                <div class="security">
+                  <div class="security-title">
+                    <!--<h4>Security</h4>-->
+                  </div>
+                  <div class="security-level-container">
+                    <span>Security steps</span>
+                    <div [ngClass]="getSecurityClass()">
+                      <div class="security-level-range">{{securityStatusName}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p>
+              <span class="d-block">1/2 Backup private key.</span>
+              <span class="d-block">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span></span>
+            </p>
+          </div>
+
         </div>
       </div>
     </div>
@@ -69,10 +88,30 @@
           </div>
 
           <div fxFlex="100%">
-            <p>You have to backup your private key and recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your password, private key or recovery phrase they could access your wallet.
-              <span class="d-block">1/2 Backup private key.</span>
-              <span class="d-block">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span></span>
-            </p>
+            <div>
+              <p>You have to backup your recovery phrase. It is strongly recommended to store the backup copies in physically separate, offline environment. If someone were to find your recovery phrase they could access your wallet.Your recovery phrase is the only way to reset your web wallet password.
+              </p>
+              <div class="inner-wrap pr-0 pl-0" [hidden]="loading">
+                <div class="mt-3" [hidden]="passwordVerified">
+                  <div class="security">
+                    <div class="security-title">
+                      <!--<h4>Security</h4>-->
+                    </div>
+                    <div class="security-level-container">
+                      <span>Security steps</span>
+                      <div [ngClass]="getSecurityClass()">
+                        <div class="security-level-range">{{securityStatusName}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p>
+                <span class="d-block">1/2 Backup private key.</span>
+                <span class="d-block">2/2 Backup recovery phrase. <span> Your recovery phrase is the only way to reset your web wallet password.</span></span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
