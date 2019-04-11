@@ -29,7 +29,7 @@
     <div class="inner-form" #accordionTab>
       <!--<h2>Send PBQs to the recipient's account. ????? </h2>-->
 
-      <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="openConfirmDialog()">
+      <form class="form" novalidate [formGroup]="transferForm" autocomplete="off" (ngSubmit)="onSubmit()">
         <div fxLayout="column" fxLayout.sm="column" fxLayout.xs="column">
           <!--AMOUNT INPUT-->
           <div class="input-div">

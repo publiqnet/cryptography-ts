@@ -127,7 +127,7 @@ export class TransferComponent implements OnInit, OnDestroy {
     ValidationService.decimal(event, this.transferForm.value.amount);
 
     if (this.transferForm.valid && (event.code === 'Enter' || event.code === 'NumpadEnter')) {
-      this.openConfirmDialog();
+      this.onSubmit();
     }
   }
 
@@ -179,11 +179,7 @@ export class TransferComponent implements OnInit, OnDestroy {
       });
   }
 
-  calcPBQ(amount) {
-    return amount * Math.pow(10, CoinPrecision);
-  }
-
-  openConfirmDialog() {
+  onSubmit() {
     const message = `
             <div class="pbq-divs"> <span>Amount: </span><span>${this.amount}</span> </div>
             <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
