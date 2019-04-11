@@ -26,7 +26,7 @@ export class TransferComponent implements OnInit, OnDestroy {
   balance: any = 0;
   transferFee = 0;
   public transferForm: FormGroup;
-  public accountInfo;
+  public accountInfo: Account;
   public loading = false;
   amountErrorMessage = '';
   receiveTab = true;

@@ -32,6 +32,8 @@ mat-card {
   line-height: 1.4;
   font-size: 16px;
   color: #565A60;
+  position: relative;
+  z-index: 1;
 }
 @media screen and (max-width: 560px) {
   mat-card {
