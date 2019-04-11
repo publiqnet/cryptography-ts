@@ -223,9 +223,10 @@ export class TransferComponent implements OnInit, OnDestroy {
   openConfirmDialog() {
     const message = `
             <!--<div class="pbq-div">Are you sure you want to make this transaction?</div>-->
-            <div class="pbq-divs"> <span>Amount: </span><span>${this.amount}</span> </div>
             <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
-            <div class="pbq-divs"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
+            <div class="pbq-divs short"> <span>Amount: </span><span>${this.amount}</span> </div>
+            <div class="pbq-divs short"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
+            <div class="pbq-divs"> <span>Message: </span><span>${this.memo}</span></div>
         `;
     this.dialogService.openConfirmDialog('transfer-confirmation', 'Confirm Your Transfer', message, {}).subscribe(data => {
       if (data) {

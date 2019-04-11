@@ -192,16 +192,15 @@ h5{
   margin-right: 20px;
   transition: .2s;
   cursor: pointer;
+  border: 1px solid #DEE2E6!important;
   &:hover{
-    background-color: #3366FF!important;
-    color: #ffffff!important;
+    border-color: #565A60!important;
+    color: #565A60!important;
     transition: .2s;
   }
-  &:focus{
+  &:focus {
     outline: none;
   }
-
-  border: 1px solid #3366FF!important;
 
 }
 @media screen and (max-width: 890px){
