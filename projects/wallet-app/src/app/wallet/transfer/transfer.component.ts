@@ -181,7 +181,7 @@ export class TransferComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     const message = `
-            <div class="pbq-divs"> <span>Recipient address: </span><span>${this.public_key}</span></div>
+            <div class="pbq-divs address"> <span>Recipient address: </span><span>${this.public_key}</span></div>
             <div class="pbq-divs short"> <span>Amount: </span><span>${this.amount}</span> </div>
             <div class="pbq-divs short"> <span>Transaction fee: </span><span>${this.transferFee} PBQ</span></div>
             <div class="pbq-divs"> <span>Message: </span><span>${this.memo}</span></div>

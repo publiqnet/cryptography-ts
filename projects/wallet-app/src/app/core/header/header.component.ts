@@ -1,4 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { AccountService } from '../services/account.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
@@ -23,7 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class HeaderComponent implements OnInit, OnDestroy {
   navTabView = '';
   account: any = null;
-
+  fixedNav: boolean;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private router: Router,
@@ -35,6 +36,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
               public oauthService: OauthService,
               private errorService: ErrorService,
               private notificationService: NotificationService) {
+  }
+
+  @HostListener('window:scroll', ['$event'])
+
+  onWindowScroll(e) {
+    if (isPlatformBrowser(this.platformId) && (this.router.url === '/wallet/transfer' || this.router.url === '/user/recover-phrase')) {
+      // console.log(this.router.url);
+      if ( window.pageYOffset > 60) {
+        const element = document.getElementById('header');
+        element.classList.add('fixed-header');
+      } else {
+        const element = document.getElementById('header');
+        element.classList.remove('fixed-header');
+      }
+    }
   }
 
   ngOnInit() {

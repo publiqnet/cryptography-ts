@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
 mat-card.centered {
   min-width: 150px;
   max-width: 580px;
@@ -52,6 +54,10 @@ mat-card.centered {
   margin-bottom: 25px;
   background: #ECF0F3;
   border-radius: 5px;
+  font-family: 'Roboto Mono', monospace;
+  &::-webkit-input-placeholder {
+    font-family: 'Open Sans', sans-serif;
+  }
 }
 .error-msg{
   margin-bottom: 20px;
@@ -112,6 +118,7 @@ mat-card.centered {
   font-weight: 500;
   color: #333;
   font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
   &:focus{
     outline: none;
   }

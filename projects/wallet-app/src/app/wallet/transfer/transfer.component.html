@@ -1,17 +1,4 @@
-<section class="main-inner-page">
-
-  <!--<div class="wallet-tabs">-->
-    <!--<div class="wallet-tab " routerLinkActive="active" routerLink="/wallet/transfer">-->
-      <!--<span class="i-img wallet-svg"></span>-->
-      <!--<span>Wallet</span></div>-->
-    <!--<div class="wallet-tab" routerLinkActive="active" routerLink="/user/recover-phrase">-->
-      <!--<span class="i-img sec-svg"></span><span>Security</span></div>-->
-
-    <!--<span>{{account?.balance | number: '0.0-8'}}</span>-->
-
-  <!--</div>-->
-  <h2 class="balance-text"><span>Your Balance:</span> {{accountInfo?.balance | number: '0.0-8'}} PBQ</h2>
-
+<section class="main-inner-page" (scroll)="onWindowScroll($event);">
 
   <!--for receive-->
   <div class="centered security-form inner-pages active-tab" [class.active-tab]="receiveTab" *ngIf="!loading">
