@@ -8,7 +8,6 @@
         <input class="mail-input" formControlName="email" placeholder="Email" required/>
 
         <div [hidden]="!hasErrors" class="warning">
-          {{'yet'}}
           <app-control-message class="mb-4 h6" [control]="registerForm.controls['email']"></app-control-message>
         </div>
 
