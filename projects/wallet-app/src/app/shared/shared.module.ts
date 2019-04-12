@@ -61,7 +61,7 @@ export function createTranslateLoader(http: HttpClient) {
         MatTooltipModule,
         MatNativeDateModule,
         FormsModule,
-        ReactiveFormsModule,
+        ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'}),
         FlexLayoutModule,
         TranslateModule.forChild({
           loader: {

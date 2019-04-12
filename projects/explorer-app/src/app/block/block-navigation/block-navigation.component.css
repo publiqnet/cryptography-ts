@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+  .mined-text {
+    order: 1;
+    font-size: 1.3em;
+    flex: 0 0 100%;
+    margin-top: 1em;
+  }
+}

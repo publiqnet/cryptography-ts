@@ -1,0 +1,134 @@
+/deep/ snack-bar-container.notification-success {
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+
+/deep/ snack-bar-container.notification-error {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+/deep/ snack-bar-container.notification-info {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+
+/deep/ snack-bar-container.notification-warning {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+
+/deep/ snack-bar-container.notification-autoSave {
+  color: #909090;
+  font-size: 5px;
+  background-color: #D0D0D0;
+  border-color: #D0D0D0;
+  min-width: 120px;
+  padding: 2px 24px;
+}
+
+.inner-wrap {
+  width: 100%;
+  max-width: 1160px;
+  display: block;
+  position: relative;
+  margin: auto;
+}
+
+.footer-wrap .line {
+  width: 100%;
+  width: calc(100% - 10px);
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 1px;
+  background: #999999;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.footer-wrap {
+  margin: 0;
+  padding: 25px 0 50px 0;
+
+  &.gray {
+    background: #f0f0f0;
+  }
+}
+
+.content-wrap {
+  position: relative;
+}
+
+.footer-wrap .inner-wrap {
+  padding-top: 40px;
+}
+
+.footer-wrap .footer-navigation {
+  display: block;
+  text-align: center;
+}
+
+.footer-wrap .footer-navigation a, .footer-wrap .footer-navigation span {
+  font-size: 12px;
+  font-family: Open Sans;
+  font-weight: 700;
+  margin: 0 8px;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.footer-wrap .footer-navigation a, .footer-wrap .footer-navigation span {
+  font-size: 12px;
+  font-family: Open Sans;
+  font-weight: 700;
+  margin: 0 8px;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.footer-wrap .copyright {
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.footer-wrap .copyright .social-icon {
+  display: inline-block;
+  margin: 0 10px 20px 10px;
+  font-size: 18px;
+}
+
+.footer-wrap .copyright a {
+  color: #CCC;
+}
+
+.footer-wrap .copyright .social-icon {
+  display: inline-block;
+  margin: 0 10px 20px 10px;
+  font-size: 18px;
+}
+
+.footer-wrap .copyright a {
+  color: #979797;
+}
+
+.footer-wrap .copyright p {
+  margin-bottom: 0;
+  font-weight: 300;
+  color: #979797;
+  font-family: Open Sans;
+  font-size: 12px;
+  text-align: center;
+}
+
+.footer-wrap .copyright p.copy {
+  font-weight: bold;
+}

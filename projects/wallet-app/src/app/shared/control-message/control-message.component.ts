@@ -1,26 +1,33 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
+
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+
 import { ValidationService } from '../../core/validator/validator.service';
-import 'rxjs/add/operator/debounceTime';
-import { ErrorService } from '../../core/services/error.service';
+
 
 @Component({
     selector: 'app-control-message',
     templateUrl: './control-message.component.html'
 })
 
-export class ControlMessagesComponent implements OnChanges {
+export class ControlMessagesComponent implements OnChanges, OnDestroy {
     @Input() control: FormControl;
     errorMessage = '';
+    private unsubscribe$ = new ReplaySubject<void>(1);
 
-    constructor(private errorService: ErrorService) {
+    constructor() {
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.control.currentValue && changes.control.currentValue != 'undefined') {
-            changes.control.currentValue.valueChanges.debounceTime(400).subscribe(val => {
-                this.getError();
-            });
+            changes.control.currentValue.valueChanges
+              .pipe(
+                debounceTime(400),
+                takeUntil(this.unsubscribe$)
+              )
+              .subscribe(() => this.getError());
         }
     }
 
@@ -31,5 +38,10 @@ export class ControlMessagesComponent implements OnChanges {
             }
         }
         return this.errorMessage = null;
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 }

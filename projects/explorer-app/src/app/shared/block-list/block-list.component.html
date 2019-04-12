@@ -1,0 +1,22 @@
+<table class="text-center mb-4" *ngIf="blocks.length">
+    <thead>
+    <tr class="text-capitalize">
+        <th class="text-center">block id</th>
+        <th class="text-center">miner</th>
+        <th class="text-center" class="d-none d-md-table-cell">previous</th>
+        <th class="text-center">timestamp</th>
+        <th class="text-center">transactions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.block_number">
+        <td>
+            <a [routerLink]="['/block', block.block_number]">{{block.block_number}}</a>
+        </td>
+        <td>{{block.miner}}</td>
+        <td class="d-none d-md-table-cell">{{block.previous}}</td>
+        <td>{{block.timestamp}}</td>
+        <td>{{block.transactions.length}}</td>
+    </tr>
+    </tbody>
+</table>
