@@ -10,8 +10,7 @@ import { WalletService } from '../services/wallet.service';
 import { NotificationService } from '../services/notification.service';
 import { OauthService } from 'helper-lib';
 import { TranslateService } from '@ngx-translate/core';
-
-
+import { AccountService } from '../services/account.service';
 
 
 @Component({

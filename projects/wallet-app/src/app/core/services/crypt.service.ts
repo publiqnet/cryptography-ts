@@ -88,7 +88,7 @@ export class CryptService {
 
   getPrivateKey(brainKey: string): string {
     const keyPair = new KeyPair(brainKey);
-    return keyPair.Private.key;
+    return keyPair.Private.Base58;
   }
 
   amountStringToWholeFraction(amountString) {
