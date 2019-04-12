@@ -1,26 +1,17 @@
 <div class="session-page">
   <div class="centered session-form" *ngIf="formView === 'registerForm'">
-    <!--<mat-card-title>Create PUBLIQ Wallet</mat-card-title>-->
-    <!--<mat-card-subtitle>Enter your email to create new wallet.</mat-card-subtitle>-->
     <h1>Create PUBLIQ Wallet</h1>
     <h2>Enter your email to get authentication link.</h2>
 
     <div>
       <form class="form" novalidate (ngSubmit)="register()" [formGroup]="registerForm">
-        <!--<mat-form-field class="full-width">-->
-        <!--<input matInput formControlName="email" placeholder="Email" required/>-->
-        <!--</mat-form-field>-->
         <input class="mail-input" formControlName="email" placeholder="Email" required/>
 
-        <div class="warning">
+        <div [hidden]="!hasErrors" class="warning">
           <app-control-message class="mb-4 h6" [control]="registerForm.controls['email']"></app-control-message>
         </div>
 
-        <div class="warning" *ngIf="conditionsWarning">
-          <div class="warning-message" [innerHTML]="conditionsWarning"></div>
-        </div>
-
-          <button class="submit-button" [disabled]="!registerForm.valid" type="submit">Get the link</button>
+        <button class="submit-button" (click)="validateForm()" type="submit">Get the link</button>
         <p class="have-wallet">Have a Wallet? <a href="" routerLink="/user/login">Login</a></p>
       </form>
     </div>
