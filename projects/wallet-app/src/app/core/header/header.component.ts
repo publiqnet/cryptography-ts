@@ -10,7 +10,6 @@ import { ErrorEvent, ErrorService } from '../services/error.service';
 import { WalletService } from '../services/wallet.service';
 import { NotificationService } from '../services/notification.service';
 import { OauthService } from 'helper-lib';
-import { AccountService } from '../services/account.service';
 import { TranslateService } from '@ngx-translate/core';
 
 
