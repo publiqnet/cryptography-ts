@@ -4,11 +4,13 @@
       <div class="header-slide inner-wrap" style="width: 100%" fxLayout="row" fxLayoutAlign="space-between center">
         <div *ngIf="account" fxLayout="column" [ngClass]="{'logo-container': true}"
              fxLayoutAlign="center center">
-          <span><img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo"></span>
+          <span>
+            <img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo desktop-logo">
+            <img  src="assets/Publiq_logo.svg" [routerLink]="['/']" class="publiq-logo mobile-logo">
+          </span>
         </div>
         <div *ngIf="!account" class="not-authorised-user" style="width: 100%">
-          <img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo desktop-logo">
-          <img  src="assets/Publiq_logo.svg" [routerLink]="['/']" class="publiq-logo mobile-logo">
+          <img src="assets/publiq.svg" [routerLink]="['/']" class="publiq-logo">
         </div>
 
         <div fxLayout="row" *ngIf="account"  fxLayoutGap="10px" style="width: 100%">

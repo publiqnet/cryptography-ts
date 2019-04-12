@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
 mat-row{
   border: none;
 }
@@ -101,6 +103,8 @@ mat-table mat-cell {
     color: #2B2B2B;
     word-break: break-all;
     line-height: normal;
+    font-family: 'Roboto Mono', monospace;
+
   }
 }
 .loader mat-spinner{
@@ -137,74 +141,23 @@ mat-table h3{
 @media screen and (max-width: 540px) {
   mat-table mat-cell:first-of-type{
     padding-left: 10px;
-    flex: 0 0 40px;
+    flex: 0 0 20px;
+    mat-icon{
+      font-size: 20px!important;
+      padding: 0!important;
+    }
   }
   .example-detail-row{
     min-width: 70%;
-    margin-left: 16px;
+    margin-left: 8px;
   }
   .footer-wrap.authenticated-footer .line{
     width: 80%;
   }
+  .mat-list-base .mat-list-item .mat-list-item-content{
+    padding: 0 10px;
+  }
+  .first-title {
+    margin: 0 0 16px 0;
+  }
 }
-//@media screen and (max-width: 520px) {
-//  /deep/
-//  mat-table mat-row {
-//    flex-wrap: wrap;
-//    padding: 24px!important;
-//  }
-//
-//  /deep/
-//  mat-table mat-row mat-cell {
-//    flex: 1 1 50% !important;
-//
-//    &:first-of-type {
-//      display: none !important;
-//    }
-//
-//    &:nth-of-type(2) {
-//      display: flex;
-//      h3 {
-//        margin-bottom: 0 !important;
-//      }
-//      p:before {
-//        content:',';
-//        margin-right: 4px;
-//      }
-//    }
-//
-//    &:nth-of-type(3) {
-//      order: 1;
-//      flex-basis: 100% !important;
-//
-//      .mat-list-item {
-//        padding: 0 !important;
-//        height: auto !important;
-//
-//        .mat-list-item-content {
-//          padding: 0;
-//        }
-//
-//        h3 {
-//          white-space: normal !important;
-//
-//          span {
-//            color: #8d8d8d;
-//            font-size: 12px!important;
-//            display: inline-block;
-//            margin-bottom:4px;
-//          }
-//        }
-//      }
-//    }
-//  }
-//
-//  .payment-line {
-//    &:hover {
-//      text-decoration: none;
-//    }
-//    &:focus {
-//      text-decoration: none;
-//    }
-//  }
-//}

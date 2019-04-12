@@ -110,18 +110,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('window:scroll', ['$event'])
-    // onWindowScroll() {
-    //   if (isPlatformBrowser(this.platformId) && this.router.url === '/wallet/transfer') {
-    //     if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 120) {
-    //       this.fixedNav = true;
-    //     } else if (this.fixedNav && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 60) {
-    //       this.fixedNav = false;
-    //     }
-    //   }
-    // }
 
     onWindowScroll(e) {
-      if (isPlatformBrowser(this.platformId) && (this.router.url === '/wallet/transfer' || this.router.url === 'user/recover-phrase')) {
+      if (isPlatformBrowser(this.platformId) && (this.router.url === '/wallet/transfer' || this.router.url === '/user/recover-phrase')) {
         // console.log(this.router.url);
         if ( window.pageYOffset > 60) {
           const element = document.getElementById('header');

@@ -208,9 +208,6 @@
   }
 }
 @media screen and (max-width: 540px){
-  .trans-confirm .transaction-btns{
-    width: 90%;
-  }
   .see-btns{
     flex-direction: column;
     >button{
@@ -221,11 +218,6 @@
   }
   .info-container .backup-private-key .recovery-verify-steps form .verify-inputs-container input{
     width: 100%;
-  }
-  .info-container mat-icon {
-    position: absolute;
-    top: -2px;
-    right: -24px;
   }
 }
 

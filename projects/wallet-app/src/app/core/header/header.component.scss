@@ -286,18 +286,6 @@ mat-menu {
 }
 
 @media screen and (max-width: 480px){
-  .public-header{
-
-  }
-  .publiq-logo {
-    height: 28px !important;
-    &.testnet {
-      height: 36px !important;
-    }
-  }
-  .sign-out {
-    font-size: 11px;
-  }
   .icon {
     font-size: 20px;
     padding-left: 12px;
@@ -350,14 +338,15 @@ mat-menu {
   .header-tools .wallet-tabs{
     display: none;
   }
-  .wallet-tabs .wallet-tab.active{
-    background-color: transparent;
-    color: #3366FF;
-    border-bottom: 2px solid #3366FF;
-    transition: .2s ease-in;
+  .wallet-tabs{
     padding-bottom: 0;
+    .wallet-tab.active{
+      background-color: transparent;
+      color: #3366FF;
+      border-bottom: 2px solid #3366FF;
+      transition: .2s ease-in;
+    }
   }
-
   .public-header:not(.not-authorised){
     height: auto;
     position: static;
