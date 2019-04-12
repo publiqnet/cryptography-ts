@@ -22,9 +22,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   email: String = '';
 
   public loginForm: FormGroup;
-  private errorMessages: string;
-  private conditionsWarning: string;
   public authStep = TokenCheckStatus.Init;
+  public hasErrors = false;
 
   constructor(
     public accountService: AccountService,
@@ -43,8 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-        this.errorMessages = '';
-        this.conditionsWarning = '';
+       this.hasErrors = false;
       }, err => console.log(err));
 
     this.errorService.errorEventEmiter
@@ -80,6 +78,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       }, error => {
         console.log('error - ', error);
       });
+  }
+
+  validateForm() {
+    this.hasErrors = this.loginForm.invalid;
   }
 
   private buildForm() {

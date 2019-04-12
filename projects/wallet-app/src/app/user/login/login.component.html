@@ -1,5 +1,4 @@
 <div class="session-page">
-  <!--accountService.autoLogOut-->
   <div class="header-text autologout" *ngIf="accountService.autoLogOut">
       <span>
           Looks like you have left.
@@ -8,25 +7,24 @@
       We have logged you out to keep your wallet safe. To start working again, just log back in.
     </p>
   </div>
-  <div class="centered session-form positioned" [ngClass]="{'position-top':accountService.autoLogOut }" *ngIf="authStep == AuthStepStatusEnum.Init">
+  <div class="centered session-form positioned" [ngClass]="{'position-top':accountService.autoLogOut }"
+       *ngIf="authStep == AuthStepStatusEnum.Init">
     <h1>Log in to PUBLIQ Wallet</h1>
     <h2>Enter your email to get authorization link.</h2>
-
 
     <div>
       <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
 
-        <input class="mail-input" formControlName="email" placeholder="Email" value="">
+        <input class="mail-input" formControlName="email" placeholder="Email" required>
 
-        <div>
+        <div [hidden]="!hasErrors">
+          {{loginForm.controls['email'].errors | json}}
           <app-control-message class="warning mb-4 h6" [control]="loginForm.controls['email']"></app-control-message>
         </div>
 
-        <button class="submit-button" [disabled]="!loginForm.valid">Get the link</button>
+        <button class="submit-button" (click)="validateForm()">Get the link</button>
 
-        <!--<a [routerLink]="['/user/recover']" class="forgot-password">Forgot your password?</a>-->
         <p class="have-wallet">No wallet? <a href="" routerLink="/user/register">Create one</a></p>
-
       </form>
     </div>
   </div>

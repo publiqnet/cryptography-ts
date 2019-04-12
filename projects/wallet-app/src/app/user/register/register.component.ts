@@ -17,9 +17,8 @@ import { OauthService } from 'helper-lib';
 export class RegisterComponent implements OnInit, OnDestroy {
 
   public registerForm: FormGroup;
-  private errorMessages: string;
-  private conditionsWarning: string;
   public formView = 'registerForm';
+  public hasErrors = false;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -39,8 +38,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-          this.errorMessages = '';
-          this.conditionsWarning = '';
+          this.hasErrors = false;
         },
         err => console.log(err)
       );
@@ -62,6 +60,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.invalid) {
       return;
     }
+
     this.formView = '';
 
     // @ts-ignore
@@ -87,6 +86,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         ValidationService.emailValidator
       ])
     });
+  }
+
+  validateForm() {
+    this.hasErrors = this.registerForm.invalid;
   }
 
   ngOnDestroy() {
