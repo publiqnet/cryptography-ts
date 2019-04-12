@@ -1,9 +1,8 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
-
 import { ValidationService } from '../../core/validator/validator.service';
 
 
@@ -12,18 +11,12 @@ import { ValidationService } from '../../core/validator/validator.service';
     templateUrl: './control-message.component.html'
 })
 
-export class ControlMessagesComponent implements OnInit, OnChanges, OnDestroy {
+export class ControlMessagesComponent implements OnChanges, OnDestroy {
     @Input() control: FormControl;
     errorMessage = '';
     private unsubscribe$ = new ReplaySubject<void>(1);
 
     constructor() {
-    }
-
-    ngOnInit() {
-        if (this.control && this.control.errors) {
-            this.getError(false);
-        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -37,9 +30,9 @@ export class ControlMessagesComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    getError(checkDirty = true) {
+    getError() {
         for (const propertyName in this.control.errors) {
-            if (this.control.errors.hasOwnProperty(propertyName) && ((checkDirty) ? this.control.dirty : true)) {
+            if (this.control.errors.hasOwnProperty(propertyName) && this.control.dirty) {
                 return this.errorMessage = ValidationService.getValidatorErrorMessage(propertyName, this.control.errors[propertyName]);
             }
         }

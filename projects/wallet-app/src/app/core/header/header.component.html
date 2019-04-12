@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="public-header" [ngClass]="{'not-authorised': !account}" >
+<mat-toolbar color="primary" class="public-header" [ngClass]="{'not-authorised': !account}" (scroll)="onWindowScroll($event);">
   <div class="header-slide-wrapper-container">
     <div class="header-slide-wrapper" style="width: 100%">
       <div class="header-slide inner-wrap" style="width: 100%" fxLayout="row" fxLayoutAlign="space-between center">
