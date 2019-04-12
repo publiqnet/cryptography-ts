@@ -1,5 +1,4 @@
 import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
-import { AccountService } from '../services/account.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
