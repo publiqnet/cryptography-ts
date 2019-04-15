@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.formView = '';
 
     // @ts-ignore
-    this.oauthService.signup(this.registerForm.value.email, true)
+    this.oauthService.authenticate(this.registerForm.value.email, true)
       .pipe(
         takeUntil(this.unsubscribe$)
       )

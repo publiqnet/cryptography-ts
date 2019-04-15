@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public loginForm: FormGroup;
   public authStep = TokenCheckStatus.Init;
   public hasErrors = false;
+  public formView = 'registerForm';
 
   constructor(
     public accountService: AccountService,
@@ -67,13 +68,20 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.formView = '';
+
     this.authStep = TokenCheckStatus.Loading;
 
-    this.oauthService.signinAuthenticate(this.loginForm.value.email)
+    this.oauthService.authenticate(this.loginForm.value.email, true)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(() => {
+      .subscribe((oauthData) => {
+        if (oauthData.status == 204) {
+          this.formView = 'needRegisterMessage';
+        } else if (oauthData.status == 200) {
+          this.formView = 'successLoginMessage';
+        }
         this.authStep = TokenCheckStatus.Success;
       }, error => {
         console.log('error - ', error);

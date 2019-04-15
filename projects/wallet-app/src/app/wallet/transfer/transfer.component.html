@@ -42,8 +42,8 @@
           <div class="full-width">
             <p class="recipient-title">Message</p>
             <div style="position: relative">
-                        <textarea maxlength="200" [(ngModel)]="memo" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
-                                  class="trans-input trans-textarea" matInput placeholder="0/200" name="memo" formControlName="memo"></textarea>
+                        <textarea maxlength="80" [(ngModel)]="memo" (keypress)="validateMemoText($event)" (paste)="validateMemoText($event)"
+                                  class="trans-input trans-textarea" matInput placeholder="0/80" name="memo" formControlName="memo"></textarea>
               <!--<span class="character" [ngClass]="{'max-char-error': memo.length > 200 }">{{memo.length}} / 200 characters</span>-->
               <p class="error-msg" *ngIf="false" fxLayout="row">Recipient Address is not found</p>
             </div>

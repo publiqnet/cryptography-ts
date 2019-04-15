@@ -28,10 +28,15 @@
     </div>
   </div>
 
-  <div class="centered session-form pls-check" *ngIf="authStep === AuthStepStatusEnum.Success">
-    <h2>
+  <div class="centered session-form pls-check" *ngIf="authStep == AuthStepStatusEnum.Success">
+    <h2 *ngIf="formView === 'successLoginMessage';else needRegisterMessage">
       Please check your email to access your authorization link.
     </h2>
+    <ng-template #needRegisterMessage>
+      <h2>
+        You do not have a PUBLIQ Wallet, please check your email to access your authentication link.
+      </h2>
+    </ng-template>
   </div>
 
   <mat-card class="centered mat__spinner" *ngIf="authStep == AuthStepStatusEnum.Loading">
