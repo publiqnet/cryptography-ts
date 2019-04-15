@@ -24,10 +24,15 @@
     </mat-card-content>
 </mat-card>
 
-
-<mat-card class="centered" *ngIf="formView === 'successMessage'">
+<mat-card class="centered" *ngIf="formView === 'successRegisterMessage'">
     <mat-card-content>
         {{'user.please_check_email' | translate}}
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="centered" *ngIf="formView === 'needLoginMessage'">
+    <mat-card-content>
+        {{'user.need_login_message' | translate}}
     </mat-card-content>
 </mat-card>
 

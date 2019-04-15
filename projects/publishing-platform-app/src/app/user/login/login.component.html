@@ -22,10 +22,15 @@
     </mat-card-content>
 </mat-card>
 
-<mat-card class="centered" *ngIf="authStep === AuthStepStatusEnum.Success">
-    <mat-card-content>
+<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Success">
+    <mat-card-content *ngIf="formView === 'successLoginMessage';else needRegisterMessage">
         {{'user.please_check_email' | translate}}
     </mat-card-content>
+    <ng-template #needRegisterMessage>
+        <mat-card-content>
+            {{'user.please_check_email_for_authintification' | translate}}
+        </mat-card-content>
+    </ng-template>
 </mat-card>
 
 <mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Loading">

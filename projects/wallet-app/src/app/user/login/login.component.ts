@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public loginForm: FormGroup;
   public authStep = TokenCheckStatus.Init;
   public hasErrors = false;
-  public formView = 'registerForm';
+  public formView = 'loginForm';
 
   constructor(
     public accountService: AccountService,

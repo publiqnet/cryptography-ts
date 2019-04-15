@@ -46,6 +46,8 @@
         "pleaser_enter_to_join": "参加するにはあなたのメールアドレスを入力してください！",
         "continue": "続ける",
         "please_check_email": "あなたの安全なリンクにアクセスするためにあなたの電子メールをチェックしてください。",
+        "please_check_email_for_authintification": "You do not have a PUBLIQ Wallet, please check your email to access your authentication link.",
+        "need_login_message": "It seems you already have a PUBLIQ Wallet, please check your email to access your authorization link.",
         "your_account_confirmed": "「あなたのアカウントは正常に確認されました」",
         "click": "クリック",
         "here_for_login": "「ここにサインインする」",

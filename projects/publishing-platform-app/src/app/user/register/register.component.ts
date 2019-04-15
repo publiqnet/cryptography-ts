@@ -76,14 +76,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.invalid) {
       return;
     }
+
     this.formView = '';
 
-    this.oauthService.authenticate(this.registerForm.value.email, true) // TODO - change with oauth logic
+    this.oauthService.authenticate(this.registerForm.value.email, true)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(oauthData => {
-        this.formView = 'successMessage';
+        if (oauthData.status == 204) {
+          this.formView = 'successRegisterMessage';
+        } else if (oauthData.status == 200) {
+          this.formView = 'needLoginMessage';
+        }
       }, error => {
           this.errorService.handleError('preRegister', error);
       });

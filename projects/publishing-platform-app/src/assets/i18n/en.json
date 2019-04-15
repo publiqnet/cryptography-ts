@@ -46,6 +46,8 @@
         "pleaser_enter_to_join": "Please enter your email address to join!",
         "continue": "CONTINUE",
         "please_check_email": "Please check your email to access your secure link.",
+        "please_check_email_for_authintification": "You do not have a PUBLIQ Wallet, please check your email to access your authentication link.",
+        "need_login_message": "It seems you already have a PUBLIQ Wallet, please check your email to access your authorization link.",
         "your_account_confirmed": "Your account successfully confirmed!",
         "click": "Click",
         "here_for_login": "here for sign in",
