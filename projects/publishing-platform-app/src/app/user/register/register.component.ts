@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     this.formView = '';
 
-    this.oauthService.signup(this.registerForm.value.email)
+    this.oauthService.authenticate(this.registerForm.value.email, true) // TODO - change with oauth logic
       .pipe(
         takeUntil(this.unsubscribe$)
       )
