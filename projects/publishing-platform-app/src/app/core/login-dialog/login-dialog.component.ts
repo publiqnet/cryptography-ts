@@ -73,7 +73,7 @@ export class LoginDialogComponent implements OnInit, OnDestroy {
 
     this.authStep = TokenCheckStatus.Loading;
 
-    this.oauthService.signinAuthenticate(this.loginForm.value.email)
+    this.oauthService.authenticate(this.loginForm.value.email, true) // TODO - change with oauth logic
       .pipe(
         takeUntil(this.unsubscribe$)
       )
