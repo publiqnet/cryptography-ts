@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Buffer } from 'buffer';
 import { Content } from './models/content';
 import { environment } from '../../environments/environment';
-import { ApiService } from '../api.service';
+import { ApiService } from './api.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()

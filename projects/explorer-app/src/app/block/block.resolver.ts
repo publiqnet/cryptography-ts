@@ -1,7 +1,7 @@
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Block } from '../block';
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 

@@ -6,14 +6,14 @@
             </div>
         </div>
 
-        <app-block-list class="mb-5" [blocks]="blocks"></app-block-list>
+        <app-block-list *ngIf="blocks.length" class="mb-5" [blocks]="blocks"></app-block-list>
 
         <div *ngIf="loadingBlocks > 0" class="row justify-content-center align-items-center spinner no-gutters">
             <mat-spinner></mat-spinner>
         </div>
 
-        <div class="row no-gutters align-items-center justify-content-center mb-3">
-            <button class="button button-fill text-uppercase font-weight-bold" routerLink="/block/date/{{today | date:'yyyy-MM-dd'}}">
+        <div class="row no-gutters align-items-center justify-content-center mb-3" *ngIf="!loading && seeMoreChecker">
+            <button class="button button-fill text-uppercase font-weight-bold" (click)="viewMore()">
                 see more
             </button>
         </div>

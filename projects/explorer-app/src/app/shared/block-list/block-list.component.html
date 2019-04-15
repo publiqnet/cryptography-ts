@@ -1,22 +1,24 @@
 <table class="text-center mb-4" *ngIf="blocks.length">
     <thead>
     <tr class="text-capitalize">
-        <th class="text-center">block id</th>
-        <th class="text-center">miner</th>
-        <th class="text-center" class="d-none d-md-table-cell">previous</th>
-        <th class="text-center">timestamp</th>
-        <th class="text-center">transactions</th>
+        <th class="text-center">Block Id</th>
+        <th class="text-center" class="d-none d-md-table-cell">Hash</th>
+        <th class="text-center">Transactions Count</th>
+        <th class="text-center">Confirmations Count</th>
+        <th class="text-center">Size</th>
+        <th class="text-center">Sign Time</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.block_number">
+    <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.number">
         <td>
-            <a [routerLink]="['/block', block.block_number]">{{block.block_number}}</a>
+            <a [routerLink]="['/block', block.hash]">{{block.number}}</a>
         </td>
-        <td>{{block.miner}}</td>
-        <td class="d-none d-md-table-cell">{{block.previous}}</td>
-        <td>{{block.timestamp}}</td>
-        <td>{{block.transactions.length}}</td>
+        <td class="d-none d-md-table-cell">{{block.hash}}</td>
+        <td>{{block.transactionsCount}}</td>
+        <td>{{block.confirmationsCount}}</td>
+        <td>{{block.size | number : '1.2-2'}} KB</td>
+        <td>{{block.signTime | date: 'yyyy-MM-dd HH:mm'}}</td>
     </tr>
     </tbody>
 </table>

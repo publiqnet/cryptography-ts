@@ -1,6 +1,3 @@
-/**
- * Created by vaz on 9/15/17.
- */
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data } from '@angular/router';

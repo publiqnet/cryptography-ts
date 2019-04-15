@@ -1,6 +1,4 @@
-/**
- * Created by vaz on 9/22/17.
- */
+
 import { UrlObject } from '../../url-object/url-object';
 
 export interface AccountOptions {

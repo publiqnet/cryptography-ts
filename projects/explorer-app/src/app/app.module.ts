@@ -38,7 +38,7 @@ import { TemplateComponent } from './template/template.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
-import { ApiService } from './api.service';
+import { ApiService } from './services/api.service';
 import { ArticleService } from './services/article.service';
 
 export function HttpLoaderFactory(http: HttpClient) {

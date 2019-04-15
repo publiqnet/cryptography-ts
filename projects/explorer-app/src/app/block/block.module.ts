@@ -7,7 +7,7 @@ import { AccountComponent } from './account/account.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BlockNavigationComponent } from './block-navigation/block-navigation.component';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../api.service';
+import { ApiService } from '../services/api.service';
 import { OperationNamePipe } from '../shared/pipes/operation-name/operation-name.pipe';
 import { SharedModule } from '../shared/shared.module';
 import { BlockResolver } from './block.resolver';

@@ -1,10 +1,7 @@
-/**
- * Created by vaz on 9/22/17.
- */
 
 import { Component, OnInit, Inject } from '@angular/core';
 import { Block } from '../../block';
-import { ApiService } from '../../api.service';
+import { ApiService } from '../../services/api.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import * as moment from 'moment';
 

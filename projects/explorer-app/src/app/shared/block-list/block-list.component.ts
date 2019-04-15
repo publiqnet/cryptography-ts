@@ -1,8 +1,5 @@
-/**
- * Created by vaz on 9/22/17.
- */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Block } from '../../block';
 
 @Component({
@@ -10,6 +7,10 @@ import { Block } from '../../block';
     styleUrls: ['./block-list.component.css'],
     templateUrl: './block-list.component.html'
 })
-export class BlockListComponent {
+export class BlockListComponent implements OnInit {
     @Input() blocks: Block[];
+
+    ngOnInit(): void {
+        // console.log(this.blocks);
+    }
 }

@@ -1,9 +1,6 @@
-/**
- * Created by vaz on 9/22/17.
- */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ApiService } from '../../api.service';
+import { ApiService } from '../../services/api.service';
 import { ActivatedRoute, ParamMap, Params } from '@angular/router';
 import { Account } from './account';
 import { Observable, Subscription } from 'rxjs';

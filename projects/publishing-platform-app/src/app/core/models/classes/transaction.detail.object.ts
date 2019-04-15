@@ -2,10 +2,6 @@ import { Account, IAccount } from '../';
 // import { PrivateKey, PublicKey, Aes } from 'arcnet-js';
 import { Subject, Observable } from 'rxjs';
 
-/**
- * Created by vaz on 6/6/17.
- */
-
 export class TransactionDetailMemoObject {
   valid: boolean;
   from: string;
