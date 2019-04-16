@@ -13,7 +13,7 @@ export class BlockResolver implements Resolve<Block> {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Block | Observable<Block> | Promise<Block> {
-        return this.api.getBlock(+route.params['id'])
+        return this.api.getBlock(route.params['id'])
             .pipe(catchError(error => {
                 this.router.navigate(['/block/not-exists']);
                 return of(null);

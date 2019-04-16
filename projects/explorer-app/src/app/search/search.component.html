@@ -1,0 +1,15 @@
+<div class="main-wrap">
+  <div class="inner-wrap-main">
+    <div class="main-wrap">
+      <app-block [blockData]="searchData" *ngIf="searchSelectedType == searchType.block"></app-block>
+
+      <div *ngIf="searchSelectedType == searchType.account">
+        bbbbbbb
+      </div>
+
+      <div *ngIf="searchSelectedType == searchType.transaction">
+        ccccccc
+      </div>
+    </div>
+  </div>
+</div>

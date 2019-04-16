@@ -14,8 +14,10 @@ export class BlockNavigationComponent implements OnInit {
     blocks: Block[] = [];
     blockDate: Date;
     startBlock: number;
-    loadingBlocks: number;
+    loadingBlocks = false;
     hasBeenLoaded: boolean;
+    lastBlockHash = null;
+    blocksLimit = 32;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -24,27 +26,21 @@ export class BlockNavigationComponent implements OnInit {
 
     ngOnInit() {
         this.route.params.subscribe((params: ParamMap) => {
-
-            this.loadingBlocks = 0;
+            this.loadingBlocks = true;
             this.hasBeenLoaded = false;
             this.blocks = [];
-
             this.blockDate = new Date(params['date']);
-
             this.blockDate.setHours(23);
             this.blockDate.setMinutes(59);
             this.blockDate.setSeconds(55);
-
-            this.apiService.getNearestBlock(this.blockDate).subscribe(block => {
-                if (block) {
-                    this.startBlock = block.block_number;
-                }
-                this.loadBlocks(32);
+            this.apiService.getNearestBlock(this.blockDate, this.lastBlockHash, this.blocksLimit).subscribe(blockData => {
+                this.setBlocksData(blockData);
             });
         });
     }
 
     private setDate(date) {
+        this.lastBlockHash = null;
         this.router.navigateByUrl('/block/date/' + date.format('YYYY-MM-DD'));
     }
 
@@ -64,29 +60,28 @@ export class BlockNavigationComponent implements OnInit {
         this.setDate(moment(this.blockDate).subtract(1, 'day'));
     }
 
-    loadBlocks(count = 10) {
+    setBlocksData(blockData) {
         const cd = moment(this.blockDate).format('YYYY-MM-DD');
+        const loadedBlocks = blockData.blocks;
+        this.blocks = this.blocks.concat(loadedBlocks);
+        this.calculateLastBlockHash(this.blocks);
+        this.hasBeenLoaded = true;
+        this.loadingBlocks = false;
+    }
 
-        if (this.loadingBlocks === -1) {
-            this.loadingBlocks = 1;
-        } else {
-            this.loadingBlocks++;
+    calculateLastBlockHash(blocks) {
+        if (blocks.length >= this.blocksLimit) {
+            const last = blocks.length - 1;
+            if (blocks[last].hash !== this.lastBlockHash) {
+                this.lastBlockHash = blocks[last].hash;
+            }
         }
+    }
 
-        const blockIDs = [];
-        for (let index = 0; index < count; index++) {
-            blockIDs.push(this.startBlock--);
-        }
-
-        this.apiService.getBlocks(blockIDs)
-            .subscribe(blocks => {
-                this.hasBeenLoaded = true;
-                this.loadingBlocks--;
-                blocks.forEach(block => {
-                    if (block !== null && cd === moment(block.timestamp).format('YYYY-MM-DD')) {
-                        this.blocks.push(block);
-                    }
-                });
-            });
+    loadBlocks(count = 10) {
+        this.loadingBlocks = true;
+        this.apiService.getNearestBlock(this.blockDate, this.lastBlockHash, count).subscribe(blockData => {
+            this.setBlocksData(blockData);
+        });
     }
 }

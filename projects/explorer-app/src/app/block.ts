@@ -22,7 +22,9 @@ export class Block {
                 if (['transactionsCount', 'confirmationsCount'].includes(i)) {
                     this[i] = options[i];
                 } else if (['signTime'].includes(i)) {
-                    this[i] = new Date(options[i] * 1000);
+                    const localDate = new Date(options[i] * 1000);
+                    this[i] = new Date(localDate.valueOf() + localDate.getTimezoneOffset() * 60000);
+                    this['timestamp'] = options[i];
                 } else if (['size'].includes(i)) {
                     this[i] = (options[i] > 0) ? options[i] / 1024 : 0 ;
                 } else {

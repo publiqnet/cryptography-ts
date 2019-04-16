@@ -10,18 +10,21 @@ import { ReplaySubject } from 'rxjs';
   styleUrls: []
 })
 export class HomepageComponent implements OnInit, OnDestroy {
+  today: Date;
   blocks: Block[] = [];
   public seeMoreChecker = false;
-  lastTransactionHash = '';
+  lastBlockHash = '';
   loadingBlocks = true;
   blocksLimit = 7;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(protected apiService: ApiService) {}
+  constructor(protected apiService: ApiService) {
+    this.today = new Date();
+  }
 
   ngOnInit() {
-    this.apiService.loadBlocks(this.lastTransactionHash, this.blocksLimit)
+    this.apiService.loadBlocks(this.lastBlockHash, this.blocksLimit)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
@@ -43,14 +46,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
   calculateLastBlockHash(blocks) {
     if (blocks.length >= this.blocksLimit) {
       const last = blocks.length - 1;
-      if (blocks[last].hash !== this.lastTransactionHash) {
-        this.lastTransactionHash = blocks[last].hash;
+      if (blocks[last].hash !== this.lastBlockHash) {
+        this.lastBlockHash = blocks[last].hash;
       }
     }
   }
 
   viewMore() {
-    this.apiService.loadBlocks(this.lastTransactionHash, this.blocksLimit)
+    this.apiService.loadBlocks(this.lastBlockHash, this.blocksLimit)
       .pipe(
         takeUntil(this.unsubscribe$)
       )

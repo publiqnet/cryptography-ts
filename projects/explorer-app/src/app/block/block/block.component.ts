@@ -1,8 +1,5 @@
-
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Data } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { Block } from '../../block';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-block',
@@ -10,14 +7,18 @@ import { Block } from '../../block';
     styles: []
 })
 export class BlockComponent implements OnInit {
-    block: Block;
+    @Input() blockData?: any;
 
     constructor(private route: ActivatedRoute) {
     }
 
     ngOnInit() {
-        this.route.data.subscribe((data: Data) => {
-            this.block = data['block'];
-        });
+        // if (!this.blockData) {
+        //     this.route.data.subscribe((data: Data) => {
+        //         this.blockData = data['block'];
+        //     });
+        // }
+
+        console.log(this.blockData);
     }
 }

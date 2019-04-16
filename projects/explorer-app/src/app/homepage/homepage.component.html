@@ -13,7 +13,7 @@
         </div>
 
         <div class="row no-gutters align-items-center justify-content-center mb-3" *ngIf="!loading && seeMoreChecker">
-            <button class="button button-fill text-uppercase font-weight-bold" (click)="viewMore()">
+            <button class="button button-fill text-uppercase font-weight-bold" routerLink="/block/date/{{today | date:'yyyy-MM-dd'}}">
                 see more
             </button>
         </div>

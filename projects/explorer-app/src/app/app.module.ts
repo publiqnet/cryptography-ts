@@ -36,10 +36,10 @@ import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { TemplateComponent } from './template/template.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { SearchComponent } from './search/search.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
 import { ApiService } from './services/api.service';
-import { ArticleService } from './services/article.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -84,6 +84,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomepageComponent,
     TemplateComponent,
     HeaderComponent,
+    SearchComponent,
     FooterComponent
   ],
   providers: [
@@ -92,7 +93,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpObserverService,
     TranslateService,
     ApiService,
-    ArticleService,
     PbqPipe,
     DecimalPipe
   ],
