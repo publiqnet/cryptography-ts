@@ -95,7 +95,8 @@ export class KeyPair {
     const strArr = [];
 
     for (let i = 0; i < random_seed.length; i++) {
-      const index = Math.round((1 / random_seed[i]) * (wordsList.length - 1));
+      const index = Math.round(Math.random()*(wordsList.length -1));
+      //Math.round((1 / random_seed[i]) * (wordsList.length - 1));
       strArr.push(wordsList[index]);
     }
 

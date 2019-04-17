@@ -21,9 +21,9 @@ var KeyPair = /** @class */ (function () {
         }
         var brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
         var privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
-        var pubKeyCoordinates = generatorPoint.mul(privateCorKeyHex);
-        var pubKeyXHex = pubKeyCoordinates.getX().toString('hex');
-        var pubKeyYHex = pubKeyCoordinates.getY().toString('hex');
+        var pubKeyCoordinates = KeyPair.getPointCordinats(privateCorKeyHex); //generatorPoint.mul(privateCorKeyHex);
+        var pubKeyXHex = pubKeyCoordinates.XHex;
+        var pubKeyYHex = pubKeyCoordinates.YHex;
         this.publicKey = new public_key_1.PublicKey(pubKeyXHex, pubKeyYHex);
         this.privateKey = new private_key_1.PrivateKey(privateCorKeyHex);
         this.brainKey = brainKey;
@@ -82,7 +82,8 @@ var KeyPair = /** @class */ (function () {
         var random_seed = elliptic_1.rand(this.brainKeyLength);
         var strArr = [];
         for (var i = 0; i < random_seed.length; i++) {
-            var index = Math.round((1 / random_seed[i]) * (words_1.wordsList.length - 1));
+            var index = Math.round(Math.random() * (words_1.wordsList.length - 1));
+            //Math.round((1 / random_seed[i]) * (wordsList.length - 1));
             strArr.push(words_1.wordsList[index]);
         }
         return strArr.join(' ');
@@ -121,6 +122,22 @@ var KeyPair = /** @class */ (function () {
     };
     KeyPair.encryptBrainKey = function (brainKey) {
         return SHA256(SHA512(brainKey)).toString();
+    };
+    KeyPair.getPointCordinats = function (privateCorKeyHex) {
+        var pubKeyCoordinates = generatorPoint.mul(privateCorKeyHex);
+        var getFullHexStr = function (hexStr) {
+            var l = hexStr.length;
+            var fullHexStr = hexStr;
+            for (; l < 64; l++) {
+                fullHexStr = "" + 0 + fullHexStr;
+            }
+            return fullHexStr;
+        };
+        var hexPoint = {
+            XHex: getFullHexStr(pubKeyCoordinates.getX().toString('hex')),
+            YHex: getFullHexStr(pubKeyCoordinates.getY().toString('hex'))
+        };
+        return hexPoint;
     };
     KeyPair.publicKeyPrefix = '';
     KeyPair.brainKeyLength = 16;
