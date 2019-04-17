@@ -5,17 +5,20 @@ import { environment } from '../../../../wallet-app/src/environments/environment
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment';
+import { SearchResponse, SearchResponseOptions } from './models/SearchResponse';
 
 @Injectable()
 export class ApiService {
 
-  public blockUrl = `${environment.backend}/api`;
+  readonly blockUrl = `${environment.backend}/api`;
 
-  constructor(private httpHelperService: HttpHelperService) {}
+  constructor(private httpHelperService: HttpHelperService) {
+  }
 
   search(search: string) {
     const url = `${this.blockUrl}/search/${search}`;
-    return this.httpHelperService.customCall(HttpMethodTypes.get, url);
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(map((response: SearchResponseOptions) => new SearchResponse(response)));
   }
 
   loadBlocks(fromHash: string = '', count: number = 7): Observable<any> {

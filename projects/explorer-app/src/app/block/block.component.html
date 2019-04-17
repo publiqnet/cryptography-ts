@@ -1,0 +1,105 @@
+<ng-container *ngIf="blockData">
+    <div class="container-fluid main-grid mb-5">
+        <div class="mt-50">
+            <h2 class="mb-3">Block #{{ blockData.number }}</h2>
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <table>
+                        <thead>
+                        <tr class="text-capitalize">
+                            <th>Summary</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Number of transactions</td>
+                            <td>{{blockData.transactionsCount}}</td>
+                        </tr>
+                        <tr>
+                            <td>Height</td>
+                            <td>{{ blockData.number }}</td>
+                        </tr>
+                        <tr>
+                            <td>Timestamp</td>
+                            <td>{{ blockData.timestamp }}</td>
+                        </tr>
+                        <tr>
+                            <td>Miner</td>
+                            <td>{{ blockData.account.address }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-6">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Hashes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold mb-2">Block id</div>
+                                <div>{{ blockData.hash }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-weight-bold mb-2">Previous Block</div>
+                                <div>{{ blockData.previousBlockHash }}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="mb-3">Blocks transactions</h2>
+
+        <div *ngIf="transactions.length">
+            <table class="text-center mb-4">
+                <thead>
+                <tr class="text-capitalize">
+                    <th class="text-center">Fee Fraction</th>
+                    <th class="text-center">Fee Whole</th>
+                    <th class="text-center">Transaction Hash</th>
+                    <th class="text-center">Transaction Size</th>
+                    <th class="text-center">Sign Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let transaction of transactions">
+                    <td>{{transaction.feeFraction}}</td>
+                    <td>{{transaction.feeWhole}}</td>
+                    <td>{{transaction.transactionHash}}</td>
+                    <td>{{transaction.transactionSize | number : '1.2-5'}}</td>
+                    <td>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="empty" *ngIf="seeMoreLoading">
+                <div style="display: inline-block">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
+
+            <ng-container *ngIf="seeMoreChecker">
+                <div
+                        class="search-results"
+                        infiniteScroll
+                        [infiniteScrollDistance]="2"
+                        [infiniteScrollThrottle]="50"
+                        [infiniteScrollDisabled]="blockInfiniteScroll"
+                        (scrolled)="seeMore()"
+                ></div>
+            </ng-container>
+        </div>
+
+
+        <div *ngIf="!blockData.transactions.length">No transactions found</div>
+    </div>
+</ng-container>

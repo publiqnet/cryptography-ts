@@ -4,6 +4,7 @@ import { ApiService } from '../services/api.service';
 import { isPlatformBrowser } from '@angular/common';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { SearchResponse } from '../services/models/SearchResponse';
 
 export enum SearchTypes {
   block = <any>'block',
@@ -19,7 +20,7 @@ export enum SearchTypes {
 export class SearchComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
-  private searchType = SearchTypes;
+  public searchType = SearchTypes;
   public searchSelectedType;
   public searchData;
 
@@ -50,11 +51,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(data => {
-        if (data && data.type) {
-          this.searchSelectedType = data.type;
-          this.searchData = data.object;
-        }
+      .subscribe((data: SearchResponse) => {
+        this.searchSelectedType = data.type;
+        this.searchData = data.object;
       });
   }
 

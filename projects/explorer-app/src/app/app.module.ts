@@ -41,6 +41,7 @@ import { BlockComponent } from './block/block.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
 import { ApiService } from './services/api.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -67,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     SharedModule,
     AppRoutingModule,
+    InfiniteScrollModule,
     NgbModule,
     LayoutModule,
     MatToolbarModule,
