@@ -28,7 +28,7 @@
     "w:build:stage:ssr": "ng run wallet-app:server && npm run w:webpack:server",
     "w:build:prod": "ng build wallet-app --configuration=production && npm run w:build:prod:ssr",
     "w:build:prod:ssr": "ng run wallet-app:server --configuration=production && npm run w:webpack:server",
-    "w:start:prod": "npm run w:build:prod && node dist/server.js",
+    "w:start:prod": "npm run build:libs && npm run w:build:prod && node dist/server.js",
     "w:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=wallet-app",
     "e:serve": "npm run build:libs && ng serve explorer-app --port=4202",
     "e:start:stage": "npm run build:libs && npm run e:build:stage && node dist/server.js",
