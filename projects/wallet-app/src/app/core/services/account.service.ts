@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserIdleService } from '../models/angular-user-idle/user-idle.service';
+import { UtilsService } from 'shared-lib';
 
 @Injectable()
 export class AccountService {
@@ -56,6 +57,22 @@ export class AccountService {
           return userInfo;
         }))
       ;
+  }
+
+  checkBalanceUpdate() {
+    if (this.accountInfo && this.accountInfo.publicKey) {
+      const url = this.userUrl + `/${this.accountInfo.publicKey}/balance`;
+      this.httpHelperService.customCall(HttpMethodTypes.get, url)
+        .subscribe(balanceInfo => {
+          if (balanceInfo.hasOwnProperty('whole') && balanceInfo.hasOwnProperty('fraction')) {
+            const currentActiveBalance = UtilsService.getBalanceString(balanceInfo.whole, balanceInfo.fraction);
+            if (this.accountInfo.balance != currentActiveBalance) {
+              this.accountInfo.balance = currentActiveBalance;
+              this.accountUpdated$.next(this.accountInfo);
+            }
+          }
+        });
+    }
   }
 
   logout() {

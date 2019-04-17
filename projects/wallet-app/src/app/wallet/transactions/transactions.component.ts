@@ -67,7 +67,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
-        this.setTransactionData(data);
+        this.setTransactionData(data, true);
       });
   }
 
@@ -90,7 +90,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  setTransactionData(data) {
+  setTransactionData(data, reset = false) {
     this.seeMoreChecker = !!data.more;
     if (data.transactions && data.transactions.length > 0) {
       data.transactions = data.transactions.map(t => new TransactionDetailObject(t));
@@ -99,7 +99,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     if (transactions) {
       this.calculateLastTransactionHash(transactions);
       this.transactions = transactions;
-      this.dataSource.data = this.dataSource.data.concat(transactions);
+      this.dataSource.data = (reset) ? transactions : this.dataSource.data.concat(transactions);
     } else {
       this.errorService.handleError('transactions_not_found', {
         status: 409,
