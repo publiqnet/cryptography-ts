@@ -37,6 +37,7 @@ import { HeaderComponent } from './header/header.component';
 import { TemplateComponent } from './template/template.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { SearchComponent } from './search/search.component';
+import { BlockComponent } from './block/block.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
 import { ApiService } from './services/api.service';
@@ -85,7 +86,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TemplateComponent,
     HeaderComponent,
     SearchComponent,
-    FooterComponent
+    FooterComponent,
+    BlockComponent
   ],
   providers: [
     OauthService,

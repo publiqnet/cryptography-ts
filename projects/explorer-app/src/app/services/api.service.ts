@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Block } from '../block';
+import { Block } from './models/block';
 import { environment } from '../../../../wallet-app/src/environments/environment';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { map } from 'rxjs/operators';

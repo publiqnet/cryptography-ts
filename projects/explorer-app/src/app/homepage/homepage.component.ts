@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
-import { Block } from '../block';
+import { Block } from '../services/models/block';
 import { ApiService } from '../services/api.service';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';

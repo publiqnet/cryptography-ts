@@ -20,7 +20,7 @@ const routes: Routes = [
                 component: SearchComponent
             },
             {   path: 'block',
-                loadChildren: './block/block.module#BlockModule'
+                loadChildren: './block-navigation/block-navigation.module#BlockNavigationModule'
             },
             {
                 path: 'not-found',

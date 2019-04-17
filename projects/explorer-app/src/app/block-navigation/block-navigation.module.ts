@@ -1,9 +1,5 @@
-///<reference path="../shared/error-page/error-page.component.ts"/>
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { BlockComponent } from './block/block.component';
-import { JsonViewerComponent } from './json-viewer/json-viewer.component';
-import { AccountComponent } from './account/account.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BlockNavigationComponent } from './block-navigation/block-navigation.component';
 import { CommonModule } from '@angular/common';
@@ -16,10 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material';
 
 @NgModule({
     declarations: [
-        BlockComponent,
-        JsonViewerComponent,
-        BlockNavigationComponent,
-        AccountComponent,
+        BlockNavigationComponent
     ],
     imports: [
         CommonModule,
@@ -33,22 +26,9 @@ import { MatProgressSpinnerModule } from '@angular/material';
                     data: {message: 'Block not found!'}
                 },
                 {
-                    path: ':id',
-                    pathMatch: 'full',
-                    component: BlockComponent,
-                    resolve: {
-                        block: BlockResolver
-                    }
-                },
-                {
                     path: 'date/:date',
                     pathMatch: 'full',
                     component: BlockNavigationComponent
-                },
-                {
-                    path: 'account/:id',
-                    pathMatch: 'full',
-                    component: AccountComponent
                 }
             ],
         )
@@ -59,6 +39,6 @@ import { MatProgressSpinnerModule } from '@angular/material';
         OperationNamePipe
     ]
 })
-export class BlockModule {
+export class BlockNavigationModule {
 
 }

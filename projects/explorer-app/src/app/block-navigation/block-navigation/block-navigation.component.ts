@@ -1,6 +1,6 @@
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { Block } from '../../block';
+import { Block } from '../../services/models/block';
 import { ApiService } from '../../services/api.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import * as moment from 'moment';
