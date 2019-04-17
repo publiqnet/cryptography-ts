@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import PubliqNotEnoughBalance from 'blockchain-models-ts/bin/models/PubliqNotEnoughBalance';
+
 import { AccountService } from '../../core/services/account.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -63,7 +65,7 @@ export class TransferComponent implements OnInit, OnDestroy {
       )
       .subscribe((data: ErrorEvent) => {
         if (['transfer-password-error', 'need_private_key', 'transfer_failed',
-          'notifyInTransfer', 'load_balance_error', 'load_global_error', 'loadRpcAccount'].includes(data.action)) {
+          'notifyInTransfer', 'load_balance_error', 'load_global_error', 'loadRpcAccount', 'your_balance_is_not_enough'].includes(data.action)) {
           this.loading = false;
           this.notificationService.error(data.message);
         }
@@ -172,7 +174,11 @@ export class TransferComponent implements OnInit, OnDestroy {
           this.notificationService.success('The transaction was successful');
           this.transferTab = false;
         } else {
-          this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
+          if (isValidData.data instanceof PubliqNotEnoughBalance) {
+            this.errorService.handleError('your_balance_is_not_enough', {status: 409, error: {message: 'your_balance_is_not_enough'}});
+          } else {
+            this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
+          }
         }
       }, error => {
         console.log('error', error);
