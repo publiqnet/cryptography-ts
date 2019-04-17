@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var elliptic_1 = require("elliptic");
+var MersenneTwister = require("mersenne-twister");
 var utils_1 = require("./utils");
 var private_key_1 = require("./private-key");
 var public_key_1 = require("./public-key");
@@ -79,10 +80,12 @@ var KeyPair = /** @class */ (function () {
         this.brainKeyLength = brainKeyLangth;
     };
     KeyPair.generateRandomText = function () {
-        var random_seed = elliptic_1.rand(this.brainKeyLength);
+        var randomizer = new MersenneTwister();
+        // const random_seed = rand(wordsList.length);
         var strArr = [];
-        for (var i = 0; i < random_seed.length; i++) {
-            var index = Math.round(Math.random() * (words_1.wordsList.length - 1));
+        for (var i = 0; i < this.brainKeyLength; i++) {
+            var index = Math.round(randomizer.random() * (words_1.wordsList.length - 1));
+            // const index = random_seed[r_index]
             //Math.round((1 / random_seed[i]) * (wordsList.length - 1));
             strArr.push(words_1.wordsList[index]);
         }

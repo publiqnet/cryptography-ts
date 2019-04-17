@@ -20,5 +20,11 @@ KeyPair.setPublicKeyPrefix('PBQ');
 // console.log('public key Base58  ====', keyPair.Ppublic.Base58);
 // console.log('private key Base58 ====', keyPair.Private.Base58);
 // keyPair.signMessage(JSON.stringify(textJson));
+
  const keyPair = new KeyPair();
  console.log(keyPair.BrainKey)
+// var MersenneTwister = require('mersenne-twister');
+
+ // import * as MersenneTwister  from 'mersenne-twister';
+ // var generator = new MersenneTwister();
+ // console.log(generator.random());

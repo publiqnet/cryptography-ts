@@ -1,4 +1,5 @@
 import { ec, rand } from 'elliptic';
+import * as MersenneTwister  from 'mersenne-twister';
 import { derToBase58 } from './utils';
 import { PrivateKey } from './private-key';
 import { PublicKey } from './public-key';
@@ -91,11 +92,13 @@ export class KeyPair {
   }
 
   static generateRandomText() {
-    const random_seed = rand(this.brainKeyLength);
+    const randomizer = new MersenneTwister();
+    // const random_seed = rand(wordsList.length);
     const strArr = [];
 
-    for (let i = 0; i < random_seed.length; i++) {
-      const index = Math.round(Math.random()*(wordsList.length -1));
+    for (let i = 0; i < this.brainKeyLength; i++) {
+      const index = Math.round(randomizer.random()*(wordsList.length - 1));
+      // const index = random_seed[r_index]
       //Math.round((1 / random_seed[i]) * (wordsList.length - 1));
       strArr.push(wordsList[index]);
     }
