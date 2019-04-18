@@ -11,7 +11,7 @@ import { SearchResponse } from '../services/models/SearchResponse';
 @Component({
   selector: 'app-block',
   templateUrl: './block.component.html',
-  styles: []
+  styleUrls: ['./block.component.scss']
 })
 export class BlockComponent implements OnInit, OnDestroy {
   @Input() blockData?: BlockchainBlock;
