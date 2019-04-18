@@ -69,12 +69,12 @@ export class KeyPair {
   }
 
   public signMessage(message) {
-    const key = secp256k1.keyFromPrivate(this.privateKey.KeyCoreHex);
-    const hash = CryptoJS.SHA256(message);
-    const signature = key.sign(
-      hash.toString(CryptoJS.enc.Hex)
-    );
-
+    // const key = secp256k1.keyFromPrivate(this.privateKey.KeyCoreHex);
+    // const hash = CryptoJS.SHA256(message);
+    // const signature = key.sign(
+    //   hash.toString(CryptoJS.enc.Hex)
+    // );
+    const signature = KeyPair.signMessageBySecp256k1(this.privateKey.KeyCoreHex, message)
     return derToBase58(signature.toDER());
   }
 
@@ -82,6 +82,14 @@ export class KeyPair {
   static brainKeyLength: number = 16;
 
 
+  static signMessageBySecp256k1 (privateKey, message) {
+    const key = secp256k1.keyFromPrivate(privateKey);
+    const hash = CryptoJS.SHA256(message);
+    const signature = key.sign(
+      hash.toString(CryptoJS.enc.Hex)
+    );
+    return signature;
+  }
 
   static setPublicKeyPrefix(publicKeyPrefix = '') {
     this.publicKeyPrefix = publicKeyPrefix;
