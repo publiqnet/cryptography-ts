@@ -1,4 +1,5 @@
 import { Transfer } from './Transfer';
+import { Block } from './block';
 
 export interface TransactionOptions {
   feeFraction: number;
@@ -37,6 +38,8 @@ export class Transaction {
           this['timestamp'] = options[i];
         } else if (['transfer'].includes(i)) {
           this[i] = options[i] ? new Transfer(options[i]) : null;
+        } else if (['block'].includes(i)) {
+          this[i] = options[i] ? new Block(options[i]) : null;
         } else if (['transactionSize'].includes(i)) {
           this[i] = (options[i] > 0) ? options[i] / 1024 : 0;
         } else {

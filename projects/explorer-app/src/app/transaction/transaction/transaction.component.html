@@ -1,52 +1,35 @@
-<!--<ng-container>
+<ng-container *ngIf="transaction">
     <div class="container-fluid main-grid mb-5">
         <div class="mt-50">
-            <h2 class="mb-3">Blocks transactions</h2>
+            <h2 class="mb-3">Transaction {{transaction.transactionHash}}</h2>
 
-            <div *ngIf="transactions.length">
-                <table class="text-center mb-4">
-                    <thead>
-                    <tr class="text-capitalize">
-                        <th class="text-center">Fee Fraction</th>
-                        <th class="text-center">Fee Whole</th>
-                        <th class="text-center">Transaction Hash</th>
-                        <th class="text-center">Transaction Size</th>
-                        <th class="text-center">Sign Time</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let transaction of transactions">
-                        <td>{{transaction.feeFraction}}</td>
-                        <td>{{transaction.feeWhole}}</td>
-                        <td>{{transaction.transactionHash}}</td>
-                        <td>{{transaction.transactionSize | number : '1.2-2'}} Kb</td>
-                        <td>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-
-                <div *ngIf="loadingBlocks"
-                     class="row justify-content-center align-items-center spinner no-gutters">
-                    <mat-spinner></mat-spinner>
+            <div class="main" *ngIf="transaction">
+                <h3>Main</h3>
+                <div *ngFor="let item of transaction | keyvalue">
+                    <ng-container *ngIf="!['transfer', 'block'].includes(item.key) && item.value">
+                        <span>{{item.key}}  : </span>
+                        <span>{{item.value}}</span>
+                    </ng-container>
                 </div>
-
-
-                <ng-container *ngIf="seeMoreChecker">
-                    <div
-                            class="search-results"
-                            infiniteScroll
-                            [infiniteScrollDistance]="2"
-                            [infiniteScrollThrottle]="50"
-                            [infiniteScrollDisabled]="blockInfiniteScroll"
-                            (scrolled)="seeMore()"
-                    ></div>
-                </ng-container>
             </div>
 
+            <div class="block" *ngIf="transaction.block">
+                <h3> Block </h3>
+                <div *ngFor="let block of transaction.block | keyvalue">
+                    <span>{{block.key}}  : </span>
+                    <span>{{block.value}}</span>
+                </div>
+            </div>
 
-            <div *ngIf="!transactiionList.transactions.length">No transactions found</div>
+            <div class="transfer" *ngIf="transaction.transfer">
+                <h3> Transfer </h3>
+                <div *ngFor="let transfer of transaction.transfer | keyvalue">
+                    <span>{{transfer.key}} : </span>
+                    <span>{{['to', 'from'].includes(transfer.key) ? transfer.value.address : transfer.value}}</span>
+                </div>
+            </div>
         </div>
-</ng-container>-->
+    </div>
+</ng-container>
 
-single-transaction
+<div *ngIf="!transaction">No transaction found</div>
