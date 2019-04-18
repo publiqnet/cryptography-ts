@@ -680,3 +680,95 @@ mat-accordion mat-expansion-panel mat-expansion-panel-header .mat-expansion-indi
 .public-header.has-revisions {
     top: 55px;
 }
+
+
+
+h2 {
+  font-size: 25px;
+  color: #2b2b2b;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+
+table{
+  border-radius: 10px;
+  overflow: hidden;
+}
+table thead {
+  background: #ecf0f3;
+}
+table tbody tr td,
+table thead tr th {
+  padding: 13px 4px;
+  font-size: 13px;
+}
+table thead th:first-child{
+  padding-left: 25px;
+
+}
+table thead th:last-child{
+  padding-right: 25px;
+}
+
+table thead tr th,
+table thead tr td{
+  font-size: 13px;
+  color: #2B2B2B;
+}
+table tbody tr:nth-of-type(odd) {
+  background: rgba(247, 248, 249, 0.60);
+}
+.button.button-fill span{
+  opacity: .8;
+}
+
+.button.button-fill{
+  background: #3366FF;
+  border-radius: 7px;
+  height: 45px;
+  padding: 8px 13px;
+  min-width: 130px;
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.header .search-bar{
+  background: #ECF0F3;
+  border-radius: 7px;
+  box-shadow: none;
+}
+.header .search-bar input{
+  border: none;
+  padding: 0 0 0 40px;
+  font-size: 14px;
+  width: 100%;
+  background: #eceff3;
+
+}
+.header .search-bar input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+   font-size: 13px;
+   color: #8D929A;
+  font-family: 'Open Sans', sans-serif;
+}
+.header .search-bar input::-moz-placeholder { /* Firefox 19+ */
+   font-size: 13px;
+   color: #8D929A;
+  font-family: 'Open Sans', sans-serif;
+}
+.header .search-bar input:-ms-input-placeholder { /* IE 10+ */
+   font-size: 13px;
+   color: #8D929A;
+  font-family: 'Open Sans', sans-serif;
+}
+.header .search-bar input:-moz-placeholder { /* Firefox 18- */
+   font-size: 13px;
+   color: #8D929A;
+  font-family: 'Open Sans', sans-serif;
+}
+.header .search-bar span{
+  position: absolute;
+  left: 12px;
+  top: 9px;
+  opacity: .7;
+}
