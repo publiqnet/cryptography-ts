@@ -27,7 +27,7 @@ export class TransactionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.apiService.getTransactions(0, this.transactionsLimit)
+    this.apiService.getTransactions(null, this.transactionsLimit)
       .pipe(
         filter((data: any) => data != null),
         takeUntil(this.unsubscribe$)
