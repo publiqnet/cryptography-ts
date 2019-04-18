@@ -7,10 +7,10 @@ export interface TransactionResponseOptions {
 
 export class TransactionResponse {
     transactions: Transaction[];
-    more: number;
+    more: boolean;
 
     constructor(options?: TransactionResponseOptions) {
         this.transactions = options['transactions'] ? options['transactions'].map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
-        this.more = options['more'];
+        this.more = options['more'] ? true : false;
     }
 }
