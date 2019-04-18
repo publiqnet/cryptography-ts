@@ -9,6 +9,10 @@ import { TransactionListComponent } from './list/transaction-list.component';
   imports: [
     CommonModule,
     TransactionRoutingModule
+  ],
+  exports: [
+    TransactionComponent, TransactionListComponent
   ]
 })
-export class TransactionModule { }
+export class TransactionModule {
+}
