@@ -1,12 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BlockchainBlock } from '../../services/models/BlockchainBlock';
 import { Transaction } from '../../services/models/Transaction';
 import { ApiService } from '../../services/api.service';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { of, ReplaySubject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
 import { TransactionResponse } from '../../services/models/TransactionResponse';
-import { SearchResponse } from '../../services/models/SearchResponse';
 
 @Component({
   selector: 'app-transaction-list',
@@ -14,10 +12,8 @@ import { SearchResponse } from '../../services/models/SearchResponse';
   styles: []
 })
 export class TransactionListComponent implements OnInit, OnDestroy {
-  @Input() transactionList?: Transaction[];
 
   transactions: Transaction[];
-  allTransactionsCount: number;
   blockInfiniteScroll = false;
   seeMoreChecker = false;
   lastTransactionHash = '';
@@ -31,26 +27,20 @@ export class TransactionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (!this.transactionList) {
-        this.route.params
-          .pipe(
-            filter((params: any) => params.hash),
-            switchMap((params: {hash: string}) => this.apiService.search(params.hash)),
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe((data: SearchResponse) => this.blockchainBlockData = data.object);
-    } else {
-      this.blockchainBlockData = this.transactionList;
-    }
+    this.apiService.getTransactions(0, this.transactionsLimit)
+      .pipe(
+        filter((data: any) => data != null),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: TransactionResponse) => {
+        this.seeMoreChecker = data.more;
+        this.transactionsData = data.transactions;
+      });
   }
 
-  set blockchainBlockData(transactionList: Transaction[]) {
-    if (!this.transactionList) {
-      this.transactionList = transactionList;
-    }
+  set transactionsData(transactions: Transaction[]) {
+    this.transactions = transactions;
     this.calculateLastTransactionHash(this.transactions);
-    // this.seeMoreChecker = this.blockData.transactionsCount > this.transactions.length;
-
   }
 
   seeMore() {
@@ -59,12 +49,14 @@ export class TransactionListComponent implements OnInit, OnDestroy {
     this.transactionsFrom = this.transactionsFrom + 10;
     this.apiService.getTransactions(this.lastTransactionHash, this.transactionsLimit)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((data: TransactionResponse) => this.setTransactionsData(data.transactions));
+      .subscribe((data: TransactionResponse) => {
+        this.seeMoreChecker = data.more;
+        this.setTransactionsData(data.transactions);
+      });
   }
 
   setTransactionsData(transactions: Transaction[]) {
     this.transactions = this.transactions.concat(transactions);
-    // this.seeMoreChecker = this.blockData.transactionsCount > this.transactions.length;
     this.calculateLastTransactionHash(transactions);
     this.hasBeenLoaded = true;
     this.loadingBlocks = false;

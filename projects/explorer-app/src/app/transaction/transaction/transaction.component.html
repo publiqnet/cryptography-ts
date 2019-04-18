@@ -1,4 +1,4 @@
-<ng-container *ngIf="transaction">
+<ng-container *ngIf="transaction; else loading">
     <div class="container-fluid main-grid mb-5">
         <div class="mt-50">
             <h2 class="mb-3">Transaction {{transaction.transactionHash}}</h2>
@@ -32,4 +32,8 @@
     </div>
 </ng-container>
 
-<div *ngIf="!transaction">No transaction found</div>
+<ng-template #loading >
+    <div class="row justify-content-center align-items-center spinner no-gutters">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>

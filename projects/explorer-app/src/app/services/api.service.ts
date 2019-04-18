@@ -65,7 +65,7 @@ export class ApiService {
       );
   }
 
-  getTransactions(fromHash: string, limit: number): Observable<TransactionResponse> {
+  getTransactions(fromHash: string | 0, limit: number): Observable<TransactionResponse> {
     const url = `${this.blockUrl}/transaction/${limit}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(

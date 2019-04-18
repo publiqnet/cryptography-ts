@@ -1,52 +1,60 @@
-<!--
-<ng-container>
+<ng-container *ngIf="transactions; else notransactionsYet;">
     <div class="container-fluid main-grid mb-5">
         <div class="mt-50">
-            <h2 class="mb-3">Blocks transactions</h2>
-
-            <div *ngIf="transactions.length">
-                <table class="text-center mb-4">
-                    <thead>
-                    <tr class="text-capitalize">
-                        <th class="text-center">Fee Fraction</th>
-                        <th class="text-center">Fee Whole</th>
-                        <th class="text-center">Transaction Hash</th>
-                        <th class="text-center">Transaction Size</th>
-                        <th class="text-center">Sign Time</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let transaction of transactions">
-                        <td>{{transaction.feeFraction}}</td>
-                        <td>{{transaction.feeWhole}}</td>
-                        <td>{{transaction.transactionHash}}</td>
-                        <td>{{transaction.transactionSize | number : '1.2-2'}} Kb</td>
-                        <td>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-
-                <div *ngIf="loadingBlocks"
-                     class="row justify-content-center align-items-center spinner no-gutters">
-                    <mat-spinner></mat-spinner>
-                </div>
-
-
-                <ng-container *ngIf="seeMoreChecker">
-                    <div
-                            class="search-results"
-                            infiniteScroll
-                            [infiniteScrollDistance]="2"
-                            [infiniteScrollThrottle]="50"
-                            [infiniteScrollDisabled]="blockInfiniteScroll"
-                            (scrolled)="seeMore()"
-                    ></div>
-                </ng-container>
-            </div>
-
-
-            <div *ngIf="!transactiionList.transactions.length">No transactions found</div>
+            <h2 class="mb-3">Transaction List</h2>
         </div>
-</ng-container>-->
-transaction-list
+        <table class="text-center mb-4">
+            <thead>
+            <tr class="text-capitalize">
+                <th class="text-center">Block Hash</th>
+                <th class="text-center">Fee Fraction</th>
+                <th class="text-center">Fee Whole</th>
+                <th class="text-center">Transaction Hash</th>
+                <th class="text-center">Transaction Size</th>
+                <th class="text-center">Sign Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let transaction of transactions">
+                <td>
+                    <span style="cursor: pointer" routerLink="/b/{{transaction.block.hash}}">
+                        {{transaction.block.hash}}
+                    </span>
+                </td>
+                <td>{{transaction.feeFraction}}</td>
+                <td>{{transaction.feeWhole}}</td>
+                <td>
+                    <span style="cursor: pointer" routerLink="/t/{{transaction.transactionHash}}">
+                        {{transaction.transactionHash}}
+                    </span>
+                </td>
+                <td>{{transaction.transactionSize | number : '1.2-2'}} Kb</td>
+                <td>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="loadingBlocks" class="row justify-content-center align-items-center spinner no-gutters">
+            <mat-spinner></mat-spinner>
+        </div>
+
+
+        <ng-container *ngIf="seeMoreChecker">
+            <div
+                    class="search-results"
+                    infiniteScroll
+                    [infiniteScrollDistance]="2"
+                    [infiniteScrollThrottle]="50"
+                    [infiniteScrollDisabled]="blockInfiniteScroll"
+                    (scrolled)="seeMore()"
+            ></div>
+        </ng-container>
+    </div>
+</ng-container>
+
+<ng-template #notransactionsYet>
+    <div class="row justify-content-center align-items-center spinner no-gutters">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>
+<ng-template #notransactions>No transactions found</ng-template>
