@@ -18,10 +18,11 @@ import { OauthService } from 'helper-lib';
 })
 export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
-  public configForm: FormGroup;
+  public registerPasswordForm: FormGroup;
   public tokenCheckStatus = TokenCheckStatus.Init;
   public token;
   public stringToSign;
+  public hasErrors = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,6 +61,16 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
           this.router.navigate(['/page-not-found']);
         }
       });
+
+    this.registerPasswordForm.valueChanges
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+          this.hasErrors = this.registerPasswordForm.invalid;
+        },
+        err => console.log(err)
+      );
   }
 
   get TokenCheckStatusEnum() {
@@ -67,23 +78,21 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
-    this.configForm = this.formBuilder.group({
+    this.registerPasswordForm = this.formBuilder.group({
         password: new FormControl('', [
-          Validators.required,
           ValidationService.passwordValidator
         ]),
         confirmPassword: new FormControl('', [
-          Validators.required,
           ValidationService.passwordValidator
         ])
       },
-      { validator: ValidationService.passwordsEqualValidator }
+      {validator: ValidationService.passwordsEqualValidator}
     );
   }
 
   onSubmit() {
     this.tokenCheckStatus = TokenCheckStatus.Loading;
-    this.oauthService.signupComplete(this.stringToSign, this.token, this.configForm.value.password)
+    this.oauthService.signupComplete(this.stringToSign, this.token, this.registerPasswordForm.value.password)
       .pipe(
         switchMap((data: any) => {
           this.accountService.brainKeyEncrypted = data.brainKey;

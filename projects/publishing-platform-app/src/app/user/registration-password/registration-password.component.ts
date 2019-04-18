@@ -69,7 +69,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   }
 
   private buildForm() {
-    this.configForm = this.formBuilder.group({
+    this.registerPasswordForm = this.formBuilder.group({
         password: new FormControl('', [
           Validators.required,
           ValidationService.passwordValidator
