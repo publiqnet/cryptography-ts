@@ -1,11 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Transaction, TransactionOptions } from '../../services/models/Transaction';
+import { Transaction } from '../../services/models/Transaction';
 import { ApiService } from '../../services/api.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { of, ReplaySubject } from 'rxjs';
-import { TransactionResponse } from '../../services/models/TransactionResponse';
-import { SearchResponse } from '../../services/models/SearchResponse';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-transaction',

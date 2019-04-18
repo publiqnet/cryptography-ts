@@ -21,7 +21,7 @@ export class BlockComponent implements OnInit, OnDestroy {
   blockInfiniteScroll = false;
   seeMoreChecker = false;
   lastTransactionHash = '';
-  loadingBlocks = true;
+  loadingBlocks = false;
   transactionsLimit = 10;
   transactionsFrom = 0;
   hasBeenLoaded: boolean;
@@ -57,6 +57,7 @@ export class BlockComponent implements OnInit, OnDestroy {
   }
 
   seeMore() {
+    this.loadingBlocks = true;
     this.blockInfiniteScroll = true;
     this.seeMoreChecker = true;
     this.transactionsFrom = this.transactionsFrom + 10;
