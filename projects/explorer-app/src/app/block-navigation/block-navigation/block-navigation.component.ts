@@ -41,7 +41,7 @@ export class BlockNavigationComponent implements OnInit {
 
     private setDate(date) {
         this.lastBlockHash = null;
-        this.router.navigateByUrl('/block/date/' + date.format('YYYY-MM-DD'));
+        this.router.navigateByUrl('/block-navigation/date/' + date.format('YYYY-MM-DD'));
     }
 
     now() {

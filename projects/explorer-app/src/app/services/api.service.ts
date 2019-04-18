@@ -3,9 +3,11 @@ import { Observable, Subject } from 'rxjs';
 import { Block } from './models/block';
 import { environment } from '../../../../wallet-app/src/environments/environment';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { SearchResponse, SearchResponseOptions } from './models/SearchResponse';
+import { Transaction, TransactionOptions } from './models/Transaction';
+import { TransactionResponse, TransactionResponseOptions } from './models/TransactionResponse';
 
 @Injectable()
 export class ApiService {
@@ -52,6 +54,24 @@ export class ApiService {
         map((blockInfo: any) => {
           return blockInfo;
         }));
+  }
+
+  getTransactions(fromHash: string, limit: number): Observable<TransactionResponse> {
+    const url = `${this.blockUrl}/transaction/${limit}/${fromHash}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(
+        filter(obj => obj.transactions && obj.transactions.length > 0),
+        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+      );
+  }
+
+  getBlockTransactions(blockHash: string, from: string | number, limit: number): Observable<TransactionResponse> {
+    const url = `${this.blockUrl}/block/${blockHash}/transactions/${from}/${limit}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(
+        filter(obj => obj.transactions && obj.transactions.length > 0),
+        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+      );
   }
 
   // getAccount(id_or_name: string): Observable<Account> {

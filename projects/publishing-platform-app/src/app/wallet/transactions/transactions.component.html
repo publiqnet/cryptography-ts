@@ -59,7 +59,7 @@
                     <mat-list-item>
                         <h3 matLine>
                             <span>{{(transaction.m_to_account != account.id) ? ('wallet.sent_to' | translate) : ('wallet.received_from' | translate)}}</span>
-                            <a href="{{explorerAddress}}/block/account/{{ (transaction['m_'+((transaction.m_to_account != account.id) ? 'to': 'from')+'_account']) }}">{{transaction['m_'+((transaction.m_to_account
+                            <a href="{{explorerAddress}}/block-navigation/account/{{ (transaction['m_'+((transaction.m_to_account != account.id) ? 'to': 'from')+'_account']) }}">{{transaction['m_'+((transaction.m_to_account
                                 != account.id) ? "to": "from")+'_account'] }}</a>
                         </h3>
                         <p matLine title="{{transaction.m_memo_decrypted}}">

@@ -1,14 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { BlockNavigationComponent } from './block-navigation/block-navigation.component';
-import { CommonModule } from '@angular/common';
-import { ApiService } from '../services/api.service';
-import { OperationNamePipe } from '../shared/pipes/operation-name/operation-name.pipe';
-import { SharedModule } from '../shared/shared.module';
-import { BlockResolver } from './block.resolver';
-import { ErrorPageComponent } from '../shared/error-page/error-page.component';
 import { MatProgressSpinnerModule } from '@angular/material';
+import { CommonModule } from '@angular/common';
+
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
+import { SharedModule } from '../shared/shared.module';
+import { ApiService } from '../services/api.service';
+import { BlockResolver } from './block.resolver';
+import { OperationNamePipe } from '../shared/pipes/operation-name/operation-name.pipe';
+
+
+import { BlockNavigationComponent } from './block-navigation/block-navigation.component';
+import { BlockComponent } from '../block/block.component';
+import { ErrorPageComponent } from '../shared/error-page/error-page.component';
 
 @NgModule({
     declarations: [

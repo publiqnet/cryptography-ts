@@ -32,6 +32,8 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LayoutModule } from '@angular/cdk/layout';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { TransactionModule } from './transaction/transaction.module';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { TemplateComponent } from './template/template.component';
@@ -41,7 +43,7 @@ import { BlockComponent } from './block/block.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
 import { ApiService } from './services/api.service';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -71,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     InfiniteScrollModule,
     NgbModule,
     LayoutModule,
+    TransactionModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
