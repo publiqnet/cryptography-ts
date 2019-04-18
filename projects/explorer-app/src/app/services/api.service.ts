@@ -56,6 +56,15 @@ export class ApiService {
         }));
   }
 
+  getBlockTransactions(blockHash: string, from: string | number, limit: number): Observable<TransactionResponse> {
+    const url = `${this.blockUrl}/block/${blockHash}/transactions/${from}/${limit}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(
+        filter(obj => obj.transactions && obj.transactions.length > 0),
+        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+      );
+  }
+
   getTransactions(fromHash: string, limit: number): Observable<TransactionResponse> {
     const url = `${this.blockUrl}/transaction/${limit}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
@@ -65,13 +74,10 @@ export class ApiService {
       );
   }
 
-  getBlockTransactions(blockHash: string, from: string | number, limit: number): Observable<TransactionResponse> {
-    const url = `${this.blockUrl}/block/${blockHash}/transactions/${from}/${limit}`;
+  getTransactionByHash(hash: string): Observable<Transaction> {
+    const url = `${this.blockUrl}/transaction/${hash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
-      .pipe(
-        filter(obj => obj.transactions && obj.transactions.length > 0),
-        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
-      );
+      .pipe(map((obj: TransactionOptions) => new Transaction(obj)));
   }
 
   // getAccount(id_or_name: string): Observable<Account> {
