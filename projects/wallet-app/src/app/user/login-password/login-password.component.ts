@@ -63,7 +63,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
       .subscribe((data: ErrorEvent) => {
           if (data.action === 'loadConfirm') {
             this.router.navigate(['/page-not-found']);
-          } else if (data.action === 'login' || data.action === 'authenticate') {
+          } else if (data.action === 'login' || data.action === 'authenticate' || data.action == 'password_error') {
             this.notificationService.error(data.message);
           }
         }
@@ -94,7 +94,11 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         this.router.navigate(['/wallet/transfer']);
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
-        this.errorService.handleError('login', {status: 404});
+        this.errorService.handleError('password_error',
+          {
+            status: 409,
+            error: {message: 'password_error'}
+          });
       });
   }
 
