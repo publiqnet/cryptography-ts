@@ -47,7 +47,8 @@ export const userRoutes: Routes = [
             action: 'signin'
           },
           pathMatch: 'full',
-          component: LoginPasswordComponent
+          component: LoginPasswordComponent,
+          canActivate: [LoginCheckGuardService]
         },
         {
           path: 'signup/confirmation/:code',
@@ -55,7 +56,8 @@ export const userRoutes: Routes = [
             action: 'signup'
           },
           pathMatch: 'full',
-          component: RegistrationPasswordComponent
+          component: RegistrationPasswordComponent,
+          canActivate: [LoginCheckGuardService]
         },
         {
           path: 'recover-phrase',
