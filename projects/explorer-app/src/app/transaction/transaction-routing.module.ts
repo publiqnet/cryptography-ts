@@ -19,8 +19,7 @@ export const transactionRoutes: Routes = [
         component: TransactionComponent
       }
     ]
-  },
-  {path: '**', redirectTo: '/not-found'}
+  }
 ];
 
 

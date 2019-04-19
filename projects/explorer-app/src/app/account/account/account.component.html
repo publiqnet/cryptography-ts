@@ -1,0 +1,71 @@
+
+<div class="account-main-info" *ngIf="account">
+    <div class="info-main-table">
+        <div class="info-main-table-header">PBQ Address</div>
+        <div class="qr-wrap">
+            <div class="info-main-table-content">
+                <div class="info-main-table-item info-fullwidth no-overflow">
+                    <h5>Address</h5>
+                    <span>{{account.address}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth">
+                    <h5>Balance</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.balance}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth" *ngIf="account.minerReward.balance">
+                    <h5>Mining rewards</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.minerReward.balance}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth" *ngIf="account.feeReward.balance">
+                    <h5>Transaction fees</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.feeReward.balance}}</span>
+                </div>
+            </div>
+            <!--<qrcode colorlight="#274FB0" colordark="#FFFFFF" [qrdata]="getAddressUrl(accountData.address)" [size]="256" [level]="'M'"></qrcode>-->
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="transactions; else loading">
+    <div class="transactions-table" *ngIf="transactions.length">
+        <div class="transaction-table-item" *ngFor="let transaction of transactions">
+            <div class="transaction-table-body transaction-user-body" [class.amount-shown]="amountShown">
+                <div class="transaction-table_hash">
+                    <small>Hash</small>
+                    <a routerLink="/block/transaction/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
+                </div>
+                <div class="transaction-table_confirmations">
+
+                    <small *ngIf="transaction.isConfirmed">Confirmed</small>
+                    <small *ngIf="!transaction.isConfirmed">Unconfirmed</small>
+                    <span></span>
+                    <!--<span>3</span>-->
+                </div>
+                <div class="transaction-table_amount" *ngIf="amountShown">
+                    <small>Amount</small>
+                    <img src="assets/img/noah-coin.svg" alt="">
+                    <span>{{transaction.whole + '.' + transaction.fraction}}</span>
+                </div>
+                <div class="transaction-table_user_recepient" *ngIf="account.address === transaction.transfer.to.address">
+                    <img src="assets/img/received.svg" alt="">
+                    <span>Received</span>
+                    <a routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
+                </div>
+                <div class="transaction-table_user_recepient" *ngIf="account.address !== transaction.transfer.to.address">
+                    <img src="assets/img/sent.svg" alt="">
+                    <span>Sent</span>
+                    <a routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
+                </div>
+                <div class="transaction-table_date" *ngIf="transaction.isConfirmed">
+                    <span>{{transaction.block.signTime | date: 'yyyy-MM-dd HH:mm'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="row justify-content-center align-items-center spinner no-gutters">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-template>

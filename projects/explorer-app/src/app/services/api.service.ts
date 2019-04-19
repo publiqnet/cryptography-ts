@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { SearchResponse, SearchResponseOptions } from './models/SearchResponse';
 import { Transaction, TransactionOptions } from './models/Transaction';
 import { TransactionResponse, TransactionResponseOptions } from './models/TransactionResponse';
+import { Balance, BalanceOptions } from './models/Balance';
 
 @Injectable()
 export class ApiService {
@@ -78,6 +79,29 @@ export class ApiService {
     const url = `${this.blockUrl}/transaction/${hash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(map((obj: TransactionOptions) => new Transaction(obj)));
+  }
+
+  getAccountTransactions(publicKey: string, fromHash: string, limit: number): Observable<TransactionResponse> {
+    const url = `${this.blockUrl}/user/${publicKey}/transactions/${limit}/${fromHash}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(
+        filter(obj => obj.transactions && obj.transactions.length > 0),
+        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+      );
+  }
+
+  getAccountRewards(publicKey: string, from: string, limit: number) {
+    const url = `${this.blockUrl}/user/${publicKey}/rewards/${limit}/${from}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(
+        map((obj) => console.log(obj))
+      );
+  }
+
+  getAccountBalance(publicKey: string) {
+    const url = `${this.blockUrl}/user/${publicKey}/balance`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+      .pipe(map((obj: BalanceOptions) => new Balance(obj)));
   }
 
   // getAccount(id_or_name: string): Observable<Account> {

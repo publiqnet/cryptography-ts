@@ -1,19 +1,19 @@
 import { Account } from './Account';
 
-export interface RevardOptions {
+export interface RewardOptions {
   account: Account;
   fraction: number;
   rewardType: string;
   whole: number;
 }
 
-export class Revard {
+export class Reward {
   account: Account;
   fraction: number;
   rewardType: string;
   whole: number;
 
-  constructor(options?: RevardOptions) {
+  constructor(options?: RewardOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
         if (['account'].includes(i)) {

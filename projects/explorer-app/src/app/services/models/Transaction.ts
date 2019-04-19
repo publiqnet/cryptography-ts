@@ -8,11 +8,12 @@ export interface TransactionOptions {
   transactionHash: string;
   transactionSize: number;
   timestamp?: any;
-  block: any;
+  block: Block;
   content: any;
   contentUnit: any;
   file: any;
   transfer: Transfer;
+  isConfirmed: boolean;
 }
 
 export class Transaction {
@@ -22,11 +23,12 @@ export class Transaction {
   transactionHash: string;
   transactionSize: number;
   timestamp?: any;
-  block: any;
+  block: Block;
   content: any;
   contentUnit: any;
   file: any;
   transfer: Transfer;
+  isConfirmed: boolean;
 
 
   constructor(options?: TransactionOptions) {
@@ -47,5 +49,7 @@ export class Transaction {
         }
       }
     }
+
+    this.isConfirmed = (this.block && this.block.hash) ? true : false;
   }
 }

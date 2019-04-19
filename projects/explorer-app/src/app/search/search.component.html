@@ -4,7 +4,7 @@
       <app-block [blockData]="searchData" *ngIf="searchSelectedType == searchType.block"></app-block>
 
       <div *ngIf="searchSelectedType == searchType.account">
-        bbbbbbb
+        <app-account [account]="searchData"></app-account>
       </div>
 
       <div *ngIf="searchSelectedType == searchType.transaction">

@@ -5,6 +5,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { SearchResponse } from '../services/models/SearchResponse';
+import { Block } from '../services/models/block';
+import { Transaction } from '../services/models/Transaction';
 
 export enum SearchTypes {
   block = <any>'block',
@@ -22,7 +24,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public searchType = SearchTypes;
   public searchSelectedType;
-  public searchData;
+  public searchData: Account|Block|Transaction;
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,

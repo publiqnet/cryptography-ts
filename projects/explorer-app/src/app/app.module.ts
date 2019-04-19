@@ -34,6 +34,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LayoutModule } from '@angular/cdk/layout';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { TransactionModule } from './transaction/transaction.module';
+import { AccountModule } from './account/account.module';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { TemplateComponent } from './template/template.component';
@@ -74,6 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NgbModule,
     LayoutModule,
     TransactionModule,
+    AccountModule,
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,

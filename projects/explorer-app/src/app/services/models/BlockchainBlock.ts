@@ -1,4 +1,4 @@
-import { Revard, RevardOptions } from './Revard';
+import { Reward, RewardOptions } from './Reward';
 import { Account } from './Account';
 import { Transaction, TransactionOptions } from './Transaction';
 
@@ -9,7 +9,7 @@ export interface BlockchainBlockOptions {
     hash: string;
     number: number;
     previousBlockHash: string;
-    rewards: Revard[];
+    rewards: Reward[];
     signTime: number;
     size: number;
     transactions: Transaction[];
@@ -25,7 +25,7 @@ export class BlockchainBlock {
     hash: string;
     number: number;
     previousBlockHash: string;
-    rewards: Revard[];
+    rewards: Reward[];
     signTime: number;
     size: number;
     transactions: Transaction[];
@@ -39,9 +39,9 @@ export class BlockchainBlock {
                 if (['account'].includes(i)) {
                     this[i] = options[i] ? new Account(options[i]) : null;
                 } else if (['rewards'].includes(i)) {
-                    this[i] = options[i] ? options[i].map((revard: RevardOptions) => new Revard(revard)) : '';
+                    this[i] = options[i] ? options[i].map((revard: RewardOptions) => new Reward(revard)) : '';
                 } else if (['transactions'].includes(i)) {
-                    this[i] = options[i] ? options[i].map((transaction: TransactionOptions) => new Transaction(transaction)) : '';
+                    this[i] = options[i] ? options[i].map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
                 } else if (['signTime'].includes(i)) {
                     const localDate = new Date(options[i] * 1000);
                     this[i] = new Date(localDate.valueOf() + localDate.getTimezoneOffset() * 60000);

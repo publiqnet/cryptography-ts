@@ -8,6 +8,7 @@ import { ErrorPageComponent } from './shared/error-page/error-page.component';
 import { TemplateComponent } from './template/template.component';
 import { SearchComponent } from './search/search.component';
 import { BlockComponent } from './block/block.component';
+import { accountRoutes } from './account/account-routing.module';
 
 export const routes: Routes = [
   {
@@ -41,7 +42,8 @@ export const routes: Routes = [
           message: 'Page not found!'
         }
       },
-      ...transactionRoutes
+      ...transactionRoutes,
+      ...accountRoutes
     ]
   },
   {path: '**', redirectTo: '/not-found'}
