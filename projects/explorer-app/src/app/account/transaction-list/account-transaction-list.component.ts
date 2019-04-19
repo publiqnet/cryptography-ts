@@ -50,6 +50,9 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
   }
 
   seeMore() {
+    if (!this.lastTransactionHash) {
+      return;
+    }
     this.blockInfiniteScroll = true;
     this.seeMoreChecker = true;
     this.loadingBlocks = true;
@@ -58,7 +61,7 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
       .subscribe((data: TransactionResponse) => {
         this.seeMoreChecker = data.more;
         this.setTransactionsData(data.transactions);
-      });
+      }, () => this.loadingBlocks = false);
   }
 
   setTransactionsData(transactions: Transaction[]) {
