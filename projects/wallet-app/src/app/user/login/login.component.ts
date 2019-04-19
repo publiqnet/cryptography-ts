@@ -43,7 +43,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-       this.hasErrors = false;
+        this.hasErrors = false;
+        this.accountService.autoLogOut = false;
       }, err => console.log(err));
 
     this.errorService.errorEventEmiter

@@ -2,7 +2,7 @@ import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from 
 import { NavigationEnd, Router } from '@angular/router';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
-import { ReplaySubject } from 'rxjs';
+import { interval, ReplaySubject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { ErrorEvent, ErrorService } from '../services/error.service';
@@ -11,7 +11,6 @@ import { NotificationService } from '../services/notification.service';
 import { OauthService } from 'helper-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from '../services/account.service';
-
 
 @Component({
   selector: 'app-header',
@@ -22,6 +21,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navTabView = '';
   account: any = null;
   fixedNav: boolean;
+  checkBalanceUpdate;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private router: Router,
@@ -73,10 +73,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.accountService.accountUpdated$
       .pipe(
-        filter(result => result != null),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(result => this.account = result);
+      .subscribe(result => {
+        if (result) {
+          this.account = result;
+          if (!this.checkBalanceUpdate) {
+            this.checkBalanceUpdate = interval(1 * 60 * 1000).subscribe(data => this.accountService.checkBalanceUpdate());
+          }
+        } else {
+          if (this.checkBalanceUpdate) {
+            this.checkBalanceUpdate.unsubscribe();
+          }
+        }
+      });
 
     this.accountService.logoutDataChanged
       .pipe(
@@ -136,6 +146,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.checkBalanceUpdate) {
+      this.checkBalanceUpdate.unsubscribe();
+    }
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

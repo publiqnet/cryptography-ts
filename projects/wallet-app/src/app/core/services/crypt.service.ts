@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { KeyPair } from 'cryptography-ts';
+import { UtilsService } from 'shared-lib';
 import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction';
 import PubliqFile from 'blockchain-models-ts/bin/models/PubliqFile';
 import PubliqContentUnit from 'blockchain-models-ts/bin/models/PubliqContentUnit';
@@ -97,7 +98,7 @@ export class CryptService {
     const whole = amountArr[0] ? +amountArr[0] : 0;
     let fraction = 0;
     if (amountArr[1]) {
-      const x = (+('0.' + amountArr[1])) * fractionCoif;
+      const x = UtilsService.multFloats((+('0.' + amountArr[1])), fractionCoif);
       fraction = parseInt(x + '', 10);
     }
 

@@ -22,6 +22,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   public formView = 'formView';
   public recoverForm: FormGroup;
   public errorMessage = '';
+  public hasErrors = false;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -35,6 +36,16 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buildRecoverForm();
+    this.recoverForm.valueChanges
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+          this.hasErrors = this.recoverForm.invalid;
+        },
+        err => console.log(err)
+      );
+
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -69,8 +80,8 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
   private buildRecoverForm() {
     this.recoverForm = this.FormBuilder.group({
-      'password': new FormControl('', [Validators.required, ValidationService.passwordValidator]),
-      'confirmPassword': new FormControl('', [Validators.required, ValidationService.passwordValidator]),
+      'password': new FormControl('', [ValidationService.passwordValidator]),
+      'confirmPassword': new FormControl('', [ValidationService.passwordValidator]),
     }, {validator: ValidationService.passwordsEqualValidator});
   }
 

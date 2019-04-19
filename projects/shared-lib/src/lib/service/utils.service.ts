@@ -22,7 +22,7 @@ export class UtilsService {
     return amount * fractionCoif;
   }
 
-  public static getBalanceString (whole: number, fraction: number) {
+  public static getBalanceString(whole: number, fraction: number) {
     let balance;
     if (fraction) {
       balance = `${whole}.${fraction}`;
@@ -30,5 +30,10 @@ export class UtilsService {
       balance = `${whole}.000`;
     }
     return balance;
+  }
+
+  public static multFloats(a, b) {
+    const atens = Math.pow(10, String(a).length - String(a).indexOf('.') - 1), btens = Math.pow(10, String(b).length - String(b).indexOf('.') - 1);
+    return Math.round((a * atens) * (b * btens) / (atens * btens));
   }
 }
