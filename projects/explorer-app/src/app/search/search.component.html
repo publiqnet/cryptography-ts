@@ -1,7 +1,9 @@
 <div class="main-wrap">
   <div class="inner-wrap-main">
     <div class="main-wrap">
-      <app-block [blockData]="searchData" *ngIf="searchSelectedType == searchType.block"></app-block>
+      <div *ngIf="searchSelectedType == searchType.block">
+        <app-block [blockData]="searchData"></app-block>
+      </div>
 
       <div *ngIf="searchSelectedType == searchType.account">
         <app-account [account]="searchData"></app-account>
