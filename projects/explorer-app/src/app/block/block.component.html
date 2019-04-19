@@ -12,7 +12,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr *ngIf="blockData.transactionsCount">
                             <td>Number of transactions</td>
                             <td>{{blockData.transactionsCount}}</td>
                         </tr>
@@ -26,7 +26,9 @@
                         </tr>
                         <tr>
                             <td>Miner</td>
-                            <td class="miner-key">{{ blockData.account.address }}</td>
+                            <td class="miner-key">
+                                <a [routerLink]="['/a', blockData.account.address]">{{blockData.account.address}}</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

@@ -13,7 +13,7 @@
     <tbody>
     <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.number">
       <td>
-        <a [routerLink]="['/search', block.hash]">{{block.number}}</a>
+        <a [routerLink]="['/b', block.hash]">{{block.number}}</a>
       </td>
       <td class="d-md-table-cell" style="word-break:break-all ;min-width: 200px">{{block.hash}}</td>
       <td>{{block.transactionsCount}}</td>
