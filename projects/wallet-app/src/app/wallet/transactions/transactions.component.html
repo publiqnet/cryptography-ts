@@ -61,7 +61,7 @@
               <p matLine title="{{transaction.message}}">
                 {{transaction.message }}
               </p>
-              <a  class="payment-line" href="{{explorerAddress}}/block/account/{{(transaction.m_to_name != accountService.accountInfo.publicKey) ? transaction.m_to_name : transaction.m_from_name}}" target="_blank">
+              <a  class="payment-line" href="{{explorerAddress}}/block-navigation/account/{{(transaction.m_to_name != accountService.accountInfo.publicKey) ? transaction.m_to_name : transaction.m_from_name}}" target="_blank">
                 {{(transaction.to != accountService.accountInfo.publicKey) ? transaction.to : transaction.from}}</a>
             </div>
           </div>

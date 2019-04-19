@@ -1,29 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TransactionRoutingModule } from './transaction-routing.module';
 import { TransactionComponent } from './transaction/transaction.component';
-import { RouterModule } from '@angular/router';
-import { ErrorPageComponent } from '../shared/error-page/error-page.component';
-import { SharedModule } from '../shared/shared.module';
+import { TransactionListComponent } from './list/transaction-list.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MatProgressSpinnerModule } from '@angular/material';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-        RouterModule.forChild([
-                {
-                    path: 'not-exists',
-                    component: ErrorPageComponent,
-                    data: {message: 'Transaction not found!'}
-                },
-                {
-                    path: ':id',
-                    pathMatch: 'full',
-                    component: TransactionComponent,
-                }
-            ],
-        )
-    ],
-    declarations: [TransactionComponent]
+  declarations: [TransactionComponent, TransactionListComponent],
+  imports: [
+    CommonModule,
+    TransactionRoutingModule,
+    InfiniteScrollModule,
+    MatProgressSpinnerModule
+  ],
+  exports: [
+    TransactionComponent, TransactionListComponent
+  ]
 })
 export class TransactionModule {
 }

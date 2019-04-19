@@ -34,9 +34,20 @@
 button {
   outline: none;
 }
+.no-content{
+  font-size: 20px;
+  p{
+    margin-bottom: 4px;
+  }
+  .light{
+    color: #868DA8;
+    font-size: 14px;
+  }
+}
+
 
 .logo-container {
-  flex: 0 0 140px;
+  flex: 0 0 100px;
   overflow: hidden;
   transition: .2s;
 
@@ -346,6 +357,7 @@ mat-menu {
 
 @media (max-width: 560px) {
   .logo-container {
+    flex: 0 0 100px !important;
     margin-right: 0 !important;
 
     .publiq-logo {

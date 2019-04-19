@@ -1,0 +1,116 @@
+.account-main-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+.account-main-info .info-main-table {
+  width: 100%;
+}
+.account-main-info .info-main-table > .qr-wrap {
+  background: #fff;
+  display: flex;
+}
+.account-main-info .info-main-table .info-main-table-content {
+  box-shadow: none;
+  width: calc(100% - 280px);
+  display: block;
+}
+.account-main-info .info-main-table .info-main-table-content .info-main-table-item:last-child {
+  border-bottom: none;
+}
+.account-main-info .info-main-table qrcode {
+  display: inline-block;
+  width: 265px;
+  margin: 24px;
+}
+.transaction-details-table {
+  margin: 60px 0;
+}
+.transaction-details-table .unconfirmed {
+  color: #ef3f6d;
+}
+.transactions-heading {
+  font-weight: 300;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 35px;
+  margin: 80px 0 40px;
+}
+
+
+.account-main-info{
+  box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
+  border-radius: 10px;
+  background-color: white;
+}
+.info-main-table-header{
+  width: 100%;
+  border-radius: 6px 6px 0px 0px;
+  color: #010101;
+  font-size: 24px;
+  padding: 20px 48px;
+  background: #ecf0f3;
+  font-weight: 600;
+}
+.qr-wrap{
+  width: 100%;
+  border-radius: 0px 0px 6px 6px;
+  background: #ffffff;
+  min-height: 190px;
+  overflow: auto;
+  padding: 24px 48px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.info-main-table .info-main-table-content  h5{
+  font-weight: 300;
+  font-size: 16px;
+  color: #868DA8;
+  margin: 0 0 4px;
+}
+
+.info-main-table .info-main-table-content span {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.info-main-table .info-main-table-content .info-main-table-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+}
+.qr-parent{
+  display: inline-block;
+  flex: 1;
+}
+.qr-parent > div {
+  width: 180px;
+  margin-left: auto;
+}
+.qr-parent img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+@media screen and (max-width: 767px){
+  .account-main-info .info-main-table > .qr-wrap{
+    flex-direction: column;
+  }
+  .account-main-info .info-main-table .info-main-table-content{
+    width: 100%;
+  }
+  .qr-wrap{
+    padding: 24px;
+  }
+  .qr-parent > div{
+    margin: 12px auto 0;
+  }
+}

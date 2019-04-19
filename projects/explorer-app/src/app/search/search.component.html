@@ -1,0 +1,28 @@
+<div class="main-wrap container">
+  <div class="inner-wrap-main">
+    <div class="main-wrap">
+      <div *ngIf="searchSelectedType == searchType.block">
+        <app-block [blockData]="searchData"></app-block>
+      </div>
+
+      <div *ngIf="searchSelectedType == searchType.account">
+        <app-account [account]="searchData"></app-account>
+      </div>
+
+      <div *ngIf="searchSelectedType == searchType.transaction">
+        <app-transaction [transaction]="searchData"></app-transaction>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !searchData" class="no-content mt-5 text-center">
+      <p >We couldn’t find what you are looking for.</p>
+      <p class="light">
+        Please enter an address, transaction hash, block number or hash.
+      </p>
+    </div>
+
+    <div *ngIf="loading && !searchData" class="row justify-content-center align-items-center spinner no-gutters">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+</div>

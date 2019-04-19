@@ -1,0 +1,194 @@
+.transactions-table .transaction-table-item {
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 28px 32px;
+  font-size: 14px;
+}
+.transactions-table .transaction-table-item .transaction-table-body {
+  display: flex;
+  flex-wrap: wrap;
+}
+.transactions-table .transaction-table-item .transaction-table-body small {
+  color: #868da8;
+  font-size: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 24px;
+}
+.transactions-table .transaction-table-item .transaction-table-body small + * {
+  vertical-align: middle;
+}
+.arrows{
+  width: 14px;
+}
+.transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_hash {
+  width: calc(100% - 200px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+}
+.transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_amount {
+  width: 200px;
+  white-space: nowrap;
+  text-align: right;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+  font-weight: 600;
+}
+.transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_amount img {
+  margin-left: 12px;
+  vertical-align: middle;
+  width: 28px;
+}
+.transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_arrow {
+  width: 10px;
+  margin: 0 20px;
+  /*background: url(assets/img/fromto.svg) center/contain no-repeat;*/
+}
+.transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_from, .transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_to {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(50% - 25px);
+}
+.transactions-table .transaction-table-item .transaction-user-body {
+  justify-content: space-between;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_hash {
+  width: calc(100% - 140px);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_date {
+  width: 140px;
+  text-align: right;
+  font-weight: 700;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_user_recepient {
+  width: calc(100% - 200px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_user_recepient span {
+  font-weight: 600;
+  margin: 0 24px 0 12px;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_confirmations {
+  width: 200px;
+  text-align: right;
+}
+.transactions-table .transaction-table-item .transaction-user-body:not(.amount-shown) > div.transaction-table_confirmations span {
+  font-weight: 600;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_hash {
+  width: calc(100% - 400px);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount {
+  width: 220px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  text-align: right;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount img, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount span {
+  vertical-align: middle;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount img {
+  margin-right: 16px;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations {
+  width: 180px;
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dfe5f9;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_user_recepient {
+  width: calc(100% - 200px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_user_recepient span {
+  font-weight: 600;
+  margin: 0 24px 0 12px;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_date {
+  width: 200px;
+  text-align: right;
+}
+.transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_date span {
+  font-weight: 600;
+}
+@media (max-width: 768px) {
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_hash {
+    width: 100%;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dfe5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_user_recepient {
+    width: 100%;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    text-align: left;
+    padding-bottom: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount img, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations img, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount span, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations span {
+    vertical-align: middle;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount img, .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations img {
+    margin-right: 16px;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount {
+    order: 4;
+    margin-top: 28px;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations {
+    order: 5;
+    margin-top: 22px;
+  }
+  .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_date {
+    order: 6;
+    width: 100%;
+    text-align: left;
+    margin-top: 22px;
+  }
+}
