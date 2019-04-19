@@ -16,6 +16,7 @@ export interface BlockchainBlockOptions {
     transactionsCount: number;
     transfer: {whole: number, fraction: number};
     timestamp: number;
+    revordTotalAmount?: string;
 }
 
 export class BlockchainBlock {
@@ -32,6 +33,7 @@ export class BlockchainBlock {
     transactionsCount: number;
     transfer: {whole: number, fraction: number};
     timestamp: number;
+    revordTotalAmount: string;
 
     constructor(options?: BlockchainBlockOptions) {
         for (const i in options) {
@@ -39,7 +41,14 @@ export class BlockchainBlock {
                 if (['account'].includes(i)) {
                     this[i] = options[i] ? new Account(options[i]) : null;
                 } else if (['rewards'].includes(i)) {
-                    this[i] = options[i] ? options[i].map((revard: RewardOptions) => new Reward(revard)) : '';
+
+                    this[i] = options[i] ? options[i].map((revard: RewardOptions) => {
+                        if (revard.rewardType == 'miner') {
+                            this.revordTotalAmount = revard.whole + '.' + revard.fraction;
+                        }
+                        return revard ? new Reward(revard) : null;
+                    }) : null;
+
                 } else if (['transactions'].includes(i)) {
                     this[i] = options[i] ? options[i].map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
                 } else if (['signTime'].includes(i)) {

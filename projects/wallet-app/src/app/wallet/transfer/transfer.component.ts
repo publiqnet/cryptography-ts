@@ -157,6 +157,7 @@ export class TransferComponent implements OnInit, OnDestroy {
       this.notificationService.error(this.errorService.getError('invalid_amount_error'));
       return;
     }
+
     if (this.accountService.accountInfo.publicKey == this.public_key) {
       this.notificationService.error(this.errorService.getError('cant_transfer_in_same_account'));
       return;
@@ -172,13 +173,13 @@ export class TransferComponent implements OnInit, OnDestroy {
         const isValidData = this.cryptService.checkBlockChainResponse(data);
         if (isValidData.success) {
           this.loading = false;
-          this.notificationService.success('The transaction was successful');
+          this.notificationService.success('Your transaction is successfully complete');
           this.transferTab = false;
         } else {
           if (isValidData.data instanceof PubliqNotEnoughBalance) {
             this.errorService.handleError('your_balance_is_not_enough', {status: 409, error: {message: 'your_balance_is_not_enough'}});
           } else {
-            this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'transfer_failed'}});
+            this.errorService.handleError('transfer_failed', {status: 409, error: {message: 'default'}});
           }
         }
       }, error => {

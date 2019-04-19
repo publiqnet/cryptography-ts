@@ -27,7 +27,7 @@ export class ErrorEvent {
 export class ErrorService {
 
     private ErrorMessage = {
-        default: 'Something went wrong',
+        default: ' Something went wrong please try again letter.',
         incorrect_public_key: 'Incorrect public key',
         signature_verification_error: 'Incorrect recovery phrase',
         invalid_amount_error: 'Insufficient PBQ Amount',

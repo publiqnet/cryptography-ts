@@ -2,24 +2,22 @@
   <table class="text-center mb-4" *ngIf="blocks.length">
     <thead>
     <tr class="text-capitalize">
-      <th class="text-center">Block Id</th>
+      <th class="text-center">#</th>
       <th class="text-center d-md-table-cell" >Hash</th>
-      <th class="text-center">Transactions Count</th>
-      <th class="text-center">Confirmations Count</th>
+      <th class="text-center">Transactions</th>
       <th class="text-center min-100">Size</th>
-      <th class="text-center">Sign Time</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.number">
       <td>
-        <a [routerLink]="['/b', block.hash]">{{block.number}}</a>
+        <a [routerLink]="['/b', block.number]">{{block.number}}</a>
       </td>
-      <td class="d-md-table-cell" style="word-break:break-all ;min-width: 200px">{{block.hash}}</td>
+      <td class="d-md-table-cell" style="word-break:break-all ;min-width: 200px">
+        <a [routerLink]="['/b', block.hash]">{{block.hash}}</a>
+      </td>
       <td>{{block.transactionsCount}}</td>
-      <td>{{block.confirmationsCount}}</td>
       <td class="min-100">{{block.size | number : '1.2-2'}} KB</td>
-      <td class="date-td">{{block.signTime | date: 'yyyy-MM-dd HH:mm'}}</td>
     </tr>
     </tbody>
   </table>

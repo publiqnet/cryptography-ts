@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BlockchainBlock } from '../services/models/BlockchainBlock';
 import { Transaction } from '../services/models/Transaction';
 import { ApiService } from '../services/api.service';
@@ -27,7 +27,10 @@ export class BlockComponent implements OnInit, OnDestroy {
   hasBeenLoaded: boolean;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+  constructor(
+              private router: Router,
+              private route: ActivatedRoute,
+              private apiService: ApiService) {
   }
 
   ngOnInit() {
@@ -84,7 +87,21 @@ export class BlockComponent implements OnInit, OnDestroy {
     }
   }
 
+  getBlockFee(block) {
+    if (!block.fee) {
+      return '0.0';
+    }
+    return block.fee.whole + '.' + block.fee.fraction;
+  }
+
+  redirect($event, page, param) {
+    $event.preventDefault();
+    this.blockData = null;
+    this.router.navigate([`/${page}/${param}`]);
+  }
+
   ngOnDestroy(): void {
+    this.blockData = null;
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Transaction } from '../../services/models/Transaction';
 import { ApiService } from '../../services/api.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
@@ -15,7 +15,9 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private apiService: ApiService) {
   }
 
   ngOnInit() {
@@ -30,7 +32,14 @@ export class TransactionComponent implements OnInit, OnDestroy {
     }
   }
 
+  redirect($event, page, param) {
+    $event.preventDefault();
+    this.transaction = null;
+    this.router.navigate([`/${page}/${param}`]);
+  }
+
   ngOnDestroy(): void {
+    this.transaction = null;
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

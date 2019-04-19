@@ -10,7 +10,7 @@ import { ReplaySubject } from 'rxjs';
   styleUrls: []
 })
 export class HomepageComponent implements OnInit, OnDestroy {
-  today: Date;
+  today: Date = new Date();
   blocks: Block[] = [];
   public seeMoreChecker = false;
   lastBlockHash = '';
@@ -19,9 +19,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(protected apiService: ApiService) {
-    this.today = new Date();
-  }
+  constructor(protected apiService: ApiService) {}
 
   ngOnInit() {
     this.apiService.loadBlocks(this.lastBlockHash, this.blocksLimit)

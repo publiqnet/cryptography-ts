@@ -2,7 +2,7 @@
     <div class="mb-5">
         <div class="row no-gutters mb-3">
             <div class="col-md-6 col-12 mt-3">
-                <h2>Latest Blocks</h2>
+                <h2>BLOCKS</h2>
             </div>
         </div>
 
@@ -13,7 +13,7 @@
         </div>
 
         <div class="row no-gutters align-items-center justify-content-center mb-3" *ngIf="seeMoreChecker">
-            <button class="button button-fill text-uppercase font-weight-bold" routerLink="/block-navigation/date/{{today | date:'yyyy-MM-dd'}}">
+            <button *ngIf="today" class="button button-fill text-uppercase font-weight-bold" routerLink="/block-navigation/date/{{today | date:'yyyy-MM-dd'}}">
                 see more
             </button>
         </div>
