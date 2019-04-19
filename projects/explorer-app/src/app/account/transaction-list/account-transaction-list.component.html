@@ -18,12 +18,12 @@
                     <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
                 </div>
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress === transaction.transfer.to.address">
-                    <mat-icon>arrow_right</mat-icon>
+                  <img class="arrows" src="../../../assets/img/ArrowDown.svg" alt="">
                     <span>Received</span>
                     <a routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
                 </div>
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress !== transaction.transfer.to.address">
-                  <mat-icon>arrow_left</mat-icon>
+                  <img class="arrows" src="../../../assets/img/ArrowUp.svg" alt="">
                     <span>Sent</span>
                     <a routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
                 </div>

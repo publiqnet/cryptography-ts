@@ -11,5 +11,9 @@
         <app-transaction [transaction]="searchData"></app-transaction>
       </div>
     </div>
+
+    <div *ngIf="!searchData" class="no-content">
+      <a class="button-fill" href="">Page not found</a>
+    </div>
   </div>
 </div>
