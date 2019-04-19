@@ -8,7 +8,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpHelperService, HttpObserverService, OauthService } from 'helper-lib';
 import { SharedModule } from './shared/shared.module';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { Angulartics2Module } from 'angulartics2';
@@ -69,7 +68,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatButtonModule,
     MatInputModule,
     MatIconModule,
-    SharedModule,
     AppRoutingModule,
     InfiniteScrollModule,
     NgbModule,
@@ -97,9 +95,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     BlockComponent
   ],
   providers: [
-    OauthService,
-    HttpHelperService,
-    HttpObserverService,
     TranslateService,
     ApiService,
     PbqPipe,
