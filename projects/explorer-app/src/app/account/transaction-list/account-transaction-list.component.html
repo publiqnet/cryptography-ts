@@ -4,7 +4,7 @@
             <div class="transaction-table-body transaction-user-body" [class.amount-shown]="amountShown">
                 <div class="transaction-table_hash">
                     <small>Hash</small>
-                    <a routerLink="/t/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
+                    <a class="linked" routerLink="/t/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
                 </div>
                 <div class="transaction-table_confirmations">
 
@@ -20,12 +20,12 @@
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress === transaction.transfer.to.address">
                   <img class="arrows" src="../../../assets/img/ArrowDown.svg" alt="">
                     <span>Received</span>
-                    <a routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
+                    <a class="linked" routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
                 </div>
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress !== transaction.transfer.to.address">
                   <img class="arrows" src="../../../assets/img/ArrowUp.svg" alt="">
                     <span>Sent</span>
-                    <a routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
+                    <a class="linked" routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
                 </div>
                 <div class="transaction-table_date" *ngIf="transaction.isConfirmed">
                     <span>{{transaction.block.signTime | date: 'yyyy-MM-dd HH:mm'}}</span>

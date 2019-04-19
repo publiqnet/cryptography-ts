@@ -1,4 +1,4 @@
-<div class="main-wrap">
+<div class="main-wrap container">
   <div class="inner-wrap-main">
     <div class="main-wrap">
       <div *ngIf="searchSelectedType == searchType.block">
@@ -14,8 +14,11 @@
       </div>
     </div>
 
-    <div *ngIf="!searchData" class="no-content">
-      <a class="button-fill" href="">Page not found</a>
+    <div *ngIf="!searchData" class="text-center mt-5 no-content">
+      <p >We couldn’t find what you are looking for.</p>
+      <p>
+        Please enter an address, transaction hash, block number or hash.
+      </p>
     </div>
   </div>
 </div>

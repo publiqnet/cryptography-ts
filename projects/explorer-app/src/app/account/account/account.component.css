@@ -110,8 +110,7 @@
   .qr-wrap{
     padding: 24px;
   }
-  .qr-parent[_ngcontent-c5]{
-    width: 215px;
-    margin: 24px auto;
+  .qr-parent > div{
+    margin: 12px auto 0;
   }
 }

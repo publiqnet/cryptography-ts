@@ -38,7 +38,7 @@
                             <span>{{block.key}} </span>
                             <span class="value">
                                 <ng-container *ngIf="block.key === 'hash'">
-                                  <a [routerLink]="['/b', block.value]">{{block.value}}</a>
+                                  <a class="linked" [routerLink]="['/b', block.value]">{{block.value}}</a>
                                 </ng-container>
                                 <ng-container *ngIf="!(block.key === 'hash')">
                                     {{block.value}}
@@ -62,7 +62,7 @@
                         <td>
                             <span>{{transfer.key}} </span>
                             <span class="value" *ngIf="['to', 'from'].includes(transfer.key)">
-                                <a [routerLink]="['/a', transfer.value.address]">{{transfer.value.address}}</a>
+                                <a class="linked" [routerLink]="['/a', transfer.value.address]">{{transfer.value.address}}</a>
                             </span>
                             <span class="value" *ngIf="!(['to', 'from'].includes(transfer.key))">
                                 {{transfer.value}}

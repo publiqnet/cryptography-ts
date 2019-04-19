@@ -871,6 +871,10 @@ footer{
 .linked{
   color: #3366ff;
 }
+.linked:hover{
+  text-decoration: none;
+  color: #3366ff;
+}
 .linked:focus{
   outline: none;
 }
@@ -892,5 +896,10 @@ footer{
 @media screen and (max-width: 767px) {
   .transaction-table h2 {
     font-size: 18px;
+  }
+  .transaction-table h2 span{
+    display: block;
+    line-height: normal;
+    margin-top: 12px;
   }
 }
