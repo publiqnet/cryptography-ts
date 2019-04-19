@@ -22,7 +22,7 @@
   vertical-align: middle;
 }
 .arrows{
-  width: 20px;
+  width: 14px;
 }
 .transactions-table .transaction-table-item .transaction-ordinary-body > div.transaction-table_hash {
   width: calc(100% - 200px);

@@ -3,7 +3,7 @@
         <div class="mt-3">
             <h2 class="mb-5">Block #{{ blockData.number }}</h2>
             <div class="row mb-5">
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <table class="summary-table mb-4">
                         <thead>
                         <tr class="text-capitalize">
@@ -27,13 +27,13 @@
                         <tr>
                             <td>Miner</td>
                             <td class="miner-key">
-                                <a [routerLink]="['/a', blockData.account.address]">{{blockData.account.address}}</a>
+                                <a class="linked" [routerLink]="['/a', blockData.account.address]">{{blockData.account.address}}</a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-6">
                     <table class="hashes-table">
                         <thead>
                         <tr>

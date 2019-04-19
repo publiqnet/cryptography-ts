@@ -315,11 +315,9 @@ table tbody tr td {
     }
     .search-bar {
         margin-left: 30px;
-      max-width: 150px!important;
+      max-width: 260px!important;
     }
-    .search-bar input {
-        visibility: hidden;
-    }
+
     .search-bar.search-open {
         flex: 1 0;
     }
@@ -785,7 +783,7 @@ table.hashes-table tbody tr td div:first-child{
   border-radius: 7px;
   box-shadow: none;
   height: 36px;
-  max-width: 240px;
+  max-width: 300px;
 }
 .header .search-bar input{
   border: none;
@@ -796,7 +794,7 @@ table.hashes-table tbody tr td div:first-child{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 220px;
+  max-width: 290px;
 
 }
 .header .search-bar input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -870,6 +868,7 @@ footer{
 }
 .linked{
   color: #3366ff;
+  font-weight: 500;
 }
 .linked:hover{
   text-decoration: none;

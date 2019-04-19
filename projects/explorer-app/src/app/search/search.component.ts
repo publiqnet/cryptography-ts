@@ -21,6 +21,7 @@ export enum SearchTypes {
 })
 export class SearchComponent implements OnInit, OnDestroy {
 
+  loading = false;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public searchType = SearchTypes;
   public searchSelectedType;
@@ -40,6 +41,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         )
         .subscribe((params: Params) => {
           if (params['term']) {
+            this.loading = true;
             this.loadSearchData(params['term']);
           } else {
             this.router.navigate(['/page-not-found']);
@@ -54,9 +56,10 @@ export class SearchComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: SearchResponse) => {
+        this.loading = false;
         this.searchSelectedType = data.type;
         this.searchData = data.object;
-      });
+      }, () => this.loading = false);
   }
 
   ngOnDestroy() {
