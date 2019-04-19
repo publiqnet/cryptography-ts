@@ -27,7 +27,8 @@
                         <tr>
                             <td>Miner</td>
                             <td class="miner-key">
-                                <a class="linked" [routerLink]="['/a', blockData.account.address]">{{blockData.account.address}}</a>
+                                <a class="linked"
+                                   [routerLink]="['/a', blockData.account.address]">{{blockData.account.address}}</a>
                             </td>
                         </tr>
                         </tbody>
@@ -76,7 +77,9 @@
                 <tr *ngFor="let transaction of transactions">
                     <td class="text-center">{{transaction.feeFraction}}</td>
                     <td class="text-center">{{transaction.feeWhole}}</td>
-                    <td class="text-center hash">{{transaction.transactionHash}}</td>
+                    <td class="text-center hash">
+                        <a [routerLink]="['/t', transaction.transactionHash]">{{transaction.transactionHash}}</a>
+                    </td>
                     <td class="text-center">{{transaction.transactionSize | number : '1.2-2'}} Kb</td>
                     <td class="text-center">{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
                 </tr>
