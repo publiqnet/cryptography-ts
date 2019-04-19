@@ -9,7 +9,7 @@ import { TransactionResponse } from '../../services/models/TransactionResponse';
 @Component({
   selector: 'app-account-transaction-list',
   templateUrl: './account-transaction-list.component.html',
-  styles: []
+  styleUrls: ['./account-transaction-list.component.css']
 })
 export class AccountTransactionListComponent implements OnInit, OnDestroy {
 
