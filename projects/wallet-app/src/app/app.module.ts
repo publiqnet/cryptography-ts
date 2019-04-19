@@ -13,11 +13,9 @@ import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { environment } from '../environments/environment';
 import { UserIdleModule } from './core/models/angular-user-idle/user-idle.module';
-import { OauthService } from 'helper-lib';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ClipboardModule } from 'ngx-clipboard';
-import { SharedLibModule } from 'shared-lib';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -34,7 +32,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     ClipboardModule,
     UserModule,
-    SharedLibModule,
     WalletModule,
     Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
     UserIdleModule.forRoot({idle: environment.auto_logout_time, timeout: 5, ping: 5}),
@@ -48,9 +45,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     WalletService,
-    AccountService,
-    OauthService,
-    {provide: 'oauthUrl', useValue: environment.oauth_backend},
+    AccountService
   ],
   bootstrap: [AppComponent]
 })

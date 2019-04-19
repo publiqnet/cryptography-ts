@@ -13,6 +13,7 @@ import { ControlMessagesComponent } from './control-message/control-message.comp
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PbqPipe } from './pipes/pbq.pipe';
+import { environment } from '../../environments/environment';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ErrorService } from '../core/services/error.service';
@@ -20,6 +21,9 @@ import { FloatPipe } from './pipes/float.pipe';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SharedLibModule } from 'shared-lib';
+import { HelperLibModule } from 'helper-lib';
+import { UiLibModule } from 'ui-lib';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -63,6 +67,9 @@ export function createTranslateLoader(http: HttpClient) {
         FormsModule,
         ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'}),
         FlexLayoutModule,
+        SharedLibModule,
+        HelperLibModule,
+        UiLibModule,
         TranslateModule.forChild({
           loader: {
             provide: TranslateLoader,
@@ -117,12 +124,16 @@ export function createTranslateLoader(http: HttpClient) {
         ReactiveFormsModule,
         ControlMessagesComponent,
         FlexLayoutModule,
+        SharedLibModule,
+        HelperLibModule,
+        UiLibModule,
         PbqPipe,
         FloatPipe
     ],
     providers: [
         DecimalPipe,
-        ErrorService
+        ErrorService,
+        {provide: 'oauthUrl', useValue: environment.oauth_backend},
     ]
 })
 export class SharedModule {
