@@ -5,6 +5,7 @@
   border-radius: 6px;
   margin-bottom: 16px;
   padding: 28px 32px;
+  font-size: 14px;
 }
 .transactions-table .transaction-table-item .transaction-table-body {
   display: flex;
@@ -12,7 +13,7 @@
 }
 .transactions-table .transaction-table-item .transaction-table-body small {
   color: #868da8;
-  font-size: 16px;
+  font-size: 14px;
   display: inline-block;
   vertical-align: middle;
   margin-right: 24px;
@@ -102,7 +103,7 @@
   text-overflow: ellipsis;
 }
 .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_amount {
-  width: 180px;
+  width: 220px;
   padding-bottom: 20px;
   margin-bottom: 20px;
   border-bottom: 1px solid #dfe5f9;
@@ -119,7 +120,7 @@
   margin-right: 16px;
 }
 .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_confirmations {
-  width: 220px;
+  width: 180px;
   text-align: center;
   font-weight: 700;
   padding-bottom: 20px;

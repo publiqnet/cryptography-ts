@@ -2,7 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 80px;
+  margin-top: 50px;
 }
 .account-main-info .info-main-table {
   width: 100%;
@@ -50,7 +50,7 @@
   border-radius: 6px 6px 0px 0px;
   color: #010101;
   font-size: 24px;
-  padding: 24px 48px;
+  padding: 20px 48px;
   background: #ecf0f3;
   font-weight: 600;
 }
@@ -62,7 +62,7 @@
   -webkit-box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
   box-shadow: 0 7px 15px 0 rgba(0,0,0,0.07);
   overflow: auto;
-  padding: 24px 48px 48px;
+  padding: 24px 48px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -77,8 +77,8 @@
 }
 
 .info-main-table .info-main-table-content span {
-  font-weight: 700;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 14px;
   line-height: 1.4;
   word-break: break-all;
 }
