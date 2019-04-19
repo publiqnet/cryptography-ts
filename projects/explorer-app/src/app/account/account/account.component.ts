@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { SearchResponse } from '../../services/models/SearchResponse';
 import { Transaction, TransactionOptions } from '../../services/models/Transaction';
 import { Account } from '../../services/models/Account';
@@ -22,18 +22,21 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.account) {
-      this.apiService.search('search')
+      this.route.params
         .pipe(
+          switchMap((params: { address: string }) => this.apiService.search(params.address)),
           takeUntil(this.unsubscribe$)
         )
-        .subscribe((data: SearchResponse) => {});
+        .subscribe((data: SearchResponse) => this.AccountData = data.object);
     } else {
-
-      this.transactions = (this.account.transactions && this.account.transactions.length > 0)
-        ? this.account.transactions.map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
-
-      console.log(this.account, this.transactions);
+      this.AccountData = this.account;
     }
+  }
+
+  set AccountData(account: Account) {
+    this.account = account;
+    this.transactions = (this.account.transactions && this.account.transactions.length > 0)
+      ? this.account.transactions.map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
   }
 
   ngOnDestroy(): void {

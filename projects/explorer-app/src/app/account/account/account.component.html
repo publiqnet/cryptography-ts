@@ -21,7 +21,7 @@
                     <span><img src="assets/img/noah-coin.svg"/> {{account.feeReward.balance}}</span>
                 </div>
             </div>
-            <!--<qrcode colorlight="#274FB0" colordark="#FFFFFF" [qrdata]="getAddressUrl(accountData.address)" [size]="256" [level]="'M'"></qrcode>-->
+            <img class="mt-4 mb-4" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{account.address}}&choe=UTF-8&chld=L|1" alt="barcode">
         </div>
     </div>
 </div>
