@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private router: Router,
-              private accountService: AccountService,
+              public accountService: AccountService,
               @Inject(PLATFORM_ID) private platformId: Object,
               @Inject(DOCUMENT) private document: any,
               private walletService: WalletService,

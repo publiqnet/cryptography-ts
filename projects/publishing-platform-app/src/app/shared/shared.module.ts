@@ -65,6 +65,17 @@ import { HrefToRouterLinkDirective } from '../core/directives/href-to-routerlink
 import { PubTitlePipe } from '../core/pipes/pub-title.pipe';
 import { SearchMemberComponent } from '../publication/search-member/search-member.component';
 import { NuxComponent } from './nux/nux.component';
+import { environment } from '../../environments/environment';
+import { HelperLibModule, HttpHelperService } from 'helper-lib';
+import { SharedLibModule } from 'shared-lib';
+import { UiLibModule } from 'ui-lib';
+
+HttpHelperService.setBaseHeaders([
+  {
+    headerKay: 'X-API-TOKEN',
+    getHeaderValue: () => localStorage.getItem('auth')
+  }
+]);
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/home/', '.json');
@@ -108,6 +119,9 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    SharedLibModule,
+    HelperLibModule,
+    UiLibModule,
     LazyLoadImagesModule,
     TranslateModule.forChild({
       loader: {
@@ -184,6 +198,9 @@ export function createTranslateLoader(http: HttpClient) {
     ArticleSmallCardListComponent,
     AccountListComponent,
     FlexLayoutModule,
+    SharedLibModule,
+    HelperLibModule,
+    UiLibModule,
     PbqPipe,
     TimeIntervalPipe,
     ShortNamePipe,
@@ -201,7 +218,12 @@ export function createTranslateLoader(http: HttpClient) {
     PubTitlePipe,
     NuxComponent
   ],
-  providers: [DecimalPipe, DatePipe, Broadcaster],
+  providers: [
+    DecimalPipe,
+    DatePipe,
+    Broadcaster,
+    { provide: 'oauthUrl', useValue: environment.oauth_backend }
+  ],
   entryComponents: [ReportDialogComponent, LoginDialogComponent]
 })
 export class SharedModule {}

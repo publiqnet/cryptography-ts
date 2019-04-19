@@ -24,15 +24,6 @@ import { PublicationModule } from './publication/publication.module';
 import { PublicationService } from './core/services/publication.service';
 import { LanguageGuard } from './guards/language.guard';
 import { RequestsInterceptor } from './core/services/requests.interceptor';
-import { environment } from '../environments/environment';
-import { OauthService, HttpHelperService, HttpObserverService } from 'helper-lib';
-
-HttpHelperService.setBaseHeaders([
-  {
-    headerKay: 'X-API-TOKEN',
-    getHeaderValue: () => localStorage.getItem('auth')
-  }
-]);
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -70,11 +61,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             provide: HTTP_INTERCEPTORS,
             useClass: RequestsInterceptor,
             multi: true
-        },
-        OauthService,
-        { provide: 'oauthUrl', useValue: environment.oauth_backend },
-        HttpHelperService,
-        HttpObserverService
+        }
     ],
     bootstrap: [AppComponent]
 })
