@@ -4,7 +4,7 @@
             <div class="transaction-table-body transaction-user-body" [class.amount-shown]="amountShown">
                 <div class="transaction-table_hash">
                     <small>Hash</small>
-                    <a routerLink="/block/transaction/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
+                    <a routerLink="/t/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
                 </div>
                 <div class="transaction-table_confirmations">
 
@@ -15,16 +15,15 @@
                 </div>
                 <div class="transaction-table_amount" *ngIf="amountShown">
                     <small>Amount</small>
-                    <img src="assets/img/noah-coin.svg" alt="">
                     <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
                 </div>
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress === transaction.transfer.to.address">
-                    <img src="assets/img/received.svg" alt="">
+                    <mat-icon>arrow_right</mat-icon>
                     <span>Received</span>
                     <a routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
                 </div>
                 <div class="transaction-table_user_recepient" *ngIf="ownerAddress !== transaction.transfer.to.address">
-                    <img src="assets/img/sent.svg" alt="">
+                  <mat-icon>arrow_left</mat-icon>
                     <span>Sent</span>
                     <a routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
                 </div>

@@ -52,7 +52,6 @@
   font-size: 24px;
   padding: 24px 48px;
   background: #ecf0f3;
-  text-transform: uppercase;
   font-weight: 600;
 }
 .qr-wrap{
@@ -79,8 +78,8 @@
 
 .info-main-table .info-main-table-content span {
   font-weight: 700;
-  font-size: 18px;
-  line-height: 32px;
+  font-size: 16px;
+  line-height: 1.4;
   word-break: break-all;
 }
 
@@ -91,9 +90,11 @@
 }
 .qr-parent{
   display: inline-block;
-  width: 265px;
-  margin: 24px;
   flex: 1;
+}
+.qr-parent > div {
+  width: 180px;
+  margin-left: auto;
 }
 .qr-parent img{
   width: 100%;
@@ -102,3 +103,18 @@
 }
 
 
+@media screen and (max-width: 767px){
+  .account-main-info .info-main-table > .qr-wrap{
+    flex-direction: column;
+  }
+  .account-main-info .info-main-table .info-main-table-content{
+    width: 100%;
+  }
+  .qr-wrap{
+    padding: 24px;
+  }
+  .qr-parent[_ngcontent-c5]{
+    width: 215px;
+    margin: 24px auto;
+  }
+}
