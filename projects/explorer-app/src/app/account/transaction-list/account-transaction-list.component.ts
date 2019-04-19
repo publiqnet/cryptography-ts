@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Transaction } from '../../services/models/Transaction';
 import { ApiService } from '../../services/api.service';
@@ -13,7 +13,9 @@ import { TransactionResponse } from '../../services/models/TransactionResponse';
 })
 export class AccountTransactionListComponent implements OnInit, OnDestroy {
 
-  transactions: Transaction[];
+  @Input() transactions: Transaction[];
+  @Input() ownerAddress: string;
+  @Input() amountShown?: boolean;
   blockInfiniteScroll = false;
   seeMoreChecker = false;
   lastTransactionHash = '';
@@ -27,15 +29,15 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.apiService.getTransactions(null, this.transactionsLimit)
-      .pipe(
-        filter((data: any) => data != null),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: TransactionResponse) => {
-        this.seeMoreChecker = data.more;
-        this.transactionsData = data.transactions;
-      });
+    // this.apiService.getTransactions(null, this.transactionsLimit)
+    //   .pipe(
+    //     filter((data: any) => data != null),
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe((data: TransactionResponse) => {
+    //     this.seeMoreChecker = data.more;
+    //     this.transactionsData = data.transactions;
+    //   });
   }
 
   set transactionsData(transactions: Transaction[]) {
