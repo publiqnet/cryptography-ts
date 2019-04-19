@@ -1,4 +1,4 @@
-<ng-container *ngIf="transactions; else loading">
+<ng-container *ngIf="transactions">
     <div class="transactions-table" *ngIf="transactions.length">
         <div class="transaction-table-item" *ngFor="let transaction of transactions">
             <div class="transaction-table-body transaction-user-body" [class.amount-shown]="amountShown">

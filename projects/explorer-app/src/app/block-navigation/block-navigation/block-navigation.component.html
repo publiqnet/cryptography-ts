@@ -33,6 +33,6 @@
             <mat-spinner></mat-spinner>
         </div>
 
-        <div *ngIf="blocks.length == 0 && loadingBlocks == 0 && hasBeenLoaded">No results</div>
+        <div *ngIf="blocks.length == 0 && !loadingBlocks && hasBeenLoaded">No results</div>
     </div>
 </div>
