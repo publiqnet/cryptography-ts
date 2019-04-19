@@ -25,6 +25,7 @@ import { Account } from '../../core/services/models/account';
 export class TransferComponent implements OnInit, OnDestroy {
   public_key = '';
   memo = '';
+  messageLength = 80;
   amount: any;
   balance: any = 0;
   transferFee = 0;
@@ -136,12 +137,12 @@ export class TransferComponent implements OnInit, OnDestroy {
   validateMemoText(event: any) {
     if (event.type === 'paste') {
       const value = event.clipboardData.getData('Text');
-      if ((this.memo + value).length > 200) {
-        this.transferForm.value.memo = this.memo = (this.memo + value).substr(0, 200);
+      if ((this.memo + value).length > this.messageLength) {
+        this.transferForm.value.memo = this.memo = (this.memo + value).substr(0, this.messageLength);
         event.preventDefault();
       }
     }
-    if (this.memo.length >= 200) {
+    if (this.memo.length >= this.messageLength) {
       event.preventDefault();
     }
   }
