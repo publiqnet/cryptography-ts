@@ -17,11 +17,10 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
   @Input() ownerAddress: string;
   @Input() amountShown?: boolean;
   blockInfiniteScroll = false;
-  seeMoreChecker = false;
+  seeMoreChecker = true;
   lastTransactionHash = '';
-  loadingBlocks = true;
+  loadingBlocks = false;
   transactionsLimit = 10;
-  transactionsFrom = 0;
   hasBeenLoaded: boolean;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -29,15 +28,20 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.apiService.getTransactions(null, this.transactionsLimit)
-    //   .pipe(
-    //     filter((data: any) => data != null),
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe((data: TransactionResponse) => {
-    //     this.seeMoreChecker = data.more;
-    //     this.transactionsData = data.transactions;
-    //   });
+    if (!this.transactions) {
+      this.apiService.getTransactions(null, this.transactionsLimit)
+        .pipe(
+          filter((data: any) => data != null),
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((data: TransactionResponse) => {
+          this.seeMoreChecker = data.more;
+          this.transactionsData = data.transactions;
+        });
+    } else {
+      this.calculateLastTransactionHash(this.transactions);
+    }
+
   }
 
   set transactionsData(transactions: Transaction[]) {
@@ -48,7 +52,7 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
   seeMore() {
     this.blockInfiniteScroll = true;
     this.seeMoreChecker = true;
-    this.transactionsFrom = this.transactionsFrom + 10;
+    this.loadingBlocks = true;
     this.apiService.getTransactions(this.lastTransactionHash, this.transactionsLimit)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data: TransactionResponse) => {

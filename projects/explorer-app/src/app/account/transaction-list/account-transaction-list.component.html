@@ -35,3 +35,19 @@
         </div>
     </div>
 </ng-container>
+
+<div *ngIf="loadingBlocks" class="row justify-content-center align-items-center spinner no-gutters">
+    <mat-spinner></mat-spinner>
+</div>
+
+
+<ng-container *ngIf="seeMoreChecker">
+    <div
+            class="search-results"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            [infiniteScrollDisabled]="blockInfiniteScroll"
+            (scrolled)="seeMore()"
+    ></div>
+</ng-container>

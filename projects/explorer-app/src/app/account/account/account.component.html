@@ -1,32 +1,39 @@
-<div class="container">
-  <div class="account-main-info" *ngIf="account">
+<div class="account-main-info" *ngIf="account">
     <div class="info-main-table">
-      <div class="info-main-table-header">PBQ Address</div>
-      <div class="qr-wrap">
-        <div class="info-main-table-content">
-          <div class="info-main-table-item info-fullwidth no-overflow">
-            <h5>Address</h5>
-            <span>{{account.address}}</span>
-          </div>
-          <div class="info-main-table-item info-fullwidth">
-            <h5>Balance</h5>
-            <span><img src="assets/img/noah-coin.svg"/> {{account.balance}}</span>
-          </div>
-          <div class="info-main-table-item info-fullwidth" *ngIf="account.minerReward.balance">
-            <h5>Mining rewards</h5>
-            <span><img src="assets/img/noah-coin.svg"/> {{account.minerReward.balance}}</span>
-          </div>
-          <div class="info-main-table-item info-fullwidth" *ngIf="account.feeReward.balance">
-            <h5>Transaction fees</h5>
-            <span><img src="assets/img/noah-coin.svg"/> {{account.feeReward.balance}}</span>
-          </div>
+        <div class="info-main-table-header">PBQ Address</div>
+        <div class="qr-wrap">
+            <div class="info-main-table-content">
+                <div class="info-main-table-item info-fullwidth no-overflow">
+                    <h5>Address</h5>
+                    <span>{{account.address}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth">
+                    <h5>Balance</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.balance}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth" *ngIf="account.minerReward.balance">
+                    <h5>Mining rewards</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.minerReward.balance}}</span>
+                </div>
+                <div class="info-main-table-item info-fullwidth" *ngIf="account.feeReward.balance">
+                    <h5>Transaction fees</h5>
+                    <span><img src="assets/img/noah-coin.svg"/> {{account.feeReward.balance}}</span>
+                </div>
+            </div>
+            <img class="mt-4 mb-4"
+                 src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{account.address}}&choe=UTF-8&chld=L|1"
+                 alt="barcode">
         </div>
-        <img class="mt-4 mb-4" src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{account.address}}&choe=UTF-8&chld=L|1" alt="barcode">
-      </div>
     </div>
   </div>
 
-  <app-account-transaction-list [transactions]="transactions" [ownerAddress]="account.address" [amountShown]="true"></app-account-transaction-list>
+<ng-container *ngIf="account">
+    <app-account-transaction-list [transactions]="transactions"
+                                  [ownerAddress]="account.address"
+                                  [amountShown]="true">
+
+    </app-account-transaction-list>
+</ng-container>
 
   <ng-template #loading>
     <div class="row justify-content-center align-items-center spinner no-gutters">
