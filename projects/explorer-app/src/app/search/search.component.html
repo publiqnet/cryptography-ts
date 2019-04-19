@@ -14,8 +14,12 @@
       </div>
     </div>
 
-    <div *ngIf="!searchData" class="no-content">
+    <div *ngIf="!loading && !searchData" class="no-content">
       <a class="button-fill" href="">Page not found</a>
+    </div>
+
+    <div *ngIf="loading && !searchData" class="row justify-content-center align-items-center spinner no-gutters">
+      <mat-spinner></mat-spinner>
     </div>
   </div>
 </div>
