@@ -10,7 +10,7 @@ import { Account } from '../../services/models/Account';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styles: []
+  styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit, OnDestroy {
   @Input() account?: Account;

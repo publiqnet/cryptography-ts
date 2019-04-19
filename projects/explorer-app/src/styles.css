@@ -887,6 +887,8 @@ footer{
 .value{
   word-break: break-all;
 }
+
+
 @media screen and (max-width: 767px) {
   .transaction-table h2 {
     font-size: 18px;
