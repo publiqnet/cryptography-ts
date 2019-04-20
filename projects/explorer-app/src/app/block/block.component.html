@@ -81,20 +81,23 @@
             </div>
             <div class="transaction-table_amount">
               <small>Amount</small>
-              <span>33454</span>
+              <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
             </div>
             <div class="last-seen">
               <div class="transaction-table_from">
-                <a class="linked" href="#">AT1pZQMVjTzPMXQ74yDyR3oMLsUhR6FVNJdn3oJVfg1H</a>
+                <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">
+                  {{transaction.transfer.from.address}}
+                </a>
               </div>
               <div class="transaction-table_arrow">
-                <img src="../../assets/img/arrow.svg" alt="">
+                <img src="../../assets/img/arrow.svg">
               </div>
               <div class="transaction-table_to">
-                <a class="linked" href="#">AT1pZQMVjTzPMXQ74yDyR3oMLsUhR6FVNJdn3oJVfg1H</a>
+                <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.to.address)">
+                  {{transaction.transfer.to.address}}
+                </a>
               </div>
             </div>
-
           </div>
         </div>
       </div>
