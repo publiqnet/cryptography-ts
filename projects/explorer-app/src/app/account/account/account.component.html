@@ -12,13 +12,13 @@
             <h5>Balance</h5>
             <span> {{account.balance}}</span>
           </div>
-          <div class="info-main-table-item info-fullwidth" *ngIf="account.minerReward.balance">
+          <div class="info-main-table-item info-fullwidth">
             <h5>Mining rewards</h5>
-            <span>{{account.minerReward.balance}}</span>
+            <span>{{account.minerReward.balance > 0 ? account.minerReward.balance : 0}}</span>
           </div>
-          <div class="info-main-table-item info-fullwidth" *ngIf="account.feeReward.balance">
+          <div class="info-main-table-item info-fullwidth">
             <h5>Transaction fees</h5>
-            <span> {{account.feeReward.balance}}</span>
+            <span> {{account.feeReward.balance > 0 ? account.feeReward.balance : 0}}</span>
           </div>
         </div>
         <div class="qr-parent">
