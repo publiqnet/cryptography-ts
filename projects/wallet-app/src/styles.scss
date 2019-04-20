@@ -3380,7 +3380,7 @@ mat-dialog-container{
   text-align: center;
   line-height: 1.4;
   position: relative;
-  z-index: 1;
+  z-index: 11;
   
   &.pls-check{
     h2{
@@ -3522,7 +3522,7 @@ mat-card.mat__spinner{
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0;
+  z-index: 0!important;
   opacity: .6;
 }
 
@@ -3567,5 +3567,10 @@ mat-card.mat__spinner{
     background-color: transparent!important;
     width: 0!important;
     height: 0!important;
+  }
+}
+@media screen and (max-width: 576px){
+  .animation-container{
+    display: none;
   }
 }

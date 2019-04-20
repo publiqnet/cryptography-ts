@@ -5,56 +5,56 @@
         <table *ngIf="transaction">
           <thead>
           <tr>
-            <th>TRANSACTION</th>
+            <th> <h2 class="mb-0">Transaction</h2></th>
           </tr>
           </thead>
           <tbody>
           <tr>
-            <td>
+            <td style="flex-direction: column">
               <span>Hash</span>
-              <span>{{transaction.transactionHash}}</span>
+              <span class="transaction-hush">{{transaction.transactionHash}}</span>
             </td>
           </tr>
           <tr *ngIf="transaction.isConfirmed">
-            <td>
+            <td style="flex-direction: column">
               <span>Block #</span>
               <a class="linked" href="#" (click)="redirect($event, 'b', transaction.block.number)">{{transaction.block.number}}</a>
             </td>
           </tr>
           <tr>
-            <td>
-              <span>From</span>
-              <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">{{transaction.transfer.from.address}}</a>
+            <td class="mob-column">
+              <div class="table-column">
+                <span>From</span>
+                <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">{{transaction.transfer.from.address}}</a>
+              </div>
+              <div class="table-column">
+                <span>To</span>
+                <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.to.address)">{{transaction.transfer.to.address}}</a>
+              </div>
             </td>
           </tr>
           <tr>
-            <td>
-              <span>To</span>
-              <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.to.address)">{{transaction.transfer.to.address}}</a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>Amount</span>
-              <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>Fee</span>
-              <span>{{transaction.feeWhole + '.' + transaction.feeFraction}}</span>
+            <td class="mob-column">
+              <div class="table-column">
+                <span>Amount</span>
+                <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
+              </div>
+             <div class="table-column">
+               <span>Fee</span>
+               <span>{{transaction.feeWhole + '.' + transaction.feeFraction}}</span>
+             </div>
             </td>
           </tr>
           <tr *ngIf="transaction.isConfirmed">
-            <td>
-              <span>Timestamp</span>
-              <span>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span>Confirmations</span>
-              <span>{{transaction.block.confirmationsCount}}</span>
+            <td class="mob-column conf">
+              <div class="table-column">
+                <span>Timestamp</span>
+                <span>{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</span>
+              </div>
+              <div class="table-column">
+                <span>Confirmations</span>
+                <span>{{transaction.block.confirmationsCount}}</span>
+              </div>
             </td>
           </tr>
           </tbody>
