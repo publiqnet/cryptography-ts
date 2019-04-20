@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend: 'https://stage-mainnet-wallet-api.publiq.network'
+  backend: 'https://mainnet-wallet-api.publiq.network'
 };

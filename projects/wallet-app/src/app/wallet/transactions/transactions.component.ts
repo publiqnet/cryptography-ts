@@ -34,7 +34,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
 
 
-  constructor(private accountService: AccountService,
+  constructor(public accountService: AccountService,
               private walletService: WalletService,
               private errorService: ErrorService) {
   }

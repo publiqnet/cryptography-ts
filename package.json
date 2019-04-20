@@ -34,6 +34,9 @@
     "e:start:stage": "npm run build:libs && npm run e:build:stage && node dist/server.js",
     "e:build:stage": "ng build explorer-app --configuration=staging && npm run e:build:stage:ssr",
     "e:build:stage:ssr": "ng run explorer-app:server && npm run e:webpack:server",
+    "e:build:prod": "ng build explorer-app --configuration=production && npm run e:build:prod:ssr",
+    "e:build:prod:ssr": "ng run explorer-app:server --configuration=production && npm run e:webpack:server",
+    "e:start:prod": "npm run build:libs && npm run e:build:prod && node dist/server.js",
     "e:webpack:server": "webpack --config webpack.server.config.js --progress --colors --project_name=explorer-app"
   },
   "private": true,

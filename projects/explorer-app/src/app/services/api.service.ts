@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Block } from './models/block';
-import { environment } from '../../../../wallet-app/src/environments/environment';
+import { environment } from '../../environments/environment';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
