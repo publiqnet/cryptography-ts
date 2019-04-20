@@ -879,6 +879,7 @@ footer{
 }
 .inner-table table tbody tr td{
   display: flex;
+  align-items: flex-start;
 }
 .inner-table table tbody tr td span{
   flex: 1;
