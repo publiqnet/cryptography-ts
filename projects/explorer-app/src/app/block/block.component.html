@@ -2,12 +2,11 @@
   <div class="container-fluid main-grid mb-5">
     <div class="mt-3">
       <div class="row mb-5">
-        <div class="col-md-6">
+        <div class="col-12">
           <table class="summary-table mb-4">
             <thead>
             <tr class="text-capitalize">
-              <th>Block #{{ blockData.number }}</th>
-              <th></th>
+              <th> <h2>Block #{{ blockData.number }}</h2></th>
             </tr>
             </thead>
             <tbody>
@@ -16,7 +15,6 @@
                 <span>Block hash</span>
                 <div class="miner-key">{{ blockData.hash }}</div>
               </td>
-              <td></td>
             </tr>
             <tr>
               <td>
@@ -30,7 +28,7 @@
                 <a class="linked" href="#" (click)="redirect($event, 'a', blockData.account.address)">{{blockData.account.address}}</a>
               </td>
             </tr>
-            <tr>
+            <tr class="flexed-row">
               <td>
                 <span>Timestamp</span>
                 {{ blockData.signTime | date: 'dd-MM-yyyy HH:mm' }}
@@ -52,7 +50,7 @@
                 {{blockData.revordTotalAmount ? blockData.revordTotalAmount : 0}}
               </td>
             </tr>
-            <tr>
+            <tr class="flexed-row">
               <td>
                 <span>Transaction fees</span>
                 {{getBlockFee(blockData)}}
@@ -68,7 +66,7 @@
       </div>
     </div>
 
-    <h2 class="mb-5"><span>Blocks transactions</span></h2>
+    <h2 class="mb-5" *ngIf="transactions.length"><span>Block transactions</span></h2>
 
     <div *ngIf="transactions.length" class="hidden-table">
       <table class=" mb-4">
@@ -87,11 +85,10 @@
           <td class="text-center">{{transaction.feeWhole}}</td>
           <td class="text-center hash">{{transaction.transactionHash}}</td>
           <td class="text-center">{{transaction.transactionSize | number : '1.2-2'}} Kb</td>
-          <td class="text-center">{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
+          <td class="text-center date-td">{{transaction.timeSigned | date: 'yyyy-MM-dd HH:mm'}}</td>
         </tr>
         </tbody>
       </table>
-
 
       <div *ngIf="loadingBlocks"
            class="row justify-content-center align-items-center spinner no-gutters">
@@ -111,7 +108,37 @@
       </ng-container>
     </div>
 
+    <!--/////-->
 
-    <div class="no-tr" *ngIf="!blockData.transactions.length"><span>No transactions found</span></div>
+    <div class="transaction-table-item">
+      <div class="transaction-table-body transaction-ordinary-body">
+        <div class="transaction-table_hash">
+          <small>Hash</small>
+          <a class="linked" href="#">AT1pZQMVjTzPMXQ74yDyR3oMLsUhR6FVNJdn3oJVfg1H</a>
+        </div>
+        <div class="transaction-table_amount">
+          <small>Amount</small>
+          <span>33454</span>
+        </div>
+        <div class="last-seen">
+          <div class="transaction-table_from">
+            <a class="linked" href="#">AT1pZQMVjTzPMXQ74yDyR3oMLsUhR6FVNJdn3oJVfg1H</a>
+          </div>
+          <div class="transaction-table_arrow">
+            <img src="../../assets/img/arrow.svg" alt="">
+          </div>
+          <div class="transaction-table_to">
+            <a class="linked" href="#">AT1pZQMVjTzPMXQ74yDyR3oMLsUhR6FVNJdn3oJVfg1H</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!--//////-->
+
+
+
+    <div class="no-tr text-center" *ngIf="!blockData.transactions.length"><span>No transactions</span></div>
   </div>
 </ng-container>

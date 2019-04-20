@@ -783,7 +783,7 @@ table.hashes-table tbody tr td div:first-child{
   border-radius: 7px;
   box-shadow: none;
   height: 36px;
-  max-width: 300px;
+  max-width: 400px;
 }
 .header .search-bar input{
   border: none;
@@ -794,7 +794,7 @@ table.hashes-table tbody tr td div:first-child{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 290px;
+  max-width: 400px;
 
 }
 .header .search-bar input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -884,14 +884,38 @@ footer{
   flex: 1;
 }
 .inner-table table tbody tr td span:first-child{
-  color: #565A60;
-  text-transform: capitalize;
+  font-weight: 300;
+  font-size: 16px;
+  color: #868DA8;
+  margin: 0 0 4px;
 }
+/*.inner-table tr{*/
+  /*border-bottom: 1px solid #eee;*/
+  /*background-color: white!important;*/
+/*}*/
 .value{
   word-break: break-all;
 }
 
-
+.table-column{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.table-column a{
+  max-width: 90%;
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
+  /*white-space: nowrap;*/
+  word-break: break-all;
+}
+.conf{
+  display: flex;
+  align-items: center
+}
+.transaction-hush{
+  word-break: break-all;
+}
 @media screen and (max-width: 767px) {
   .transaction-table h2 {
     font-size: 18px;
@@ -901,4 +925,12 @@ footer{
     line-height: normal;
     margin-top: 12px;
   }
+  .table-column a{
+    max-width: 100%;
+  }
+  .mob-column{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
 }

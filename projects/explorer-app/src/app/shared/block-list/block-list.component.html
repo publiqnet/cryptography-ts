@@ -11,10 +11,10 @@
     <tbody>
     <tr *ngFor="let block of blocks | sort : 'block_number'" trackBy="block.number">
       <td>
-        <a [routerLink]="['/b', block.number]">{{block.number}}</a>
+        <a class="linked" [routerLink]="['/b', block.number]">{{block.number}}</a>
       </td>
       <td class="d-md-table-cell" style="word-break:break-all ;min-width: 200px">
-        <a [routerLink]="['/b', block.hash]">{{block.hash}}</a>
+        <a class="linked" [routerLink]="['/b', block.hash]">{{block.hash}}</a>
       </td>
       <td>{{block.transactionsCount}}</td>
       <td class="min-100">{{block.size | number : '1.2-2'}} KB</td>
