@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Block } from '../services/models/block';
 import { ApiService } from '../services/api.service';
 import { takeUntil } from 'rxjs/operators';
@@ -19,18 +20,21 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(protected apiService: ApiService) {}
+  constructor(protected apiService: ApiService,
+              @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
-    this.apiService.loadBlocks(this.lastBlockHash, this.blocksLimit)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(data => {
-        this.setBlocksData(data);
-      }, error => {
-        console.log('catch', error);
-      });
+    if (isPlatformBrowser(this.platformId)) {
+      this.apiService.loadBlocks(this.lastBlockHash, this.blocksLimit)
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(data => {
+          this.setBlocksData(data);
+        }, error => {
+          console.log('catch', error);
+        });
+    }
   }
 
   setBlocksData(data) {
@@ -58,24 +62,6 @@ export class HomepageComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.setBlocksData(data);
       });
-  }
-
-  private addBlock(block_number: number) {
-    // this.apiService.getBlock(block_number)
-    //     .subscribe(data => {
-    //
-    //         this.loadingBlocks--;
-    //
-    //         if (!data) {
-    //             this.currentBlock--;
-    //         } else {
-    //             this.blocks.unshift(data);
-    //
-    //             if (this.blocks.length > this.number_of_blocks) {
-    //                 this.blocks.pop();
-    //             }
-    //         }
-    //     });
   }
 
   ngOnDestroy() {
