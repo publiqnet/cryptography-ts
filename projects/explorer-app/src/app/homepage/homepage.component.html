@@ -1,10 +1,5 @@
 <div class="container-fluid main-grid">
     <div class="mb-5">
-        <div class="row no-gutters mb-3">
-            <div class="col-md-6 col-12 mt-3">
-                <h2>BLOCKS</h2>
-            </div>
-        </div>
 
         <app-block-list *ngIf="blocks.length" class="mb-5" [blocks]="blocks"></app-block-list>
 
@@ -14,7 +9,19 @@
 
         <div class="row no-gutters align-items-center justify-content-center mb-3" *ngIf="seeMoreChecker">
             <button *ngIf="today" class="button button-fill text-uppercase font-weight-bold" routerLink="/block-navigation/date/{{today | date:'yyyy-MM-dd'}}">
-                see more
+                VIEW ALL
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid main-grid">
+    <div class="mb-5">
+        <app-transaction-list class="mb-5" [loadOnScroll]="false" [transactionsLimit]="blocksLimit"></app-transaction-list>
+
+        <div class="row no-gutters align-items-center justify-content-center mb-3">
+            <button *ngIf="today" class="button button-fill text-uppercase font-weight-bold" routerLink="/t">
+                VIEW ALL
             </button>
         </div>
     </div>

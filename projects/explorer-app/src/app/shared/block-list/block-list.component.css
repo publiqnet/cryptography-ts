@@ -1,3 +1,12 @@
 a {
   text-decoration: none;
 }
+
+.page-title {
+  font-size: 35px;
+  font-weight: 300;
+  text-align: center;
+  color: #102746;
+  margin: 60px 0;
+  text-transform: uppercase;
+}
