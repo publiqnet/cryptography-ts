@@ -10,6 +10,8 @@ export class UtilsService {
   constructor() { }
 
   public static calculateBalance(whole: number, fraction: number, fractionCoif = Math.pow(10, this.coinPrecision)): number {
+    whole = Number(whole);
+    fraction = Number(fraction);
     let balance = whole;
     if (fraction) {
       const _fraction = fraction / fractionCoif;

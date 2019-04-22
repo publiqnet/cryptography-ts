@@ -37,11 +37,11 @@
             <td class="mob-column">
               <div class="table-column">
                 <span>Amount</span>
-                <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
+                <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
               </div>
              <div class="table-column">
                <span>Fee</span>
-               <span>{{transaction.feeWhole + '.' + transaction.feeFraction}}</span>
+               <span>{{transaction.feeAmount.balance | number: '0.0-8'}}</span>
              </div>
             </td>
           </tr>

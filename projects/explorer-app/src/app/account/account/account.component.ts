@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { ReplaySubject } from 'rxjs';
@@ -12,7 +12,7 @@ import { Account } from '../../services/models/Account';
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css']
 })
-export class AccountComponent implements OnInit, OnDestroy {
+export class AccountComponent implements OnInit, OnChanges, OnDestroy {
   @Input() account?: Account;
   private unsubscribe$ = new ReplaySubject<void>(1);
   transactions: Transaction[];
@@ -31,6 +31,11 @@ export class AccountComponent implements OnInit, OnDestroy {
     } else {
       this.AccountData = this.account;
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.transactions = [];
+    this.AccountData = this.account;
   }
 
   set AccountData(account: Account) {

@@ -43,19 +43,19 @@
             <tr>
               <td>
                 <span>Total amount</span>
-                {{blockData.transfer.whole + "." + blockData.transfer.fraction}}
+                {{blockData.transfer.amount.balance | number: '0.0-8'}}
               </td>
             </tr>
             <tr>
               <td>
                 <span>Block reward</span>
-                {{blockData.revordTotalAmount ? blockData.revordTotalAmount : 0}}
+                {{blockData.revordTotalAmount ? (blockData.revordTotalAmount | number: '0.0-8') : 0}}
               </td>
             </tr>
             <tr class="flexed-row">
               <td>
                 <span>Transaction fees</span>
-                {{getBlockFee(blockData)}}
+                {{getBlockFee(blockData) ?  (getBlockFee(blockData) | number: '0.0-8') : 0}}
               </td>
               <td>
                 <span>Size</span>
@@ -81,7 +81,7 @@
             </div>
             <div class="transaction-table_amount">
               <small>Amount</small>
-              <span>{{transaction.transfer.whole + '.' + transaction.transfer.fraction}}</span>
+              <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
             </div>
             <div class="last-seen">
               <div class="transaction-table_from">

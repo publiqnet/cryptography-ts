@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Transaction } from '../../services/models/Transaction';
+import { Account } from '../../services/models/Account';
 import { ApiService } from '../../services/api.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
@@ -11,10 +12,10 @@ import { TransactionResponse } from '../../services/models/TransactionResponse';
   templateUrl: './account-transaction-list.component.html',
   styleUrls: ['./account-transaction-list.component.css']
 })
-export class AccountTransactionListComponent implements OnInit, OnDestroy {
+export class AccountTransactionListComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() transactions: Transaction[];
-  @Input() ownerAddress: string;
+  @Input() account: Account;
   @Input() amountShown?: boolean;
   blockInfiniteScroll = false;
   seeMoreChecker = true;
@@ -41,7 +42,14 @@ export class AccountTransactionListComponent implements OnInit, OnDestroy {
     } else {
       this.calculateLastTransactionHash(this.transactions);
     }
+  }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.hasOwnProperty('transactions')) {
+      this.lastTransactionHash = '';
+      this.seeMoreChecker = changes.account.currentValue.moreTransactions;
+      this.transactionsData = changes.transactions.currentValue;
+    }
   }
 
   set transactionsData(transactions: Transaction[]) {

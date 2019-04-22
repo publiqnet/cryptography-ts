@@ -1,6 +1,8 @@
 import { Reward, RewardOptions } from './Reward';
 import { Account } from './Account';
 import { Transaction, TransactionOptions } from './Transaction';
+import { Balance } from './Balance';
+import { Transfer } from './Transfer';
 
 export interface BlockchainBlockOptions {
     account: Account;
@@ -16,7 +18,7 @@ export interface BlockchainBlockOptions {
     transactionsCount: number;
     transfer: {whole: number, fraction: number};
     timestamp: number;
-    revordTotalAmount?: string;
+    revordTotalAmount?: number;
 }
 
 export class BlockchainBlock {
@@ -31,9 +33,9 @@ export class BlockchainBlock {
     size: number;
     transactions: Transaction[];
     transactionsCount: number;
-    transfer: {whole: number, fraction: number};
+    transfer: Transfer;
     timestamp: number;
-    revordTotalAmount: string;
+    revordTotalAmount: number;
 
     constructor(options?: BlockchainBlockOptions) {
         for (const i in options) {
@@ -44,7 +46,7 @@ export class BlockchainBlock {
 
                     this[i] = options[i] ? options[i].map((revard: RewardOptions) => {
                         if (revard.rewardType == 'miner') {
-                            this.revordTotalAmount = revard.whole + '.' + revard.fraction;
+                            this.revordTotalAmount = Number(revard.whole + '.' + revard.fraction);
                         }
                         return revard ? new Reward(revard) : null;
                     }) : null;
@@ -57,6 +59,8 @@ export class BlockchainBlock {
                     this['timestamp'] = options[i];
                 } else if (['size'].includes(i)) {
                     this[i] = (options[i] > 0) ? options[i] / 1024 : 0 ;
+                } else if (['transfer'].includes(i)) {
+                    this[i] = options[i] ? new Transfer(options[i]) : null;
                 } else {
                     this[i] = options[i] ? options[i] : null;
                 }

@@ -87,11 +87,11 @@ export class BlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  getBlockFee(block) {
+  getBlockFee(block): number {
     if (!block.fee) {
-      return '0.0';
+      return 0;
     }
-    return block.fee.whole + '.' + block.fee.fraction;
+    return Number(block.fee.whole + '.' + block.fee.fraction);
   }
 
   redirect($event, page, param) {

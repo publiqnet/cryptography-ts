@@ -6,6 +6,8 @@ export interface AccountOptions {
   whole: number;
   fraction: number;
   balance: number;
+  moreRewards?: number;
+  moreTransactions?: number;
   transactions: any[];
   rewards: any[];
   minerReward: Balance;
@@ -17,6 +19,8 @@ export class Account {
   whole: number;
   fraction: number;
   balance: number;
+  moreRewards?: number;
+  moreTransactions?: number;
   transactions: any[];
   rewards: any[];
   minerReward: Balance;

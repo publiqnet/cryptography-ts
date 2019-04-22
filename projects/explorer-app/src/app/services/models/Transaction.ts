@@ -1,9 +1,10 @@
 import { Transfer } from './Transfer';
 import { Block } from './block';
+import { Balance } from './Balance';
 
 export interface TransactionOptions {
-  feeFraction: number;
-  feeWhole: number;
+  feeFraction?: number;
+  feeWhole?: number;
   timeSigned: any;
   transactionHash: string;
   transactionSize: number;
@@ -14,11 +15,12 @@ export interface TransactionOptions {
   file: any;
   transfer: Transfer;
   isConfirmed: boolean;
+  feeAmount?: Balance;
 }
 
 export class Transaction {
-  feeFraction: number;
-  feeWhole: number;
+  feeFraction?: number;
+  feeWhole?: number;
   timeSigned: any;
   transactionHash: string;
   transactionSize: number;
@@ -29,6 +31,7 @@ export class Transaction {
   file: any;
   transfer: Transfer;
   isConfirmed: boolean;
+  feeAmount?: Balance;
 
 
   constructor(options?: TransactionOptions) {
@@ -50,6 +53,9 @@ export class Transaction {
       }
     }
 
+    if (this.hasOwnProperty('feeWhole') && this.hasOwnProperty('feeFraction')) {
+      this.feeAmount = new Balance({'whole': this.feeWhole, 'fraction': this.feeFraction});
+    }
     this.isConfirmed = (this.block && this.block.hash) ? true : false;
   }
 }

@@ -1,19 +1,22 @@
 import { Account } from './Account';
+import { Balance } from './Balance';
 
 export interface TransferOptions {
-  fraction: number;
+  fraction?: number;
   from: Account;
   message: string;
   to: Account;
-  whole: number;
+  whole?: number;
+  amount?: Balance;
 }
 
 export class Transfer {
-  fraction: number;
+  fraction?: number;
   from: Account;
   message: string;
   to: Account;
   whole: number;
+  amount?: Balance;
 
   constructor(options?: TransferOptions) {
     for (const i in options) {
@@ -24,6 +27,10 @@ export class Transfer {
           this[i] = options[i];
         }
       }
+    }
+
+    if (this.hasOwnProperty('whole') && this.hasOwnProperty('fraction')) {
+      this.amount = new Balance({'whole': this.whole, 'fraction': this.fraction});
     }
   }
 }
