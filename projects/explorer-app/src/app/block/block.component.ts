@@ -88,16 +88,6 @@ export class BlockComponent implements OnInit, OnDestroy {
     }
   }
 
-  getBlockFee(block): number {
-    if (!block.fee) {
-      return 0;
-    }
-
-    const feeBalance = new Balance({'whole': block.fee.whole, 'fraction': block.fee.fraction});
-
-    return feeBalance.balance;
-  }
-
   redirect($event, page, param) {
     $event.preventDefault();
     this.blockData = null;

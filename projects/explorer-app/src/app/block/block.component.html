@@ -49,13 +49,13 @@
             <tr>
               <td>
                 <span>Block reward</span>
-                {{blockData.revordTotalAmount ? (blockData.revordTotalAmount | number: '0.0-8') : 0}}
+                {{blockData.rewardTotalAmount ? (blockData.rewardTotalAmount | number: '0.0-8') : 0}}
               </td>
             </tr>
             <tr class="flexed-row">
               <td>
                 <span>Transaction fees</span>
-                {{getBlockFee(blockData) ?  (getBlockFee(blockData) | number: '0.0-8') : 0}}
+                {{blockData.fee.balance | number: '0.0-8'}}
               </td>
               <td>
                 <span>Size</span>

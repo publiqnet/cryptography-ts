@@ -7,24 +7,7 @@ import { Transfer } from './Transfer';
 export interface BlockchainBlockOptions {
     account: Account;
     confirmationsCount: number;
-    fee: {whole: number, fraction: number};
-    hash: string;
-    number: number;
-    previousBlockHash: string;
-    rewards: Reward[];
-    signTime: number;
-    size: number;
-    transactions: Transaction[];
-    transactionsCount: number;
-    transfer: {whole: number, fraction: number};
-    timestamp: number;
-    revordTotalAmount?: number;
-}
-
-export class BlockchainBlock {
-    account: Account;
-    confirmationsCount: number;
-    fee: {whole: number, fraction: number};
+    fee: Balance;
     hash: string;
     number: number;
     previousBlockHash: string;
@@ -35,7 +18,24 @@ export class BlockchainBlock {
     transactionsCount: number;
     transfer: Transfer;
     timestamp: number;
-    revordTotalAmount: number;
+    revordTotalAmount?: number;
+}
+
+export class BlockchainBlock {
+    account: Account;
+    confirmationsCount: number;
+    fee: Balance;
+    hash: string;
+    number: number;
+    previousBlockHash: string;
+    rewards: Reward[];
+    signTime: number;
+    size: number;
+    transactions: Transaction[];
+    transactionsCount: number;
+    transfer: Transfer;
+    timestamp: number;
+    rewardTotalAmount: number;
 
     constructor(options?: BlockchainBlockOptions) {
         for (const i in options) {
@@ -44,15 +44,17 @@ export class BlockchainBlock {
                     this[i] = options[i] ? new Account(options[i]) : null;
                 } else if (['rewards'].includes(i)) {
 
-                    this[i] = options[i] ? options[i].map((revard: RewardOptions) => {
-                        if (revard.rewardType == 'miner') {
-                            this.revordTotalAmount = Number(revard.whole + '.' + revard.fraction);
+                    this[i] = options[i] ? options[i].map((reward: RewardOptions) => {
+                        if (reward.rewardType == 'miner') {
+                            this.rewardTotalAmount = new Balance({'whole': reward.whole, 'fraction': reward.fraction}).balance;
                         }
-                        return revard ? new Reward(revard) : null;
+                        return reward ? new Reward(reward) : null;
                     }) : null;
 
                 } else if (['transactions'].includes(i)) {
                     this[i] = options[i] ? options[i].map((transaction: TransactionOptions) => new Transaction(transaction)) : [];
+                } else if (['fee'].includes(i)) {
+                    this[i] = options[i] ? new Balance(options[i]) : 0;
                 } else if (['signTime'].includes(i)) {
                     const localDate = new Date(options[i] * 1000);
                     this[i] = new Date(localDate.valueOf() + localDate.getTimezoneOffset() * 60000);
@@ -62,7 +64,7 @@ export class BlockchainBlock {
                 } else if (['transfer'].includes(i)) {
                     this[i] = options[i] ? new Transfer(options[i]) : null;
                 } else {
-                    this[i] = options[i] ? options[i] : null;
+                    this[i] = options[i];
                 }
             }
         }

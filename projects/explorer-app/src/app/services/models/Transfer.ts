@@ -15,7 +15,7 @@ export class Transfer {
   from: Account;
   message: string;
   to: Account;
-  whole: number;
+  whole?: number;
   amount?: Balance;
 
   constructor(options?: TransferOptions) {
