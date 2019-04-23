@@ -7,6 +7,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { of, ReplaySubject } from 'rxjs';
 import { TransactionResponse } from '../services/models/TransactionResponse';
 import { SearchResponse } from '../services/models/SearchResponse';
+import { Balance } from '../services/models/Balance';
 
 @Component({
   selector: 'app-block',
@@ -91,7 +92,10 @@ export class BlockComponent implements OnInit, OnDestroy {
     if (!block.fee) {
       return 0;
     }
-    return Number(block.fee.whole + '.' + block.fee.fraction);
+
+    const feeBalance = new Balance({'whole': block.fee.whole, 'fraction': block.fee.fraction});
+
+    return feeBalance.balance;
   }
 
   redirect($event, page, param) {
