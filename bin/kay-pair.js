@@ -89,6 +89,9 @@ var KeyPair = /** @class */ (function () {
         if (brainKeyLangth === void 0) { brainKeyLangth = 16; }
         this.brainKeyLength = brainKeyLangth;
     };
+    KeyPair.setRandomKey = function (key) {
+        random_key_1.RandomKey.setKey(key);
+    };
     KeyPair.generateRandomText = function () {
         var randomizer = new MersenneTwister(random_key_1.RandomKey.getKey());
         // const random_seed = rand(wordsList.length);

@@ -99,6 +99,10 @@ export class KeyPair {
     this.brainKeyLength = brainKeyLangth;
   }
 
+  static setRandomKey(key: number) {
+    RandomKey.setKey(key);
+  }
+
   static generateRandomText() {
     const randomizer = new MersenneTwister(RandomKey.getKey());
     // const random_seed = rand(wordsList.length);
