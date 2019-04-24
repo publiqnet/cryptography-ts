@@ -6,6 +6,7 @@ var utils_1 = require("./utils");
 var private_key_1 = require("./private-key");
 var public_key_1 = require("./public-key");
 var words_1 = require("./words");
+var random_key_1 = require("./random-key");
 var encryptor_1 = require("./encryptor");
 var SHA256 = require("crypto-js/sha256");
 var SHA512 = require("crypto-js/sha512");
@@ -66,10 +67,19 @@ var KeyPair = /** @class */ (function () {
         return KeyPair.encryptBrainKeyByPassword(this.pureBrainKay, password);
     };
     KeyPair.prototype.signMessage = function (message) {
-        var key = secp256k1.keyFromPrivate(this.privateKey.KeyCoreHex);
+        // const key = secp256k1.keyFromPrivate(this.privateKey.KeyCoreHex);
+        // const hash = CryptoJS.SHA256(message);
+        // const signature = key.sign(
+        //   hash.toString(CryptoJS.enc.Hex)
+        // );
+        var signature = KeyPair.signMessageBySecp256k1(this.privateKey.KeyCoreHex, message);
+        return utils_1.derToBase58(signature.toDER());
+    };
+    KeyPair.signMessageBySecp256k1 = function (privateKey, message) {
+        var key = secp256k1.keyFromPrivate(privateKey);
         var hash = CryptoJS.SHA256(message);
         var signature = key.sign(hash.toString(CryptoJS.enc.Hex));
-        return utils_1.derToBase58(signature.toDER());
+        return signature;
     };
     KeyPair.setPublicKeyPrefix = function (publicKeyPrefix) {
         if (publicKeyPrefix === void 0) { publicKeyPrefix = ''; }
@@ -80,7 +90,7 @@ var KeyPair = /** @class */ (function () {
         this.brainKeyLength = brainKeyLangth;
     };
     KeyPair.generateRandomText = function () {
-        var randomizer = new MersenneTwister();
+        var randomizer = new MersenneTwister(random_key_1.RandomKey.getKey());
         // const random_seed = rand(wordsList.length);
         var strArr = [];
         for (var i = 0; i < this.brainKeyLength; i++) {
