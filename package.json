@@ -96,6 +96,7 @@
     "stream": "0.0.2",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26",
+    "mersenne-twister": "^1.1.0",
     "helper-lib": "file:shared-angular-workspace/dist/helper-lib",
     "ui-lib": "file:shared-angular-workspace/dist/ui-lib"
   },
