@@ -4,6 +4,7 @@ import { derToBase58 } from './utils';
 import { PrivateKey } from './private-key';
 import { PublicKey } from './public-key';
 import { wordsList } from './words';
+import { RandomKey } from './random-key';
 import { Encryptor } from './encryptor';
 
 import * as SHA256 from 'crypto-js/sha256';
@@ -14,7 +15,6 @@ const secp256k1 = new ec('secp256k1');
 const generatorPoint = secp256k1.g;
 
 import * as BN from 'bn.js';
-
 
 export class KeyPair {
 
@@ -100,7 +100,7 @@ export class KeyPair {
   }
 
   static generateRandomText() {
-    const randomizer = new MersenneTwister();
+    const randomizer = new MersenneTwister(RandomKey.getKey());
     // const random_seed = rand(wordsList.length);
     const strArr = [];
 
