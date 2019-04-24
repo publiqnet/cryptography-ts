@@ -6,7 +6,6 @@ var utils_1 = require("./utils");
 var private_key_1 = require("./private-key");
 var public_key_1 = require("./public-key");
 var words_1 = require("./words");
-var random_key_1 = require("./random-key");
 var encryptor_1 = require("./encryptor");
 var SHA256 = require("crypto-js/sha256");
 var SHA512 = require("crypto-js/sha512");
@@ -90,10 +89,13 @@ var KeyPair = /** @class */ (function () {
         this.brainKeyLength = brainKeyLangth;
     };
     KeyPair.setRandomKey = function (key) {
-        random_key_1.RandomKey.setKey(key);
+        this.randomKey = key;
+    };
+    KeyPair.getRandomKey = function () {
+        return this.randomKey;
     };
     KeyPair.generateRandomText = function () {
-        var randomizer = new MersenneTwister(random_key_1.RandomKey.getKey());
+        var randomizer = new MersenneTwister(this.randomKey);
         // const random_seed = rand(wordsList.length);
         var strArr = [];
         for (var i = 0; i < this.brainKeyLength; i++) {

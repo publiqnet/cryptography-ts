@@ -4,7 +4,6 @@ import { derToBase58 } from './utils';
 import { PrivateKey } from './private-key';
 import { PublicKey } from './public-key';
 import { wordsList } from './words';
-import { RandomKey } from './random-key';
 import { Encryptor } from './encryptor';
 
 import * as SHA256 from 'crypto-js/sha256';
@@ -22,6 +21,7 @@ export class KeyPair {
   private privateKey: PrivateKey;
   private brainKey: string;
   private pureBrainKay: string;
+  private static randomKey: number;
 
   constructor(brainKeyPrefix?: string) {
     if (!brainKeyPrefix) {
@@ -99,12 +99,16 @@ export class KeyPair {
     this.brainKeyLength = brainKeyLangth;
   }
 
-  static setRandomKey(key: number) {
-    RandomKey.setKey(key);
+  public static setRandomKey(key: number) {
+    this.randomKey = key;
+  }
+
+  public static getRandomKey(): number {
+    return this.randomKey;
   }
 
   static generateRandomText() {
-    const randomizer = new MersenneTwister(RandomKey.getKey());
+    const randomizer = new MersenneTwister(this.randomKey);
     // const random_seed = rand(wordsList.length);
     const strArr = [];
 
