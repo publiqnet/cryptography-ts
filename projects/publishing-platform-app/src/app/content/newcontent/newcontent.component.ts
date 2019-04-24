@@ -702,12 +702,14 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   }
 
   submit(password: string, boostInfo?) {
-    // this.contentService.signFiles(this.contentUris, password)
-    // .pipe(
-    //   switchMap((data: any) => this.contentService.uploadContent(this.contentId, '<p>test</p>', this.contentUris, password))
-    // ).subscribe(data => {
-    //   console.log(data);
-    // });
+    this.contentService.signFiles(this.contentUris, password)
+    .pipe(
+      switchMap((data: any) => this.contentService.uploadContent(this.contentId, '<p>test</p>', this.contentUris, password))
+    ).subscribe(data => {
+      console.log(data);
+    });
+
+    return false;
 
     if (boostInfo) {
       this.boostInfo = boostInfo;
@@ -1124,7 +1126,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           )
           .subscribe(done => {
             if (done) {
-              if (!this.accountService.accountInfo.balance || this.accountService.accountInfo.balance < done.boostMoney + this.createContentFee) {
+              if (false) {
                 this.notificationService.error(this.errorService.getError('boost_content_balance_error'));
                 return false;
               } else {

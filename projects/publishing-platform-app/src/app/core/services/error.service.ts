@@ -77,7 +77,7 @@ export class ErrorService {
         load_balance_error: 'load_balance_error',
         ins_invalid_amount_error: 'validation.ins_invalid_amount_error',
         incorrect_recover_phrase: 'incorrect_recovery_phrase',
-      boost_content_balance_error: 'boost_content_balance_error'
+        boost_content_balance_error: 'boost_content_balance_error'
     };
 
     public errorEventEmiter: EventEmitter<any> = new EventEmitter(true);
