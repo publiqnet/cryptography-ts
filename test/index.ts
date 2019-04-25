@@ -1,6 +1,8 @@
-import { KeyPair } from '../src/kay-pair';
+// import { KeyPair } from '../src/kay-pair';
 
-KeyPair.setPublicKeyPrefix('PBQ');
+// KeyPair.setPublicKeyPrefix('PBQ');
+
+
 // const bk = "acetum arrowy achylia accinge ackey bemad adrenal aface acinar acridan adular actinic aphonia acate acaciin acetify";
 //
 // export const keyPair = new KeyPair(bk);
@@ -21,10 +23,22 @@ KeyPair.setPublicKeyPrefix('PBQ');
 // console.log('private key Base58 ====', keyPair.Private.Base58);
 // keyPair.signMessage(JSON.stringify(textJson));
 
- const keyPair = new KeyPair();
- console.log(keyPair.BrainKey)
+ // const keyPair = new KeyPair();
+ // console.log(keyPair.BrainKey)
 // var MersenneTwister = require('mersenne-twister');
 
  // import * as MersenneTwister  from 'mersenne-twister';
  // var generator = new MersenneTwister();
  // console.log(generator.random());
+
+ // import { getValidator, setOwCoinTypes }from './public-key-validator';
+ // setOwCoinTypes(['TPBQ'])
+// var pkp = 'TPBQ'
+ // var pk = 'TPBQ659hN1m6XpifHr6cHRTyDH825XxD7eqvPp8Y684iNRabieZE9g'
+
+// var bkp = 'BTC';
+// var bk = '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck';
+// '1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC'
+// 'TPBQ659hN1m6XpifHr6cHRTyDH825XxD7eqvPp8Y684iNRabieZE9g'
+// console.log(getValidator(pkp)(pk))
+// console.log(getValidator(bkp)(bk))
