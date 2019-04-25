@@ -55,6 +55,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (data.action === 'login' || data.action === 'authenticate') {
           this.authStep = TokenCheckStatus.Loading;
           this.notificationService.error(data.message);
+        } else if (data.action === 'preLogin') {
+          this.authStep = TokenCheckStatus.Init;
+          this.notificationService.error(data.message);
         }
       });
   }
@@ -85,7 +88,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
         this.authStep = TokenCheckStatus.Success;
       }, error => {
-        console.log('error - ', error);
+        if (error.status == 409) {
+          this.errorService.handleError('preLogin', {status: 409, error: {message: 'incorect_email'}});
+        } else {
+          this.errorService.handleError('preLogin', {status: 500, error: error.message});
+        }
       });
   }
 

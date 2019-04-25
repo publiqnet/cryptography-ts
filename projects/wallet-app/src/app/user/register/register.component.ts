@@ -75,7 +75,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.formView = 'needLoginMessage';
         }
       }, error => {
-        this.errorService.handleError('preRegister', error);
+        if (error.status == 409) {
+          this.errorService.handleError('preRegister', {status: 409, error: {message: 'incorect_email'}});
+        } else {
+          this.errorService.handleError('preRegister', {status: 500, error: error.message});
+        }
       });
   }
 

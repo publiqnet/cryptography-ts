@@ -49,7 +49,8 @@ export class ErrorService {
         system_error: 'System error. Please try again later',
         confirm_registration: 'Please follow the secure link from your email to complete the registration.',
         complete_registration: 'Please follow the secure link from your email to complete the registration.',
-        already_confirmed: 'This single use link has expired. Please login.'
+        already_confirmed: 'This single use link has expired. Please login.',
+        incorect_email: 'Please verify that you entered a valid email address and try again.',
     };
 
     public errorEventEmiter: EventEmitter<any> = new EventEmitter(true);
