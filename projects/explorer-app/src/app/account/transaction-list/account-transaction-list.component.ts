@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Transaction } from '../../services/models/Transaction';
 import { Account } from '../../services/models/Account';
 import { ApiService } from '../../services/api.service';
@@ -25,12 +25,17 @@ export class AccountTransactionListComponent implements OnInit, OnChanges, OnDes
   hasBeenLoaded: boolean;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+  constructor(private router: Router,
+              private apiService: ApiService) {
   }
 
   ngOnInit() {
+    if (!this.account || !this.account.address) {
+      this.router.navigate(['/page-not-found']);
+    }
+
     if (!this.transactions) {
-      this.apiService.getTransactions(null, this.transactionsLimit)
+      this.apiService.getAccountTransactions(this.account.address, null, this.transactionsLimit)
         .pipe(
           filter((data: any) => data != null),
           takeUntil(this.unsubscribe$)
@@ -58,13 +63,13 @@ export class AccountTransactionListComponent implements OnInit, OnChanges, OnDes
   }
 
   seeMore() {
-    if (!this.lastTransactionHash) {
+    if (!this.lastTransactionHash || !this.account.address) {
       return;
     }
     this.blockInfiniteScroll = true;
     this.seeMoreChecker = true;
     this.loadingBlocks = true;
-    this.apiService.getTransactions(this.lastTransactionHash, this.transactionsLimit)
+    this.apiService.getAccountTransactions(this.account.address, this.lastTransactionHash, this.transactionsLimit)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data: TransactionResponse) => {
         this.seeMoreChecker = data.more;
