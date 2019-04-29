@@ -57,6 +57,14 @@
               </div>
             </td>
           </tr>
+          <tr *ngIf="transaction.transfer && transaction.transfer.message">
+            <td class="mob-column conf">
+              <div class="table-column">
+                <span>Message</span>
+                <span>{{transaction.transfer.message}}</span>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
