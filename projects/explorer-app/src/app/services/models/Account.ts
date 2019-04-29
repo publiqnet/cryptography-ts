@@ -31,7 +31,7 @@ export class Account {
   constructor(options?: AccountOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (['initialReward', 'feeReward', 'feeReward'].includes(i)) {
+        if (['initialReward', 'minerReward', 'feeReward'].includes(i)) {
           this[i] = new Balance(options[i]);
         } else {
           this[i] = options[i];
