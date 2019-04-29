@@ -11,6 +11,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-settings',
@@ -51,6 +52,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private notification: NotificationService,
     private errorService: ErrorService,
     public dialogService: DialogService,
+    private _sanitizer: DomSanitizer,
     private translationService: TranslateService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -97,13 +99,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
           }
         );
 
-      // this.accountService.profileUpdatingChanged
-      //   .pipe(
-      //     takeUntil(this.unsubscribe$)
-      //   )
-      //   .subscribe(data => {
-      //     this.isProfileUpdating = data;
-      //   });
+      this.accountService.profileUpdatingChanged
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(data => {
+          this.isProfileUpdating = data;
+        });
   }
 
   fillSettingsForm() {
@@ -131,8 +133,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     //       this.last_name = this.accountInfo.meta.last_name;
     //     }
     //
-    //     if (this.accountInfo.meta.image_hash) {
-    //       this.currentImage = this.accountInfo.meta.image_hash;
+    //     if (this.accountInfo.meta.image) {
+    //       this.currentImage = this.accountInfo.meta.image;
     //     }
     //
     //     let fullName = '';
@@ -167,64 +169,64 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
 
 
-    // const imageUrlBefor = (this.accountInfo && this.accountInfo.meta && this.accountInfo.meta.image_hash) ? this.accountInfo.meta.image_hash : '';
-    //
-    // const messages = this.translationService.instant('dialog.confirm');
-    // const dialogConfig = {maxWidth: '600px', panelClass: 'modal-padding'};
-    // this.dialogService.openConfirmDialog(messages['account_update_title'])
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe((confirm) => {
-    //     if (!confirm) {
-    //       this.currentImage = imageUrlBefor;
-    //       return;
-    //     }
-    //
-    //     const titleText = this.translationService.instant('dialog.password.title');
-    //     const descriptionText = this.translationService.instant('dialog.password.update_account');
-    //     this.dialogService.openInputPasswordDialog('show-private-key', titleText, descriptionText, dialogConfig)
-    //       .pipe(
-    //         takeUntil(this.unsubscribe$)
-    //       )
-    //       .subscribe(data => {
-    //         if (!data) {
-    //           this.currentImage = imageUrlBefor;
-    //           return;
-    //         }
-    //         this.formSubmitted = true;
-    //         this.requestData = this.settingsForm.value;
-    //         this.requestData.image_hash = '';
-    //         if (this.photo) {
-    //           // if photo is present, upload it and return the resulting hash
-    //           this.accountService.uploadPhoto(this.photo)
-    //             .pipe(
-    //               takeUntil(this.unsubscribe$)
-    //             )
-    //             .subscribe((result) => {
-    //               if (result && result.user_profile_original_image && result.user_profile_thumb_image) {
-    //                 this.currentImage = result.user_profile_thumb_image;
-    //                 this.requestData.image_hash = result.user_profile_thumb_image;
-    //               }
-    //               if (data && data.password) {
-    //                 return this.accountService.updateAccount(this.requestData, data.password); // this.submit(data.password);
-    //               }
-    //             }, (error) => {
-    //               this.currentImage = imageUrlBefor;
-    //               this.errorService.handleError('uploadPhoto', error);
-    //             });
-    //         } else {
-    //           if (this.accountInfo.meta.image_hash && this.reseting) {
-    //             this.requestData.image_hash = '';
-    //           } else if (this.accountInfo.meta.image_hash && !this.reseting) {
-    //             this.requestData.image_hash = this.accountInfo.meta.image_hash;
-    //           }
-    //           if (data && data.password) {
-    //             return this.accountService.updateAccount(this.requestData, data.password); // this.submit(data.password);
-    //           }
-    //         }
-    //       });
-    //   });
+    const imageUrlBefor = this.accountService.loggedIn() ? this.accountService.accountInfo.image : '';
+
+    const messages = this.translationService.instant('dialog.confirm');
+    const dialogConfig = {maxWidth: '600px', panelClass: 'modal-padding'};
+    this.dialogService.openConfirmDialog(messages['account_update_title'])
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((confirm) => {
+        if (!confirm) {
+          this.currentImage = imageUrlBefor;
+          return;
+        }
+
+        const titleText = this.translationService.instant('dialog.password.title');
+        const descriptionText = this.translationService.instant('dialog.password.update_account');
+        this.dialogService.openInputPasswordDialog('show-private-key', titleText, descriptionText, dialogConfig)
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe(data => {
+            if (!data) {
+              this.currentImage = imageUrlBefor;
+              return;
+            }
+            this.formSubmitted = true;
+            this.requestData = this.settingsForm.value;
+            this.requestData.image = '';
+            if (this.photo) {
+              // if photo is present, upload it and return the resulting hash
+              this.accountService.uploadPhoto(this.photo)
+                .pipe(
+                  takeUntil(this.unsubscribe$)
+                )
+                .subscribe((result) => {
+                  if (result && result.user_profile_original_image && result.user_profile_thumb_image) {
+                    this.currentImage = result.user_profile_thumb_image;
+                    this.requestData.image = result.user_profile_thumb_image;
+                  }
+                  if (data && data.password) {
+                    // return this.accountService.updateAccount(this.requestData, data.password); // this.submit(data.password);
+                  }
+                }, (error) => {
+                  this.currentImage = imageUrlBefor;
+                  this.errorService.handleError('uploadPhoto', error);
+                });
+            } else {
+              if (this.accountService.accountInfo.image && this.reseting) {
+                this.requestData.image = '';
+              } else if (this.accountService.accountInfo.image && !this.reseting) {
+                this.requestData.image = this.accountService.accountInfo.image;
+              }
+              if (data && data.password) {
+                // return this.accountService.updateAccount(this.requestData, data.password);
+              }
+            }
+          });
+      });
   }
 
   private buildForm() {
@@ -251,27 +253,27 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   showUploadedImage(event) {
-    // if (isPlatformBrowser(this.platformId)) {
-    //   const input = event.target;
-    //   if (input.files && input.files[0]) {
-    //     const reader = new FileReader();
-    //     reader.onload = (e: any) => {
-    //       if (e && e.target) {
-    //         this.currentImage = e.target.result;
-    //         this.photo = input.files[0];
-    //         if (this.photo) {
-    //           this.reseting = false;
-    //           if (this.accountInfo.first_name === '' ||
-    //             this.settingsForm.controls['first_name'].value &&
-    //             this.settingsForm.controls['first_name'].value.trim() !== '') {
-    //             this.disableSaveBtn = false;
-    //           }
-    //         }
-    //       }
-    //     };
-    //     reader.readAsDataURL(input.files[0]);
-    //   }
-    // }
+    if (isPlatformBrowser(this.platformId)) {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          if (e && e.target) {
+            this.currentImage = e.target.result;
+            this.photo = input.files[0];
+            if (this.photo) {
+              this.reseting = false;
+              if (this.accountService.accountInfo.firstName === '' ||
+                this.settingsForm.controls['firstName'].value &&
+                this.settingsForm.controls['firstName'].value.trim() !== '') {
+                this.disableSaveBtn = false;
+              }
+            }
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
   }
 
   resetImage(fileToUpload) {
@@ -280,6 +282,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.reseting = true;
     this.disableSaveBtn = false;
     fileToUpload.value = '';
+  }
+
+  getCurrentImage() {
+    const profileImage = this.currentImage ? this.currentImage : '/assets/no-image-article.jpg';
+    return this._sanitizer.bypassSecurityTrustStyle(`url(${profileImage})`);
   }
 
   ngOnDestroy() {

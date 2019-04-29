@@ -33,7 +33,7 @@
                           [formGroup]="settingsForm">
                         <div class="settings-avatar-container" *ngIf="hideElement">
                             <label for="fileToUpload" class="avatar"
-                                   [ngStyle]="{'background-image':currentImage ? 'url('+currentImage+')' : 'url(/assets/no-image-article.jpg)'}">
+                                   [style.background-image]="getCurrentImage()">
                                 <mat-icon [ngStyle]="{opacity: currentImage?'0.8':'1'}">add_a_photo</mat-icon>
                             </label>
 

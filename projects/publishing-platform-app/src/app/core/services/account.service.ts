@@ -239,6 +239,30 @@ export class AccountService {
       ;
   }
 
+  getAuthorByPublicKey(publicKey: string) {
+    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    const url = this.userUrl + `/author-data/${publicKey}`;
+
+    let headersData = {};
+    if (this.loggedIn() && authToken) {
+      headersData = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
+    }
+
+    this.http.get(url, headersData)
+      .pipe(
+        filter(account => account != 'undefined' || account != null),
+        map((account: any) => new Account(account)),
+        take(1)
+      )
+      .subscribe(
+        account => {
+          this.authorAccount = account;
+          this.authorAccountChanged.next(account);
+        },
+        error => this.errorService.handleError('loadRpcAccount', error)
+      );
+  }
+
   private set SetAccountInfo(userInfo) {
     if (userInfo != null) {
       const data = (this.accountInfoData) ? this.accountInfoData : {};
