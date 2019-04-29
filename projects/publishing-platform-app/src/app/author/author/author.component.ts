@@ -70,8 +70,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
           }
           this.clearAuthorData();
           this.authorId = params['id'];
-          this.accountService.getAccountByPublicKey(this.authorId);
           this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
+          this.accountService.loadRpcAccount(this.authorId);
           this.accountService.loadAuthorStats(this.authorId);
         });
 

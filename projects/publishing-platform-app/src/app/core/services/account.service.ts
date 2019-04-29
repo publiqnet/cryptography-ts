@@ -239,26 +239,6 @@ export class AccountService {
       ;
   }
 
-  getAccountByPublicKey(publicKey: string) {
-    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
-    const url = this.userUrl + `/author-stats/${publicKey}`;
-
-    this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
-      .pipe(
-        filter(account => account != 'undefined' || account != null),
-        // map(response => response.result || response),
-        // map(account => new Account(account)),
-        take(1)
-      )
-      .subscribe(
-        account => {
-          // this.authorAccount = account;
-          // this.authorAccountChanged.next(account);
-        },
-        error => this.errorService.handleError('loadRpcAccount', error)
-      );
-  }
-
   private set SetAccountInfo(userInfo) {
     if (userInfo != null) {
       const data = (this.accountInfoData) ? this.accountInfoData : {};
