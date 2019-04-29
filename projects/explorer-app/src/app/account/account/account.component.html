@@ -13,7 +13,7 @@
             <span> {{account.balance | number: '0.0-8'}}</span>
           </div>
           <div *ngIf="account.initialReward.balance > 0" class="info-main-table-item info-fullwidth">
-            <h5>Initial Reward</h5>
+            <h5>Initial reward</h5>
             <span> {{account.initialReward.balance > 0 ? (account.initialReward.balance | number: '0.0-8') : 0}}</span>
           </div>
           <div class="info-main-table-item info-fullwidth">
