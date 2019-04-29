@@ -31,6 +31,7 @@ export class ErrorService {
         incorrect_public_key: 'Incorrect public key',
         signature_verification_error: 'Incorrect recovery phrase',
         invalid_amount_error: 'Insufficient PBQ Amount',
+        invalid_publiq_key_error: 'Incorrect Wallet Address',
         account_not_found: 'Email or password is not correct',
         cant_transfer_in_same_account: 'Can’t transfer to the same account',
         your_balance_is_not_enough: 'Your balance is not enough',
