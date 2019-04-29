@@ -10,6 +10,7 @@ export interface AccountOptions {
   moreTransactions?: number;
   transactions: any[];
   rewards: any[];
+  initialReward?: Balance;
   minerReward: Balance;
   feeReward: Balance;
 }
@@ -23,13 +24,14 @@ export class Account {
   moreTransactions?: number;
   transactions: any[];
   rewards: any[];
+  initialReward?: Balance;
   minerReward: Balance;
   feeReward: Balance;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (['minerReward', 'feeReward'].includes(i)) {
+        if (['initialReward', 'feeReward', 'feeReward'].includes(i)) {
           this[i] = new Balance(options[i]);
         } else {
           this[i] = options[i];
