@@ -49,7 +49,7 @@
   border-radius: 6px 6px 0px 0px;
   color: #010101;
   font-size: 24px;
-  padding: 20px 48px;
+  padding: 20px 32px;
   background: #ecf0f3;
   font-weight: 600;
 }
@@ -59,7 +59,7 @@
   background: #ffffff;
   min-height: 190px;
   overflow: auto;
-  padding: 24px 48px;
+  padding: 24px 32px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -99,6 +99,9 @@
   object-fit: contain;
 }
 
+h2 {
+  padding: 0px 32px;
+}
 
 @media screen and (max-width: 767px){
   .account-main-info .info-main-table > .qr-wrap{

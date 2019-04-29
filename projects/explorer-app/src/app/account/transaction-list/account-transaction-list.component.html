@@ -35,6 +35,8 @@
     </div>
 </ng-container>
 
+<div class="no_transactions" *ngIf="!transactions.length">No transactions</div>
+
 <div *ngIf="loadingBlocks" class="row justify-content-center align-items-center spinner no-gutters">
     <mat-spinner></mat-spinner>
 </div>

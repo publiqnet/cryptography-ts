@@ -192,3 +192,10 @@
     margin-top: 22px;
   }
 }
+
+.no_transactions {
+  font-size: 20px;
+  color: #C1C4CB;
+  text-align: center;
+  margin-top: 60px;
+}
