@@ -5,6 +5,8 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import PubliqNotEnoughBalance from 'blockchain-models-ts/bin/models/PubliqNotEnoughBalance';
+import { validate } from 'cryptography-ts/bin/public-key-validator';
+import { environment } from '../../../environments/environment';
 
 import { AccountService } from '../../core/services/account.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -15,7 +17,6 @@ import { ValidationService } from '../../core/validator/validator.service';
 import { CryptService } from '../../core/services/crypt.service';
 import { UtilsService } from 'shared-lib';
 import { Account } from '../../core/services/models/account';
-
 
 @Component({
   selector: 'app-transfer',
@@ -160,6 +161,11 @@ export class TransferComponent implements OnInit, OnDestroy {
 
     if (this.accountService.accountInfo.publicKey == this.public_key) {
       this.notificationService.error(this.errorService.getError('cant_transfer_in_same_account'));
+      return;
+    }
+
+    if (!validate(environment.coinName, this.public_key)) {
+      this.notificationService.error(this.errorService.getError('invalid_publiq_key_error'));
       return;
     }
 
