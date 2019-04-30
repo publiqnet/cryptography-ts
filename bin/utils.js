@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bs58_1 = require("bs58");
+var SHA256 = require("crypto-js/sha256");
 var BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 // var bs58 = require('base-x')(BASE58);
 var basex = require("base-x");
@@ -15,6 +16,9 @@ exports.hexStringToByteArray = function (hexStr) {
 };
 exports.hexStringToBase58 = function (hexStr) {
     return bs58_1.encode(exports.hexStringToByteArray(hexStr));
+};
+exports.stringToSha256 = function (data) {
+    return SHA256(data);
 };
 exports.derToBase58 = function (der) {
     // console.log("1: ", encode(der))

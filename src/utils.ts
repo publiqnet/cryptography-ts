@@ -1,6 +1,6 @@
 import { encode } from 'bs58';
-import * as RMD160 from 'crypto-js/ripemd160';
 import * as SHA256  from 'crypto-js/sha256';
+import * as RMD160 from 'crypto-js/ripemd160';
 import * as CryptoJS from 'crypto-js';
 
 var BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
@@ -22,6 +22,9 @@ export const hexStringToBase58 = hexStr => {
     return encode(hexStringToByteArray(hexStr));
 };
 
+export const stringToSha256 = data => {
+    return SHA256(data);
+};
 
 export const derToBase58 = der => {
     // console.log("1: ", encode(der))
