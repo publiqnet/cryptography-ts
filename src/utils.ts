@@ -23,7 +23,7 @@ export const hexStringToBase58 = hexStr => {
 };
 
 export const stringToSha256 = data => {
-    return SHA256(data);
+    return SHA256(data).toString();
 };
 
 export const derToBase58 = der => {

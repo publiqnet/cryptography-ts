@@ -18,7 +18,7 @@ exports.hexStringToBase58 = function (hexStr) {
     return bs58_1.encode(exports.hexStringToByteArray(hexStr));
 };
 exports.stringToSha256 = function (data) {
-    return SHA256(data);
+    return SHA256(data).toString();
 };
 exports.derToBase58 = function (der) {
     // console.log("1: ", encode(der))
