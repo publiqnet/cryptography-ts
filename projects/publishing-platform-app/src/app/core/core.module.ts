@@ -11,8 +11,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { HomepageComponent } from './homepage/homepage.component';
-import { SafePipe } from './pipes/safe.pipe';
-import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
 import { ArticleComponent } from './article/article.component';
 import { TemplateComponent } from './template/template.component';
 import { HeaderComponent } from './header/header.component';
@@ -77,7 +75,6 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     declarations: [
         HomepageComponent,
-        SafePipe,
         ArticleComponent,
         TemplateComponent,
         HeaderComponent,
@@ -119,7 +116,7 @@ export function createTranslateLoader(http: HttpClient) {
         LinkService,
         DraftService
     ],
-    exports: [SafePipe, SharedModule],
+    exports: [SharedModule],
     entryComponents: [
       NewstorySubmissionComponent,
       NewstorySubmission2Component,

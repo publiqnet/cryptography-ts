@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { ArticleService } from '../../core/services/article.service';
 import { Account } from '../../core/services/models/account';
@@ -70,9 +70,19 @@ export class AuthorComponent implements OnInit, OnDestroy {
           }
           this.clearAuthorData();
           this.authorId = params['id'];
-          this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
-          this.accountService.loadRpcAccount(this.authorId);
-          this.accountService.loadAuthorStats(this.authorId);
+          this.accountService.getAuthorByPublicKey(this.authorId);
+          // this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
+        });
+
+      this.accountService.accountUpdated$
+        .pipe(
+          filter(account => account),
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(account => {
+          if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
+            this.yourAccount = true;
+          }
         });
 
       this.errorService.errorEventEmiter
@@ -80,7 +90,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe((data: ErrorEvent) => {
-            if (['loadRpcAccount', 'loadAuthorStats', 'loadAuthorStories'].includes(data.action)) {
+            if (['loadRpcAccount', 'loadAuthorStories'].includes(data.action)) {
               console.log('--error--', data.message);
             } else if (['follow', 'unfollow'].includes(data.action)) {
               this.notification.error(data.message);
@@ -95,7 +105,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         .subscribe((author: Account) => {
             this.author = author;
             this.avatarUrl = null;
-            if (this.accountService.accountInfo && this.accountService.accountInfo.publicKey == this.author.publicKey) {
+            if (this.accountService.loggedIn() && this.accountService.accountInfo.publicKey == this.author.publicKey) {
               this.yourAccount = true;
             }
             const url = isPlatformServer(this.platformId)
@@ -103,16 +113,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
               : '';
             this.seo.generateTags({
               title: `${this.author.firstName || ''} ${this.author.lastName || ''}`.trim(),
-              // image: this.author.meta['social_image_hash'] || this.author.meta.image_hash || null,
+              image: this.author.image || null,
               url
             });
 
-            // if (this.author.meta.image_hash) {
-            //   this.avatarUrl = this.author.meta.image_hash;
-            // }
+            if (this.author.image) {
+              this.avatarUrl = this.author.image;
+            }
             this.shortName = this.author.shortName ? this.author.shortName : '';
-
+            this.canFollow = this.author.isSubscribed == 0 || this.author.isSubscribed == -1;
             this.loadingAuthor = false;
+            this.articlesLoaded = true;
           }
         );
 
@@ -120,41 +131,42 @@ export class AuthorComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$)
         )
-        .subscribe((stories: Content[]) => {
-            if (stories && stories.length) {
-
-              if (stories.length > this.storiesDefaultCount) {
-                const lastIndex = stories.length - 1;
-                if (stories[lastIndex].id !== this.startFromBlock) {
-                  this.startFromBlock = stories[lastIndex].id;
-                  stories.pop();
-                }
-              }
-
-              this.lastLoadedStories = stories;
-              this.articlesLoaded = true;
-              this.authorStories = (this.authorStories && this.authorStories.length) ? this.authorStories.concat(stories) : stories;
-              this.seeMoreChecker = (stories.length >= this.storiesDefaultCount)/* && (this.authorStories.length < this.authorStats.articlesCount)*/;
-            } else {
-              this.loadingAuthor = false;
-              this.articlesLoaded = true;
-            }
-            this.seeMoreLoading = false;
+        .subscribe(data => {
+          console.log('articleService.authorContentsChanged');
+            // if (stories && stories.length) {
+            //
+            //   if (stories.length > this.storiesDefaultCount) {
+            //     const lastIndex = stories.length - 1;
+            //     if (stories[lastIndex].id !== this.startFromBlock) {
+            //       this.startFromBlock = stories[lastIndex].id;
+            //       stories.pop();
+            //     }
+            //   }
+            //
+            //   this.lastLoadedStories = stories;
+            //   this.articlesLoaded = true;
+            //   this.authorStories = (this.authorStories && this.authorStories.length) ? this.authorStories.concat(stories) : stories;
+            //   this.seeMoreChecker = (stories.length >= this.storiesDefaultCount)/* && (this.authorStories.length < this.authorStats.articlesCount)*/;
+            // } else {
+            //   this.loadingAuthor = false;
+            //   this.articlesLoaded = true;
+            // }
+            // this.seeMoreLoading = false;
           }
         );
 
-      this.accountService.authorStatsDataChanged.subscribe((data: AuthorStats) => {
-          this.authorStats = data;
-          this.canFollow = data && (data.isSubscribed == 0 || data.isSubscribed == -1);
-        }
-      );
+      // this.accountService.authorStatsDataChanged.subscribe((data: AuthorStats) => {
+      //     this.authorStats = data;
+      //     this.canFollow = data && (data.isSubscribed == 0 || data.isSubscribed == -1);
+      //   }
+      // );
 
       this.accountService.followAuthorChanged
         .pipe(
           takeUntil(this.unsubscribe$)
         )
         .subscribe(data => {
-            this.accountService.loadAuthorStats(this.author.publicKey);
+            this.accountService.getAuthorByPublicKey(this.author.publicKey);
             this.canFollow = false;
           }
         );
@@ -164,7 +176,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(data => {
-            this.accountService.loadAuthorStats(this.author.publicKey);
+            this.accountService.getAuthorByPublicKey(this.author.publicKey);
             this.canFollow = true;
           }
         );
@@ -234,7 +246,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           ) {
             this.yourAccount = true;
           }
-          this.accountService.loadAuthorStats(this.author.publicKey);
+          this.accountService.getAuthorByPublicKey(this.author.publicKey);
         }
       });
   }

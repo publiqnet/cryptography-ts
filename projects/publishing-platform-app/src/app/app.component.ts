@@ -182,20 +182,20 @@ export class AppComponent implements OnInit, OnDestroy {
         this.accountService.loginSession();
       }
 
-      // this.translate.use('en');
-      // An EventEmitter to listen to lang change events
-      // this.translate.onLangChange
-      //   .pipe(
-      //     takeUntil(this.unsubscribe$)
-      //   )
-      //   .subscribe((params: LangChangeEvent) => {
-      //     if (params && params.lang) {
-      //       const lang: string = params.lang == 'jp' ? 'ja-JP' : 'en';
-      //       this.adapter.setLocale(lang);
-      //
-      //       this.accountService.changeLang(params.lang);
-      //     }
-      //   });
+      this.translate.use('en');
+
+      this.translate.onLangChange
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((params: LangChangeEvent) => {
+          if (params && params.lang) {
+            const lang: string = params.lang == 'jp' ? 'ja-JP' : 'en';
+            this.adapter.setLocale(lang);
+
+            this.accountService.changeLang(params.lang);
+          }
+        });
       this.channelSettings = this.state.get(CHANNEL_CONFIG, {} as any);
       this.channelService.channelConfig = this.channelSettings;
       this.channelService.pages = this.channelSettings['pages'];
@@ -204,7 +204,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.channelService.shareThis = this.channelSettings['shareThis'];
       this.channelService.channel = this.state.get(CHANNEL, null as any);
       this.translate.use(localStorage.getItem('lang') || 'en');
-
 
       const channel = this.state.get(CHANNEL, null as any);
 

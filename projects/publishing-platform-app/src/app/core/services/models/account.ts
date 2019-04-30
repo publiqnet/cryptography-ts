@@ -21,6 +21,11 @@ export interface AccountOptions {
   whole?: number;
   memberStatus?: number;
   image?: string;
+  subscribersCount?: number;
+  rating?: number;
+  views?: number;
+  articlesCount?: number;
+  isSubscribed?;
 }
 export class Account {
   options;
@@ -42,6 +47,11 @@ export class Account {
   whole?: number;
   memberStatus?: number;
   image?: string;
+  subscribersCount?: number;
+  rating?: number;
+  views?: number;
+  articlesCount?: number;
+  isSubscribed?;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {
@@ -51,7 +61,7 @@ export class Account {
         } else if (i === 'image') {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else {
-          this[i] = options[i] ? options[i] : '';
+          this[i] = options[i];
         }
       }
     }
