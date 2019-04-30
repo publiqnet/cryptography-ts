@@ -80,7 +80,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(account => {
-          if (this.accountService.loggedIn() && this.accountService.accountInfo.publicKey == this.author.publicKey) {
+          if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.yourAccount = true;
           }
         });
@@ -132,7 +132,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           takeUntil(this.unsubscribe$)
         )
         .subscribe(data => {
-          console.log('aaaaa');
+          console.log('articleService.authorContentsChanged');
             // if (stories && stories.length) {
             //
             //   if (stories.length > this.storiesDefaultCount) {

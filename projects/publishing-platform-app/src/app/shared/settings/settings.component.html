@@ -15,17 +15,6 @@
                         </div>
                     </div>
 
-                    <!-- <mat-list *ngIf="channels && channels.length > 0">
-                      <h3 mat-subheader>{{'user.channels' | translate}}:</h3>
-                        <div class="list-space">
-                          <mat-list-item *ngFor="let channel of channels">
-                            <h4 mat-line>
-                              <a href="{{'https://' + channel.domain + '.publiq.site'}}" target="_blank"> {{channel.name}} </a>
-                            </h4>
-                          </mat-list-item>
-                        </div>
-                    </mat-list> -->
-
                     <form class="form" *ngIf="settingsForm"
                           [ngClass]="{'mt-5': hideElement}"
                           novalidate

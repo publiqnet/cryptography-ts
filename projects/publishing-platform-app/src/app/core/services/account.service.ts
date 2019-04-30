@@ -278,12 +278,12 @@ export class AccountService {
       this.accountInfoData = null;
     }
 
-    // if (this.accountInfo.language) {
-    //   localStorage.setItem('lang', this.accountInfo.language);
-    //   this.translateService.use(this.accountInfo.language);
-    // } else {
-    //   this.changeLang('en');
-    // }
+    if (this.accountInfo.language) {
+      localStorage.setItem('lang', this.accountInfo.language);
+      this.translateService.use(this.accountInfo.language);
+    } else {
+      this.changeLang('en');
+    }
 
     this.accountUpdated$.next(this.accountInfo);
   }
@@ -291,32 +291,6 @@ export class AccountService {
   public get accountInfo(): Account {
     return this.accountInfoData;
   }
-
-  // setAccountInfo(userInfo) {
-  //
-  //   const data = (this.accountInfo) ? this.accountInfo : {};
-  //
-  //   this.accountInfo = {
-  //     ...data,
-  //     ...userInfo,
-  //     balance: this.utilsService.calculateBalance(userInfo.whole, userInfo.fraction)
-  //   };
-  //
-  //   this.accountInfo.token = (userInfo.hasOwnProperty('token')) ? userInfo.token : localStorage.getItem('auth');
-  //
-  //   this.accountInfo = new Account(this.accountInfo);
-  //
-  //   // this.loadBalance();
-  //   // if (this.accountInfo.language) {
-  //   //   localStorage.setItem('lang', this.accountInfo.language);
-  //   //   this.translateService.use(this.accountInfo.language);
-  //   // } else {
-  //   //   this.changeLang('en');
-  //   // }
-  //
-  //   this.accountUpdated$.next(this.accountInfo);
-  //   return userInfo;
-  // }
 
   getAuthenticateData() {
     return this.resForStep2Data ? this.resForStep2Data : '';
@@ -487,192 +461,12 @@ export class AccountService {
     return this.accountInfo;
   }
 
-  initExternalWsService(daemonAddress = environment.daemon_address_first) {
-    // if (!Apis.inst || !this.api) {
-    //     this.currentDaemonAddress = daemonAddress;
-    //     try {
-    //         this.api = Apis.instance(daemonAddress, true).init_promise
-    //             .then(res => {
-    //                 // success
-    //             }, error => {
-    //                 // error
-    //             });
-    //     } catch (error) {
-    //         console.log('WalletService init_promise error - ', error);
-    //         return;
-    //     }
-    // }
-  }
-
   destroyExternalWsService() {
     // Apis.close();
     this.api = '';
   }
 
-  updateAccountEnd(newData) {
-    const url = this.userUrl + '/update-account-step2';
-    const authToken = localStorage.getItem('auth');
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    this.http.post(url, {first_name: newData.first_name, last_name: newData.last_name}, header)
-      .pipe(
-        map(updatedAccount => {
-          this.SetAccountInfo = updatedAccount;
-          // this.accountInfo.meta = JSON.parse(this.accountInfo.meta);
-          this.accountUpdated$.next(this.accountInfo);
-          this.loadBalance();
-
-          return updatedAccount;
-        })
-      )
-      .subscribe(
-        (data: any) => {
-          this.profileUpdating = false;
-          this.profileUpdatingChanged.next(this.profileUpdating);
-
-          this.updateAccountData = data;
-          this.updateAccountDataChanged.next(this.updateAccountData);
-        },
-        error => {
-          this.profileUpdating = false;
-          this.profileUpdatingChanged.next(this.profileUpdating);
-          return this.errorService.handleError('updateAccountEnd', error, url);
-        }
-      );
-  }
-
-  public blockchainUpdateAccount(data, password, newData) {
-    const meta = data.result;
-    if (isPlatformBrowser(this.platformId)) {
-      this.initExternalWsService();
-
-      try {
-        // CryptService.brainKeyDecrypt(
-        //     this.brainKeyEncrypted,
-        //     password
-        // ).subscribe(
-        //     brainKey => {
-        //         this.accountInfo.pKey = key.get_brainPrivateKey(brainKey).toWif();
-        //
-        //         // check private key
-        //         if (!this.accountInfo.pKey) {
-        //             this.errorService.handleError('need_private_key', {
-        //                 status: 409,
-        //                 error: {message: 'need_private_key'}
-        //             });
-        //             this.profileUpdating = false;
-        //             this.profileUpdatingChanged.next(this.profileUpdating);
-        //             return;
-        //         }
-        //
-        //         const pKey = PrivateKey.fromWif(this.accountInfo.pKey);
-        //
-        //         this.api
-        //             .then(apiRes => {
-        //                 ChainStore.init()
-        //                     .then(() => {
-        //                         const CoinName = 'PBQ';
-        //                         const sendAmount = {amount: 0, asset: CoinName};
-        //                         Promise.all([
-        //                             FetchChain('getAccount', this.accountInfo),
-        //                             FetchChain('getAsset', sendAmount.asset)
-        //                         ])
-        //                             .then(res => {
-        //                                 const [
-        //                                     fAccount,
-        //                                     feeAsset
-        //                                 ] = res;
-        //                                 if (!fAccount) {
-        //                                     this.errorService.handleError(
-        //                                         'not_found_author_account',
-        //                                         {
-        //                                             status: 409,
-        //                                             error: {message: 'not_found_author_account'}
-        //                                         }
-        //                                     );
-        //                                     this.profileUpdating = false;
-        //                                     this.profileUpdatingChanged.next(this.profileUpdating);
-        //                                     return;
-        //                                 }
-        //
-        //                                 const tr = new TransactionBuilder();
-        //                                 tr.add_type_operation('account_update', {
-        //                                     fee: {
-        //                                         amount: 0,
-        //                                         asset_id: feeAsset.get('id')
-        //                                     },
-        //                                     account: fAccount.get('id'),
-        //                                     meta: meta
-        //                                 });
-        //                                 tr.set_required_fees().then(() => {
-        //                                     tr.add_signer(
-        //                                         pKey,
-        //                                         pKey.toPublicKey().toPublicKeyString()
-        //                                     );
-        //
-        //                                     tr.broadcast((data) => {
-        //                                         this.updateAccountEnd(newData);
-        //                                     });
-        //                                 });
-        //                             })
-        //                             .catch(reason => {
-        //                                 this.errorService.handleError('account_update_failed', {
-        //                                     status: 409,
-        //                                     error: {message: 'account_update_failed'}
-        //                                 });
-        //                                 this.profileUpdating = false;
-        //                                 this.profileUpdatingChanged.next(this.profileUpdating);
-        //                                 return;
-        //                             });
-        //                     })
-        //                     .catch(reason => {
-        //                         this.destroyExternalWsService();
-        //                         if (environment.daemon_address_second != this.currentDaemonAddress) {
-        //                             this.initExternalWsService(environment.daemon_address_second);
-        //                             this.blockchainUpdateAccount(data, password, newData);
-        //                         } else {
-        //                             this.errorService.handleError('account_update_failed', {
-        //                                 status: 409,
-        //                                 error: {message: 'account_update_failed'}
-        //                             });
-        //                             this.profileUpdating = false;
-        //                             this.profileUpdatingChanged.next(this.profileUpdating);
-        //                             return;
-        //                         }
-        //                     });
-        //             })
-        //             .catch(reason => {
-        //                 this.errorService.handleError('account_update_failed', {
-        //                     status: 409,
-        //                     error: {message: 'account_update_failed'}
-        //                 });
-        //                 this.profileUpdating = false;
-        //                 this.profileUpdatingChanged.next(this.profileUpdating);
-        //                 return;
-        //             });
-        //     },
-        //     err => {
-        //         this.errorService.handleError('blockchainUpdateAccount', {
-        //             status: 409,
-        //             error: {message: 'blockchainUpdateAccount'}
-        //         });
-        //         this.profileUpdating = false;
-        //         this.profileUpdatingChanged.next(this.profileUpdating);
-        //     }
-        // );
-      } catch (err) {
-
-        this.errorService.handleError('account_update_failed', {
-          status: 409,
-          error: {message: 'account_update_failed'}
-        });
-        this.profileUpdating = false;
-        this.profileUpdatingChanged.next(this.profileUpdating);
-        return;
-      }
-    }
-  }
-
-  public updateAccount(updateData): Observable<any>  {
+  public updateAccount(updateData): Observable<any> {
     const url = this.userUrl;
     return this.httpHelperService.call(HttpMethodTypes.post, url, updateData)
       .pipe(
@@ -681,33 +475,6 @@ export class AccountService {
           return userInfo;
         })
       );
-  }
-
-  public updateAccountOld(newData, password): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.profileUpdating = true;
-      this.profileUpdatingChanged.next(this.profileUpdating);
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('loginSession', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-        this.profileUpdating = false;
-        this.profileUpdatingChanged.next(this.profileUpdating);
-      }
-      const url = this.userUrl + '/update-account-step1';
-      this.http
-        .post(url, newData, {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
-        })
-        .subscribe(
-          (data) => {
-            this.blockchainUpdateAccount(data, password, newData);
-          },
-          error => this.errorService.handleError('updateAccount', error, url)
-        );
-    }
   }
 
   public uploadPhoto(file: File): Observable<any> {
@@ -847,30 +614,28 @@ export class AccountService {
   }
 
   public changeLang(lang: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('lang', lang);
-      if (this.accountInfo && this.accountInfo['language'] != lang) {
-        const authToken = localStorage.getItem('auth');
-        if (!authToken) {
-          this.errorService.handleError('loginSession', {
-            status: 409,
-            error: {message: 'invalid_session_id'}
-          });
-          return;
-        }
-        const url = this.userUrl + `/set-language/${lang}`;
-        this.http
-          .post(url, '', {
-            headers: new HttpHeaders({'X-API-TOKEN': authToken})
-          })
-          .subscribe(
-            () => {
-              this.accountInfo['language'] = lang;
-              this.accountUpdated$.next(this.accountInfo);
-            },
-            error => this.errorService.handleError('changeLang', error, url)
-          );
+    localStorage.setItem('lang', lang);
+    if (this.accountInfo && this.accountInfo['language'] != lang) {
+      const authToken = localStorage.getItem('auth');
+      if (!authToken) {
+        this.errorService.handleError('loginSession', {
+          status: 409,
+          error: {message: 'invalid_session_id'}
+        });
+        return;
       }
+      const url = this.userUrl + `/set-language/${lang}`;
+      this.http
+        .post(url, '', {
+          headers: new HttpHeaders({'X-API-TOKEN': authToken})
+        })
+        .subscribe(
+          () => {
+            this.accountInfo['language'] = lang;
+            this.accountUpdated$.next(this.accountInfo);
+          },
+          error => this.errorService.handleError('changeLang', error, url)
+        );
     }
   }
 

@@ -55,6 +55,8 @@ import { ReportDialogComponent } from '../core/report-dialog/report-dialog.compo
 import { LoginDialogComponent } from '../core/login-dialog/login-dialog.component';
 import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 import { FloatPipe } from '../core/pipes/float.pipe';
+import { SafePipe } from '../core/pipes/safe.pipe';
+import { SafeStylePipe } from '../core/pipes/safeStyle.pipe';
 import { IdToUsernamePipe } from '../core/pipes/id_to_username.pipe';
 import { DomChangeDirective } from '../core/dom-change.directive';
 import { HttpsPipe } from '../core/pipes/https.pipe';
@@ -145,6 +147,8 @@ export function createTranslateLoader(http: HttpClient) {
     HttpsPipe,
     FloatPipe,
     IdToUsernamePipe,
+    SafePipe,
+    SafeStylePipe,
     SafeHtmlPipe,
     ReportDialogComponent,
     LoginDialogComponent,
@@ -206,6 +210,8 @@ export function createTranslateLoader(http: HttpClient) {
     ShortNamePipe,
     HttpsPipe,
     FloatPipe,
+    SafePipe,
+    SafeStylePipe,
     SafeHtmlPipe,
     IdToUsernamePipe,
     ReportDialogComponent,
