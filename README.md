@@ -1,6 +1,6 @@
 # PubliqAngularWorkspace
 
- 
+
 ## Publishing Platform App
 
 ### Development
