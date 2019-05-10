@@ -958,14 +958,13 @@ export class ContentService {
 
   signFiles(files: Array<string>, password): Observable<any> {
     const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
-    const data = files.map(f => this.signFile(f, brainKey));
+    const data = (files.length) ? files.map(f => this.signFile(f, brainKey)) : [];
     const url = this.fileUrl + `/sign`;
     return this.httpHelperService.call(HttpMethodTypes.post, url, { files: data });
   }
 
   unitUpload(content): Observable<any> {
     const url = environment.backend + '/api/content/unit/upload';
-    // const url = this.contentUrl + `unit/upload`;
     return this.httpHelperService.call(HttpMethodTypes.post, url, {
       content
     });
@@ -992,10 +991,8 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
 
-  uploadContent(contentId, unit, files, password): Observable<any> {
-    return this.unitUpload(unit)
-      .pipe(
-        switchMap((data: any) => this.unitSign(data.channelAddress, contentId, data.uri, files, password))
-      );
+  publish(uri, contentId): Observable<any> {
+    const url = environment.backend + '/api/content/publish';
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId});
   }
 }

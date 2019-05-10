@@ -18,7 +18,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ENTER } from '@angular/cdk/keycodes';
 
 import { map, debounceTime, filter, takeUntil, flatMap, switchMap } from 'rxjs/operators';
-import { zip, ReplaySubject, of } from 'rxjs';
+import { ReplaySubject, zip } from 'rxjs';
 import { now } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { SwiperComponent } from 'angular2-useful-swiper';
@@ -41,6 +41,7 @@ import { NewstorySubmissionComponent } from '../../core/newstory-submission/news
 import { ValidationService } from '../../core/validator/validator.service';
 import { Boost } from '../../core/services/models/boost';
 import { DraftService } from '../../core/services/draft.service';
+import { Publications } from '../../core/services/models/publications';
 
 declare const $: any;
 const scrollElementIntoView = (element: HTMLElement) => {
@@ -205,7 +206,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         if (response) {
           const responseData = JSON.parse(response);
           this.contentUris.push(responseData.uri);
-          console.log('this.contentUris - ', this.contentUris);
           const uploadedImageOriginal = responseData.content_original_sample_file;
           const uploadedImageThumb = responseData.content_thumb_sample_file;
 
@@ -225,7 +225,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
             $(img).attr('width', img.get(0).width);
           }
 
-          $(img).closest('p').attr('data-block', 'image');
           $(img).closest('p').find('br:first').remove();
           $(img).closest('p').after('<p data-empty="true"><br></p>');
         }
@@ -237,16 +236,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           this.articleService.dialogConfig
         );
       },
-      'froalaEditor.image.beforeRemove': (e, editor, $img) => {
-        $img.closest('p').removeAttr('data-block');
-      },
       'froalaEditor.video.inserted': function (e, editor, $video) {
-        $video.closest('p').attr('data-block', 'video');
         $video.closest('p').find('br:last').remove();
         $video.closest('p').after('<p data-empty="true"><br></p>');
-      },
-      'froalaEditor.video.beforeRemove': (e, editor, $video) => {
-        $video.closest('p').removeAttr('data-block');
       }
     }
   };
@@ -380,7 +372,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       this.isContentUpLoading = false;
       this.isSubmited = false;
       this.contentService.hideFooter$.emit(true);
-      // this.publicationService.getMyPublications();
 
       FroalaEditorCustomConfigs();
 
@@ -406,6 +397,8 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         this.forAdults = this.draft.forAdults;
         this.contentId = this.draft.contentId;
         this.publication_slug = this.draft.publication ? this.draft.publication : '';
+        this.contentUris = this.draft.contentUris;
+        this.contentId = this.draft.id;
         // slides the swiper to the chosen thumbnail
         if (this.coverImages && this.coverImages.length > 1) {
           this.coverSwiperConfig.onInit = swiper => {
@@ -483,7 +476,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         .subscribe(params => {
           if (params.publicationSlug) {
             this.contentForm.controls.publicationSlug.setValue(params.publicationSlug);
-            this.publication_slug = params.publipublicationSlug;
+            this.publication_slug = params.publicationSlug;
           }
         });
 
@@ -518,17 +511,17 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         );
 
       this.account = this.accountService.getAccount();
-      zip(
-        this.publicationService.myPublications$,
-        // this.publicationService.myMemberships.pipe(map((res: any[]) => res.map(el => el.publication)))
+
+      this.publicationService.getMyPublications()
+      .pipe(
+        map((publications: Publications) => {
+          return publications.owned.concat(publications.membership);
+        }),
+        takeUntil(this.unsubscribe$)
       )
-        .pipe(
-          map((results: any[]) => results[0].concat(results[1])),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((publications: any[]) => {
-          this.publications = publications;
-        });
+      .subscribe((publications: Publication[]) => {
+        this.publications = publications;
+      });
 
       this.loadingOnSave = false;
       this.errorService.errorEventEmiter
@@ -616,28 +609,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           }
         });
 
-      this.contentService.submittedContentChanged
-        .pipe(
-          flatMap(data => (this.draftId) ? this.draftService.delete(this.draftId) : of(data)),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(
-          data => {
-            this.formsSubmitAccpted = true;
-            this.accountService.loadBalance();
-            if (this.loadingOnSave) {
-              this.loadingOnSave = false;
-            }
-            // if (this.draftId) {
-            //   this.draftService.delete(this.draftId);
-            // }
-            // if (this.boostInfo && this.boostInfo.boostEnabled) {
-            //   this.contentService.articleBoost(this.password, )
-            // }
-            this.hasPendingChanges.next(false);
-            this.router.navigate(['/content/mycontent']);
-          }
-        );
       this.contentService.articleUpLoadingChanged
         .pipe(
           takeUntil(this.unsubscribe$)
@@ -702,128 +673,137 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   }
 
   submit(password: string, boostInfo?) {
-    this.contentService.signFiles(this.contentUris, password)
-    .pipe(
-      switchMap((data: any) => this.contentService.uploadContent(this.contentId, '<p>test</p>', this.contentUris, password))
-    ).subscribe(data => {
-      console.log(data);
-    });
+    const contentTitle = `<h1>${this.contentForm.value.title}</h1>`;
+    const contentData = `${contentTitle} ${this.contentForm.value.content}`;
 
-    return false;
-
-    if (boostInfo) {
-      this.boostInfo = boostInfo;
-    }
-
-    // this.isContentUpLoading = true;
+    this.isContentUpLoading = true;
     this.isSubmited = true;
-    if (this.tags && this.tags.length) {
-      this.contentForm.value.tags = this.tags;
-    }
-
-    if (this.editorContentObject) {
-      this.addBlockAttributes(this.editorContentObject.el);
-      this.contentForm.patchValue({content: this.editorContentObject.html.get()});
-      this.contentForm.value.tags = (this.tags && this.tags.length) ? this.tags : [];
-    }
-
-    let nextImageData = '';
-    let currentSrc = '';
-    const contentData = this.contentForm.value.content;
-
-    const imagesData = contentData.match(
-      /<img([^>]+)src="[/]?([^"]+)"([^>]*)>|<( *)img( *)[/>|>]/g
-    );
-
-    if (imagesData && imagesData.length) {
-      let imagesError = 0;
-      imagesData.map(image => {
-        if (image) {
-          nextImageData = image.match(/src\=([^\s]*)\s/)[1];
-          currentSrc = nextImageData.substring(1, nextImageData.length - 1);
-          if (currentSrc.indexOf(environment.filestorage_link) === -1) {
-            imagesError++;
-          }
-        }
-      });
-
-      if (!imagesError) {
-        this.submitContent(
-          this.contentForm.value,
-          this.mainCoverImageUrl,
-          this.listImageUrl,
-          this.contentId,
-          password
-        );
-      } else {
-        this.dialogService.openInfoDialog(
-          'message',
-          this.errorService.getError('image_upload_error_explanation'),
-          this.articleService.dialogConfig
-        );
-        return false;
-      }
-    } else {
-      this.submitContent(
-        this.contentForm.value,
-        this.mainCoverImageUrl,
-        this.listImageUrl,
-        this.contentId,
-        password
-      );
-    }
-  }
-
-  private submitContent(
-    form,
-    coverImageHash = '',
-    listImageHash = '',
-    contentId,
-    password
-  ) {
     this.formSubmitted = true;
     this.loadingOnSave = true;
 
-    form.content = form.content.replace(/contenteditable="[^"]*"/g, '');
+    this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
 
-    let origin = '';
-
-    if (this.hasEditableContent) {
-      origin = this.editableContentId;
+    if (this.contentUris.length) {
+      this.contentService.signFiles(this.contentUris, password)
+        .pipe(
+          switchMap((data: any) => {
+            return this.submitContent(contentData, password);
+          })
+        ).subscribe(data => {
+          console.log('signFiles - ', data);
+          this.afterContentSubmit();
+        });
+    } else {
+      this.submitContent(contentData, password)
+      .subscribe(data => {
+        console.log('NO signFiles - ', data);
+        this.afterContentSubmit();
+      });
     }
 
-    coverImageHash = (coverImageHash.includes('?')) ? coverImageHash.split('?')[0] : coverImageHash;
-    listImageHash = (listImageHash.includes('?')) ? listImageHash.split('?')[0] : listImageHash;
+    // this.submitContent(this.contentForm.value, contentData, password);
 
-    return this.contentService.submit(
-      form.title,
-      form.headline,
-      form.tags,
-      form.content,
-      coverImageHash,
-      listImageHash,
-      form.forAdults,
-      form.sourceOfMaterial,
-      form.reference,
-      contentId,
-      origin,
-      form.publicationSlug === 'none' ? null : form.publicationSlug,
-      password,
-      this.boostInfo
-    );
+    // if (boostInfo) {
+    //   this.boostInfo = boostInfo;
+    // }
+    //
+    // // this.isContentUpLoading = true;
+    // this.isSubmited = true;
+    // if (this.tags && this.tags.length) {
+    //   this.contentForm.value.tags = this.tags;
+    // }
+    //
+    // if (this.editorContentObject) {
+    //   this.contentForm.patchValue({content: this.editorContentObject.html.get()});
+    //   this.contentForm.value.tags = (this.tags && this.tags.length) ? this.tags : [];
+    // }
+    //
+    // let nextImageData = '';
+    // let currentSrc = '';
+    // const contentData = this.contentForm.value.content;
+    //
+    // const imagesData = contentData.match(
+    //   /<img([^>]+)src="[/]?([^"]+)"([^>]*)>|<( *)img( *)[/>|>]/g
+    // );
+    //
+    // if (imagesData && imagesData.length) {
+    //   let imagesError = 0;
+    //   imagesData.map(image => {
+    //     if (image) {
+    //       nextImageData = image.match(/src\=([^\s]*)\s/)[1];
+    //       currentSrc = nextImageData.substring(1, nextImageData.length - 1);
+    //       if (currentSrc.indexOf(environment.filestorage_link) === -1) {
+    //         imagesError++;
+    //       }
+    //     }
+    //   });
+    //
+    //   if (!imagesError) {
+    //     this.submitContent(
+    //       this.contentForm.value,
+    //       this.mainCoverImageUrl,
+    //       this.listImageUrl,
+    //       this.contentId,
+    //       password
+    //     );
+    //   } else {
+    //     this.dialogService.openInfoDialog(
+    //       'message',
+    //       this.errorService.getError('image_upload_error_explanation'),
+    //       this.articleService.dialogConfig
+    //     );
+    //     return false;
+    //   }
+    // } else {
+    //   this.submitContent(
+    //     this.contentForm.value,
+    //     this.mainCoverImageUrl,
+    //     this.listImageUrl,
+    //     this.contentId,
+    //     password
+    //   );
+    // }
+  }
+
+  afterContentSubmit() {
+    this.formsSubmitAccpted = true;
+    this.accountService.getAccountData();
+    if (this.loadingOnSave) {
+      this.loadingOnSave = false;
+    }
+    if (this.draftId) {
+      this.draftService.delete(this.draftId).subscribe();
+    }
+    // if (this.boostInfo && this.boostInfo.boostEnabled) {
+    //   this.contentService.articleBoost(this.password, )
+    // }
+    this.hasPendingChanges.next(false);
+    this.router.navigate(['/content/mycontent']);
+  }
+
+  private submitContent(contentData, password) {
+    let uploadedContentURI = '';
+    return this.contentService.unitUpload(contentData)
+      .pipe(
+        switchMap((data: any) => {
+          uploadedContentURI = data.uri;
+          return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, this.contentUris, password);
+        }),
+        switchMap((data: any) => this.contentService.publish(uploadedContentURI, this.contentId))
+      );
   }
 
   private buildForm(): void {
     this.contentForm = this.FormBuilder.group({
-      headline: new FormControl(this.headline, [
-        Validators.maxLength(this.headlineMaxLenght)
-      ]),
+      // headline: new FormControl(this.headline, [
+      //   Validators.maxLength(this.headlineMaxLenght)
+      // ]),
       title: new FormControl(this.title, [
         Validators.required,
         Validators.maxLength(this.titleMaxLenght),
         ValidationService.noWhitespaceValidator
       ]),
-      tags: new FormControl(this.tags, [Validators.required]),
+      // tags: new FormControl(this.tags, [Validators.required]),
       content: new FormControl(this.content, [
         Validators.required,
         (control: AbstractControl): { [key: string]: any } | null => {
@@ -835,37 +815,11 @@ export class NewcontentComponent implements OnInit, OnDestroy {
             : null;
         }
       ]),
-      sourceOfMaterial: new FormControl(this.sourceOfMaterial, []),
-      reference: new FormControl(this.reference, []),
-      forAdults: new FormControl(this.forAdults, []),
+      // sourceOfMaterial: new FormControl(this.sourceOfMaterial, []),
+      // reference: new FormControl(this.reference, []),
+      // forAdults: new FormControl(this.forAdults, []),
       publicationSlug: new FormControl(this.publication_slug || 'none')
     });
-  }
-
-  private addBlockAttributes(currentHtmlData) {
-    const currentHtmlDataChilds = currentHtmlData.children;
-    let emptyRowsArray = [];
-    for (let i = 0, max = currentHtmlDataChilds.length; i < max; i++) {
-      if (!$(currentHtmlDataChilds[i]).attr('data-block') && $.trim($(currentHtmlDataChilds[i]).text())) {
-        $(currentHtmlDataChilds[i]).attr('data-block', 'text');
-      } else if ($(currentHtmlDataChilds[i]).attr('data-block') == 'text' && $.trim($(currentHtmlDataChilds[i]).text()) == '') {
-        $(currentHtmlDataChilds[i]).removeAttr('data-block');
-      } else if ($(currentHtmlDataChilds[i]).attr('data-block') == 'video' && $.trim($(currentHtmlDataChilds[i]).html()) == '<br>') {
-        $(currentHtmlDataChilds[i]).removeAttr('data-block');
-      }
-
-      if (!$(currentHtmlDataChilds[i]).attr('data-block') && $.trim($(currentHtmlDataChilds[i]).html()) == '<br>') {
-        emptyRowsArray.push($(currentHtmlDataChilds[i]));
-      } else {
-        emptyRowsArray = [];
-      }
-    }
-
-    if (emptyRowsArray.length) {
-      emptyRowsArray.map((emptyElements) => {
-        emptyElements.remove();
-      });
-    }
   }
 
   add(event: MatChipInputEvent): void {
@@ -937,7 +891,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     if (typeof this.contentForm.value.tags === 'string' || this.contentForm.value.tags instanceof String) {
       this.contentForm.value.tags = [this.contentForm.value.tags];
     }
-    const newDraft: IDraft = {
+    const newDraft: any = {
       // tags: this.contentForm.value.tags || [],
       // coverImages: this.coverImages || [],
       // mainCoverImageUrl: this.mainCoverImageUrl || '',
@@ -947,14 +901,15 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       // listImageChecker: this.listImageChecker,
       // content: this.contentForm.value.content || '',
       // lastModifiedDate: Date.now(),
-      // publication: this.contentForm.value.publicationSlug,
+      publication: this.contentForm.value.publicationSlug,
       // contentId: this.contentId
       content: this.contentForm.value.content || '',
-      forAdults: this.contentForm.value.forAdults,
-      headline: this.contentForm.value.headline || '',
-      reference: this.contentForm.value.reference || '',
-      sourceOfMaterial: this.contentForm.value.sourceOfMaterial || '',
+      // forAdults: this.contentForm.value.forAdults,
+      // headline: this.contentForm.value.headline || '',
+      // reference: this.contentForm.value.reference || '',
+      // sourceOfMaterial: this.contentForm.value.sourceOfMaterial || '',
       title: this.contentForm.value.title || '',
+      contentUris: this.contentUris || []
     };
 
     if (id) {
@@ -1018,12 +973,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist() {
-    const account = this.account ? this.account : '';
-    const meta = account.meta ? account.meta : '';
-    const image = meta.image_hash ? meta.image_hash : '';
-    return !!(account && meta && image && image !== '' && !image.startsWith('http://127.0.0.1') && image.indexOf('_thumb') !== -1);
+    const image = this.account.image ? this.account.image : '';
+    return !!(this.account && image && image !== '' && !image.startsWith('http://127.0.0.1'));
   }
-
 
   resetCurrentUrl(original, thumbnail) {
     if (isPlatformBrowser(this.platformId)) {

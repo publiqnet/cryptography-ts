@@ -62,24 +62,24 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
             this.width = window.innerWidth;
         }
         // load the initial batch of notifications and create a stream
-        // this.userNotificationService.loadNotifications()
-        //   .pipe(
-        //     takeUntil(this.unsubscribe$)
-        //   )
-        //   .subscribe();
-        //
-        // // subscribe to the notification changes
-        // this.userNotificationService.notificationsChanged$
-        //   .pipe(
-        //     takeUntil(this.unsubscribe$)
-        //   )
-        //   .subscribe(
-        //     () => {
-        //         this.unreadCount = this.userNotificationService.unreadCount;
-        //         this.userNotifications = this.userNotificationService.userNotifications;
-        //         this.unreadCountEmitter.emit(this.unreadCount);
-        //     }
-        // );
+        this.userNotificationService.loadNotifications()
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe();
+
+        // subscribe to the notification changes
+        this.userNotificationService.notificationsChanged$
+          .pipe(
+            takeUntil(this.unsubscribe$)
+          )
+          .subscribe(
+            () => {
+                this.unreadCount = this.userNotificationService.unreadCount;
+                this.userNotifications = this.userNotificationService.userNotifications;
+                this.unreadCountEmitter.emit(this.unreadCount);
+            }
+        );
     }
 
     deleteNotification(uNotification: UserNotification): void {
@@ -107,20 +107,20 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
             [
                 UserNotificationType.NEW_ARTICLE,
                 UserNotificationType.REPORTED_ARTICLE,
-                UserNotificationType.NEW_PUBLICATION
-            ].includes(uNotification.notification.type.id) &&
-            uNotification.notification.data
+                UserNotificationType.PUBLICATION_NEW_ARTICLE
+            ].includes(uNotification.type.keyword) &&
+            uNotification.data
         ) {
-            this.router.navigate([`/s/${uNotification.notification.data}`]);
-        } else if (uNotification.notification.type.id === UserNotificationType.PUBLICATION_INVITATION) {
+            this.router.navigate([`/s/${uNotification.data}`]);
+        } else if (uNotification.type.keyword === UserNotificationType.PUBLICATION_INVITATION_NEW) {
             this.publicationsService.tabIndexInv = 2;
             this.router.navigate([`/p/my-publications`]);
-        } else if (uNotification.notification.type.id === UserNotificationType.PUBLICATION_REQUESTS) {
+        } else if (uNotification.type.keyword === UserNotificationType.PUBLICATION_REQUESTS) {
             this.publicationsService.tabIndexReq = 3;
             this.router.navigate([
-                `/p/${uNotification.notification.publication.slug}`
+                `/p/${uNotification.publication.slug}`
             ]);
-        } else if (uNotification.notification.type.id === UserNotificationType.NEW_TRANSFER) {
+        } else if (uNotification.type.keyword === UserNotificationType.NEW_TRANSFER) {
             this.walletService.selectedTabIndex = this.walletService.tabs.transaction;
             this.router.navigate([`/wallet`]);
         }
@@ -131,15 +131,15 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
     getPerformerLink(notify: UserNotification) {
         // this probably should be fixed, but is the only way for now
         let name = '';
-        if (notify.notification.performer.firstName) {
-            name += notify.notification.performer.firstName;
+        if (notify.performer.firstName) {
+            name += notify.performer.firstName;
         }
-        if (name && notify.notification.performer.lastName) {
-            name += ` ${notify.notification.performer.lastName}`;
+        if (name && notify.performer.lastName) {
+            name += ` ${notify.performer.lastName}`;
         }
 
-        name = name || notify.notification.performer.username;
-        return `<a href="/a/${notify.notification.performer.username}">${name}</a>`;
+        name = name || notify.performer.publicKey;
+        return `<a href="/a/${notify.performer.publicKey}">${name}</a>`;
     }
 
     getPublicationLink(pub: Publication) {
@@ -147,7 +147,7 @@ export class NotificationDropdownComponent implements OnInit, AfterViewChecked, 
     }
 
     onImageNotFound(uNotification: UserNotification): void {
-        uNotification.notification.performer.image = '';
+        uNotification.performer.image = '';
     }
 
     ngAfterViewChecked(): void {

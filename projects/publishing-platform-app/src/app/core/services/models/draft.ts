@@ -1,6 +1,7 @@
 import { reference } from '@angular/core/src/render3';
 
 export interface Draft { // todo delete
+  id?: number;
   title: string;
   headline: string;
   tags: Array<string>;
@@ -17,6 +18,7 @@ export interface Draft { // todo delete
   forAdults: boolean;
   contentId: number;
   publication: string;
+  contentUris: Array<any>;
 }
 
 export interface IDraft {
@@ -29,6 +31,8 @@ export interface IDraft {
   id?: string;
   created?: string;
   updated?: string;
+  publication?: string;
+  contentUris: Array<any>;
 }
 
 export class DraftData {
@@ -39,6 +43,7 @@ export class DraftData {
   sourceOfMaterial: string;
   title: string;
   id: number;
+  publication?: string;
   created: Date;
   updated: Date;
 

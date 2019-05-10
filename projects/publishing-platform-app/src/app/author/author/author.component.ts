@@ -206,14 +206,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist() {
-    return false;
-    // return !!(
-    //   this.author &&
-    //   this.author.image_hash &&
-    //   this.author.image_hash !== '' &&
-    //   !this.author.image_hash.startsWith('http://127.0.0.1') &&
-    //   this.author.image_hash.indexOf('_thumb') !== -1
-    // );
+    return !!(
+      this.author &&
+      this.author.image &&
+      this.author.image !== '' &&
+      !this.author.image.startsWith('http://127.0.0.1')
+    );
   }
 
   follow() {
