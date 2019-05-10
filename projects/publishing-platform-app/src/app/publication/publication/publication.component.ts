@@ -14,7 +14,6 @@ import { SeoService } from '../../core/services/seo.service';
 import { PublicationMemberStatusType } from '../../core/models/enumes';
 import { DialogService } from '../../core/services/dialog.service';
 
-
 @Component({
   selector: 'app-publication',
   templateUrl: './publication.component.html',

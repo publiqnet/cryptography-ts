@@ -226,14 +226,28 @@ export class AccountService {
     }
   }
 
+  getAccountData() {
+    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    if (authToken) {
+      const url = this.userUrl;
+      return this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .pipe(
+          map((userInfo: any) => {
+            this.SetAccountInfo = userInfo;
+            return userInfo;
+          })
+        );
+    }
+  }
+
   accountAuthenticate(token: string): Observable<any> {
     const url = this.userUrl + `/authenticate`;
     return this.http.get(url, {headers: new HttpHeaders({'X-OAUTH-TOKEN': token})})
       .pipe(
         map((userInfo: any) => {
-          this.SetAccountInfo = userInfo;
           localStorage.setItem('auth', userInfo.token);
           localStorage.setItem('encrypted_brain_key', this.brainKeyEncrypted);
+          this.SetAccountInfo = userInfo;
           return userInfo;
         }))
       ;
@@ -278,9 +292,9 @@ export class AccountService {
       this.accountInfoData = null;
     }
 
-    if (this.accountInfo.language) {
-      localStorage.setItem('lang', this.accountInfo.language);
-      this.translateService.use(this.accountInfo.language);
+    if (this.accountInfo && this.accountInfo['language']) {
+      localStorage.setItem('lang', this.accountInfo['language']);
+      this.translateService.use(this.accountInfo['language']);
     } else {
       this.changeLang('en');
     }
@@ -440,15 +454,14 @@ export class AccountService {
       // this.logoutData = null;
       this.logoutDataChanged.next(null);
 
-      // this.http
-      //   .post(this.userUrl + '/signout', '', {
-      //     headers: new HttpHeaders({'X-API-TOKEN': token})
-      //   })
-      //   .subscribe(
-      //     () => {
-      //     },
-      //     error => this.errorService.handleError('logout', error)
-      //   );
+      this.http
+        .post(this.userUrl + '/signout', '', {
+          headers: new HttpHeaders({'X-API-TOKEN': token})
+        })
+        .subscribe(
+          () => {},
+          error => this.errorService.handleError('logout', error)
+        );
     }
   }
 

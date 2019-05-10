@@ -176,7 +176,7 @@ export class PublicationService {
   }
 
   deleteMember(slug: string, publicKey: any) {
-    return this.httpHelper.call(HttpMethodTypes.delete, `${this.url}/delete-member/${slug}/${publicKey}`);
+    return this.httpHelper.call(HttpMethodTypes.delete, `${this.url}/${slug}/delete-member/${publicKey}`);
   }
 
   reset() {

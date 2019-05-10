@@ -128,6 +128,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     formData.append('lastName', this.settingsForm.controls['lastName'].value);
     this.accountService.updateAccount(formData)
       .subscribe(data => {
+        this.accountService.settingsSavedCloseDialog.emit(true);
         this.disableSaveBtn = true;
 
         const message = this.translationService.instant('success');

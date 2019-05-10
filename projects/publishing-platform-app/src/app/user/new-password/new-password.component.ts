@@ -59,7 +59,10 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
 
     this.oauthService.recoverComplete(this.brainKey, this.stringToSign, this.recoverForm.value.password)
       .pipe(
-        switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
+        switchMap((data: any) => {
+          this.accountService.brainKeyEncrypted = data.brainKey;
+          return this.accountService.accountAuthenticate(data.token);
+        }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe(recoverData => {

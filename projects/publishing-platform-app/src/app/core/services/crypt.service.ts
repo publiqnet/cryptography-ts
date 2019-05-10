@@ -28,8 +28,8 @@ export class CryptService {
     return {
       signedJson: JSON.stringify(transactionObj.toJson()),
       signedString: keyPair.signMessage(JSON.stringify(transactionObj.toJson())),
-      creation: Math.round(now.getTime() / 1000),
-      expiry: Math.round(now_1h.getTime() / 1000),
+      creation: Math.floor(now.getTime() / 1000),
+      expiry: Math.floor(now_1h.getTime() / 1000),
     };
   }
 
