@@ -19,9 +19,10 @@ export class TransactionDetailObject {
     this.to = transaction.transfer.to.address;
     this.whole = transaction.transfer.whole;
     this.fraction = transaction.transfer.fraction;
+    this.message = transaction.transfer.message;
+
     this.feeWhole = transaction.feeWhole;
     this.feeFraction = transaction.feeFraction;
-    this.message = transaction.transfer.message;
 
     this.amount = UtilsService.calculateBalance(this.whole, this.fraction);
     this.feeAmount = UtilsService.calculateBalance(this.feeWhole, this.feeFraction);
