@@ -67,7 +67,7 @@ export class TransferComponent implements OnInit, OnDestroy {
       )
       .subscribe((data: ErrorEvent) => {
         if (['transfer-password-error', 'need_private_key', 'transfer_failed',
-          'notifyInTransfer', 'load_balance_error', 'load_global_error', 'loadRpcAccount', 'your_balance_is_not_enough'].includes(data.action)) {
+          'notifyInTransfer', 'load_balance_error', 'load_global_error', 'your_balance_is_not_enough'].includes(data.action)) {
           this.loading = false;
           this.notificationService.error(data.message);
         }

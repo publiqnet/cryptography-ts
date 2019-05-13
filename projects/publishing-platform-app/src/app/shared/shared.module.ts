@@ -57,7 +57,6 @@ import { NotificationDropdownComponent } from './notification-dropdown/notificat
 import { FloatPipe } from '../core/pipes/float.pipe';
 import { SafePipe } from '../core/pipes/safe.pipe';
 import { SafeStylePipe } from '../core/pipes/safeStyle.pipe';
-import { IdToUsernamePipe } from '../core/pipes/id_to_username.pipe';
 import { DomChangeDirective } from '../core/dom-change.directive';
 import { HttpsPipe } from '../core/pipes/https.pipe';
 import { ShortNamePipe } from '../core/pipes/shortname.pipe';
@@ -146,7 +145,6 @@ export function createTranslateLoader(http: HttpClient) {
     SettingsComponent,
     HttpsPipe,
     FloatPipe,
-    IdToUsernamePipe,
     SafePipe,
     SafeStylePipe,
     SafeHtmlPipe,
@@ -213,7 +211,6 @@ export function createTranslateLoader(http: HttpClient) {
     SafePipe,
     SafeStylePipe,
     SafeHtmlPipe,
-    IdToUsernamePipe,
     ReportDialogComponent,
     LoginDialogComponent,
     NotificationDropdownComponent,

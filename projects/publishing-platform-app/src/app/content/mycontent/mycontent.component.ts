@@ -152,15 +152,14 @@ export class MycontentComponent implements OnInit, OnDestroy {
         }
       );
 
-    zip(
-      this.publicationService.myPublications$,
-      // this.publicationService.myPublications$.pipe(map((res: Publications) => res.membership))
-    )
+      this.publicationService.getMyPublications()
       .pipe(
-        map((results: any[]) => results[0].concat(results[1])),
+        map((publications: Publications) => {
+          return publications.owned.concat(publications.membership);
+        }),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((publications: any[]) => {
+      .subscribe((publications: Publication[]) => {
         this.publications = publications;
       });
   }

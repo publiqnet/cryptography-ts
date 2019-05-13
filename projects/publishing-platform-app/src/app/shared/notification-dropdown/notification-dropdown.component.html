@@ -25,14 +25,13 @@
 
                                 <div (click)="goNotificationPage(notify); userPage = false" class="clearfix">
                                     <!-- PERFORMER'S ICON -->
-                                    <figure class="pull-left" *ngIf="(notify.notification.performer.firstName || notify.notification.performer.lastName); else defaultIcon">
-
-                                        <img *ngIf="notify.notification.performer.image; else initials" src="{{notify.notification.performer.image}}"
+                                    <figure class="pull-left" *ngIf="(notify.performer.firstName || notify.performer.lastName); else defaultIcon">
+                                        <img *ngIf="notify.performer.image; else initials" src="{{notify.performer.image}}"
                                             (error)="onImageNotFound(notify)" alt="photo" height="40" />
 
                                         <ng-template #initials>
                                             <div class="avatar">
-                                                <span>{{ notify.notification.performer | shortname }}</span>
+                                                <span>{{ notify.performer | shortname }}</span>
                                             </div>
                                         </ng-template>
                                     </figure>
@@ -43,13 +42,13 @@
                                     </ng-template>
                                     <!-- NOTIFICATION TEXT -->
                                     <p appHrefToRouterLink [overrideCallback]="emitHide">
-                                        <span class="noteBody text-dark-gray" [innerHTML]="'notifications.notification_' + notify.notification.type.id | translate: {
+                                        <span class="noteBody text-dark-gray" [innerHTML]="'notifications.notification_' + notify.type.keyword | translate: {
                                                 performer: getPerformerLink(notify),
-                                                target: notify.notification.publication ? getPublicationLink(notify.notification.publication) : ''
+                                                target: notify.publication ? getPublicationLink(notify.publication) : ''
                                             } | safeHtml">
                                         </span>
                                         <!-- THE TIME WHEN THE EVENT HAPPENED -->
-                                        <span class="text-gray">{{ notify.notification.created_at | timeinterval }}</span>
+                                        <span class="text-gray">{{ notify.created_at | timeinterval }}</span>
                                     </p>
                                 </div>
                             </li>

@@ -1,9 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Optional } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { ArticleService } from '../../core/services/article.service';
 import { Account } from '../../core/services/models/account';
@@ -58,146 +58,140 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.activatedRoute.params
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(params => {
-          if (params['id'] === 'undefined') {
+    this.activatedRoute.params
+      .pipe(
+        debounceTime(500),
+        switchMap((params: Params) => {
+          this.authorId = params['id'];
+          return this.accountService.accountUpdated$;
+        }),
+        switchMap((data: any) => {
+          if (this.authorId === 'undefined') {
             this.router.navigate(['/']);
             return;
           }
           this.clearAuthorData();
-          this.authorId = params['id'];
-          this.accountService.getAuthorByPublicKey(this.authorId);
-          // this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
-        });
-
-      this.accountService.accountUpdated$
-        .pipe(
-          filter(account => account),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(account => {
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.yourAccount = true;
           }
-        });
+          return this.accountService.getAuthorByPublicKey(this.authorId);
+          // this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        this.initAuthorData(author);
+      }, error => this.errorService.handleError('loadAuthorData', error));
 
-      this.errorService.errorEventEmiter
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((data: ErrorEvent) => {
-            if (['loadRpcAccount', 'loadAuthorStories'].includes(data.action)) {
-              console.log('--error--', data.message);
-            } else if (['follow', 'unfollow'].includes(data.action)) {
-              this.notification.error(data.message);
-            }
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: ErrorEvent) => {
+          if (data.action === 'loadAuthorData') {
+            this.router.navigate(['/page-not-found']);
+          } else if (data.action == 'loadAuthorStories') {
+            console.log('--error--', data.message);
+          } else if (['follow', 'unfollow'].includes(data.action)) {
+            this.notification.error(data.message);
           }
-        );
+        }
+      );
 
-      this.accountService.authorAccountChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((author: Account) => {
-            this.author = author;
-            this.avatarUrl = null;
-            if (this.accountService.loggedIn() && this.accountService.accountInfo.publicKey == this.author.publicKey) {
-              this.yourAccount = true;
-            }
-            const url = isPlatformServer(this.platformId)
-              ? this.request.protocol + '://' + this.request.get('host') + this.request.originalUrl
-              : '';
-            this.seo.generateTags({
-              title: `${this.author.firstName || ''} ${this.author.lastName || ''}`.trim(),
-              image: this.author.image || null,
-              url
-            });
-
-            if (this.author.image) {
-              this.avatarUrl = this.author.image;
-            }
-            this.shortName = this.author.shortName ? this.author.shortName : '';
-            this.canFollow = this.author.isSubscribed == 0 || this.author.isSubscribed == -1;
-            this.loadingAuthor = false;
-            this.articlesLoaded = true;
-          }
-        );
-
-      this.articleService.authorContentsChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(data => {
+    this.articleService.authorContentsChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
           console.log('articleService.authorContentsChanged');
-            // if (stories && stories.length) {
-            //
-            //   if (stories.length > this.storiesDefaultCount) {
-            //     const lastIndex = stories.length - 1;
-            //     if (stories[lastIndex].id !== this.startFromBlock) {
-            //       this.startFromBlock = stories[lastIndex].id;
-            //       stories.pop();
-            //     }
-            //   }
-            //
-            //   this.lastLoadedStories = stories;
-            //   this.articlesLoaded = true;
-            //   this.authorStories = (this.authorStories && this.authorStories.length) ? this.authorStories.concat(stories) : stories;
-            //   this.seeMoreChecker = (stories.length >= this.storiesDefaultCount)/* && (this.authorStories.length < this.authorStats.articlesCount)*/;
-            // } else {
-            //   this.loadingAuthor = false;
-            //   this.articlesLoaded = true;
-            // }
-            // this.seeMoreLoading = false;
-          }
-        );
+          // if (stories && stories.length) {
+          //
+          //   if (stories.length > this.storiesDefaultCount) {
+          //     const lastIndex = stories.length - 1;
+          //     if (stories[lastIndex].id !== this.startFromBlock) {
+          //       this.startFromBlock = stories[lastIndex].id;
+          //       stories.pop();
+          //     }
+          //   }
+          //
+          //   this.lastLoadedStories = stories;
+          //   this.articlesLoaded = true;
+          //   this.authorStories = (this.authorStories && this.authorStories.length) ? this.authorStories.concat(stories) : stories;
+          //   this.seeMoreChecker = (stories.length >= this.storiesDefaultCount)/* && (this.authorStories.length < this.authorStats.articlesCount)*/;
+          // } else {
+          //   this.loadingAuthor = false;
+          //   this.articlesLoaded = true;
+          // }
+          // this.seeMoreLoading = false;
+        }
+      );
 
-      // this.accountService.authorStatsDataChanged.subscribe((data: AuthorStats) => {
-      //     this.authorStats = data;
-      //     this.canFollow = data && (data.isSubscribed == 0 || data.isSubscribed == -1);
-      //   }
-      // );
+    // this.accountService.authorStatsDataChanged.subscribe((data: AuthorStats) => {
+    //     this.authorStats = data;
+    //     this.canFollow = data && (data.isSubscribed == 0 || data.isSubscribed == -1);
+    //   }
+    // );
 
-      this.accountService.followAuthorChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(data => {
-            this.accountService.getAuthorByPublicKey(this.author.publicKey);
-            this.canFollow = false;
-          }
-        );
+    this.accountService.followAuthorChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+          this.accountService.getAuthorByPublicKey(this.author.publicKey);
+          this.canFollow = false;
+        }
+      );
 
-      this.accountService.unFollowAuthorChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(data => {
-            this.accountService.getAuthorByPublicKey(this.author.publicKey);
-            this.canFollow = true;
-          }
-        );
+    this.accountService.unFollowAuthorChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+          this.accountService.getAuthorByPublicKey(this.author.publicKey);
+          this.canFollow = true;
+        }
+      );
 
-      this.articleService.authorStoriesViewsChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(data => {
-            if (data && this.lastLoadedStories) {
-              this.lastLoadedStories.forEach(content => {
-                data.forEach(story => {
-                  if (content.ds_id == story._id) {
-                    content.viewcount = story.viewcount;
-                  }
-                });
+    this.articleService.authorStoriesViewsChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+          if (data && this.lastLoadedStories) {
+            this.lastLoadedStories.forEach(content => {
+              data.forEach(story => {
+                if (content.ds_id == story._id) {
+                  content.viewcount = story.viewcount;
+                }
               });
-            }
+            });
           }
-        );
+        }
+      );
+  }
+
+  initAuthorData(author) {
+    this.author = author;
+    this.avatarUrl = null;
+    if (this.accountService.loggedIn() && this.accountService.accountInfo.publicKey == this.author.publicKey) {
+      this.yourAccount = true;
     }
+    const url = isPlatformServer(this.platformId)
+      ? this.request.protocol + '://' + this.request.get('host') + this.request.originalUrl
+      : '';
+    this.seo.generateTags({
+      title: `${this.author.firstName || ''} ${this.author.lastName || ''}`.trim(),
+      image: this.author.image || null,
+      url
+    });
+
+    if (this.author.image) {
+      this.avatarUrl = this.author.image;
+    }
+    this.shortName = this.author.shortName ? this.author.shortName : '';
+    this.canFollow = this.author.isSubscribed == 0 || this.author.isSubscribed == -1;
+    this.loadingAuthor = false;
+    this.articlesLoaded = true;
   }
 
   seeMore() {
@@ -206,14 +200,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist() {
-    return false;
-    // return !!(
-    //   this.author &&
-    //   this.author.image_hash &&
-    //   this.author.image_hash !== '' &&
-    //   !this.author.image_hash.startsWith('http://127.0.0.1') &&
-    //   this.author.image_hash.indexOf('_thumb') !== -1
-    // );
+    return !!(
+      this.author &&
+      this.author.image &&
+      this.author.image !== '' &&
+      !this.author.image.startsWith('http://127.0.0.1')
+    );
   }
 
   follow() {
@@ -222,7 +214,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.accountService.follow(this.author.publicKey);
+    this.accountService.follow(this.author.publicKey)
+      .pipe(
+        switchMap((data: Params) => {
+          this.canFollow = false;
+          return this.accountService.getAuthorByPublicKey(this.authorId);
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        this.initAuthorData(author);
+      });
   }
 
   unfollow() {
@@ -230,7 +232,18 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.openLoginDialog();
       return false;
     }
-    this.accountService.unfollow(this.author.publicKey);
+
+    this.accountService.unfollow(this.author.publicKey)
+      .pipe(
+        switchMap((data: Params) => {
+          this.canFollow = true;
+          return this.accountService.getAuthorByPublicKey(this.authorId);
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        this.initAuthorData(author);
+      });
   }
 
   public openLoginDialog() {

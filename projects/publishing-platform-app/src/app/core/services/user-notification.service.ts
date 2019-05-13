@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, filter } from 'rxjs/operators';
 import { interval, Subscription, Subject, Observable, of } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -12,11 +12,12 @@ import {
 } from './models/UserNotification';
 import { ErrorService } from './error.service';
 import { UserNotificationType } from '../models/enumes';
+import { Account, AccountOptions } from './models/account';
 
 
 @Injectable()
 export class UserNotificationService {
-  readonly apiUrl: string = `${environment.backend}/api/v1`;
+  readonly apiUrl: string = `${environment.backend}/api`;
   readonly streamIntervalSeconds: number = 30;
   notificationPage = 0;
   unreadCount = 0;
@@ -33,29 +34,26 @@ export class UserNotificationService {
     private errorService: ErrorService
   ) { }
 
-  loadNotifications(limit = 10, order = 'DESC'): Observable<boolean> {
+  loadNotifications(count = 10, fromId = 0): Observable<boolean> {
     if (this.notificationPage < 0) {
       // if in some unknown case the page stays -1
       return of(false);
     }
     return this.doRequest(
       'GET',
-      `/user-notification`,
-      null,
-      new HttpParams()
-        .set('page', this.notificationPage.toString())
-        .set('limit', limit.toString())
-        .set('order', order)
+      `/notification/${count}/${fromId}`,
+      null
     ).pipe(
-      map(this.normalizeNotifications.bind(this)),
-      map((response: UserNotificationResponse) => {
-        this.notificationPage = response.userNotifications.length
+      filter(result => result != null),
+      map((response: any) => {
+        response.notifications.map(notification => new UserNotification(notification));
+        this.notificationPage = response.notifications && response.notifications.length
           ? ++this.notificationPage
           : -1;
 
         this.unreadCount = response.unreadCount;
         this.userNotifications = this.userNotifications.concat(
-          response.userNotifications
+          response.notifications
         );
         this.notificationsChanged$.next();
 
@@ -71,18 +69,18 @@ export class UserNotificationService {
     );
   }
 
-  loadNewNotifications(): void {
+  loadNewNotifications(count = 10): void {
     const lastId = this.userNotifications.length
       ? this.userNotifications[0].id
       : 0;
 
-    this.doRequest('GET', `/user-notification/new/${lastId}`)
+    this.doRequest('GET', `/notification/${count}/${lastId}`)
       .pipe(map(this.normalizeNotifications.bind(this)))
       .subscribe(
         (response: UserNotificationResponse) => {
           this.unreadCount =
-            this.unreadCount + response.userNotifications.length;
-          this.userNotifications = response.userNotifications.concat(
+            this.unreadCount + response.notifications.length;
+          this.userNotifications = response.notifications.concat(
             this.userNotifications
           );
           this.notificationsChanged$.next();
@@ -99,7 +97,7 @@ export class UserNotificationService {
     this.unreadCount = 0;
     this.notificationsChanged$.next();
 
-    this.doRequest('POST', `/user-notification`).subscribe(null, error =>
+    this.doRequest('POST', `/notification/read-all`).subscribe(null, error =>
       this.errorService.handleError('readAllNotifications', error)
     );
   }
@@ -117,7 +115,7 @@ export class UserNotificationService {
 
     this.doRequest(
       'DELETE',
-      `/user-notification/${uNotification.id}`
+      `/notification/delete/${uNotification.id}`
     ).subscribe(null, error =>
       this.errorService.handleError('deleteNotification', error)
     );
@@ -132,7 +130,7 @@ export class UserNotificationService {
 
     this.doRequest(
       'POST',
-      `/user-notification/${readStatus ? '' : 'unread/'}${uNotification.id}`
+      `/notification/${readStatus ? 'read' : 'unread'}/${uNotification.id}`
     ).subscribe(null, error =>
       this.errorService.handleError('unreadSingle', error)
     );
@@ -149,26 +147,30 @@ export class UserNotificationService {
   }
 
   private normalizeNotifications(response: UserNotificationResponse): UserNotificationResponse {
-    let hasRecivedTransfer = false;
-    response.userNotifications.forEach((uNot: UserNotification) => {
-      // fix broken image field
-      if (
-        !uNot.notification.performer.image
-        || uNot.notification.performer.image.startsWith('http://127.0.0.1')
-      ) {
-        uNot.notification.performer.image = '';
+    if (response.notifications) {
+      let hasRecivedTransfer = false;
+
+      response.notifications.forEach((uNot: UserNotification) => {
+        // fix broken image field
+        if (
+          !uNot.performer.image
+          || uNot.performer.image.startsWith('http://127.0.0.1')
+        ) {
+          uNot.performer.image = '';
+        }
+        // if the notification type is 'transfer'
+        if (uNot.type.keyword === UserNotificationType.NEW_TRANSFER) {
+          hasRecivedTransfer = true;
+          // hide user's name
+          // uNot.notification.performer.firstName = '';
+          // uNot.notification.performer.lastName = '';
+        }
+      });
+      if (hasRecivedTransfer && this.streamSubscription) {
+        this.accountService.loadBalance();
       }
-      // if the notification type is 'transfer'
-      if (uNot.notification.type.id === UserNotificationType.NEW_TRANSFER) {
-        hasRecivedTransfer = true;
-        // hide user's name
-        // uNot.notification.performer.firstName = '';
-        // uNot.notification.performer.lastName = '';
-      }
-    });
-    if (hasRecivedTransfer && this.streamSubscription) {
-      this.accountService.loadBalance();
     }
+
     return response;
   }
 
