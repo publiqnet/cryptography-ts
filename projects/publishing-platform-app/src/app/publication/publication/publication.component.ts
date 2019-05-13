@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AccountService } from '../../core/services/account.service';
 import { PublicationService } from '../../core/services/publication.service';
@@ -31,6 +31,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   currentUser;
   private unsubscribe$ = new ReplaySubject<void>(1);
   slug: string;
+  userPublications: Array<Publication>;
 
   constructor(
     private accountService: AccountService,
@@ -45,7 +46,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.articlesLoaded = true;
 
     this.route.params
@@ -67,27 +67,27 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
         this.publication = pub;
 
-
-        /*if (isPlatformBrowser(this.platformId)) {
-          this.publicationService.loadSubscribers(this.publication.slug);
-          this.getPublicationArticles();
-        }
-        this.publicationService.subscribersChanged
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe((res: Array<PublicationSubscribersResponse>) => {
-              if (this.accountService.accountInfo) {
-                this.subscribers = res.length;
-                const userName = this.accountService.accountInfo.name;
-                res.forEach((elem: PublicationSubscribersResponse) => {
-                  if (userName === elem.subscriber.username) {
-                    this.canFollow = false;
-                  }
-                });
+        if (this.accountService.loggedIn()) {
+          this.accountService.getSubscriptions()
+            .pipe(
+              takeUntil(this.unsubscribe$)
+            )
+            .subscribe((res: any) => {
+                this.userPublications = res.publications;
+                const currentPublicationSlug = this.publication.slug;
+                if (this.userPublications) {
+                  this.userPublications.forEach((elem: any) => {
+                    if (currentPublicationSlug === elem.slug) {
+                      this.canFollow = false;
+                    }
+                  });
+                }
               }
-            }
-          );*/
+            );
+        }
+
+        // this.publicationService.loadSubscribers(this.publication.slug);
+        // this.getPublicationArticles();
       });
   }
 
@@ -133,20 +133,12 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((data: Params) => {
           this.canFollow = false;
-          return this.publicationService.getPublicationSubscribers(this.publication.slug);
+          return this.accountService.getSubscriptions();
         }),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((res) => {
-        // if (this.accountService.accountInfo) {
-        //   this.subscribers = res.length;
-        //   const publicKey = this.accountService.accountInfo.publicKey;
-        //   res.forEach((elem: PublicationSubscribersResponse) => {
-        //     if (publicKey === elem.subscriber.username) {
-        //       this.canFollow = false;
-        //     }
-        //   });
-          // }
+      .subscribe((res: any) => {
+        this.userPublications = res.publications;
       });
   }
 
@@ -159,19 +151,12 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((data: Params) => {
           this.canFollow = true;
-          return this.publicationService.getPublicationSubscribers(this.publication.slug);
+          return this.accountService.getSubscriptions();
         }),
-        takeUntil(this.unsubscribe$))
-      .subscribe((res) => {
-        // if (this.accountService.accountInfo) {
-        //   this.subscribers = res.length;
-        //   const publicKey = this.accountService.accountInfo.publicKey;
-        //   res.forEach((elem: PublicationSubscribersResponse) => {
-        //     if (publicKey === elem.subscriber.username) {
-        //       this.canFollow = false;
-        //     }
-        //   });
-        // }
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((res: any) => {
+        this.userPublications = res.publications;
       });
   }
 
