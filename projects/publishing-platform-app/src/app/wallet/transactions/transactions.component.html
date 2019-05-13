@@ -57,7 +57,7 @@
             <mat-cell *matCellDef="let transaction">
                 <mat-list>
                     <mat-list-item>
-                        <h3 matLine>
+                        <h3 matLine *ngIf="account">
                             <span>{{(transaction.m_to_account != account.id) ? ('wallet.sent_to' | translate) : ('wallet.received_from' | translate)}}</span>
                             <a href="{{explorerAddress}}/block-navigation/account/{{ (transaction['m_'+((transaction.m_to_account != account.id) ? 'to': 'from')+'_account']) }}">{{transaction['m_'+((transaction.m_to_account
                                 != account.id) ? "to": "from")+'_account'] }}</a>
