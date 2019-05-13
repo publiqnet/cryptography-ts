@@ -12,13 +12,11 @@ import { Account, AccountOptions } from './models/account';
 import { ErrorService } from './error.service';
 import { Preference } from './models/preference';
 import { AuthorStats, AuthorStatsOptions } from './models/authorStats';
-// import { Apis, ChainStore, FetchChain, key, PrivateKey, TransactionBuilder } from 'arcnet-js';
 import { HttpRpcService } from './httpRpc.service';
 import { Subscriber } from './models/subscriber';
 
 import { UtilsService } from 'shared-lib';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
-
 
 @Injectable()
 export class AccountService {
@@ -26,7 +24,7 @@ export class AccountService {
   constructor(private http: HttpClient,
               @Inject(PLATFORM_ID) private platformId: Object,
               private httpRpcService: HttpRpcService,
-              private httpHelperService: HttpHelperService,
+              private httpHelper: HttpHelperService,
               private errorService: ErrorService,
               private utilsService: UtilsService,
               private cryptService: CryptService,
@@ -56,9 +54,6 @@ export class AccountService {
 
   private subscribers: Subscriber[];
   subscribersChanged = new Subject<Subscriber[]>();
-
-  authorAccount: Account;
-  authorAccountChanged = new Subject<Account>();
 
   followAuthor: String;
   followAuthorChanged = new Subject<String>();
@@ -129,53 +124,6 @@ export class AccountService {
       return false;
     }
     return true;
-  }
-
-  getRpcAccount(): Account {
-    return this.authorAccount;
-  }
-
-  public loadRpcAccount(idOrName: string): void {
-    let targetObservable: Observable<any>;
-    // if is clientside use websocket call, else use http
-    if (isPlatformBrowser(this.platformId)) {
-      let command: string;
-      let param: any[];
-      if (idOrName && idOrName.substr(0, 4) === '1.2.') {
-        command = 'get_accounts';
-        param = [[idOrName]];
-      } else {
-        command = 'get_account_by_name';
-        param = [idOrName];
-      }
-      targetObservable = this.httpRpcService
-        .call({
-          params: [0, command, param]
-        });
-    } else {
-      targetObservable = this.http.post(environment.daemon_https_address, {
-        id: 0,
-        method: 'call',
-        params: [0, 'get_account', [idOrName]]
-      });
-    }
-
-    //  queue the same callbacks regardless if it is http or websocket
-    targetObservable
-      .pipe(
-        filter(account => account != 'undefined' || account != null),
-        map(response => response.result || response),
-        map(account => new Account(account)),
-        take(1)
-      )
-      .subscribe(
-        account => {
-          this.authorAccount = account;
-          this.authorAccountChanged.next(account);
-        },
-        error => this.errorService.handleError('loadRpcAccount', error)
-      );
-
   }
 
   public getBalance() {
@@ -256,24 +204,11 @@ export class AccountService {
   getAuthorByPublicKey(publicKey: string) {
     const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
     const url = this.userUrl + `/author-data/${publicKey}`;
-
-    let headersData = {};
-    if (this.loggedIn() && authToken) {
-      headersData = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
-    }
-
-    this.http.get(url, headersData)
+    return this.httpHelper.call(HttpMethodTypes.get, url, null, null, false, !!authToken)
       .pipe(
         filter(account => account != 'undefined' || account != null),
         map((account: any) => new Account(account)),
         take(1)
-      )
-      .subscribe(
-        account => {
-          this.authorAccount = account;
-          this.authorAccountChanged.next(account);
-        },
-        error => this.errorService.handleError('loadRpcAccount', error)
       );
   }
 
@@ -359,6 +294,14 @@ export class AccountService {
           },
           error => this.errorService.handleError('loadAuthorSubscribers', error, url)
         );
+    }
+  }
+
+  getSubscriptions() {
+    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    if (authToken) {
+      const url = this.userUrl + `/subscriptions`;
+      return this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})});
     }
   }
 
@@ -481,7 +424,7 @@ export class AccountService {
 
   public updateAccount(updateData): Observable<any> {
     const url = this.userUrl;
-    return this.httpHelperService.call(HttpMethodTypes.post, url, updateData)
+    return this.httpHelper.call(HttpMethodTypes.post, url, updateData)
       .pipe(
         map((userInfo: any) => {
           this.SetAccountInfo = userInfo;
@@ -519,56 +462,9 @@ export class AccountService {
     }
   }
 
-  public follow(username: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('loginSession', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-      }
+  follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.userUrl + `/${slug}/subscribe`);
 
-      const url = this.userUrl + '/subscription';
-      this.http
-        .put(
-          url,
-          {username: username},
-          {headers: new HttpHeaders({'X-API-TOKEN': authToken})}
-        )
-        .subscribe(
-          res => {
-            this.followAuthor = 'OK';
-            this.followAuthorChanged.next(this.followAuthor);
-          },
-          error => this.errorService.handleError('follow', error, url)
-        );
-    }
-  }
-
-  public unfollow(username: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('loginSession', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-      }
-      const url = this.userUrl + `/subscription/${username}`;
-      this.http
-        .delete(url, {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
-        })
-        .subscribe(
-          res => {
-            this.unFollowAuthor = 'OK';
-            this.unFollowAuthorChanged.next(this.unFollowAuthor);
-          },
-          error => this.errorService.handleError('unfollow', error, url)
-        );
-    }
-  }
+  unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.userUrl + `/${slug}/subscribe`);
 
   public notifyInTransfer(publicKey): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -843,7 +739,7 @@ export class AccountService {
   }
 
   searchAccountByTerm: (term: string) => Observable<Account[]> = (term: string) => {
-    return this.httpHelperService.call(HttpMethodTypes.get, this.userUrl + `/search/${term}`)
+    return this.httpHelper.call(HttpMethodTypes.get, this.userUrl + `/search/${term}`)
       .pipe(map((accounts: AccountOptions[]) => accounts.map(account => new Account(account))));
   }
 }

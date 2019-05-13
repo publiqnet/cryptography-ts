@@ -47,7 +47,6 @@ export class UserNotificationService {
       filter(result => result != null),
       map((response: any) => {
         response.notifications.map(notification => new UserNotification(notification));
-        console.log('response - ', response);
         this.notificationPage = response.notifications && response.notifications.length
           ? ++this.notificationPage
           : -1;
@@ -194,7 +193,6 @@ export class UserNotificationService {
     if (!this.streamSubscription) {
       this.streamSubscription = interval(streamIntervalSeconds * 1000).subscribe(
         () => {
-          console.log('loaddd');
           this.loadNewNotifications();
         }
       );

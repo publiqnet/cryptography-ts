@@ -61,7 +61,8 @@ export class PublicationService {
   }
 
   getPublicationBySlug = (slug: string | number): Observable<Publication> => {
-    return this.httpHelper.call(HttpMethodTypes.get, this.url + '/' + slug)
+    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + '/' + slug, null, null, false, !!authToken)
       .pipe(
         filter(data => data != null),
         map(data => new Publication(data))
@@ -167,9 +168,9 @@ export class PublicationService {
 
   getPublicationSubscribers = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.get, this.url + `/subscribers/${slug}`);
 
-  follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.put, this.url + '/subscription/' + slug);
+  follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.url + `/${slug}/subscribe`);
 
-  unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + '/subscription/' + slug);
+  unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.url + `/${slug}/subscribe`);
 
   deleteMembership: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
     return this.httpHelper.call(HttpMethodTypes.post, this.url + `/delete-membership/${slug}`);
