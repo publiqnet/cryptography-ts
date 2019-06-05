@@ -21,7 +21,9 @@ export class ApiService {
   search(search: string) {
     const url = `${this.blockUrl}/search/${search}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
-      .pipe(map((response: SearchResponseOptions) => new SearchResponse(response)));
+      .pipe(
+        map(response => new SearchResponse(response))
+      );
   }
 
   loadBlocks(fromHash: string = '', count: number = 7): Observable<any> {
