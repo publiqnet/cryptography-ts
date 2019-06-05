@@ -2,34 +2,36 @@
   <h2 class="page-title">Transactions</h2>
   <ng-container *ngIf="transactions">
     <div class="transactions-table" *ngIf="transactions.length">
-      <div class="transaction-table-item" *ngFor="let transaction of transactions">
-        <div class="transaction-table-body transaction-ordinary-body">
-          <div class="transaction-table_hash">
-            <small>Hash</small>
-            <a class="linked" href="#"
-               (click)="redirect($event, 't', transaction.transactionHash)">{{transaction.transactionHash}}</a>
-          </div>
-          <div class="transaction-table_amount">
-            <small>Amount</small>
-            <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
-          </div>
-          <div class="last-seen">
-            <div class="transaction-table_from">
-              <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">
-                {{transaction.transfer.from.address}}
-              </a>
+      <ng-container *ngFor="let transaction of transactions">
+        <div *ngIf="isTransfer(transaction)" class="transaction-table-item">
+            <div class="transaction-table-body transaction-ordinary-body">
+              <div class="transaction-table_hash">
+                <small>Hash</small>
+                <a class="linked" href="#"
+                   (click)="redirect($event, 't', transaction.transactionHash)">{{transaction.transactionHash}}</a>
+              </div>
+              <div class="transaction-table_amount">
+                <small>Amount</small>
+                <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
+              </div>
+              <div class="last-seen">
+                <div class="transaction-table_from">
+                  <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">
+                    {{transaction.transfer.from.address}}
+                  </a>
+                </div>
+                <div class="transaction-table_arrow">
+                  <img src="../../assets/img/arrow.svg">
+                </div>
+                <div class="transaction-table_to">
+                  <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.to.address)">
+                    {{transaction.transfer.to.address}}
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="transaction-table_arrow">
-              <img src="../../assets/img/arrow.svg">
-            </div>
-            <div class="transaction-table_to">
-              <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.to.address)">
-                {{transaction.transfer.to.address}}
-              </a>
-            </div>
-          </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </ng-container>
 

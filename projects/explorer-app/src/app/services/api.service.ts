@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { Block } from './models/block';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
-import { SearchResponse, SearchResponseOptions } from './models/SearchResponse';
+import { SearchResponse } from './models/SearchResponse';
 import { Transaction, TransactionOptions } from './models/Transaction';
 import { TransactionResponse, TransactionResponseOptions } from './models/TransactionResponse';
 import { Balance, BalanceOptions } from './models/Balance';
@@ -18,7 +18,7 @@ export class ApiService {
   constructor(private httpHelperService: HttpHelperService) {
   }
 
-  search(search: string) {
+  search(search: string): Observable<any> {
     const url = `${this.blockUrl}/search/${search}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
@@ -92,7 +92,7 @@ export class ApiService {
       );
   }
 
-  getAccountRewards(publicKey: string, from: string, limit: number) {
+  getAccountRewards(publicKey: string, from: string, limit: number): Observable<any> {
     const url = `${this.blockUrl}/user/${publicKey}/rewards/${limit}/${from}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
@@ -100,7 +100,7 @@ export class ApiService {
       );
   }
 
-  getAccountBalance(publicKey: string) {
+  getAccountBalance(publicKey: string): Observable<any> {
     const url = `${this.blockUrl}/user/${publicKey}/balance`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(map((obj: BalanceOptions) => new Balance(obj)));
