@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { Block } from './models/block';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
-import { SearchResponse, SearchResponseOptions } from './models/SearchResponse';
+import { SearchResponse } from './models/SearchResponse';
 import { Transaction, TransactionOptions } from './models/Transaction';
 import { TransactionResponse, TransactionResponseOptions } from './models/TransactionResponse';
 import { Balance, BalanceOptions } from './models/Balance';
@@ -18,7 +18,7 @@ export class ApiService {
   constructor(private httpHelperService: HttpHelperService) {
   }
 
-  search(search: string) {
+  search(search: string): Observable<any> {
     const url = `${this.blockUrl}/search/${search}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
@@ -30,7 +30,7 @@ export class ApiService {
     const url = `${this.blockUrl}/blocks/${count}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map((blockInfo: any) => {
+        map(blockInfo => {
           blockInfo.blocks = blockInfo.blocks.map(b => new Block(b));
           return blockInfo;
         }));
@@ -44,7 +44,7 @@ export class ApiService {
     const url = `${this.blockUrl}/blocks/${year}/${month}/${day}/${count}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map((blockInfo: any) => {
+        map(blockInfo => {
           blockInfo.blocks = blockInfo.blocks.map(b => new Block(b));
           return blockInfo;
         }));
@@ -54,7 +54,7 @@ export class ApiService {
     const url = `${this.blockUrl}/block/${blockHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map((blockInfo: any) => {
+        map(blockInfo => {
           return blockInfo;
         }));
   }
@@ -64,7 +64,7 @@ export class ApiService {
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
         filter(obj => obj.transactions && obj.transactions.length > 0),
-        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+        map(obj => new TransactionResponse(obj))
       );
   }
 
@@ -73,14 +73,14 @@ export class ApiService {
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
         filter(obj => obj.transactions && obj.transactions.length > 0),
-        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+        map(obj => new TransactionResponse(obj))
       );
   }
 
   getTransactionByHash(hash: string): Observable<Transaction> {
     const url = `${this.blockUrl}/transaction/${hash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
-      .pipe(map((obj: TransactionOptions) => new Transaction(obj)));
+      .pipe(map(obj => new Transaction(obj)));
   }
 
   getAccountTransactions(publicKey: string, fromHash: string, limit: number): Observable<TransactionResponse> {
@@ -88,22 +88,22 @@ export class ApiService {
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
         filter(obj => obj.transactions && obj.transactions.length > 0),
-        map((obj: TransactionResponseOptions) => new TransactionResponse(obj))
+        map(obj => new TransactionResponse(obj))
       );
   }
 
-  getAccountRewards(publicKey: string, from: string, limit: number) {
+  getAccountRewards(publicKey: string, from: string, limit: number): Observable<any> {
     const url = `${this.blockUrl}/user/${publicKey}/rewards/${limit}/${from}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map((obj) => console.log(obj))
+        map(obj => console.log(obj))
       );
   }
 
-  getAccountBalance(publicKey: string) {
+  getAccountBalance(publicKey: string): Observable<any> {
     const url = `${this.blockUrl}/user/${publicKey}/balance`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
-      .pipe(map((obj: BalanceOptions) => new Balance(obj)));
+      .pipe(map(obj => new Balance(obj)));
   }
 
   // getAccount(id_or_name: string): Observable<Account> {
