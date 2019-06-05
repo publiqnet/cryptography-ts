@@ -22,7 +22,7 @@ export class ApiService {
     const url = `${this.blockUrl}/search/${search}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map(response => new SearchResponse(response))
+        map((response: any) => new SearchResponse(response))
       );
   }
 
@@ -30,7 +30,7 @@ export class ApiService {
     const url = `${this.blockUrl}/blocks/${count}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map(blockInfo => {
+        map((blockInfo: any) => {
           blockInfo.blocks = blockInfo.blocks.map(b => new Block(b));
           return blockInfo;
         }));
@@ -44,7 +44,7 @@ export class ApiService {
     const url = `${this.blockUrl}/blocks/${year}/${month}/${day}/${count}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map(blockInfo => {
+        map((blockInfo: any) => {
           blockInfo.blocks = blockInfo.blocks.map(b => new Block(b));
           return blockInfo;
         }));
@@ -54,7 +54,7 @@ export class ApiService {
     const url = `${this.blockUrl}/block/${blockHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        map(blockInfo => {
+        map((blockInfo: any) => {
           return blockInfo;
         }));
   }
@@ -63,8 +63,8 @@ export class ApiService {
     const url = `${this.blockUrl}/block/${blockHash}/transactions/${from}/${limit}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        filter(obj => obj.transactions && obj.transactions.length > 0),
-        map(obj => new TransactionResponse(obj))
+        filter((obj: any) => obj.transactions && obj.transactions.length > 0),
+        map((obj: any) => new TransactionResponse(obj))
       );
   }
 
@@ -72,8 +72,8 @@ export class ApiService {
     const url = `${this.blockUrl}/transaction/${limit}/${fromHash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
       .pipe(
-        filter(obj => obj.transactions && obj.transactions.length > 0),
-        map(obj => new TransactionResponse(obj))
+        filter((obj: any) => obj.transactions && obj.transactions.length > 0),
+        map((obj: any) => new TransactionResponse(obj))
       );
   }
 
