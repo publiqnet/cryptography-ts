@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material';
 
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import PubliqTransfer from 'blockchain-models-ts/bin/models/PubliqTransfer';
 
 import { Account } from '../../core/services/models/account';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -62,7 +63,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
           return account;
         }),
         switchMap(params => {
-          return this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, '', this.defaultLimit);
+          return this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, '', this.defaultLimit, PubliqTransfer.Rtt);
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -81,7 +82,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   viewMore() {
-    this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, this.nextTransactionHash, this.defaultLimit)
+    this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, this.nextTransactionHash, this.defaultLimit, PubliqTransfer.Rtt)
       .pipe(
         takeUntil(this.unsubscribe$)
       )

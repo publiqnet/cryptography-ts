@@ -18,8 +18,8 @@ export class WalletService {
   ) {
   }
 
-  loadTransactions(publicKey, hash = '', limit = 50): Observable<any> {
-    const url = `${this.userUrl}/${publicKey}/transactions/${limit}/${hash}`;
+  loadTransactions(publicKey, hash = '', limit = 50, rtt = null): Observable<any> {
+    const url = `${this.userUrl}/${publicKey}/transactions/${rtt}/${limit}/${hash}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url);
   }
 
