@@ -4,12 +4,12 @@ import { Account } from './Account';
 
 export interface SearchResponseOptions {
     object: any;
-    type: string;
+    type: any;
 }
 
 export class SearchResponse {
     object: any;
-    type: string;
+    type: any;
 
     constructor(options?: SearchResponseOptions) {
         for (const i in options) {
