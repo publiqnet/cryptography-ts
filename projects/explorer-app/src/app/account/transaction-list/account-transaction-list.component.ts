@@ -1,11 +1,12 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { ReplaySubject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { Transaction } from '../../services/models/Transaction';
 import { Account } from '../../services/models/Account';
 import { ApiService } from '../../services/api.service';
-import { filter, takeUntil } from 'rxjs/operators';
-import { ReplaySubject } from 'rxjs';
 import { TransactionResponse } from '../../services/models/TransactionResponse';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-account-transaction-list',
@@ -26,6 +27,7 @@ export class AccountTransactionListComponent implements OnInit, OnChanges, OnDes
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private router: Router,
+              private utilService: UtilService,
               private apiService: ApiService) {
   }
 

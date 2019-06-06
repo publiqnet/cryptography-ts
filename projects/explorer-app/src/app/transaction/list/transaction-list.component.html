@@ -3,7 +3,7 @@
   <ng-container *ngIf="transactions">
     <div class="transactions-table" *ngIf="transactions.length">
       <ng-container *ngFor="let transaction of transactions">
-        <div *ngIf="isTransfer(transaction)" class="transaction-table-item">
+        <div class="transaction-table-item">
             <div class="transaction-table-body transaction-ordinary-body">
               <div class="transaction-table_hash">
                 <small>Hash</small>
@@ -11,10 +11,10 @@
                    (click)="redirect($event, 't', transaction.transactionHash)">{{transaction.transactionHash}}</a>
               </div>
               <div class="transaction-table_amount">
-                <small>Amount</small>
-                <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
+                <small>{{utilService.isTransfer(transaction) ? 'Amount' : 'Fee'}}</small>
+                <span>{{(utilService.isTransfer(transaction) ? transaction.transfer.amount.balance : transaction.feeAmount.balance) | number: '0.0-8'}}</span>
               </div>
-              <div class="last-seen">
+              <div *ngIf="utilService.isTransfer(transaction)"  class="last-seen">
                 <div class="transaction-table_from">
                   <a class="linked" href="#" (click)="redirect($event, 'a', transaction.transfer.from.address)">
                     {{transaction.transfer.from.address}}

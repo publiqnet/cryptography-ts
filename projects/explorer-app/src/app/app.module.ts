@@ -43,6 +43,7 @@ import { BlockComponent } from './block/block.component';
 import { DecimalPipe } from '@angular/common';
 import { PbqPipe } from './shared/pipes/pbq/pbq.pipe';
 import { ApiService } from './services/api.service';
+import { UtilService } from './services/util.service';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -97,6 +98,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     TranslateService,
     ApiService,
+    UtilService,
     PbqPipe,
     DecimalPipe
   ],

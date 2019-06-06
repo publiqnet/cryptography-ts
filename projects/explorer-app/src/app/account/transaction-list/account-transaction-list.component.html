@@ -7,26 +7,26 @@
                     <a class="linked" routerLink="/t/{{transaction.transactionHash}}">{{transaction.transactionHash}}</a>
                 </div>
                 <div class="transaction-table_confirmations">
-
                     <small *ngIf="transaction.isConfirmed">Confirmed</small>
                     <small *ngIf="!transaction.isConfirmed">Unconfirmed</small>
                     <span></span>
-                    <!--<span>3</span>-->
                 </div>
                 <div class="transaction-table_amount" *ngIf="amountShown">
-                    <small>Amount</small>
-                    <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
+                    <small>{{utilService.isTransfer(transaction) ? 'Amount' : 'Fee'}}</small>
+                    <span>{{(utilService.isTransfer(transaction) ? transaction.transfer.amount.balance : transaction.feeAmount.balance) | number: '0.0-8'}}</span>
                 </div>
-                <div class="transaction-table_user_recepient" *ngIf="account.address === transaction.transfer.to.address">
-                  <img class="arrows" src="../../../assets/img/ArrowDown.svg" alt="">
-                    <span>Received</span>
-                    <a class="linked" routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
-                </div>
-                <div class="transaction-table_user_recepient" *ngIf="account.address !== transaction.transfer.to.address">
-                  <img class="arrows" src="../../../assets/img/ArrowUp.svg" alt="">
-                    <span>Sent</span>
-                    <a class="linked" routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
-                </div>
+                <ng-container *ngIf="utilService.isTransfer(transaction)">
+                    <div class="transaction-table_user_recepient" *ngIf="account.address === transaction.transfer.to.address">
+                        <img class="arrows" src="../../../assets/img/ArrowDown.svg" alt="">
+                        <span>Received</span>
+                        <a class="linked" routerLink="/a/{{transaction.transfer.from.address}}">{{transaction.transfer.from.address}}</a>
+                    </div>
+                    <div class="transaction-table_user_recepient" *ngIf="account.address !== transaction.transfer.to.address">
+                        <img class="arrows" src="../../../assets/img/ArrowUp.svg" alt="">
+                        <span>Sent</span>
+                        <a class="linked" routerLink="/a/{{transaction.transfer.to.address}}">{{transaction.transfer.to.address}}</a>
+                    </div>
+                </ng-container>
                 <div class="transaction-table_date" *ngIf="transaction.isConfirmed">
                     <span>{{transaction.block.signTime | date: 'yyyy-MM-dd HH:mm'}}</span>
                 </div>
