@@ -63,7 +63,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
           return account;
         }),
         switchMap(params => {
-          return this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, '', this.defaultLimit, PubliqTransfer.Rtt);
+          return this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, '', this.defaultLimit);
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -82,7 +82,7 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   }
 
   viewMore() {
-    this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, this.nextTransactionHash, this.defaultLimit, PubliqTransfer.Rtt)
+    this.walletService.loadTransactions(this.accountService.accountInfo.publicKey, this.nextTransactionHash, this.defaultLimit)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
@@ -108,6 +108,18 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       });
     }
     this.loading = false;
+  }
+
+  isTransfer(transaction) {
+    return transaction.type == PubliqTransfer.Rtt;
+  }
+
+  getTransactionTitle(transaction) {
+    if (this.isTransfer(transaction)) {
+      return (transaction.to != this.accountService.accountInfo.publicKey) ? 'Sent' : 'Received';
+    } else {
+      return 'Spent';
+    }
   }
 
   ngOnDestroy() {
