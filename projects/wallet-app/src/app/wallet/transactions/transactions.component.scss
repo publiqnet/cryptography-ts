@@ -50,6 +50,10 @@ mat-table mat-cell {
           content: '-';
         }
       }
+
+      &.transaction-spent {
+        color: #8D929A;
+      }
     }
   }
 }
@@ -75,6 +79,11 @@ mat-table mat-cell {
 }
 .arrow_color.sent{
   color: #3365ff;
+  transform: rotate(90deg);
+}
+
+.arrow_color.spent{
+  color: #8D929A;
   transform: rotate(90deg);
 }
 
