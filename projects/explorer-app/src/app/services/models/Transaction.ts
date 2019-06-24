@@ -16,6 +16,7 @@ export interface TransactionOptions {
   transfer: Transfer;
   isConfirmed: boolean;
   feeAmount?: Balance;
+  type?: number;
 }
 
 export class Transaction {
@@ -32,7 +33,7 @@ export class Transaction {
   transfer: Transfer;
   isConfirmed: boolean;
   feeAmount?: Balance;
-
+  type?: number;
 
   constructor(options?: TransactionOptions) {
     for (const i in options) {

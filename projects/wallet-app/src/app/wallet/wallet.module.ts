@@ -12,24 +12,26 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
 @NgModule({
-    imports: [
-        CommonModule,
-        SharedModule,
-        TranslateModule.forChild({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient]
-          },
-          isolate: true
-        })
-    ],
-    declarations: [TransactionsComponent,
-        TransferComponent,
-        WalletComponent,
-        ReceiveComponent
-    ]
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
+      isolate: true
+    })
+  ],
+  declarations: [
+    TransactionsComponent,
+    TransferComponent,
+    WalletComponent,
+    ReceiveComponent
+  ]
 })
 export class WalletModule {
 }

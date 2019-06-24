@@ -2,10 +2,11 @@ import { Component, Inject, Input, OnDestroy, OnInit, PLATFORM_ID } from '@angul
 import { ActivatedRoute, Router } from '@angular/router';
 import { Transaction } from '../../services/models/Transaction';
 import { ApiService } from '../../services/api.service';
-import { filter, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { TransactionResponse } from '../../services/models/TransactionResponse';
 import { isPlatformBrowser } from '@angular/common';
+import { UtilService } from '../../services/util.service';
 
 @Component({
   selector: 'app-transaction-list',
@@ -28,6 +29,7 @@ export class TransactionListComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private route: ActivatedRoute,
+              private utilService: UtilService,
               private apiService: ApiService,
               private router: Router,
               @Inject(PLATFORM_ID) private platformId: Object

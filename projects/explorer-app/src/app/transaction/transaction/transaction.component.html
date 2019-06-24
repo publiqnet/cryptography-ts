@@ -21,7 +21,7 @@
               <a class="linked" href="#" (click)="redirect($event, 'b', transaction.block.number)">{{transaction.block.number}}</a>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="utilService.isTransfer(transaction)">
             <td class="mob-column">
               <div class="table-column">
                 <span>From</span>
@@ -35,7 +35,7 @@
           </tr>
           <tr>
             <td class="mob-column">
-              <div class="table-column">
+              <div class="table-column" *ngIf="utilService.isTransfer(transaction)">
                 <span>Amount</span>
                 <span>{{transaction.transfer.amount.balance | number: '0.0-8'}}</span>
               </div>

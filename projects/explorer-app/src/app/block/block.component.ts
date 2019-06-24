@@ -8,6 +8,7 @@ import { of, ReplaySubject } from 'rxjs';
 import { TransactionResponse } from '../services/models/TransactionResponse';
 import { SearchResponse } from '../services/models/SearchResponse';
 import { Balance } from '../services/models/Balance';
+import { UtilService } from '../services/util.service';
 
 @Component({
   selector: 'app-block',
@@ -31,6 +32,7 @@ export class BlockComponent implements OnInit, OnDestroy {
   constructor(
               private router: Router,
               private route: ActivatedRoute,
+              private utilService: UtilService,
               private apiService: ApiService) {
   }
 

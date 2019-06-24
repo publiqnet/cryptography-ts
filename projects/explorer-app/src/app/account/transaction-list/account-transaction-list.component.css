@@ -143,6 +143,8 @@
 .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_date {
   width: 200px;
   text-align: right;
+  display: inline-block;
+  margin-left: auto;
 }
 .transactions-table .transaction-table-item .transaction-user-body.amount-shown > div.transaction-table_date span {
   font-weight: 600;

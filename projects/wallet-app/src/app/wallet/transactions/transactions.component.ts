@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material';
 
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import PubliqTransfer from 'blockchain-models-ts/bin/models/PubliqTransfer';
 
 import { Account } from '../../core/services/models/account';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
@@ -107,6 +108,18 @@ export class TransactionsComponent implements OnInit, OnDestroy {
       });
     }
     this.loading = false;
+  }
+
+  isTransfer(transaction) {
+    return transaction.type == PubliqTransfer.Rtt;
+  }
+
+  getTransactionTitle(transaction) {
+    if (this.isTransfer(transaction)) {
+      return (transaction.to != this.accountService.accountInfo.publicKey) ? 'Sent' : 'Received';
+    } else {
+      return 'Spent';
+    }
   }
 
   ngOnDestroy() {
