@@ -20,7 +20,7 @@ const routes: Routes = [
                 component: HomepageComponent
             },
             {
-                path: 's/:id',
+                path: 's/:uri',
                 pathMatch: 'full',
                 component: ArticleComponent
             },
