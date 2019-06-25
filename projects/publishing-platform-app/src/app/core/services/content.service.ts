@@ -963,6 +963,13 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, { files: data });
   }
 
+  uploadTextFiles(content): Observable<any> {
+    const url = environment.backend + '/api/file/upload-content';
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {
+      content
+    });
+  }
+
   unitUpload(content): Observable<any> {
     const url = environment.backend + '/api/content/unit/upload';
     return this.httpHelperService.call(HttpMethodTypes.post, url, {
@@ -994,5 +1001,19 @@ export class ContentService {
   publish(uri, contentId): Observable<any> {
     const url = environment.backend + '/api/content/publish';
     return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId});
+  }
+
+  getMyContents(fromUri = null, count: number = 10): Observable<any> {
+    const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
+    return this.httpHelperService.call(HttpMethodTypes.get, url);
+  }
+
+  getContentByUri(uri: string): Observable<any> {
+    const url = `${environment.backend}/api/content/${uri}`;
+    return this.httpHelperService.call(HttpMethodTypes.get, url);
+  }
+
+  getFileContentFromUrl(url: string): Observable<any> {
+    return this.http.get(url, {responseType: 'text'});
   }
 }

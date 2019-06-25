@@ -18,7 +18,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ENTER } from '@angular/cdk/keycodes';
 
 import { map, debounceTime, filter, takeUntil, flatMap, switchMap } from 'rxjs/operators';
-import { ReplaySubject, zip } from 'rxjs';
+import { forkJoin, of, ReplaySubject, zip } from 'rxjs';
 import { now } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { SwiperComponent } from 'angular2-useful-swiper';
@@ -136,7 +136,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   @ViewChild('content') contentElement: ElementRef;
   showErrors = false;
 
-  contentUris: Array<any> = [];
+  contentUris = {};
 
   isBrowser;
   updateButtonDisable = true;
@@ -205,7 +205,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       'froalaEditor.image.inserted': (e, editor, img, response) => {
         if (response) {
           const responseData = JSON.parse(response);
-          this.contentUris.push(responseData.uri);
+          this.contentUris[responseData.uri] = responseData.link;
           const uploadedImageOriginal = responseData.content_original_sample_file;
           const uploadedImageThumb = responseData.content_thumb_sample_file;
 
@@ -674,32 +674,69 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
   submit(password: string, boostInfo?) {
     const contentTitle = `<h1>${this.contentForm.value.title}</h1>`;
-    const contentData = `${contentTitle} ${this.contentForm.value.content}`;
+    let uploadedContentHtml = '';
+    const contentBlocks = this.editorContentObject.html.blocks();
+    const calls = [];
 
-    this.isContentUpLoading = true;
-    this.isSubmited = true;
-    this.formSubmitted = true;
-    this.loadingOnSave = true;
+    contentBlocks.forEach((node) => {
+      const nodeHtml = $.trim(node.innerHTML);
+      if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
+        calls.push(this.contentService.uploadTextFiles(nodeHtml));
+      } else if (nodeHtml.match(/<img/)) {
+        let outerText = node.outerHTML;
+        const regex = /<img[^>]*src="([^"]*)"/g;
+        const src = regex.exec(outerText)[1];
+        const imgUri = Object.keys(this.contentUris).find(key => this.contentUris[key] === src);
+        if (imgUri && this.contentUris[imgUri]) {
+          outerText = outerText.replace(this.contentUris[imgUri], imgUri);
+        }
+        calls.push(of(outerText));
+      } else {
+        calls.push(of(node.outerHTML));
+      }
+    });
 
-    this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
+    forkJoin(calls).subscribe((data: any) => {
+      if (data.length) {
+        data.forEach((nextResult) => {
+          if (nextResult['uri']) {
+            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+            this.contentUris[nextResult['uri']] = nextResult['link'];
+          } else {
+            uploadedContentHtml += nextResult;
+          }
+        });
+      }
 
-    if (this.contentUris.length) {
-      this.contentService.signFiles(this.contentUris, password)
-        .pipe(
-          switchMap((data: any) => {
-            return this.submitContent(contentData, password);
-          })
-        ).subscribe(data => {
+      const contentData = `${contentTitle} ${uploadedContentHtml}`;
+
+      this.isContentUpLoading = true;
+      this.isSubmited = true;
+      this.formSubmitted = true;
+      this.loadingOnSave = true;
+
+      this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
+
+      if (Object.keys(this.contentUris).length) {
+        this.contentService.signFiles(Object.keys(this.contentUris), password)
+          .pipe(
+            switchMap((data: any) => {
+              return this.submitContent(contentData, password);
+            })
+          ).subscribe(data => {
           console.log('signFiles - ', data);
           this.afterContentSubmit();
         });
-    } else {
-      this.submitContent(contentData, password)
-      .subscribe(data => {
-        console.log('NO signFiles - ', data);
-        this.afterContentSubmit();
-      });
-    }
+      } else {
+        this.submitContent(contentData, password)
+          .subscribe(data => {
+            console.log('NO signFiles - ', data);
+            this.afterContentSubmit();
+          });
+      }
+    });
+
+    /////////////////////////////////////////////////////////////////////////////
 
     // this.submitContent(this.contentForm.value, contentData, password);
 
@@ -787,7 +824,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((data: any) => {
           uploadedContentURI = data.uri;
-          return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, this.contentUris, password);
+          return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
         switchMap((data: any) => this.contentService.publish(uploadedContentURI, this.contentId))
       );
@@ -909,7 +946,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       // reference: this.contentForm.value.reference || '',
       // sourceOfMaterial: this.contentForm.value.sourceOfMaterial || '',
       title: this.contentForm.value.title || '',
-      contentUris: this.contentUris || []
+      contentUris: this.contentUris || {}
     };
 
     if (id) {

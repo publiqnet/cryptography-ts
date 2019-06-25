@@ -81,78 +81,89 @@ export class MycontentComponent implements OnInit, OnDestroy {
     };
 
     this.errorService.errorEventEmiter
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: ErrorEvent) => {
-        if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-          this.notificationService.error(data.message);
-        }
-      });
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe((data: ErrorEvent) => {
+      if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
+        this.notificationService.error(data.message);
+      }
+    });
 
     // this.publicationService.getMyPublications();
     this.accountService.authorStatsDataChanged
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe((stats: AuthorStats) => {
+      this.allStoriesCount = stats.articlesCount;
+    });
+
+    // this.publicationService.getMyPublications();
+    this.contentService.getMyContents()
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((stats: AuthorStats) => {
-        this.allStoriesCount = stats.articlesCount;
+      .subscribe((contents: any) => {
+        this.publishedContent = contents.data;
+        this.allStoriesCount = this.publishedContent.length;
+        this.loading = false;
+        console.log(this.publishedContent);
       });
 
-    zip(
-      this.articleService.getMyStoriesDataChanged,
-      this.publicationService.loadStoriesPublicationByDsIdDataChanged
-    )
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: any []) => {
-          if (data) {
+    // zip(
+    //   this.articleService.getMyStoriesDataChanged,
+    //   this.publicationService.loadStoriesPublicationByDsIdDataChanged
+    // )
+    // .pipe(
+    //   takeUntil(this.unsubscribe$)
+    // )
+    // .subscribe((data: any []) => {
+    //   if (data) {
+    //
+    //     if (data[0].length > this.storiesDefaultCount) {
+    //       const lastIndex = data[0].length - 1;
+    //       if (data[0][lastIndex].id !== this.startFromBlock) {
+    //         this.startFromBlock = data[0][lastIndex].id;
+    //         data[0].pop();
+    //       }
+    //     }
+    //
+    //     const stories: Content[] = data[0];
+    //     const publications = data[1];
+    //
+    //     if (stories && stories.length) {
+    //       if (this.resetStartBlock) {
+    //         this.publishedContent = [];
+    //       }
+    //       if (publications && publications.length) {
+    //         stories.map(nextStory => {
+    //           publications.map(item => {
+    //             if (item['dsId'] == nextStory['ds_id']) {
+    //               nextStory['publication'] = item['publication'];
+    //             }
+    //           });
+    //         });
+    //       }
+    //       this.publishedContent =
+    //         (this.publishedContent && this.publishedContent.length)
+    //           ?
+    //           this.publishedContent.concat(stories)
+    //           :
+    //           stories;
+    //
+    //       this.pendingProcess = false;
+    //       this.seeMoreChecker = (stories.length >= this.storiesDefaultCount) /*&& (this.publishedContent.length < this.allStoriesCount)*/;
+    //     }
+    //   }
+    //   this.seeMoreLoading = false;
+    //   this.loading = false;
+    // }, err => {
+    //   this.pendingProcess = false;
+    //   this.loading = false;
+    // });
 
-            if (data[0].length > this.storiesDefaultCount) {
-              const lastIndex = data[0].length - 1;
-              if (data[0][lastIndex].id !== this.startFromBlock) {
-                this.startFromBlock = data[0][lastIndex].id;
-                data[0].pop();
-              }
-            }
-
-            const stories: Content[] = data[0];
-            const publications = data[1];
-
-            if (stories && stories.length) {
-              if (this.resetStartBlock) {
-                this.publishedContent = [];
-              }
-              if (publications && publications.length) {
-                stories.map(nextStory => {
-                  publications.map(item => {
-                    if (item['dsId'] == nextStory['ds_id']) {
-                      nextStory['publication'] = item['publication'];
-                    }
-                  });
-                });
-              }
-              this.publishedContent =
-                (this.publishedContent && this.publishedContent.length)
-                  ?
-                  this.publishedContent.concat(stories)
-                  :
-                  stories;
-
-              this.pendingProcess = false;
-              this.seeMoreChecker = (stories.length >= this.storiesDefaultCount) /*&& (this.publishedContent.length < this.allStoriesCount)*/;
-            }
-          }
-          this.seeMoreLoading = false;
-          this.loading = false;
-        }, err => {
-          this.pendingProcess = false;
-          this.loading = false;
-        }
-      );
-
-      this.publicationService.getMyPublications()
+    this.publicationService.getMyPublications()
       .pipe(
         map((publications: Publications) => {
           return publications.owned.concat(publications.membership);
@@ -342,6 +353,10 @@ export class MycontentComponent implements OnInit, OnDestroy {
 
   getCorrectDateFormat(date) {
     return date && date.slice(-1) !== 'Z' ? date + 'Z' : date;
+  }
+
+  goToContent(uri: string) {
+    this.router.navigate([`/s/${uri}`]);
   }
 
   ngOnDestroy() {
