@@ -47,6 +47,7 @@ import { NewstorySubmission2Component } from './newstory-submission2/newstory-su
 import { HttpRpcService } from './services/httpRpc.service';
 import { DraftService } from './services/draft.service';
 import { CryptService } from './services/crypt.service';
+import { ArticleOldComponent } from './article-old/article-old.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -76,6 +77,7 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [
         HomepageComponent,
         ArticleComponent,
+        ArticleOldComponent,
         TemplateComponent,
         HeaderComponent,
         HeaderToolbarComponent,
