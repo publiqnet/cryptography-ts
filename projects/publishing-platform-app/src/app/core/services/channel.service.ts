@@ -24,7 +24,7 @@ export class ChannelService {
     }
 
     static isChannelMain(channel) {
-      return ['demo', 'stage', 'testnet', 'testnet', null].includes(channel);
+      return ['demo', 'stage', 'testnet', 'testnet', 'stage-mainnet', 'mainnet', null].includes(channel);
     }
 
     getChannelAuthors(): any[] {
