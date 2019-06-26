@@ -71,16 +71,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      if (this.channelService.channel && !(ChannelService.isChannelMain(this.channelService.channel))) {
-        if (!this.channelService.getChannelAuthors().length) {
-          this.channelService.loadChannelAuthors();
-        } else {
-          this.requestMade = true;
-          this.articleService.searchContentExSponsored(this.firstBlock, this.storiesDefaultCount + 1, this.storiesDefaultSponsoredCount);
-        }
-      } else {
+      // if (this.channelService.channel && !(ChannelService.isChannelMain(this.channelService.channel))) {
+      //   if (!this.channelService.getChannelAuthors().length) {
+      //     this.channelService.loadChannelAuthors();
+      //   } else {
+      //     this.requestMade = true;
+      //     this.articleService.searchContentExSponsored(this.firstBlock, this.storiesDefaultCount + 1, this.storiesDefaultSponsoredCount);
+      //   }
+      // } else {
         this.articleService.searchContentExSponsored(this.firstBlock, this.storiesDefaultCount + 1, this.storiesDefaultSponsoredCount);
-      }
+      // }
 
       this.errorService.errorEventEmiter
         .pipe(
