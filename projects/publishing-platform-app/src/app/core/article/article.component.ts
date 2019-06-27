@@ -43,6 +43,8 @@ export class ArticleComponent implements OnInit {
             }
           });
           forkJoin(getFileCalls).subscribe(nextFileData => {
+            const contentTitle = `<h1>${data.title}</h1>`;
+            data.text = `${contentTitle} ${data.text}`;
             this.article = data;
           });
         } else {
