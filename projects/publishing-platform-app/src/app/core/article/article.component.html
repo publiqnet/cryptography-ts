@@ -1,6 +1,6 @@
-<div class="main-wrap">
+<div class="main-wrap" *ngIf="article">
   <div class="inner-wrap-main">
-    <div class="main-wrap" *ngIf="article">
+    <div class="main-wrap">
       <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
         <div class="inner-wrap">
           <h1 class="eff03s">{{article.title}}</h1>

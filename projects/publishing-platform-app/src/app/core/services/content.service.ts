@@ -989,7 +989,7 @@ export class ContentService {
 
   getContentByUri(uri: string): Observable<any> {
     const url = `${environment.backend}/api/content/${uri}`;
-    return this.httpHelperService.call(HttpMethodTypes.get, url);
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url);
   }
 
   getFileContentFromUrl(url: string): Observable<any> {
