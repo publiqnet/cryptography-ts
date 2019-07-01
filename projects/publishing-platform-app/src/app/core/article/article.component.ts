@@ -12,6 +12,7 @@ import { switchMap, takeUntil, tap } from 'rxjs/operators';
 export class ArticleComponent implements OnInit {
   public article;
   public loading = true;
+  public coverImageUrl = '';
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -43,8 +44,10 @@ export class ArticleComponent implements OnInit {
             }
           });
           forkJoin(getFileCalls).subscribe(nextFileData => {
-            const contentTitle = `<h1>${data.title}</h1>`;
-            data.text = `${contentTitle} ${data.text}`;
+            data.text = `${data.text}`;
+            if (data.cover) {
+              this.coverImageUrl = data.cover.url;
+            }
             this.article = data;
           });
         } else {

@@ -22,31 +22,36 @@
           <div class="account-name mt-5 row">
             <div class="col-12 col-md-8">
               <h4>{{(account && account.firstName) ? account.firstName : ''}} {{(account && account.lastName) ? account.lastName : ''}}
-              <span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">
+                <span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">
               {{'shared.in' | translate}}
-              <a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">
+                  <a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">
                 {{currentPublicationName()}}
               </a>
               </span>
               </h4>
             </div>
 
-            <!--<div-->
-            <!--class="post-image-actions col-12 col-md-4 flex-row flex-sm-column justify-content-between align-items-sm-end">-->
-            <!--&lt;!&ndash;<div class="hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}</div>&ndash;&gt;-->
-            <!--<div>-->
-            <!--<i class="icon-angle-left cover-photo-prev pointer" [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>-->
-            <!--<i class="icon-angle-right cover-photo-next pointer" [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>-->
-            <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.cover" step="3"-->
-            <!--[positionConfig]="{'nux-bottom': true, 'nux-right':true, right: true, 'nux-cover-mob': true}"></app-nux>-->
-            <!--<span attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}" class="camera-span">-->
-            <!--<i class="icon-camera pointer" [ngClass]="{'tag-photo': (mainCoverImageChecker && coverImages.length)}" (click)="clickUploadCover()"></i>-->
-            <!--</span>-->
-            <!--<mat-icon *ngIf="isValidMainCoverImage()" class="edit-cover" (click)="editCoverPhoto()">edit</mat-icon>-->
-            <!--<input id="mainCoverImage" type="file" style="display:none;" (change)="mainImageUpload($event)" #mainCoverImage>-->
-            <!--<mat-slide-toggle (change)="onCoverCkeckerChange($event)" [checked]="mainCoverImageChecker"></mat-slide-toggle>-->
-            <!--</div>-->
-            <!--</div>-->
+            <div
+              class="post-image-actions col-12 col-md-4 flex-row flex-sm-column justify-content-between align-items-sm-end">
+              <!--<div class="hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}</div>-->
+              <div>
+                <i class="icon-angle-left cover-photo-prev pointer"
+                   [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
+                <i class="icon-angle-right cover-photo-next pointer"
+                   [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
+                <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.cover" step="3"
+                         [positionConfig]="{'nux-bottom': true, 'nux-right':true, right: true, 'nux-cover-mob': true}"></app-nux>
+                <span attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}"
+                  class="camera-span">
+            <i class="icon-camera pointer" [ngClass]="{'tag-photo': (mainCoverImageChecker && coverImages.length)}"
+               (click)="clickUploadCover()"></i>
+            </span>
+                <!--<mat-icon *ngIf="isValidMainCoverImage()" class="edit-cover" (click)="editCoverPhoto()">edit</mat-icon>-->
+                <input id="mainCoverImage" type="file" style="display:none;" (change)="mainImageUpload($event)"
+                       #mainCoverImage>
+                <!--<mat-slide-toggle (change)="onCoverCkeckerChange($event)" [checked]="mainCoverImageChecker"></mat-slide-toggle>-->
+              </div>
+            </div>
           </div>
           <mat-form-field class="full-width post-title mt-4"
                           [ngClass]="{'hasError': (showErrors && contentForm.controls['title']?.invalid)}">

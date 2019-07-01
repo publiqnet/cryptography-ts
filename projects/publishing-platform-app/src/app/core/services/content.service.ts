@@ -655,33 +655,12 @@ export class ContentService {
     return true;
   }
 
-  public uploadMainPhoto(file, contentId, action): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const authToken = localStorage.getItem('auth');
-      if (!authToken) {
-        this.errorService.handleError('uploadMainPhoto', {
-          status: 409,
-          error: {message: 'invalid_session_id'}
-        });
-      }
-      const formData = new FormData();
-      formData.append('file', file, file.name);
-      formData.append('content_id', JSON.stringify(contentId));
-      formData.append('action', action);
-      const url = this.contentUrl + '/image';
+  public uploadMainPhoto(file): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const url = this.fileUrl + '/upload';
 
-      this.http
-        .post(url, formData, {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
-        })
-        .subscribe(
-          data => {
-            this.uploadMainPhotoData = data;
-            this.uploadMainPhotoDataChanged.next(this.uploadMainPhotoData);
-          },
-          error => this.errorService.handleError('uploadMainPhoto', error, url)
-        );
-    }
+    return this.httpHelperService.call(HttpMethodTypes.post, url, formData);
   }
 
   public uploadCroppedMainPhoto(file, contentId, coverImageUrl): void {
@@ -960,7 +939,7 @@ export class ContentService {
     const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
     const data = (files.length) ? files.map(f => this.signFile(f, brainKey)) : [];
     const url = this.fileUrl + `/sign`;
-    return this.httpHelperService.call(HttpMethodTypes.post, url, { files: data });
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {files: data});
   }
 
   uploadTextFiles(content): Observable<any> {

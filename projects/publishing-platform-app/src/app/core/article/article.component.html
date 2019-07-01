@@ -1,3 +1,21 @@
-<div class="inner-wrap" *ngIf="article">
-  <div [innerHTML]="article.text"></div>
+<div class="main-wrap">
+  <div class="inner-wrap-main">
+    <div class="main-wrap" *ngIf="article">
+      <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
+        <div class="inner-wrap">
+          <h1 class="eff03s">{{article.title}}</h1>
+        </div>
+        <div class="overlay"></div>
+      </div>
+      <div class="inner-content-wrap">
+        <div class="inner-wrap" *ngIf="article.text">
+          <div class="content">
+            <div class="content-inner">
+              <div [innerHTML]="article.text" class="article-main-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
