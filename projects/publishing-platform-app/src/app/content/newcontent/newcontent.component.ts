@@ -103,6 +103,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   content: any;
   publication_slug: string;
   mainCoverImageUrl = '';
+  mainCoverImageUri = '';
   listImageUrl = '';
   currentTags = [];
   contentUrl = environment.backend + '/api/file/upload';
@@ -175,10 +176,10 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     imageEditButtons: ['imageCaption'],
     imagePasteProcess: true,
     imageDefaultWidth: null,
-    imageUploadParams: {
-      action: 3,
-      content_id: this.contentId
-    },
+    // imageUploadParams: {
+    //   action: 3,
+    //   content_id: this.contentId
+    // },
     requestHeaders: {
       'X-API-TOKEN': (this.accountService.accountInfo && this.accountService.accountInfo.token)
         ? this.accountService.accountInfo.token
@@ -196,12 +197,12 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       'froalaEditor.contentChanged': (e, editor) => {
         this.currentEditorLenght = this.calculateContentLength(editor.html.get());
       },
-      'froalaEditor.image.beforeUpload': (e, editor, images) => {
-        editor.opts.imageUploadParams = {
-          action: 3,
-          content_id: this.contentId
-        };
-      },
+      // 'froalaEditor.image.beforeUpload': (e, editor, images) => {
+      //   editor.opts.imageUploadParams = {
+      //     action: 3,
+      //     content_id: this.contentId
+      //   };
+      // },
       'froalaEditor.image.inserted': (e, editor, img, response) => {
         if (response) {
           const responseData = JSON.parse(response);
@@ -498,7 +499,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
             this.saveDraftCheck = !!(
               this.contentForm.value.title ||
               this.contentForm.value.headline ||
-              this.contentForm.value.tags.length ||
+              // this.contentForm.value.tags.length ||
               this.mainCoverImageUrl ||
               this.listImageUrl ||
               this.contentForm.value.content
@@ -708,7 +709,10 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         });
       }
 
-      const contentData = `${contentTitle} ${uploadedContentHtml}`;
+      this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
+      const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+
+      const contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
 
       this.isContentUpLoading = true;
       this.isSubmited = true;
@@ -979,7 +983,11 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   mainImageUpload(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
-      this.contentService.uploadMainPhoto(input.files[0], this.contentId, this.actions.main);
+      this.contentService.uploadMainPhoto(input.files[0]).subscribe(data => {
+        this.resetCurrentUrl(data.link);
+        this.mainCoverImageUri = data.uri;
+        this.mainCoverImageUrl = data.link;
+      });
     }
   }
 
@@ -1014,17 +1022,17 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     return !!(this.account && image && image !== '' && !image.startsWith('http://127.0.0.1'));
   }
 
-  resetCurrentUrl(original, thumbnail) {
-    if (isPlatformBrowser(this.platformId)) {
-      const d = new Image();
-      d.src = thumbnail;
-      d.onload = () => {
-        this.swiperHeight = d.naturalHeight;
-      };
-    }
+  resetCurrentUrl(original, thumbnail = '') {
+    // if (isPlatformBrowser(this.platformId)) {
+    //   const d = new Image();
+    //   d.src = thumbnail;
+    //   d.onload = () => {
+    //     this.swiperHeight = d.naturalHeight;
+    //   };
+    // }
 
     this.coverImages.push(original);
-    this.listImages.push(thumbnail);
+    // this.listImages.push(thumbnail);
 
     // cover image
     this.mainCoverImageChecker = true;
@@ -1036,20 +1044,20 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       this.coverGallery.swiper.slideTo(coverIndex, 0, false);
     }, 1000);
 
-    // list image
-    this.listImageChecker = true;
-    this.listImageUrl = thumbnail;
-    const listIndex = this.listImages.length - 1;
+    // // list image
+    // this.listImageChecker = true;
+    // this.listImageUrl = thumbnail;
+    // const listIndex = this.listImages.length - 1;
+    //
+    // if (this.listGallery) {
+    //   this.listGallery.swiper.update(true);
+    // }
+    //
+    // setTimeout(() => {
+    //   this.listGallery.swiper.slideTo(listIndex, 0, false);
+    // }, 1000);
 
-    if (this.listGallery) {
-      this.listGallery.swiper.update(true);
-    }
-
-    setTimeout(() => {
-      this.listGallery.swiper.slideTo(listIndex, 0, false);
-    }, 1000);
-
-    this.updateButtonDisable = false;
+    // this.updateButtonDisable = false;
     this.saveDraft(this.draftId);
   }
 
