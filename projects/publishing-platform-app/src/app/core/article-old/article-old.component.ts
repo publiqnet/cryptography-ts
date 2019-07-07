@@ -57,7 +57,7 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
   historyList = [];
   openedHistoryContents = {};
   thisYear = new Date().getFullYear();
-  @ViewChild('targetHistory') elHistoryTarget: ElementRef;
+  @ViewChild('targetHistory', {static: false}) elHistoryTarget: ElementRef;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 

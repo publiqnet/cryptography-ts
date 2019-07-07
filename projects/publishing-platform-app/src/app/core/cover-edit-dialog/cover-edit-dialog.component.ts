@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { CropperSettings, ImageCropperComponent, CropperDrawSettings } from 'ngx-img-cropper';
 
 import { ReplaySubject } from 'rxjs';
@@ -20,7 +20,7 @@ export class CoverEditDialogComponent implements OnInit, OnDestroy {
   config = {};
   cropping = false;
 
-  @ViewChild('cropper', undefined) cropper: ImageCropperComponent;
+  @ViewChild('cropper', {static: false}) cropper: ImageCropperComponent;
 
   data: any;
   cropperSettings: CropperSettings;

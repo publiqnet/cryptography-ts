@@ -108,7 +108,7 @@
 //  min-height:97px;
 //}
 
-.warning-message /deep/ a {
+.warning-message ::ng-deep a {
   color: #3366FF;
   text-decoration: none;
 

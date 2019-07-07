@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public historyArticleData = '';
   public searchBarOpen = false;
 
-  @ViewChild('search') private searchInput: ElementRef;
+  @ViewChild('search', {static: false}) private searchInput: ElementRef;
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,

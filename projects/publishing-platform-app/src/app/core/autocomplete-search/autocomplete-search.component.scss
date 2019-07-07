@@ -60,25 +60,25 @@ mat-chip-list mat-chip{
   font-style: italic;
 }
 
-/deep/.has_more_option {
+::ng-deep.has_more_option {
   .mat-option-text {
     width: 100%;
     height: 98%;
     border-bottom: 1px solid #3366ff;
   }
 }
-/deep/.mat-option-disabled {
+::ng-deep.mat-option-disabled {
   color: black !important;
 }
-// /deep/.mat_option:first-child:hover {
+// ::ng-deep.mat_option:first-child:hover {
 //   background: none!important;
 //   cursor: default;
 // }
-// /deep/.mat_option:nth-child(3):hover {
+// ::ng-deep.mat_option:nth-child(3):hover {
 //   background: none!important;
 //   cursor: default;
 // }
-/deep/ .autocomplete-full-width span label {
+::ng-deep .autocomplete-full-width span label {
   display: none !important;
 }
 

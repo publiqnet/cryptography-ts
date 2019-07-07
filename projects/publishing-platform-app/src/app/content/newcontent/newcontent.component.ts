@@ -13,7 +13,8 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatChipInputEvent, MatDialog } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { isPlatformBrowser } from '@angular/common';
 import { ENTER } from '@angular/cdk/keycodes';
 
@@ -128,13 +129,13 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   private editorObject;
   private editorInitObject;
   private editableStoryId: string;
-  @ViewChild('coverGallery') coverGallery: SwiperComponent;
-  @ViewChild('listGallery') listGallery: SwiperComponent;
-  @ViewChild('mainCoverImage') mainCoverImage: ElementRef;
-  @ViewChild('listImage') listImage: ElementRef;
-  @ViewChild('title') titleElement: ElementRef;
-  @ViewChild('tag_list') tagsElement: ElementRef;
-  @ViewChild('content') contentElement: ElementRef;
+  @ViewChild('coverGallery', {static: false}) coverGallery: SwiperComponent;
+  @ViewChild('listGallery', {static: false}) listGallery: SwiperComponent;
+  @ViewChild('mainCoverImage', {static: false}) mainCoverImage: ElementRef;
+  @ViewChild('listImage', {static: false}) listImage: ElementRef;
+  @ViewChild('title', {static: false}) titleElement: ElementRef;
+  @ViewChild('tag_list', {static: false}) tagsElement: ElementRef;
+  @ViewChild('content', {static: false}) contentElement: ElementRef;
   showErrors = false;
 
   contentUris = {};

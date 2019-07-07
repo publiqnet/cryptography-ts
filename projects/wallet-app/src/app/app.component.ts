@@ -10,7 +10,7 @@ import { AccountService } from './core/services/account.service';
 import { UserIdleService } from './core/models/angular-user-idle/user-idle.service';
 import { NotificationService, NotificationTypeList } from './core/services/notification.service';
 import { ErrorService } from './core/services/error.service';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { WalletService } from './core/services/wallet.service';
 import { TranslateService } from '@ngx-translate/core';
 

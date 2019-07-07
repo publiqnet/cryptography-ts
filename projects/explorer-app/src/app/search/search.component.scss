@@ -10,7 +10,7 @@
   &.shrink-n {
     height: 80px;
 
-    /deep/ ~ tag-list .tag-content {
+    ::ng-deep ~ tag-list .tag-content {
       top: 80px;
     }
   }
@@ -21,7 +21,7 @@
       transform: translateY(-100%);
     }
 
-    /deep/ ~ tag-list .tag-content {
+    ::ng-deep ~ tag-list .tag-content {
       top: 80px;
     }
   }
@@ -183,7 +183,7 @@ ul {
 
 .searchIcon {margin-left:0;}
 
-/deep/ .mat-autocomplete-panel {
+::ng-deep .mat-autocomplete-panel {
   max-height: 500px !important;
 }
 inner-wrap

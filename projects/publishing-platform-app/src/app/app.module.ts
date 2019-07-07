@@ -48,7 +48,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
         }),
         PublicationModule,
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics])
+        Angulartics2Module.forRoot()
     ],
     providers: [
         ArticleService,

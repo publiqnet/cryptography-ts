@@ -35,23 +35,23 @@ const routes: Routes = [
             },
             {
                 path: 'p',
-                loadChildren: './publication/publication.module#PublicationModule'
+                loadChildren: () => import('./publication/publication.module').then(m => m.PublicationModule)
             },
             {
                 path: 'content',
-                loadChildren: './content/content.module#ContentModule'
+                loadChildren: () => import('./content/content.module').then(m => m.ContentModule)
             },
             {
                 path: 'wallet',
-                loadChildren: './wallet/wallet.module#WalletModule'
+                loadChildren: () => import('./wallet/wallet.module').then(m => m.WalletModule)
             },
             {
                 path: 'search',
-                loadChildren: './search/search.module#SearchModule'
+                loadChildren: () => import('./search/search.module').then(m => m.SearchModule)
             },
             {
                 path: 'user',
-                loadChildren: './user/user.module#UserModule'
+                loadChildren: () => import('./user/user.module').then(m => m.UserModule)
             },
             ...storyRoutes
         ]

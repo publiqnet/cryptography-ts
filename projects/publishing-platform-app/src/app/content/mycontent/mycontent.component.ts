@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 import { ReplaySubject, zip } from 'rxjs';
 import { takeUntil, map, filter, switchMap, tap } from 'rxjs/operators';

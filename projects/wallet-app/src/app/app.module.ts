@@ -33,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ClipboardModule,
     UserModule,
     WalletModule,
-    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+    Angulartics2Module.forRoot(),
     UserIdleModule.forRoot({idle: environment.auto_logout_time, timeout: 5, ping: 5}),
     TranslateModule.forRoot({
       loader: {

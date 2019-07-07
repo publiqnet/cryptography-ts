@@ -219,8 +219,8 @@
 
   .article-card-list-container {
     margin-top: 0;
-    /deep/ .masonry-stamp-1,
-    /deep/ .masonry-stamp-2 {
+    ::ng-deep .masonry-stamp-1,
+    ::ng-deep .masonry-stamp-2 {
       display: none;
     }
   }

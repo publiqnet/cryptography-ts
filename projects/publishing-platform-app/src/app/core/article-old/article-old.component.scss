@@ -25,7 +25,7 @@ i.icon-appointment {
     padding: 0 15px 0 0;
     margin-bottom: 20px;
   }
-  /deep/ blockquote {
+  ::ng-deep blockquote {
     border-left: none !important;
     p {
       border-left: solid 2px #6f6f6f !important;
@@ -37,7 +37,7 @@ i.icon-appointment {
     font-style: italic;
   }
 
-  /deep/ p {
+  ::ng-deep p {
     margin-bottom: 20px;
     word-wrap: break-word;
   }
@@ -53,7 +53,7 @@ i.icon-appointment {
   .headline {
     padding-left: 65px;
   }
-  /deep/ .blue-line {
+  ::ng-deep .blue-line {
     max-width: 1160px;
     margin: 0 auto;
     div {
@@ -62,7 +62,7 @@ i.icon-appointment {
       margin-bottom: 20px;
     }
   }
-  /deep/ .see-accordion {
+  ::ng-deep .see-accordion {
     font-family: Raleway, sans-serif;
     margin-bottom: 30px;
     h6 {
@@ -76,7 +76,7 @@ i.icon-appointment {
         0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     }
   }
-  /deep/ .see-more {
+  ::ng-deep .see-more {
     .mat-expansion-panel {
       p.history-item-info {
         display: flex;

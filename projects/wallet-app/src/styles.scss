@@ -3281,12 +3281,12 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
       flex-direction: row;
       justify-content: space-between;
     }
-    /deep/ span:first-child {
+    ::ng-deep span:first-child {
       margin:0 0 8px 0;
       color: #8D929A;
     }
 
-    /deep/  span:last-child{
+    ::ng-deep  span:last-child{
       word-wrap: break-word;
       font-weight: 600;
       color: #2B2B2B;

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ReplaySubject } from 'rxjs';
@@ -37,10 +37,10 @@ export class ConfirmDialogComponent implements OnInit, OnDestroy {
   chuckSize = 4;
   confirmClicked = false;
 
-  @ViewChild('firstInput') private firstInput;
-  @ViewChild('secondInput') private secondInput;
-  @ViewChild('thirdInput') private thirdInput;
-  @ViewChild('fourthInput') private fourthInput;
+  @ViewChild('firstInput', {static: false}) private firstInput;
+  @ViewChild('secondInput', {static: false}) private secondInput;
+  @ViewChild('thirdInput', {static: false}) private thirdInput;
+  @ViewChild('fourthInput', {static: false}) private fourthInput;
 
   checkingFormGroup: FormGroup;
 

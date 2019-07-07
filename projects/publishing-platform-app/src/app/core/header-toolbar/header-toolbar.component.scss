@@ -50,7 +50,7 @@
   }
 }
 
-/deep/ app-header-toolbar + app-footer .footer-wrap {
+::ng-deep app-header-toolbar + app-footer .footer-wrap {
   padding-bottom: 50px + 72px!important;
 }
 
