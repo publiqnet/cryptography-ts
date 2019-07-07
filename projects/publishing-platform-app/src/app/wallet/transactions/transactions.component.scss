@@ -2,7 +2,7 @@ mat-table mat-cell:first-of-type {
   flex: 0 0 60px;
 }
 mat-table mat-cell:first-of-type .mat-list,
-/deep/ mat-table mat-cell:first-of-type .mat-list-item-content {
+::ng-deep mat-table mat-cell:first-of-type .mat-list-item-content {
   padding: 0 !important;
 }
 
@@ -143,7 +143,7 @@ mat-table mat-row:hover {
     display: block;
     margin-bottom: 4px;
   }
-  /deep/ mat-table mat-row mat-cell:nth-of-type(3) .mat-list-item-content {
+  ::ng-deep mat-table mat-row mat-cell:nth-of-type(3) .mat-list-item-content {
     padding: 0 !important;
   }
 

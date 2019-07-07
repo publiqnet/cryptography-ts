@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { MatChipInputEvent } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, ReplaySubject, of } from 'rxjs';
@@ -40,8 +40,8 @@ export class SearchMemberComponent implements OnInit, OnChanges, OnDestroy {
   // @Input() publicationSlug;
   @Output() hiddenStatusChange = new EventEmitter();
   @Output() memberInvited = new EventEmitter();
-  @ViewChild('tagInput') private tagInput: ElementRef;
-  @ViewChild('tagInputEmail') private tagInputEmail: ElementRef;
+  @ViewChild('tagInput', {static: false}) private tagInput: ElementRef;
+  @ViewChild('tagInputEmail', {static: false}) private tagInputEmail: ElementRef;
   // @Input() members;
   tags = [];
   limitUp = false;

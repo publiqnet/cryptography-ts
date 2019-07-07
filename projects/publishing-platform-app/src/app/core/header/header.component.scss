@@ -10,7 +10,7 @@
   &.shrink-n {
     height: 80px;
 
-    /deep/ ~ app-tag-list .tag-content {
+    ::ng-deep ~ app-tag-list .tag-content {
       top: 80px;
     }
   }
@@ -21,7 +21,7 @@
       transform: translateY(-100%);
     }
 
-    /deep/ ~ app-tag-list .tag-content {
+    ::ng-deep ~ app-tag-list .tag-content {
       top: 80px;
     }
   }
@@ -190,7 +190,7 @@ ul {
   margin-left: 0;
 }
 
-/deep/ .mat-autocomplete-panel {
+::ng-deep .mat-autocomplete-panel {
   max-height: 580px !important;
 }
 

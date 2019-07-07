@@ -4,7 +4,8 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountComponent } from './account/account.component';
 import { AccountTransactionListComponent } from './transaction-list/account-transaction-list.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MatIconModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [AccountComponent, AccountTransactionListComponent],

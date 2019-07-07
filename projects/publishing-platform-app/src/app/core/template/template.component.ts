@@ -5,7 +5,7 @@ import { NotificationService, NotificationTypeList } from '../services/notificat
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ContentService } from '../services/content.service';
 import { AccountService } from '../services/account.service';
 

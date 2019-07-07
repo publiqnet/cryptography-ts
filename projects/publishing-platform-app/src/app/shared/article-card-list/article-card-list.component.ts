@@ -37,7 +37,7 @@ export class ArticleCardListComponent implements OnInit, OnChanges, OnDestroy, A
   @Input() canDelete;
   @Input() fromPublications: boolean;
   @Output('articleRemove') articleRemove = new EventEmitter();
-  @ViewChild('grid') private grid;
+  @ViewChild('grid', {static: false}) private grid;
 
   thisYear = new Date().getFullYear();
   public isotopeOptions = {

@@ -1,5 +1,3 @@
-import { reference } from '@angular/core/src/render3';
-
 export interface Draft { // todo delete
   id?: number;
   title: string;

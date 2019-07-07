@@ -32,7 +32,7 @@ export const routes: Routes = [
       },
       {
         path: 'block-navigation',
-        loadChildren: './block-navigation/block-navigation.module#BlockNavigationModule'
+        loadChildren: () => import('./block-navigation/block-navigation.module').then(m => m.BlockNavigationModule)
       },
       {
         path: 'not-found',

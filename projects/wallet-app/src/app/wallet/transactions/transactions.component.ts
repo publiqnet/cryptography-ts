@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';

@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatChipInputEvent } from '@angular/material';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { ENTER } from '@angular/cdk/keycodes';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -30,7 +30,7 @@ export class AutocompleteSearchComponent implements OnChanges, OnInit, OnDestroy
   contentReady: boolean;
 
   @Input() searchBarStatus;
-  @ViewChild('tagInput') public tagInput: ElementRef;
+  @ViewChild('tagInput', {static: false}) public tagInput: ElementRef;
 
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];

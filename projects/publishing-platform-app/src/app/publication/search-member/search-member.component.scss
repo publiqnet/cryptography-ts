@@ -92,7 +92,7 @@ small {
   font-style: italic;
 }
 
-/deep/.has_more_option {
+::ng-deep.has_more_option {
   .mat-option-text {
     width: 100%;
     height: 98%;
@@ -100,7 +100,7 @@ small {
   }
 }
 
-/deep/ .autocomplete-full-width span label {
+::ng-deep .autocomplete-full-width span label {
   display: none !important;
 }
 

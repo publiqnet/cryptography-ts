@@ -36,7 +36,7 @@ export class TransferComponent implements OnInit, OnDestroy {
   amountErrorMessage = '';
   receiveTab = true;
   transferTab = false;
-  @ViewChild('accordionTab') accordionTabRef: ElementRef;
+  @ViewChild('accordionTab', {static: false}) accordionTabRef: ElementRef;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private formBuilder: FormBuilder,
