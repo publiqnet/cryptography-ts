@@ -1,38 +1,10 @@
-<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Init">
-    <mat-card-title>{{'user.sign_in' | translate}}</mat-card-title>
-    <mat-card-subtitle>{{'user.enter_email_and_password' | translate}}</mat-card-subtitle>
+<!--SIGNIN FORM-->
+<h2>Sign In</h2>
+<p>Enter you email and password&nbsp;to&nbsp;Sign&nbsp;in.</p>
 
-    <mat-card-content>
-        <form class="form" novalidate (ngSubmit)="authenticate()" [formGroup]="loginForm">
-            <mat-form-field class="full-width">
-                <input matInput formControlName="email" placeholder="{{'user.email_address' | translate}}" value="">
-            </mat-form-field>
+<input type="text" placeholder="Your email"/>
+<input type="password" placeholder="Password"/>
 
-            <div>
-                <app-control-message class="warning mb-4 h6" [control]="loginForm.controls['email']"></app-control-message>
-            </div>
+<input type="submit" disabled class="button button--large button--primary button--full-radius" value="Sign In">
 
-            <mat-card-actions class="ml-0 mt-2">
-                <button mat-raised-button color="primary" [disabled]="!loginForm.valid">{{'user.sign_in' | translate}}</button>
-            </mat-card-actions>
-
-            <a [routerLink]="['/user/recover']" class="forgot-password">{{'user.forgot_pass' | translate}}</a>
-
-        </form>
-    </mat-card-content>
-</mat-card>
-
-<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Success">
-    <mat-card-content *ngIf="formView === 'successLoginMessage';else needRegisterMessage">
-        {{'user.please_check_email' | translate}}
-    </mat-card-content>
-    <ng-template #needRegisterMessage>
-        <mat-card-content>
-            {{'user.please_check_email_for_authintification' | translate}}
-        </mat-card-content>
-    </ng-template>
-</mat-card>
-
-<mat-card class="centered" *ngIf="authStep == AuthStepStatusEnum.Loading">
-    <mat-spinner style="margin: 50px auto;"></mat-spinner>
-</mat-card>
+<p class="error-message">Warning: Here must be error message</p>

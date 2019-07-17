@@ -1,0 +1,34 @@
+<div class="centered restore" *ngIf="!isPasswordMode">
+  <div class="recovery-header">
+    <h4>{{'user.password_reset' | translate }}</h4>
+    <button routerLink="/user/login">
+            <span class="close-btn">
+                <span class="close-span"></span>
+                <span class="close-span"></span>
+            </span>
+    </button>
+  </div>
+
+  <div *ngIf="!loading" class="restore-content">
+    <div>
+      <p>{{'user.recovery_phrase_contains_words' | translate }}</p>
+    </div>
+
+    <h5>{{'user.enter_recover_phrase' | translate }}</h5>
+
+    <textarea [(ngModel)]="brainKey" (keyup)="focusFunction()"></textarea>
+
+    <div><span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
+
+    <mat-card-actions class="submit-div okay-div">
+      <button class="submit-button btn-next" [disabled]="!brainKey" type="submit" (click)="checkBrainKey()">
+        {{ 'core.next' | translate }}
+      </button>
+    </mat-card-actions>
+  </div>
+
+  <mat-spinner class="centered" *ngIf="loading" style="margin: 50px auto;"></mat-spinner>
+</div>
+
+
+<app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>

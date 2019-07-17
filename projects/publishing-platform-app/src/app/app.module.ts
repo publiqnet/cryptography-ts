@@ -24,6 +24,7 @@ import { PublicationModule } from './publication/publication.module';
 import { PublicationService } from './core/services/publication.service';
 import { LanguageGuard } from './guards/language.guard';
 import { RequestsInterceptor } from './core/services/requests.interceptor';
+import { UserModule } from './user/user.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
@@ -40,6 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         CoreModule,
         AuthorModule,
         StoryModule,
+        UserModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
