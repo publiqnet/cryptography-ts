@@ -1,45 +1,7 @@
 @import "../../../assets/css/common";
 
-.register-form {
-  ::ng-deep {
-    .button.button--primary {
-      text-transform: none;
-    }
-  }
-
-  &__success,&__message {
-    font-family: $open-sans;
-    font-style: normal;
-    font-weight: normal;
-    text-align: center;
-    img {
-      margin: 0px 0px 75px 0px;
-    }
-    h3 {
-     font-family: $vollkorn;
-     font-size: 35px;
-     line-height: 40px;
-     color: #191B1E;
-     margin: 0px 0px 10px 0px;
-    }
-    &__email {
-      font-weight: 600;
-      font-size: 20px;
-      line-height: 27px;
-      color: #565A60;
-      margin: 0px 0px 35px 0px;
-    }
-    &__request {
-      p {
-        font-size: 15px;
-        line-height: 20px;
-        color: #565A60;
-        font-weight: 600;
-        a {
-          color: $blue;
-          font-weight: 600;
-        }
-      }
-    }
+.signinup__inner.signinup__inner--register {
+  a {
+    color: $blue;
   }
 }

@@ -10,7 +10,7 @@
 
 
   <div *ngIf="authStep == AuthStepStatusEnum.Success" class="signinup__inner signinup__inner--register">
-    <img src="assets/images/email.svg" alt="">
+    <img src="../../../assets/images/email.svg" alt="Email Icon" title="Email Icon">
     <h3 *ngIf="formView === 'successRegisterMessage';else needLoginMessage">{{'user.please_check_email' | translate}}</h3>
     <ng-template #needLoginMessage>
       <h3>{{'user.need_login_message' | translate}}</h3>
