@@ -1,0 +1,69 @@
+$grey:              #565A60;
+$lightgrey:         #AFB1CF;
+$blue:              #3366FF;
+$green:             #3DC47E;
+$red:               #FC5D49;
+$orange:            #FF8E20;
+$yellow:            #FFC300;
+
+$error-red:         #FE3A52;
+
+@function pbq-color($color: $blue, $tone: 600) {
+  @if $tone == 600 { @return $color; }
+
+  @return map-get(
+    map-get($color-variations, $color),
+    $tone
+  );
+}
+
+$color-variations: (
+  $grey: (
+    700: #191B1E,
+    600: $grey,
+    500: #8D929A,
+    400: #C1C4CB,
+    300: #DEE2E6,
+    200: #ECF0F3,
+    100: #F7F8F9
+    ),
+  $lightgrey: (
+    700: #2B2B2B,
+    600: $lightgrey
+    ),
+  $blue: (
+    700: #2C56D3,
+    600: $blue,
+    500: #7FA2FF,
+    400: #BED1FF,
+    300: #E9EFFF
+    ),
+  $green: (
+    700: #1DAB5F,
+    600: $green,
+    500: #6EDFAF,
+    400: #B9EFD7,
+    300: #E8FAF2
+    ),
+  $red: (
+    700: #DC4B39,
+    600: $red,
+    500: #FF998E,
+    400: #FFCCC6,
+    300: #FFEDEB
+    ),
+  $orange: (
+    700: #E4801F,
+    600: $orange,
+    500: #FFB86C,
+    400: #FFDCB7,
+    300: #FFF3E7
+    ),
+  $yellow: (
+    700: #E6B311,
+    600: $yellow,
+    500: #FFDB4B,
+    400: #FFEDAA,
+    300: #FFF9E3
+    )
+);

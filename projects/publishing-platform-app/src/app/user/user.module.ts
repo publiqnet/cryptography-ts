@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LoginComponent } from './login/login.component';
@@ -15,7 +14,6 @@ import { LoginPasswordComponent } from './login-password/login-password.componen
 import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
 import { NgxUsefulSwiperModule } from 'ngx-useful-swiper';
-import { RegisterOldComponent } from './register-old/register-old.component';
 
 
 @NgModule({
@@ -30,7 +28,6 @@ import { RegisterOldComponent } from './register-old/register-old.component';
     UserTemplateComponent,
     LoginComponent,
     RegisterComponent,
-    RegisterOldComponent,
     RecoverComponent,
     LoginPasswordComponent,
     RegistrationPasswordComponent,
