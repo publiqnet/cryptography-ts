@@ -14,12 +14,16 @@ import { NewPasswordComponent } from './new-password/new-password.component';
 import { LoginPasswordComponent } from './login-password/login-password.component';
 import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
+import { NgxUsefulSwiperModule } from 'ngx-useful-swiper';
+import { RegisterOldComponent } from './register-old/register-old.component';
+import { LoginOldComponent } from './login-old/login-old.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
+    NgxUsefulSwiperModule,
     TranslateModule.forChild(),
     RouterModule.forChild(userRoutes)
   ],
@@ -27,6 +31,8 @@ import { UserTemplateComponent } from './user-template/user-template.component';
     UserTemplateComponent,
     LoginComponent,
     RegisterComponent,
+    RegisterOldComponent,
+    LoginOldComponent,
     RecoverComponent,
     LoginPasswordComponent,
     RegistrationPasswordComponent,

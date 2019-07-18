@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { SwiperModule } from 'angular2-useful-swiper';
+// import { SwiperModule } from 'angular2-useful-swiper';
 import { TranslateModule } from '@ngx-translate/core';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 
@@ -20,7 +20,7 @@ import { contentRoutes } from './content-routing.module';
     SharedModule,
     FroalaEditorModule,
     FroalaViewModule,
-    SwiperModule,
+    // SwiperModule,
     TranslateModule.forChild(),
     RouterModule.forChild(contentRoutes),
   ],

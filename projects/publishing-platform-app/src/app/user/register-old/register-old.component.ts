@@ -23,11 +23,11 @@ import { takeUntil } from 'rxjs/operators';
 import { OauthService } from 'helper-lib';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: 'app-register-old',
+  templateUrl: './register-old.component.html',
+  styleUrls: ['./register-old.component.scss']
 })
-export class RegisterComponent implements OnInit, OnDestroy {
+export class RegisterOldComponent implements OnInit, OnDestroy {
 
   public registerForm: FormGroup;
   private errorMessages: string;
