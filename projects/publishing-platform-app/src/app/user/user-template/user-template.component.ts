@@ -8,7 +8,7 @@ import { ReplaySubject } from 'rxjs';
   templateUrl: './user-template.component.html',
   styleUrls: ['./user-template.component.scss']
 })
-export class UserTemplateComponent implements OnInit, OnDestroy {
+export class UserTemplateComponent implements OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public tabberData = [];
   private activeRoute = 'login';
@@ -23,17 +23,19 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
       .subscribe(event => {
         if (event instanceof NavigationEnd) {
           this.activeRoute = event.url.substring(event.url.lastIndexOf('/') + 1);
+          this.generateTabberData();
         }
       });
   }
 
-  ngOnInit(): void {
-    console.log(this.activeRoute);
+  generateTabberData() {
     if (['login', 'register'].includes(this.activeRoute)) {
       this.tabberData = [
         { 'value': 'login', 'text': 'Sign In', 'active': this.activeRoute === 'login' },
         { 'value': 'register', 'text': 'Register', 'active': this.activeRoute === 'register' }
       ];
+    } else {
+      this.tabberData = [];
     }
   }
 
@@ -41,6 +43,11 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
     if (event.value != this.activeRoute) {
       this.router.navigate([`/user/${event.value}`]);
     }
+  }
+
+  changeRoute(event, route) {
+    event.preventDefault();
+    this.router.navigate([route]);
   }
 
   ngOnDestroy() {
