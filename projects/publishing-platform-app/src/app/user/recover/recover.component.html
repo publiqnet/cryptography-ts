@@ -1,18 +1,19 @@
 <div class="signinup__inner__restore">
-  <h3>Password Restore</h3>
-  <p>
-    The recovery phrase contains 16 words, in a specific order. It is needed in the event that you forget your account
-    password.
-  </p>
-  <form class="form" novalidate [formGroup]="recoverForm">
-    <label for="recover"></label>
-    <ui-textarea id="recover" [resize]="true" formControlName="brainKey"
-                 [placeholder]="'Enter your recovery phrase to create new password'" [rows]='4'
-                 [cols]='35'></ui-textarea>
-    <div>
-      <span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span>
-    </div>
-    <ui-button [disabled]="!recoverForm?.valid" [className]="'button button--large button--primary button--full-radius'"
-               [text]="'Confirm'" [type]="'ordinary'" [size]="'large'" (btnClicked)="checkBrainKey()"></ui-button>
-  </form>
+  <div *ngIf="!isPasswordMode">
+    <h3>Password Restore</h3>
+    <p>
+      The recovery phrase contains 16 words, in a specific order. It is needed in the event that you forget your account password.
+    </p>
+    <form class="form" novalidate [formGroup]="recoverForm">
+      <label for="recover"></label>
+      <ui-textarea id="recover" [resize]="true" formControlName="brainKey"
+                   [placeholder]="'Enter your recovery phrase to create new password'" [rows]='4' [cols]='35'></ui-textarea>
+      <ui-button [disabled]="!recoverForm?.valid" [className]="'button button--large button--primary button--full-radius'"
+                 [text]="'Confirm'" [type]="'ordinary'" [size]="'large'" (btnClicked)="checkBrainKey()"></ui-button>
+      <div>
+        <p class="error-message" *ngIf="brainKeyError">{{brainKeyError}}</p>
+      </div>
+    </form>
+  </div>
+  <app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
 </div>

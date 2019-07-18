@@ -12,11 +12,11 @@
         </div>
         <div class="signinup__footer">
             <!--FOR SIGNIN-->
-            <a href="#" *ngIf="activeRoute == 'login'" class="" [routerLink]="['/user/recover']">Forgot your password?</a>
+            <a href="#" *ngIf="activeRoute == 'login'" class="" (click)="changeRoute($event, '/user/recover')">Forgot your password?</a>
             <!--FOR REGISTERING EMAIL-->
             <p class="signinup__footer--terms d-none">By registering you agree to our <a href="">Terms & Conditions</a></p>
             <!--FOR RESET PASSWORD-->
-            <a href="#" *ngIf="activeRoute != 'login'" [routerLink]="['/user/login']">Back to login <i class="icon-arrow-right"></i></a>
+            <a href="#" *ngIf="activeRoute != 'login'" (click)="changeRoute($event, '/user/login')">Back to login <i class="icon-arrow-right"></i></a>
         </div>
     </div>
     <div class="signinup__side signinup__side--dark d-none d-sm-inline-block">
