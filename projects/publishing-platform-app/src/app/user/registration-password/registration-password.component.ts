@@ -21,6 +21,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public configForm: FormGroup;
   public tokenCheckStatus = TokenCheckStatus.Init;
+  public registerError: string = '';
   public token;
   public stringToSign;
 
@@ -60,8 +61,12 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
       .subscribe((data: ErrorEvent) => {
         if (data.action === 'loadConfirm') {
           this.router.navigate(['/page-not-found']);
+        } else if (data.action === 'register') {
+          this.registerError = this.errorService.getError('system_error');
         }
       });
+
+    this.configForm.valueChanges.subscribe(newValues => this.registerError = '');
   }
 
   get TokenCheckStatusEnum() {
@@ -79,12 +84,12 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
           ValidationService.passwordValidator
         ])
       },
-      { validator: ValidationService.passwordsEqualValidator }
+      {validator: ValidationService.passwordsEqualValidator}
     );
   }
 
   onSubmit() {
-    this.tokenCheckStatus = TokenCheckStatus.Loading;
+    // this.tokenCheckStatus = TokenCheckStatus.Loading;
     this.oauthService.signupComplete(this.stringToSign, this.token, this.configForm.value.password)
       .pipe(
         switchMap((data: any) => {
@@ -97,6 +102,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
+        this.errorService.handleError('register', err);
       });
   }
 
