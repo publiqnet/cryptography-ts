@@ -1,10 +1,26 @@
 <!--SIGNIN FORM-->
-<h2>Sign In</h2>
-<p>Enter you email and password&nbsp;to&nbsp;Sign&nbsp;in.</p>
+<div *ngIf="!checkEmail; else emailTemplate">
+  <h2>Sign In</h2>
+  <p>Enter you email and password&nbsp;to&nbsp;Sign&nbsp;in.</p>
+  <form class="form" novalidate [formGroup]="loginForm">
+    <ui-input formControlName="email" [type]="'text'"  [placeholder]="'your Email'" ></ui-input>
+    <ui-button [disabled]="loginForm.invalid" [className]="'button button--large button--primary button--full-radius'"
+               [text]="'Sign in'" [type]="'ordinary'" [size]="'large'" (btnClicked)="signIn()"></ui-button>
+  </form>
+  <p class="error-message">{{emailError}}</p>
+</div>
 
-<input type="text" placeholder="Your email"/>
-<input type="password" placeholder="Password"/>
-
-<input type="submit" disabled class="button button--large button--primary button--full-radius" value="Sign In">
-
-<p class="error-message">Warning: Here must be error message</p>
+<ng-template #emailTemplate>
+  <div class="check-email">
+    <h1>
+      Please check your email to access your secure link.
+    </h1>
+    <p>
+      {{loginForm.controls['email'].value}}
+    </p>
+    <p class="new-request">
+      if you didn't receive your verification email please
+      <a (click)="checkEmail = false">request a new one</a>
+    </p>
+  </div>
+</ng-template>
