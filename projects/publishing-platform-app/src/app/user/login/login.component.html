@@ -1,26 +1,24 @@
-<!--SIGNIN FORM-->
-<div *ngIf="!checkEmail; else emailTemplate">
-  <h2>Sign In</h2>
-  <p>Enter you email and password&nbsp;to&nbsp;Sign&nbsp;in.</p>
-  <form class="form" novalidate [formGroup]="loginForm">
-    <ui-input formControlName="email" [type]="'text'"  [placeholder]="'your Email'" ></ui-input>
-    <ui-button [disabled]="loginForm.invalid" [className]="'button button--large button--primary button--full-radius'"
-               [text]="'Sign in'" [type]="'ordinary'" [size]="'large'" (btnClicked)="signIn()"></ui-button>
-  </form>
-  <p class="error-message">{{emailError}}</p>
-</div>
+<div class="signinup__inner">
+  <div *ngIf="authStep == AuthStepStatusEnum.Init">
+    <h2>Sign In</h2>
+    <p>Enter you email and password&nbsp;to&nbsp;Sign&nbsp;in.</p>
+    <form class="form" novalidate [formGroup]="loginForm">
+      <ui-input formControlName="email" [type]="'text'" [placeholder]="'Your Email'"></ui-input>
+      <ui-button [disabled]="loginForm.invalid" [className]="'button button--large button--primary button--full-radius'"
+                 [text]="'Sign in'" [type]="'ordinary'" [size]="'large'" (btnClicked)="signIn()"></ui-button>
+    </form>
+    <p class="error-message">{{emailError}}</p>
+  </div>
 
-<ng-template #emailTemplate>
-  <div class="check-email">
-    <h1>
-      Please check your email to access your secure link.
-    </h1>
-    <p>
-      {{loginForm.controls['email'].value}}
-    </p>
-    <p class="new-request">
-      if you didn't receive your verification email please
-      <a (click)="checkEmail = false">request a new one</a>
+  <div *ngIf="authStep == AuthStepStatusEnum.Success" class="signinup__inner signinup__inner--register">
+    <img src="assets/images/email.svg" alt="">
+    <h3 *ngIf="formView === 'successLoginMessage';else needRegisterMessage">{{'user.please_check_email' | translate}}</h3>
+    <ng-template #needRegisterMessage>
+      <h3>{{'user.please_check_email_for_authintification' | translate}}</h3>
+    </ng-template>
+    <p class="signinup__register--email">{{loginForm.value.email}}</p>
+    <p>If you didn’t receive your verification email please
+      <a class="d-block" (click)="newRequest($event)">Request a new one</a>
     </p>
   </div>
-</ng-template>
+</div>

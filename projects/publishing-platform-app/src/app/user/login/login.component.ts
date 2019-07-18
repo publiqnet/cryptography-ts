@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   public emailError = '';
   public authStep = TokenCheckStatus.Init;
   public loading = false;
-  public checkEmail = false;
+  public formView = 'loginForm';
   constructor(
     private FormBuilder: FormBuilder,
     private oauthService: OauthService,
@@ -48,6 +48,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
+  get AuthStepStatusEnum() {
+    return TokenCheckStatus;
+  }
+
   signIn() {
     if (this.loginForm.invalid) {
       return;
@@ -57,12 +61,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(oauthData => {
+          this.formView = '';
         if (oauthData.status == 204) {
           // needRegister
-          this.checkEmail = true;
+          this.formView = 'needRegisterMessage';
         } else if (oauthData.status == 200) {
           // successLogin
-          this.checkEmail = true;
+          this.formView = 'successLoginMessage';
         }
         this.authStep = TokenCheckStatus.Success;
       }, error => this.errorService.handleError('login', error)
@@ -73,6 +78,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginForm = this.FormBuilder.group({
       email: new FormControl('', [Validators.required, ValidationService.emailValidator])
     });
+  }
+
+  newRequest($event) {
+    $event.preventDefault();
+    this.loginForm.reset();
+    this.authStep = TokenCheckStatus.Init;
   }
 
   ngOnDestroy() {
