@@ -71,9 +71,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.configForm.valueChanges.subscribe(newValues => {
-      this.loginError = '';
-    });
+    this.configForm.valueChanges.subscribe(newValues => this.loginError = '');
   }
 
   get TokenCheckStatusEnum() {

@@ -1,5 +1,5 @@
 <div class="signinup__inner">
-  <div class="register-form" *ngIf="authStep === AuthStepStatusEnum.Init">
+  <div class="register-form" *ngIf="authStep == AuthStepStatusEnum.Init">
     <h2>Register</h2>
     <p>Enter your email to create new account.</p>
     <form class="form" novalidate [formGroup]="registerForm">

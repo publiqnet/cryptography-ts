@@ -1,12 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { OauthService } from 'helper-lib';
 import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { AccountService } from '../../core/services/account.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { OauthService } from 'helper-lib';
 import { ValidationService } from '../../core/validator/validator.service';
-import { takeUntil } from 'rxjs/operators';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 
 @Component({
