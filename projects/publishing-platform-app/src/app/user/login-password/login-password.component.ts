@@ -21,10 +21,10 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public configForm: FormGroup;
   public tokenCheckStatus = TokenCheckStatus.Init;
+  public loginError: string = '';
   public encryptedBrainKey;
   public token;
   public stringToSign;
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,10 +66,12 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
           if (data.action === 'loadConfirm') {
             this.router.navigate(['/page-not-found']);
           } else if (data.action === 'login' || data.action === 'authenticate') {
-            this.notificationService.error(data.message);
+            this.loginError = this.errorService.getError('password_error');
           }
         }
       );
+
+    this.configForm.valueChanges.subscribe(newValues => this.loginError = '');
   }
 
   get TokenCheckStatusEnum() {
@@ -96,7 +98,7 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
-        this.errorService.handleError('login', {status: 404});
+        this.errorService.handleError('login', err);
       });
   }
 

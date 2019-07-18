@@ -1,4 +1,23 @@
-<h2>Register</h2>
-<p>Enter your email to create new account.</p>
-<input type="text" placeholder="Your email"/>
-<input type="submit" disabled class="button button--large button--primary button--full-radius" value="Sign In">
+<div class="signinup__inner">
+  <div class="register-form" *ngIf="authStep == AuthStepStatusEnum.Init">
+    <h2>Register</h2>
+    <p>Enter your email to create new account.</p>
+    <form class="form" novalidate [formGroup]="registerForm">
+      <ui-input [placeholder]="'Email address'" formControlName="email"></ui-input>
+      <ui-button [fullRadius]="true" [type]="'primary'" [text]="'Continue'" [className]="'button button--large button--primary button--full-radius'" (btnClicked)="register()" [disabled]="!registerForm.valid"></ui-button>
+    </form>
+  </div>
+
+
+  <div *ngIf="authStep == AuthStepStatusEnum.Success" class="signinup__inner signinup__inner--register">
+    <img src="../../../assets/images/email.svg" alt="Email Icon" title="Email Icon">
+    <h3 *ngIf="formView === 'successRegisterMessage';else needLoginMessage">{{'user.please_check_email' | translate}}</h3>
+    <ng-template #needLoginMessage>
+      <h3>{{'user.need_login_message' | translate}}</h3>
+    </ng-template>
+    <p class="signinup__register--email">{{registerForm.value.email}}</p>
+    <p>If you didn’t receive your verification email please
+      <a class="d-block" (click)="newRequest($event)">Request a new one</a>
+    </p>
+  </div>
+</div>

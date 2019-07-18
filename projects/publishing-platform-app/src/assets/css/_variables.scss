@@ -1,0 +1,65 @@
+@import "colors.scss";
+
+// GRID
+
+///*
+//**   GRID BREAKPOINTS ARE THESE:
+//**
+//**   xs: 0,
+//**   sm: 576px,
+//**   md: 768px,
+//**   lg: 1024px,
+//**   xl: 1440px
+//**
+//*/
+
+@mixin media-sm {
+  @media (max-width: (576px - 1px)) { @content; }
+}
+
+@mixin media-md {
+  @media (max-width: (768px - 1px)) { @content; }
+}
+
+@mixin media-lg {
+  @media (max-width: (1024px - 1px)) { @content; }
+}
+
+@mixin media-xl {
+  @media (max-width: (1440px - 1px)) { @content; }
+}
+
+@mixin media-sm-only  {
+  @media (min-width: 576px) and (max-width: (768px - 1px)) { @content; }
+}
+
+@mixin media-md-only  {
+  @media (min-width: 768px) and (max-width: (1024px - 1px)) { @content; }
+}
+
+@mixin media-lg-only  {
+  @media (min-width: 1024px) and (max-width: (1440px - 1px)) { @content; }
+}
+// FONTS
+
+$open-sans: 'Open Sans', sans-serif;
+$vollkorn: 'Vollkorn', serif;
+$lato : 'Lato', sans-serif;
+
+
+// INPUTS
+
+$input-background-color:           pbq-color($grey, 100);
+$input-font-size:                  16px;
+$input-line-height:                20px;
+$input-border-width:               0;
+$input-border-style:               none;
+$input-transition-duration:        300ms;
+  
+// FOCUSED INPUT
+
+$input-focus-background-color:     pbq-color($blue, 300);
+
+// ERROR INPUT
+
+$input-error-background-color:     pbq-color($red, 300);
