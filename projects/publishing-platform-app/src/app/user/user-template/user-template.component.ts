@@ -25,7 +25,6 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
       .subscribe(event => {
         if (event instanceof NavigationEnd) {
           this.activeRoute = event.url.substring(event.url.lastIndexOf('/') + 1);
-          this.generateTabberData();
         }
       });
   }
@@ -39,22 +38,16 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
       },
       spaceBetween: 30
     };
-  }
 
-  generateTabberData() {
-    if (['login', 'register'].includes(this.activeRoute)) {
-      this.tabberData = [
-        { 'value': 'login', 'text': 'Sign In', 'active': this.activeRoute === 'login' },
-        { 'value': 'register', 'text': 'Register', 'active': this.activeRoute === 'register' }
-      ];
-    } else {
-      this.tabberData = [];
-    }
+    this.tabberData = [
+      { 'value': 'login', 'text': 'Sign In'},
+      { 'value': 'register', 'text': 'Register'}
+    ];
   }
 
   changeTab(event) {
-    if (event.value != this.activeRoute) {
-      this.router.navigate([`/user/${event.value}`]);
+    if (event != this.activeRoute) {
+      this.router.navigate([`/user/${event}`]);
     }
   }
 

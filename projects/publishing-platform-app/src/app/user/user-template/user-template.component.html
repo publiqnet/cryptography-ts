@@ -3,7 +3,7 @@
     <div class="signinup__header">
       <img src="../../../assets/images/publiq-logo.svg"
            class="signinup__header__logo d-none d-lg-none d-sm-inline-block">
-      <ui-tab *ngIf="tabberData.length" [type]="'navigation'" [className]="'tabber'" (onTabChange)="changeTab($event)"
+      <ui-tab *ngIf="['login', 'register'].includes(activeRoute)" [type]="'navigation'" [currentValue]="activeRoute" [className]="'tabber'" (onTabChange)="changeTab($event)"
               [tabs]="tabberData"></ui-tab>
       <img src="../../../assets/images/close.svg">
     </div>
