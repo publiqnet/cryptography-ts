@@ -7,7 +7,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { OauthService } from 'helper-lib';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-recover',
@@ -16,8 +15,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class RecoverComponent implements OnInit, OnDestroy {
 
-  public formView = 'recoverForm';
-  public recoverForm: FormGroup;
+  public formView = '';
   public brainKey = '';
   public loading = false;
   public brainKeyError = '';
@@ -29,12 +27,10 @@ export class RecoverComponent implements OnInit, OnDestroy {
   constructor(private accountService: AccountService,
               private errorService: ErrorService,
               private oauthService: OauthService,
-              private FormBuilder: FormBuilder,
               private router: Router) {
   }
 
   ngOnInit() {
-    this.buildForm();
     this.isPasswordMode = false;
     this.errorService.errorEventEmiter
       .pipe(
@@ -47,32 +43,35 @@ export class RecoverComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.recoverForm.valueChanges.subscribe(newValues => {
-      this.brainKeyError = '';
+    this.accountService.signedStringChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(stringToSign => {
+      // this.router.navigate(['/user/new-password']);
+      this.isPasswordMode = true;
     });
   }
 
-  private buildForm() {
-    this.recoverForm = this.FormBuilder.group({
-      brainKey: new FormControl('', [Validators.required])
-    });
+  focusFunction() {
+    this.brainKeyError = '';
   }
 
   checkBrainKey() {
     this.loading = true;
-    this.oauthService.recoverAuthenticate(this.recoverForm.value.brainKey)
+    this.oauthService.recoverAuthenticate(this.brainKey)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(authData => {
         this.stringToSign = authData.stringToSign;
-        this.brainKey = this.recoverForm.value.brainKey;
         this.isPasswordMode = true;
       }, error => this.errorService.handleError('recover', error));
   }
 
   ngOnDestroy() {
     this.brainKeyError = '';
+
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
 

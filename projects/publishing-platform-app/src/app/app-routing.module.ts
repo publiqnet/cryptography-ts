@@ -8,6 +8,7 @@ import { ArticleComponent } from './core/article/article.component';
 import { AuthorComponent } from './author/author/author.component';
 import { PageNotFoundComponent } from './shared/page-not-found/page-not-found.component';
 import { LanguageGuard } from './guards/language.guard';
+import { userRoutes } from './user/user-routing.module';
 
 const routes: Routes = [
     {
@@ -49,13 +50,10 @@ const routes: Routes = [
                 path: 'search',
                 loadChildren: () => import('./search/search.module').then(m => m.SearchModule)
             },
-            {
-                path: 'user',
-                loadChildren: () => import('./user/user.module').then(m => m.UserModule)
-            },
             ...storyRoutes
         ]
     },
+    ...userRoutes,
     {
         path: 'page-not-found',
         pathMatch: 'full',

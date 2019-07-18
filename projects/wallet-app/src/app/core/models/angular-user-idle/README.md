@@ -41,7 +41,7 @@ export class AppModule {}
 ### Usage
 
 You should init user idle service in one of core component or service of your app,
-for example login.component.ts:
+for example login-old.component.ts:
 
 ```typescript
 import { Component, OnInit } from '@angular/core';
@@ -50,7 +50,7 @@ import { UserIdleService } from 'angular-user-idle';
 @Component({
   templateUrl: './login.component.jade'
 })
-export class LoginComponent implements OnInit {
+export class LoginOldComponent implements OnInit {
 
   readonly googlePlayLink: string;
   readonly appStoreLink: string;

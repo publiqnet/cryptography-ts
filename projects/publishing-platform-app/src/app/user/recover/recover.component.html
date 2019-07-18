@@ -1,34 +1,19 @@
-<div class="centered restore" *ngIf="!isPasswordMode">
-  <div class="recovery-header">
-    <h4>{{'user.password_reset' | translate }}</h4>
-    <button routerLink="/user/login">
-            <span class="close-btn">
-                <span class="close-span"></span>
-                <span class="close-span"></span>
-            </span>
-    </button>
+<div class="signinup__inner__restore">
+  <div *ngIf="!isPasswordMode">
+    <h3>Password Restore</h3>
+    <p>
+      The recovery phrase contains 16 words, in a specific order. It is needed in the event that you forget your account password.
+    </p>
+    <form class="form" novalidate [formGroup]="recoverForm">
+      <label for="recover"></label>
+      <ui-textarea id="recover" [resize]="true" formControlName="brainKey"
+                   [placeholder]="'Enter your recovery phrase to create new password'" [rows]='4' [cols]='35'></ui-textarea>
+      <ui-button [disabled]="!recoverForm?.valid" [className]="'button button--large button--primary button--full-radius'"
+                 [text]="'Confirm'" [type]="'ordinary'" [size]="'large'" (btnClicked)="checkBrainKey()"></ui-button>
+      <div>
+        <p class="error-message" *ngIf="brainKeyError">{{brainKeyError}}</p>
+      </div>
+    </form>
   </div>
-
-  <div *ngIf="!loading" class="restore-content">
-    <div>
-      <p>{{'user.recovery_phrase_contains_words' | translate }}</p>
-    </div>
-
-    <h5>{{'user.enter_recover_phrase' | translate }}</h5>
-
-    <textarea [(ngModel)]="brainKey" (keyup)="focusFunction()"></textarea>
-
-    <div><span class="text-error" *ngIf="brainKeyError">{{brainKeyError}}</span></div>
-
-    <mat-card-actions class="submit-div okay-div">
-      <button class="submit-button btn-next" [disabled]="!brainKey" type="submit" (click)="checkBrainKey()">
-        {{ 'core.next' | translate }}
-      </button>
-    </mat-card-actions>
-  </div>
-
-  <mat-spinner class="centered" *ngIf="loading" style="margin: 50px auto;"></mat-spinner>
+  <app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
 </div>
-
-
-<app-new-password [brainKey]="brainKey" [stringToSign]="stringToSign" *ngIf="isPasswordMode"></app-new-password>
