@@ -2,16 +2,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { SwiperOptions } from 'swiper';
 
 @Component({
   selector: 'app-user-template',
   templateUrl: './user-template.component.html',
   styleUrls: ['./user-template.component.scss']
 })
-export class UserTemplateComponent implements OnDestroy {
+export class UserTemplateComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public tabberData = [];
-  private activeRoute = 'login';
+  public activeRoute = 'login';
+  public swiperConfig: SwiperOptions;
 
   constructor(
     private router: Router
@@ -26,6 +28,17 @@ export class UserTemplateComponent implements OnDestroy {
           this.generateTabberData();
         }
       });
+  }
+
+  ngOnInit(): void {
+    this.swiperConfig = {
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      spaceBetween: 30
+    };
   }
 
   generateTabberData() {

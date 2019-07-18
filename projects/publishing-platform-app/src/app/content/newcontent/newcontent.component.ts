@@ -22,7 +22,7 @@ import { map, debounceTime, filter, takeUntil, flatMap, switchMap } from 'rxjs/o
 import { forkJoin, of, ReplaySubject, zip } from 'rxjs';
 import { now } from 'moment';
 import { TranslateService } from '@ngx-translate/core';
-import { SwiperComponent } from 'angular2-useful-swiper';
+import { SwiperComponent } from 'ngx-useful-swiper';
 
 import { environment } from '../../../environments/environment';
 import { ContentService } from '../../core/services/content.service';
