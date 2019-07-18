@@ -7,6 +7,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { OauthService } from 'helper-lib';
 import { ValidationService } from '../../core/validator/validator.service';
 import { takeUntil } from 'rxjs/operators';
+import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-
+  public authStep = TokenCheckStatus.Init;
   public registerForm: FormGroup;
   private errorMessages: string;
   private conditionsWarning: string;
@@ -58,6 +59,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     );
   }
 
+  get AuthStepStatusEnum() {
+    return TokenCheckStatus;
+  }
+
   register() {
     if (this.registerForm.invalid) {
       return;
@@ -75,6 +80,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         } else if (oauthData.status == 200) {
           this.formView = 'needLoginMessage';
         }
+        this.authStep = TokenCheckStatus.Success;
       }, error => {
           this.errorService.handleError('preRegister', error);
       });
@@ -87,6 +93,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
         ValidationService.emailValidator
       ])
     });
+  }
+
+  newRequest($event) {
+    $event.preventDefault();
+    this.registerForm.reset();
+    this.authStep = TokenCheckStatus.Init;
   }
 
   ngOnDestroy() {
