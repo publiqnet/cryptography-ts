@@ -16,7 +16,6 @@ import { RegistrationPasswordComponent } from './registration-password/registrat
 import { UserTemplateComponent } from './user-template/user-template.component';
 import { NgxUsefulSwiperModule } from 'ngx-useful-swiper';
 import { RegisterOldComponent } from './register-old/register-old.component';
-import { LoginOldComponent } from './login-old/login-old.component';
 
 
 @NgModule({
@@ -32,7 +31,6 @@ import { LoginOldComponent } from './login-old/login-old.component';
     LoginComponent,
     RegisterComponent,
     RegisterOldComponent,
-    LoginOldComponent,
     RecoverComponent,
     LoginPasswordComponent,
     RegistrationPasswordComponent,
