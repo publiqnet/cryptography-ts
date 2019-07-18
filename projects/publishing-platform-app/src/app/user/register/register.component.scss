@@ -6,7 +6,8 @@
       text-transform: none;
     }
   }
-  &__success {
+
+  &__success,&__message {
     font-family: $open-sans;
     font-style: normal;
     font-weight: normal;

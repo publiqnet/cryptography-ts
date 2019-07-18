@@ -12,7 +12,7 @@ import { NotificationComponent } from './notification/notification.component';
 import { userRoutes } from './user-routing.module';
 import { NewPasswordComponent } from './new-password/new-password.component';
 import { LoginPasswordComponent } from './login-password/login-password.component';
-import { RegistrationPasswordComponent } from './registration-password-old/registration-password.component';
+import { RegistrationPasswordComponent } from './registration-password/registration-password.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
 
 

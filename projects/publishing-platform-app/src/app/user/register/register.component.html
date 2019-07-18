@@ -21,5 +21,14 @@
 </div>
 
 <div class="register-form__message" *ngIf="formView === 'needLoginMessage'">
-  <p>Success Message</p>
+  <img src="../../../assets/images/email.svg" alt="Email Icon" title="Email Icon">
+  <h3>
+    Please check your email <br> to access your secure <br> link. (need login message)
+  </h3>
+  <p class="register-form__success__email">{{registerForm.value.email}}</p>
+  <div class="register-form__success__request">
+    <p>If you didn't receive your verification email please
+      <a href="#">Request a new one</a>
+    </p>
+  </div>
 </div>
