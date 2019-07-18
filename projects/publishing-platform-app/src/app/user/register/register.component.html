@@ -1,4 +1,25 @@
-<h2>Register</h2>
-<p>Enter your email to create new account.</p>
-<input type="text" placeholder="Your email"/>
-<input type="submit" disabled class="button button--large button--primary button--full-radius" value="Sign In">
+<div class="register-form" *ngIf="formView === 'registerForm'">
+  <h2>Register</h2>
+  <p>Enter your email to create new account.</p>
+  <form class="form" novalidate [formGroup]="registerForm">
+    <ui-input [placeholder]="'Email address'" formControlName="email"></ui-input>
+    <ui-button [fullRadius]="true" [type]="'primary'" [text]="'Continue'" [className]="'button button--large button--primary button--full-radius'" (btnClicked)="register()" [disabled]="!registerForm.valid"></ui-button>
+  </form>
+</div>
+
+<div class="register-form__success" *ngIf="formView === 'successRegisterMessage'">
+  <img src="../../../assets/images/email.svg" alt="Email Icon" title="Email Icon">
+  <h3>
+    Please check your email <br> to access your secure <br> link.
+  </h3>
+  <p class="register-form__success__email">{{registerForm.value.email}}</p>
+  <div class="register-form__success__request">
+    <p>If you didn't receive your verification email please
+      <a href="#">Request a new one</a>
+    </p>
+  </div>
+</div>
+
+<div class="register-form__message" *ngIf="formView === 'needLoginMessage'">
+  <p>Success Message</p>
+</div>
