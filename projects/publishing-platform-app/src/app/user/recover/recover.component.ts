@@ -47,13 +47,8 @@ export class RecoverComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.accountService.signedStringChanged
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(stringToSign => {
-      // this.router.navigate(['/user/new-password']);
-      this.isPasswordMode = true;
+    this.recoverForm.valueChanges.subscribe(newValues => {
+      this.brainKeyError = '';
     });
   }
 
@@ -61,10 +56,6 @@ export class RecoverComponent implements OnInit, OnDestroy {
     this.recoverForm = this.FormBuilder.group({
       brainKey: new FormControl('', [Validators.required])
     });
-  }
-
-  focusFunction() {
-    this.brainKeyError = '';
   }
 
   checkBrainKey() {
@@ -75,6 +66,7 @@ export class RecoverComponent implements OnInit, OnDestroy {
       )
       .subscribe(authData => {
         this.stringToSign = authData.stringToSign;
+        this.brainKey = this.recoverForm.value.brainKey;
         this.isPasswordMode = true;
       }, error => this.errorService.handleError('recover', error));
   }
