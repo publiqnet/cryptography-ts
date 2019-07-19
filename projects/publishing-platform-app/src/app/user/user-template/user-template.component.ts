@@ -24,7 +24,8 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
       )
       .subscribe(event => {
         if (event instanceof NavigationEnd) {
-          this.activeRoute = event.url.substring(event.url.lastIndexOf('/') + 1);
+          const currentUrl = (event.urlAfterRedirects) ? event.urlAfterRedirects : event.url;
+          this.activeRoute = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
         }
       });
   }

@@ -6,6 +6,7 @@
       <ui-input [placeholder]="'Email address'" formControlName="email"></ui-input>
       <ui-button [fullRadius]="true" [type]="'primary'" [text]="'Continue'" [className]="'button button--large button--primary button--full-radius'" (btnClicked)="register()" [disabled]="!registerForm.valid"></ui-button>
     </form>
+    <p class="error-message" *ngIf="emailError">{{emailError}}</p>
   </div>
 
 
