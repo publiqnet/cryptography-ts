@@ -1,149 +1,42 @@
 @charset "UTF-8";
-/* You can add global styles to this file, and also import other style files */
-/*@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';*/
-/* You can add global styles to this file, and also import other style files */
-/*
- * Copyright © 2016 PUBLIQ
- * All rights reserved.
- * http://publiq.site
- *
-*/
-/* ########################################################### */
-/* IMPORTS */
-/* ########################################################### */
-//@import url(https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css);
-//@import url(./assets/)
-@import url(assets/css/bootstrap.css);
-/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
 
-/* ########################################################### */
-/* GENERAL STYLES */
-/* ########################################################### */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,900');
+@import url('https://fonts.googleapis.com/css?family=Vollkorn:400,600,700,900');
 
-/* ---------------------------------- */
-/* Main Styles */
-/* ---------------------------------- */
-html {
-  height: 100%;
+@import url('assets/bootstrap/bootstrap-grid.css');
+// @import url('/assets/icomoon/icomoon.css');
+@import url(https://stage-mainnet-state.publiq.network/icomoon/icomoon.css);
+@import "assets/css/variables";
+
+:focus-visible {
+  outline: 3px solid #ffffff;
 }
+
 body {
-  min-height: 100%;
-}
-body,
-html {
-  padding: 0;
   margin: 0;
-  font-family: Arial, serif;
-  font-size: 14px;
-  font-weight: 300;
-  color: #333;
-}
-
-html {
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-size: 100%;
-  font-family: inherit;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-  margin: 0 0 20px 0;
+  font-family: $open-sans;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
-  cursor: pointer;
-  color: inherit;
+  color: $blue;
   text-decoration: none;
 }
 
-input {
-  outline: 0;
+.vline, .hline {
+  display: inline-block;
+  background: #EDEDED;
+  vertical-align: middle;
+}
+
+.vline { width: 1px; height: 100%; }
+.hline { width: 100%; height: 1px; }
+
+.container {
+  @include media-sm {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 
 .top-fix {
