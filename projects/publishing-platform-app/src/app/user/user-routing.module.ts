@@ -36,6 +36,10 @@ export const userRoutes: Routes = [
         path: 'signin/confirmation/:code',
         pathMatch: 'full',
         component: LoginPasswordComponent
+      },
+      {
+        path: '**',
+        redirectTo: 'login'
       }
     ]
   }

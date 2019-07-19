@@ -17,9 +17,8 @@ import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 export class RegisterComponent implements OnInit, OnDestroy {
   public authStep = TokenCheckStatus.Init;
   public registerForm: FormGroup;
-  private errorMessages: string;
-  private conditionsWarning: string;
   public formView = 'registerForm';
+  public emailError = '';
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -40,23 +39,22 @@ export class RegisterComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-        this.errorMessages = '';
-        this.conditionsWarning = '';
-      },
-      err => console.log(err)
-    );
+          this.emailError = '';
+        },
+        err => console.log(err)
+      );
 
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-        if (data.action === 'preRegister') {
-          this.formView = 'registerForm';
-          this.notificationService.error(data.message);
+          if (data.action === 'preRegister') {
+            this.formView = 'registerForm';
+            this.emailError = this.errorService.getError('email_error');
+          }
         }
-      }
-    );
+      );
   }
 
   get AuthStepStatusEnum() {
@@ -82,7 +80,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         }
         this.authStep = TokenCheckStatus.Success;
       }, error => {
-          this.errorService.handleError('preRegister', error);
+        this.errorService.handleError('preRegister', error);
       });
   }
 
