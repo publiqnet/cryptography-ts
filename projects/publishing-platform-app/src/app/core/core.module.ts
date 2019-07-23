@@ -48,6 +48,7 @@ import { HttpRpcService } from './services/httpRpc.service';
 import { DraftService } from './services/draft.service';
 import { CryptService } from './services/crypt.service';
 import { ArticleOldComponent } from './article-old/article-old.component';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -72,7 +73,8 @@ export function createTranslateLoader(http: HttpClient) {
             },
             isolate: true
         }),
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        NgxMasonryModule
     ],
     declarations: [
         HomepageComponent,

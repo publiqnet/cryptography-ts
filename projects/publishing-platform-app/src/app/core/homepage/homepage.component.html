@@ -4,7 +4,9 @@
             <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
         </div>
         <div class="col-lg-8 col-xl-9 stories">
-            <ui-content-single type="grid" [contentData]="content" *ngFor="let content of contentArray;"></ui-content-single>
+            <ngx-masonry [options]="myOptions">
+                <ui-content-single class="stories__masonry-item" ngxMasonryItem type="grid" [className]="'masonry-item'" [contentData]="content" *ngFor="let content of contentArray;"></ui-content-single>
+            </ngx-masonry>
         </div>
         <div class="col-lg-4 col-xl-3">
             <div class="welcome-to-media">

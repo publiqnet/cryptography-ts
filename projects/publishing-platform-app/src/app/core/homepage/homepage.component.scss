@@ -147,3 +147,11 @@
 .button-tabber--profile {
   margin: 0 0 20px;
 }
+
+.stories__masonry-item {
+  width: calc(100% / 3 - 15px * 2/3);
+  padding: 0 10px;
+  ::ng-deep .story--grid {
+    width: 100%;
+  }
+}
