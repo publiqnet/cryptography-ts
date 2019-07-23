@@ -43,6 +43,7 @@ import { ValidationService } from '../../core/validator/validator.service';
 import { Boost } from '../../core/services/models/boost';
 import { DraftService } from '../../core/services/draft.service';
 import { Publications } from '../../core/services/models/publications';
+import { SwiperOptions } from 'swiper';
 
 declare const $: any;
 const scrollElementIntoView = (element: HTMLElement) => {
@@ -79,6 +80,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   private boostInfo;
   private isArticleBoosted;
   private unsubscribe$ = new ReplaySubject<void>(1);
+  public coverSwiperConfig: SwiperOptions;
 
   @Output() hasPendingChanges: EventEmitter<boolean> = new EventEmitter();
   @Input() draft?: Draft;
@@ -245,53 +247,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
   };
 
-  coverSwiperConfig: any = {
-    prevButton: '.cover-photo-prev',
-    nextButton: '.cover-photo-next',
-    slideToClickedSlide: true,
-    slidesPerView: '1',
-    observer: true,
-    observeParents: true,
-    breakpoints: {
-      // when window width is <= 480px
-      480: {
-        slidesPerView: 1,
-      },
-      // when window width is <= 640px
-      640: {
-        slidesPerView: 1,
-      },
-      // when window width is <= 640px
-      1024: {
-        slidesPerView: 1,
-      }
-    },
-    onInit: (e) => {
-      if (this.coverImages.length && this.mainCoverImageUrl) {
-        e.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-      }
-    },
-    onSlideChangeEnd: (e) => {
-      const currentMainImage = this.mainCoverImageUrl;
-      if (e.clickedSlide && e.clickedSlide.attributes['data-image']) {
-        this.mainCoverImageUrl = e.clickedSlide.attributes['data-image'].value;
-      } else if (this.coverImages && this.coverImages[e.activeIndex]) {
-        this.mainCoverImageUrl = this.coverImages[e.activeIndex];
-      }
-
-      if (currentMainImage != this.mainCoverImageUrl) {
-        this.saveDraft(this.draftId);
-      }
-    },
-    onSlideChangeStart: (e) => {
-      if (this.coverImages && this.coverImages[e.activeIndex]) {
-        this.mainCoverImageUrl = this.coverImages[e.activeIndex];
-      }
-
-      this.saveDraft(this.draftId);
-    }
-  };
-
   listSwiperConfig: any = {
     prevButton: '.list-photo-prev',
     nextButton: '.list-photo-next',
@@ -371,6 +326,61 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
+      this.coverSwiperConfig = {
+        // prevButton: '.cover-photo-prev',
+        // nextButton: '.cover-photo-next',
+        slideToClickedSlide: true,
+        // slidesPerView: '1',
+        observer: true,
+        observeParents: true,
+        breakpoints: {
+          // when window width is <= 480px
+          480: {
+            slidesPerView: 1,
+          },
+          // when window width is <= 640px
+          640: {
+            slidesPerView: 1,
+          },
+          // when window width is <= 640px
+          1024: {
+            slidesPerView: 1,
+          }
+        },
+        // onInit: (e) => {
+        //   if (this.coverImages.length && this.mainCoverImageUrl) {
+        //     e.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
+        //   }
+        // },
+        // onSlideChangeEnd: (e) => {
+        //   const currentMainImage = this.mainCoverImageUrl;
+        //   if (e.clickedSlide && e.clickedSlide.attributes['data-image']) {
+        //     this.mainCoverImageUrl = e.clickedSlide.attributes['data-image'].value;
+        //   } else if (this.coverImages && this.coverImages[e.activeIndex]) {
+        //     this.mainCoverImageUrl = this.coverImages[e.activeIndex];
+        //   }
+        //
+        //   if (currentMainImage != this.mainCoverImageUrl) {
+        //     this.saveDraft(this.draftId);
+        //   }
+        // },
+        // onSlideChangeStart: (e) => {
+        //   if (this.coverImages && this.coverImages[e.activeIndex]) {
+        //     this.mainCoverImageUrl = this.coverImages[e.activeIndex];
+        //   }
+        //
+        //   this.saveDraft(this.draftId);
+        // }
+      };
+      this.coverSwiperConfig = {
+        pagination: { el: '.swiper-pagination', clickable: true },
+        navigation: {
+          nextEl: '.cover-photo-next',
+          prevEl: '.cover-photo-prev'
+        },
+        spaceBetween: 30
+      };
+
       this.isContentUpLoading = false;
       this.isSubmited = false;
       this.contentService.hideFooter$.emit(true);
@@ -403,14 +413,14 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         this.contentId = this.draft.id;
         // slides the swiper to the chosen thumbnail
         if (this.coverImages && this.coverImages.length > 1) {
-          this.coverSwiperConfig.onInit = swiper => {
-            swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-          };
+          // this.coverSwiperConfig.onInit = swiper => {
+          //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
+          // };
         }
         if (this.listImages && this.listImages.length > 1) {
-          this.listSwiperConfig.onInit = swiper => {
-            swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
-          };
+          // this.listSwiperConfig.onInit = swiper => {
+          //   swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
+          // };
         }
       }
 
@@ -443,9 +453,9 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         // slides the swiper to the chosen thumbnail
         if (isPlatformBrowser(this.platformId)) {
           if (this.coverImages.length > 1) {
-            this.coverSwiperConfig.onInit = swiper => {
-              swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-            };
+            // this.coverSwiperConfig.onInit = swiper => {
+            //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
+            // };
           }
           if (this.listImages.length > 1) {
             this.listSwiperConfig.onInit = swiper => {
@@ -514,16 +524,16 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
       this.account = this.accountService.getAccount();
 
-      this.publicationService.getMyPublications()
-      .pipe(
-        map((publications: Publications) => {
-          return publications.owned.concat(publications.membership);
-        }),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((publications: Publication[]) => {
-        this.publications = publications;
-      });
+      // this.publicationService.getMyPublications()
+      // .pipe(
+      //   map((publications: Publications) => {
+      //     return publications.owned.concat(publications.membership);
+      //   }),
+      //   takeUntil(this.unsubscribe$)
+      // )
+      // .subscribe((publications: Publication[]) => {
+      //   this.publications = publications;
+      // });
 
       this.loadingOnSave = false;
       this.errorService.errorEventEmiter
@@ -710,10 +720,14 @@ export class NewcontentComponent implements OnInit, OnDestroy {
         });
       }
 
-      this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
-      const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+      let contentData = `${contentTitle} ${uploadedContentHtml}`;
+      if (this.mainCoverImageUri && this.mainCoverImageUrl) {
+        this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
+        const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+        contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
+      }
 
-      const contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
+      console.log(this.contentUris, this.mainCoverImageUri, this.mainCoverImageUrl);
 
       this.isContentUpLoading = true;
       this.isSubmited = true;
@@ -729,7 +743,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
               return this.submitContent(contentData, password);
             })
           ).subscribe(data => {
-          console.log('signFiles - ', data);
           this.afterContentSubmit();
         });
       } else {
