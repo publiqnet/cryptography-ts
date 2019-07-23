@@ -18,8 +18,14 @@
                 <ui-button className="button button--large" size="large" text="Sign up"></ui-button>
             </div>
             <div class="publications">
-                <ui-publication-list [data]="publicationData"></ui-publication-list>
+                <ui-publication-list [countByPage]="3" [data]="publicationData"></ui-publication-list>
             </div>
+        </div>
+    </div>
+    <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
+    <div class="row">
+        <div class="col-lg-8 col-xl-9 stories" ngx-masonry [options]="myOptions">
+            <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray.slice(0, 8);"></ui-content-single>
         </div>
     </div>
     <ui-relevant-content [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
