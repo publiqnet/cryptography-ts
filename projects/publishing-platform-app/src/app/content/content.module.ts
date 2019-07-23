@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 import { EditDraftComponent } from './edit-draft/edit-draft.component';
 import { EditContentComponent } from './edit-content/edit-content.component';
 import { contentRoutes } from './content-routing.module';
+import { NgxUsefulSwiperModule } from 'ngx-useful-swiper';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { contentRoutes } from './content-routing.module';
     // SwiperModule,
     TranslateModule.forChild(),
     RouterModule.forChild(contentRoutes),
+    NgxUsefulSwiperModule
   ],
   declarations: [
     MycontentComponent,
