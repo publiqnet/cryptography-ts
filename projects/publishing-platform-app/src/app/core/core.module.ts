@@ -14,7 +14,6 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { ArticleComponent } from './article/article.component';
 import { TemplateComponent } from './template/template.component';
 import { HeaderComponent } from './header/header.component';
-import { HeaderToolbarComponent } from './header-toolbar/header-toolbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { AuthguardService } from './services/authguard.service';
 import { AccountService } from './services/account.service';
@@ -48,6 +47,7 @@ import { HttpRpcService } from './services/httpRpc.service';
 import { DraftService } from './services/draft.service';
 import { CryptService } from './services/crypt.service';
 import { ArticleOldComponent } from './article-old/article-old.component';
+import { HomepageOldComponent } from './homepage-old/homepage-old.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -78,11 +78,11 @@ export function createTranslateLoader(http: HttpClient) {
     ],
     declarations: [
         HomepageComponent,
+        HomepageOldComponent,
         ArticleComponent,
         ArticleOldComponent,
         TemplateComponent,
         HeaderComponent,
-        HeaderToolbarComponent,
         FooterComponent,
         TagListComponent,
         ConfirmDialogComponent,

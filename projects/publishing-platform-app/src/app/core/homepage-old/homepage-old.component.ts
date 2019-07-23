@@ -19,11 +19,11 @@ declare var $: any;
 const IMAGE_GIF = 'gif';
 
 @Component({
-  selector: 'app-homepage',
-  templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss']
+  selector: 'app-homepage-old',
+  templateUrl: './homepage-old.component.html',
+  styleUrls: ['./homepage-old.component.scss']
 })
-export class HomepageComponent implements OnInit, OnDestroy {
+export class HomepageOldComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
