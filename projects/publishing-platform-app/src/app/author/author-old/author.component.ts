@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { debounceTime, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { ArticleService } from '../../core/services/article.service';
 import { Account } from '../../core/services/models/account';
@@ -15,7 +15,6 @@ import { SeoService } from '../../core/services/seo.service';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { DialogService } from '../../core/services/dialog.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
-import { ContentService } from '../../core/services/content.service';
 
 @Component({
   selector: 'app-author',
@@ -31,46 +30,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
   canFollow = true;
   yourAccount = false;
   articlesLoaded = false;
-  resetStartBlock = false;
-  public publishedContent: Content[] = [];
-  editedContents = [];
-  public contentData = {
-    slug: '5ceb9fc82765246c6cc55b47',
-    author: {
-      slug: '1.0.2',
-      first_name: 'Gohar',
-      last_name: 'Avetisyan',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
-    },
-    created: '11 dec 2019',
-    published: '12 dec 2019',
-    title: 'In the flesh: translating 2d scans into 3d prints',
-    tags: [
-      '2017',
-      'DEVELOPER',
-      'FULLSTACK'
-    ],
-    image: 'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-    publication: {
-      'title': 'UX Planet',
-      'slug': 'ux_planet'
-    },
-    view_count: '1K'
-  };
+
   private unsubscribe$ = new ReplaySubject<void>(1);
-  selectedTab: string;
-  tabs = [
-    {
-      'value': '1',
-      'text': 'Stories',
-      'active': false
-    },
-    {
-      'value': '2',
-      'text': 'Drafts',
-      'active': true
-    }
-  ];
+
   author: Account;
   authorStories: Content[];
   lastLoadedStories: Content[];
@@ -90,7 +52,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     public dialogService: DialogService,
     private errorService: ErrorService,
     private seo: SeoService,
-    private contentService: ContentService,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Optional() @Inject(REQUEST) private request: any
   ) {
@@ -121,6 +82,56 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe((author: Account) => {
         this.initAuthorData(author);
       }, error => this.errorService.handleError('loadAuthorData', error));
+
+    this.errorService.errorEventEmiter
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: ErrorEvent) => {
+          if (data.action === 'loadAuthorData') {
+            this.router.navigate(['/page-not-found']);
+          } else if (data.action == 'loadAuthorStories') {
+            console.log('--error--', data.message);
+          } else if (['follow', 'unfollow'].includes(data.action)) {
+            this.notification.error(data.message);
+          }
+        }
+      );
+
+    this.articleService.authorContentsChanged
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(data => {
+          console.log('articleService.authorContentsChanged');
+          // if (stories && stories.length) {
+          //
+          //   if (stories.length > this.storiesDefaultCount) {
+          //     const lastIndex = stories.length - 1;
+          //     if (stories[lastIndex].id !== this.startFromBlock) {
+          //       this.startFromBlock = stories[lastIndex].id;
+          //       stories.pop();
+          //     }
+          //   }
+          //
+          //   this.lastLoadedStories = stories;
+          //   this.articlesLoaded = true;
+          //   this.authorStories = (this.authorStories && this.authorStories.length) ? this.authorStories.concat(stories) : stories;
+          //   this.seeMoreChecker = (stories.length >= this.storiesDefaultCount)/* && (this.authorStories.length < this.authorStats.articlesCount)*/;
+          // } else {
+          //   this.loadingAuthor = false;
+          //   this.articlesLoaded = true;
+          // }
+          // this.seeMoreLoading = false;
+        }
+      );
+
+    // this.accountService.authorStatsDataChanged.subscribe((data: AuthorStats) => {
+    //     this.authorStats = data;
+    //     this.canFollow = data && (data.isSubscribed == 0 || data.isSubscribed == -1);
+    //   }
+    // );
+
     this.accountService.followAuthorChanged
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -157,45 +168,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           }
         }
       );
-
-    if (this.accountService.accountInfo && this.accountService.accountInfo.publicKey) {
-      this.articleService.getMyStories(this.accountService.accountInfo.publicKey, this.startFromBlock, this.storiesDefaultCount + 1);
-      // this.accountService.loadAuthorStats(this.accountService.accountInfo.publicKey);
-
-      this.contentService.pendingProcess.pipe(takeUntil(this.unsubscribe$)).subscribe((res: boolean) => {
-        this.startFromBlock = '0.0.0';
-        this.resetStartBlock = true;
-        this.articleService.getMyStories(
-          this.accountService.accountInfo.publicKey, this.startFromBlock, this.storiesDefaultCount + 1
-        );
-      });
-    }
-
-    this.contentService.getMyContents()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((contents: any) => {
-        this.publishedContent = contents.data;
-        this.editContents();
-      });
-
-    this.errorService.errorEventEmiter
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: ErrorEvent) => {
-          if (data.action === 'loadAuthorData') {
-            this.router.navigate(['/page-not-found']);
-          } else if (data.action == 'loadAuthorStories') {
-            console.log('--error--', data.message);
-          } else if (['follow', 'unfollow'].includes(data.action)) {
-            this.notification.error(data.message);
-          } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-            this.notification.error(data.message);
-          }
-        }
-      );
   }
 
   initAuthorData(author) {
@@ -220,6 +192,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.canFollow = this.author.isSubscribed == 0 || this.author.isSubscribed == -1;
     this.loadingAuthor = false;
     this.articlesLoaded = true;
+  }
+
+  seeMore() {
+    this.seeMoreLoading = true;
+    this.articleService.loadAuthorStories(this.authorId, this.storiesDefaultCount + 1, this.startFromBlock);
   }
 
   checkImageHashExist() {
@@ -295,48 +272,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.authorStories = [];
     this.articlesLoaded = false;
     this.yourAccount = false;
-  }
-
-  tabChange(e) {
-    console.log(e);
-    this.selectedTab = e;
-  }
-
-  accountClick(e) {
-    console.log(e);
-  }
-
-  publicationClick(e) {
-    console.log(e);
-  }
-
-  tagClick(e) {
-    console.log(e);
-  }
-
-  contentClick(e) {
-    console.log(e);
-  }
-
-  editContents() {
-    console.log(this.publishedContent);
-    this.editedContents = this.publishedContent.slice(0)
-      .map(
-        (content: any) => {
-          return {
-            title: content.title,
-            slug: content.uri,
-            image: content.cover ? content.cover.url : null,
-            author : {
-              slug: content.author.address,
-              first_name: content.author.firstName,
-              image: content.author.image,
-              last_name: content.author.lastName
-            }
-          };
-        }
-      );
-    console.log(this.editedContents);
   }
 
   ngOnDestroy() {

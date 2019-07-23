@@ -44,14 +44,29 @@
         </div>
     </div>
 </div>
-<div class="inner-wrap">
-  <ui-tab [className]="" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
-  <div *ngIf="selectedTab == '1' && editedContents.length" class="text-center">
-    <div *ngFor="let data of editedContents">
-      <ui-content-single [type]="'single'" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)" (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)" [contentData]="data"></ui-content-single>
-    </div>
-  </div>
-  <div *ngIf="selectedTab == '2'">
 
-  </div>
+<div *ngIf="((authorStories && authorStories.length || loadingAuthor) && articlesLoaded);else no_content">
+    <app-article-card-list [articles]="authorStories" [hasSeparator]="false" [calculateViewCount]="true"></app-article-card-list>
+    <div class="text-center mt-3" *ngIf="seeMoreChecker">
+        <div class="empty" *ngIf="seeMoreLoading">
+            <div style="display: inline-block">
+                <mat-spinner></mat-spinner>
+            </div>
+        </div>
+
+        <button [hidden]="seeMoreLoading" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="seeMore()">
+            {{'wallet.see_more' | translate}}
+        </button>
+    </div>
 </div>
+
+<mat-spinner style="margin: 50px auto;" *ngIf="!loadingAuthor && !articlesLoaded"></mat-spinner>
+
+<ng-template #no_content>
+    <div *ngIf="!loadingAuthor && articlesLoaded">
+        <div class="empty">
+            <img src="/assets//no-materials.svg" alt="">
+            <p>{{'author.no_content' | translate}}</p>
+        </div>
+    </div>
+</ng-template>
