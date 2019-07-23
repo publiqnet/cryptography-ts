@@ -2,13 +2,13 @@
       *ngIf="!isContentUpLoading && contentForm">
   <div class="create-content">
     <div class="post-cover no-gutters row" [ngClass]="{'has-photo': (mainCoverImageChecker && coverImages.length)}">
-      <!--<swiper *ngIf="isBrowser" [hidden]="!mainCoverImageChecker || !coverImages.length" [config]="coverSwiperConfig"-->
-              <!--class="thumbnail-swiper" #coverGallery>-->
-        <!--<div class="swiper-wrapper">-->
-          <!--<div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of coverImages"-->
-               <!--[ngStyle]="{'background-image': 'url(' + image + ')'}"></div>-->
-        <!--</div>-->
-      <!--</swiper>-->
+      <swiper *ngIf="isBrowser" [hidden]="!mainCoverImageChecker || !coverImages.length" [config]="coverSwiperConfig"
+              class="thumbnail-swiper" #coverGallery>
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of coverImages"
+               [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
+        </div>
+      </swiper>
       <div class="post-cover-wrapper">
         <div class="author-avatar hidden-xs-down">
           {{checkImageHashExist() | json}}
