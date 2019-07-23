@@ -12,7 +12,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public contentArray = [];
 
   public myOptions: NgxMasonryOptions = {
-    transitionDuration: '0.8s'
+    transitionDuration: '0s'
   };
 
   constructor(
