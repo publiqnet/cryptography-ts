@@ -26,7 +26,6 @@
             "styles": [
               "projects/publishing-platform-app/src/styles.scss",
               "projects/publishing-platform-app/src/assets/css/publiq.icons.css",
-              "projects/publishing-platform-app/src/assets/css/reset.css",
               "projects/publishing-platform-app/src/assets/css/icon.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/froala-editor/css/froala_editor.pkgd.css",
