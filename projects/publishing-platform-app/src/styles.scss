@@ -39,6 +39,27 @@ a {
   }
 }
 
+.shadowed-heading {
+  position: relative;
+  font: 700 20px/45px $open-sans;
+  text-transform: uppercase;
+  color: $blue;
+  margin: 35px 0;
+
+  &:after {
+    content: attr(data-shadow-text);
+    color: pbq-color($grey, 100);
+    font: 700 45px/45px $open-sans;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: -1;
+  }
+}
+
+
+
+/// OLD CSS BELOW
+
 .top-fix {
   margin-top: 100px;
 }

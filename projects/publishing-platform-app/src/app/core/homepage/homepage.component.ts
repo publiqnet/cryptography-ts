@@ -12,8 +12,74 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public contentArray = [];
 
   public myOptions: NgxMasonryOptions = {
-    transitionDuration: '0s'
+    transitionDuration: '0s',
+    itemSelector: '.story--grid',
+    gutter: 10
   };
+
+  public publicationData = [
+    {
+      'title': 'UX Topics 1',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': '',
+      'cover': '',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': true,
+      'status': 0
+    },
+    {
+      'title': 'UX Topics 2',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': '',
+      'cover': '',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': true,
+      'status': 0
+    },
+    {
+      'title': 'UX Topics 3',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': 'http://via.placeholder.com/120x120',
+      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': false,
+      'status': 0
+    },
+    {
+      'title': 'UX Topics 4',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': 'http://via.placeholder.com/120x120',
+      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': false,
+      'status': 0
+    },
+    {
+      'title': 'UX Topics 5',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': 'http://via.placeholder.com/120x120',
+      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': false,
+      'status': 0
+    },
+    {
+      'title': 'UX Topics 6',
+      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+      'logo': 'http://via.placeholder.com/120x120',
+      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+      'slug': 'ux_topics',
+      'subscribers': 1234,
+      'following': false,
+      'status': 0
+    }
+  ];
+
 
   constructor(
     private router: Router,
