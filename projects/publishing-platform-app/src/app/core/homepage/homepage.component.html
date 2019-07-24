@@ -3,7 +3,7 @@
         <div class="col-lg-8 col-xl-9">
             <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
         </div>
-        <div class="col-lg-8 col-xl-9 stories" ngx-masonry [options]="myOptions">
+        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
             <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray;"></ui-content-single>
         </div>
         <div class="col-lg-4 col-xl-3">
@@ -24,7 +24,7 @@
     </div>
     <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
     <div class="row">
-        <div class="col-lg-8 col-xl-9 stories" ngx-masonry [options]="myOptions">
+        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" ngx-masonry [options]="myOptions">
             <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray.slice(0, 8);"></ui-content-single>
         </div>
     </div>

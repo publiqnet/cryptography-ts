@@ -129,8 +129,9 @@
 }
 
 .stories {
-  ngx-masonry {
-    //margin: 0 -5px;
+  visibility: hidden;
+  &.masonry {
+    visibility: visible;
   }
 }
 

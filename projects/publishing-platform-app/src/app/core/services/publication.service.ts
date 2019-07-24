@@ -47,7 +47,7 @@ export class PublicationService {
 
   getMyPublications: () => Observable<any> = () => {
     const callData: any = this.observers['getMyPublications'];
-    return this.httpObserverService.observerCall(callData.name, this.httpHelper.call(HttpMethodTypes.get, this.url + 's')
+    return this.httpObserverService.observerCall(callData.name, this.httpHelper.call(HttpMethodTypes.get, this.url + 's-related')
       .pipe(
         filter(data => data != null),
         map((data: IPublications) => new Publications(data)),
@@ -56,7 +56,7 @@ export class PublicationService {
   }
 
   getMyPublicationsByType = (type: string) => {
-    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's' + `/${type}`)
+    return this.httpHelper.call(HttpMethodTypes.get, this.url + 's-related' + `/${type}`)
       .pipe(map((data: IPublications) => new Publications(data)));
   }
 
@@ -126,7 +126,7 @@ export class PublicationService {
 
   cancelInvitation = (body: any): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`, );
 
-  getArticlePublication = (dsArray: any[]): Observable<any> => this.httpHelper.customCall(HttpMethodTypes.post, this.url + 's', {articles: dsArray});
+  getArticlePublication = (dsArray: any[]): Observable<any> => this.httpHelper.customCall(HttpMethodTypes.post, this.url + 's-related', {articles: dsArray});
 
   loadStoriesPublicationByDsId(dsArray: string[], forPage: PageOptions = PageOptions.default): void {
     // const url = environment.backend + '/api/v1/content/publications';
