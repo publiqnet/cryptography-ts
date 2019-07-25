@@ -79,7 +79,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
       'status': 0
     }
   ];
-
+  public isMasonryLoaded = false;
 
   constructor(
     private router: Router,
@@ -136,6 +136,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
         },
         'view_count': '1K'
       });
+    }
+  }
+
+  onLayoutComplete(event) {
+    if (event && event.length > 1) {
+      this.isMasonryLoaded = true;
     }
   }
 
