@@ -1,72 +1,93 @@
 <div class="vh-centered" *ngIf="loadingAuthor">
-    <mat-spinner></mat-spinner>
+  <mat-spinner></mat-spinner>
 </div>
-
 <div class="author-header-wrap profile-bg" *ngIf="!loadingAuthor" style="    background: white;">
-    <div class="inner-wrap title-wrap" >
-      <div class="background vh-centered" ></div>
+  <div class="inner-wrap title-wrap">
+    <div class="background vh-centered"></div>
 
-      <div class="avatar-wrap">
-            <div class="avatar"  [ngStyle]="{'background-image': checkImageHashExist() ? 'url(' + avatarUrl + ')' : 'url(/assets/no-image-article.jpg)'}">
-                <span *ngIf="(checkImageHashExist() == false && shortName)" class="vh-centered">{{shortName}}</span>
-            </div>
-        </div>
-        <div style="z-index: 1;position: relative;">
-            <h1 id="a-title">{{ author?.firstName }} {{ author?.lastName }}</h1>
-
-            <h3>
-                {{'author.rating' | translate}} <span>{{author && author.rating ? author.rating.toFixed(1) : 0}}</span>
-                {{'author.followers' | translate}} <span id="followers-count">{{author && author.subscribersCount ? author.subscribersCount : 0}}</span>
-                {{'author.stories' | translate}} <span>{{author && author.articlesCount ? author.articlesCount : 0}}</span>
-                {{'author.views' | translate}} <span>{{author && author.views ? author.views : 0}}</span>
-            </h3>
-
-            <!--<h3>
-                &lt;!&ndash;ID <span>{{author?.id}}</span>&ndash;&gt;
-                {{'author.account_address' | translate}} <span class="acc-name">{{ author?.name }}</span>
-            </h3>-->
-
-            <div *ngIf="author && !yourAccount; else settings" class="text-center text-md-left mt-3">
-                <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
-                    <i class="mr-2" [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-                    <span>{{(canFollow ? 'author.follow' : 'author.unfollow') | translate}}</span>
-                </div>
-            </div>
-            <ng-template #settings>
-                <div class="text-center text-md-left mt-3">
-                    <div [routerLink]="['/user/settings']" class="follow-button">
-                        <i class="icon-settings mr-1"></i>
-                        <span>{{"header.settings" | translate}}</span>
-                    </div>
-                </div>
-            </ng-template>
-
-        </div>
+    <div class="avatar-wrap">
+      <div class="avatar"
+           [ngStyle]="{'background-image': checkImageHashExist() ? 'url(' + avatarUrl + ')' : 'url(/assets/no-image-article.jpg)'}">
+        <span *ngIf="(checkImageHashExist() == false && shortName)" class="vh-centered">{{shortName}}</span>
+      </div>
     </div>
+    <div style="z-index: 1;position: relative;">
+      <h1 id="a-title">{{ author?.firstName }} {{ author?.lastName }}</h1>
+
+      <h3>
+        {{'author.rating' | translate}} <span>{{author && author.rating ? author.rating.toFixed(1) : 0}}</span>
+        {{'author.followers' | translate}} <span
+        id="followers-count">{{author && author.subscribersCount ? author.subscribersCount : 0}}</span>
+        {{'author.stories' | translate}} <span>{{author && author.articlesCount ? author.articlesCount : 0}}</span>
+        {{'author.views' | translate}} <span>{{author && author.views ? author.views : 0}}</span>
+      </h3>
+
+      <!--<h3>
+          &lt;!&ndash;ID <span>{{author?.id}}</span>&ndash;&gt;
+          {{'author.account_address' | translate}} <span class="acc-name">{{ author?.name }}</span>
+      </h3>-->
+
+      <div *ngIf="author && !yourAccount; else settings" class="text-center text-md-left mt-3">
+        <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
+          <i class="mr-2" [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
+          <span>{{(canFollow ? 'author.follow' : 'author.unfollow') | translate}}</span>
+        </div>
+      </div>
+      <ng-template #settings>
+        <div class="text-center text-md-left mt-3">
+          <div [routerLink]="['/user/settings']" class="follow-button">
+            <i class="icon-settings mr-1"></i>
+            <span>{{"header.settings" | translate}}</span>
+          </div>
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
 </div>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-xl-9 stories">
+      <ui-tab [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
+      <div *ngIf="selectedTab == '1' && editedContents.length" class="text-center">
+        <div *ngFor="let data of editedContents">
+          <ui-content-single [type]="listType" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)"
+                             (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)"
+                             [contentData]="data"></ui-content-single>
+        </div>
+      </div>
+      <div *ngIf="selectedTab == '2'">
+        <div style="padding: 50px 5px;" class="main-container clearfix"
+             *ngIf="drafts && drafts.length > 0;else no_content">
+          <mat-card class="post closed clearfix" *ngFor="let oDraft of drafts; let index = index">
+            <div class="card-info">
+              <div class="title-space">
+                  <span class="pointer" (click)="editDraft(oDraft.id)"
+                        style="font-weight: normal; font-size: 24px; margin-bottom: 24px;"> {{oDraft.title}} </span>
+                <div class="edit" style="float: right">
+                  <a (click)="editDraft(oDraft.id)">
+                    <i class="icon-edit"></i>
+                  </a>
+                  <a (click)="deleteDraft(oDraft.id, index)" class="delete-item">
+                    <i class="icon-delete"></i>
+                  </a>
+                </div>
+              </div>
 
-<div *ngIf="((authorStories && authorStories.length || loadingAuthor) && articlesLoaded);else no_content">
-    <app-article-card-list [articles]="authorStories" [hasSeparator]="false" [calculateViewCount]="true"></app-article-card-list>
-    <div class="text-center mt-3" *ngIf="seeMoreChecker">
-        <div class="empty" *ngIf="seeMoreLoading">
-            <div style="display: inline-block">
-                <mat-spinner></mat-spinner>
+              <div class="date-space">
+                <i class="icon-uploaded"></i>
+                <span>
+                                        {{'content.created' | translate}}:
+                  {{oDraft.lastModifiedDate * 1000 | date:'HH:mm '}}
+                  {{('months.' + ((oDraft.lastModifiedDate * 1000) | date:'MMM') | translate)}},
+                  {{(oDraft.lastModifiedDate * 1000) | date: ' dd, y'}}
+                                    </span>
+              </div>
+
             </div>
+          </mat-card>
         </div>
-
-        <button [hidden]="seeMoreLoading" class="button button-fill text-uppercase font-weight-bold" tabindex="0" (click)="seeMore()">
-            {{'wallet.see_more' | translate}}
-        </button>
+      </div>
     </div>
+  </div>
 </div>
-
-<mat-spinner style="margin: 50px auto;" *ngIf="!loadingAuthor && !articlesLoaded"></mat-spinner>
-
-<ng-template #no_content>
-    <div *ngIf="!loadingAuthor && articlesLoaded">
-        <div class="empty">
-            <img src="/assets//no-materials.svg" alt="">
-            <p>{{'author.no_content' | translate}}</p>
-        </div>
-    </div>
-</ng-template>
