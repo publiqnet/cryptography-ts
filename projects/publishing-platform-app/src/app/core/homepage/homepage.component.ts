@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxMasonryOptions } from 'ngx-masonry';
 
@@ -10,6 +10,7 @@ import { NgxMasonryOptions } from 'ngx-masonry';
 export class HomepageComponent implements OnInit, OnDestroy {
 
   public contentArray = [];
+  public isMasonryLoaded = false;
 
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
@@ -79,7 +80,6 @@ export class HomepageComponent implements OnInit, OnDestroy {
       'status': 0
     }
   ];
-  public isMasonryLoaded = false;
 
   constructor(
     private router: Router,

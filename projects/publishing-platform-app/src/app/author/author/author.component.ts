@@ -18,6 +18,7 @@ import { AuthorStats } from '../../core/services/models/authorStats';
 import { ContentService } from '../../core/services/content.service';
 import { DraftData } from '../../core/services/models/draft';
 import { DraftService } from '../../core/services/draft.service';
+import { NgxMasonryOptions } from 'ngx-masonry';
 
 @Component({
   selector: 'app-author',
@@ -26,6 +27,12 @@ import { DraftService } from '../../core/services/draft.service';
 })
 export class AuthorComponent implements OnInit, OnDestroy {
 
+  public isMasonryLoaded = false;
+  public myOptions: NgxMasonryOptions = {
+    transitionDuration: '0s',
+    itemSelector: '.story--grid',
+    gutter: 10
+  };
   private authorId: string;
   shortName;
   loadingAuthor = true;
@@ -387,6 +394,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.drafts = [];
         this.loading = false;
       });
+  }
+
+  onLayoutComplete(event) {
+    if (event && event.length > 1) {
+      this.isMasonryLoaded = true;
+    }
   }
 
   ngOnDestroy() {
