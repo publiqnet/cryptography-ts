@@ -104,3 +104,9 @@
 .empty {
   font-family: "Open Sans", sans-serif;
 }
+
+.container {
+  ::ng-deep .author-tab {
+    margin-bottom: 30px;
+  }
+}

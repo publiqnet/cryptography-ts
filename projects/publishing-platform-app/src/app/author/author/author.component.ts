@@ -37,7 +37,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   public publishedContent: Content[] = [];
   editedContents = [];
   public loading = true;
-  listType = 'single';
+  listType = 'grid';
   public drafts: Array<any>;
   public contentData = {
     slug: '5ceb9fc82765246c6cc55b47',
