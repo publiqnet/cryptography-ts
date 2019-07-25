@@ -144,7 +144,30 @@
 .button-tabber--profile {
   margin: 0 0 20px;
 }
-
+.grid-style{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  @include media-sm{
+    display: none;
+  }
+  &__items{
+    i{
+      font-size: 24px;
+      margin-left: 12px;
+      cursor: pointer;
+      color: #C1C4CB;
+      transition: .2s ease-out;
+      &:hover{
+        color: #2B2B2B;
+        transition: .2s ease-out;
+      }
+    }
+    i.selected{
+      color: #2B2B2B;
+    }
+  }
+}
 /*.stories__masonry-item {
   width: calc(100% / 3 - 15px * 2/3);
   padding: 0 10px;
