@@ -115,27 +115,6 @@ a {
   position: absolute;
 }
 
-.button {
-  padding: 10px 20px;
-  border: 1px solid #3366ff;
-  background: none;
-  display: inline-block;
-  color: #3366ff;
-  text-decoration: none;
-  font-family: "Roboto Condensed", sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  text-transform: uppercase;
-  width: 150px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.button:hover {
-  background: #3366ff;
-  color: #fff !important;
-}
-
 .drop-nav {
   width: 100%;
   max-width: 1160px;

@@ -1,111 +1,263 @@
-<ng-container *ngIf="loading; else noLoading">
-    <div class="vh-centered">
-        <mat-spinner></mat-spinner>
-    </div>
-</ng-container>
-<ng-template #noLoading>
-    <div class="author-header-wrap transparent-wrap">
-        <div class="d-flex " [ngClass]="{'for-overlay':!publication.color}">
-            <div class="background vh-centered  "
-                 [class.cover-opacity]="publication && !publication.cover && !publication.logo"
-                 [class.cover-filter]="publication && !publication.cover && !publication.logo"
-                 [style.background-image]="publication && publication.cover ? 'url(' + publication.cover + ')' : null"
-                 [style.background-color]="publication && !publication.cover ? publication.color : null">
+<div class="container">
+    <div class="row publication-cover publication-cover--editable"> <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
+        <div class="col-lg-8 offset-lg-2">
+            <div class="publication-cover__guide">
+                <div class="icon-profile upload-icon"></div>
+                <div class="publication-cover__guide__texts">
+                    <h4>Drop or upload a cover photo here!</h4>
+                    <p>JPG, PNG up to 5mb, 1400x364px recommended.</p>
+                </div>
             </div>
 
-            <div class="inner-wrap title-wrap">
-                <div class="avatar-wrap">
-                    <div class="avatar"
-                         [ngStyle]="{'background-image': publication && publication.logo ?
-                     'url(' + publication.logo + ')' : 'url(/assets/no-image-article.jpg)',
-                     'background-color':  publication?.logo ? 'white' : '#36f' }">
-                        <span *ngIf="!publication?.logo">{{publication.title | pubTitle}}</span>
+            <div class="publication-cover__actions">
+                <ui-button iconClassName="picture" text="Upload"></ui-button>
+                <ui-dropdown-list [isDark]="true" delta="0" position="top" icon="menu" [items]="coverMenuItems"></ui-dropdown-list>
+                <!-- <ui-button [iconButton]="true" size="small" iconClassName="menu"></ui-button> -->
+                <!-- <div class="button">
+                    <i class="icon-picture"></i>
+                    <span>Upload</span>
+                </div> -->
+                <!-- <div class="button button--icon button--icon--small">
+                    <i class="icon-menu"></i>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="menu menu--icon menu--dark">
+                <div class="menu__item">
+                    <i class="icon-reposition menu__icon"></i>
+                    <span class="menu__text">Reposition</span>
+                </div>
+                <div class="menu__item">
+                    <i class="icon-delete menu__icon"></i>
+                    <span class="menu__text">Delete</span>
+                </div>
+                <div class="menu__item">
+                    <i class="icon-hidden menu__icon"></i>
+                    <span class="menu__text">Hide cover</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row publication-metadata">
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar"><!-- publication-metadata__avatar--editable -->
+            <div class="avatar avatar--large avatar--squaric">
+                <img src="http://via.placeholder.com/130x130" alt="">
+            </div>
+            <!-- <i class="icon-close"></i> -->
+        </div>
+        <div class="col-lg-6 col-md-7 col">
+            <h1 class="publication-metadata__title"><span>FRESCO</span><!-- <i class="icon-edit editable-icon"></i> --></h1>
+            <h3 class="publication-metadata__description"><span>Daniel Borowski</span><!-- <i class="icon-edit editable-icon"></i> --></h3>
+        </div>
+        <div class="col-lg-2 col-md-3 col-12">
+            <div class="button button--icon">
+                <i class="icon-settings"></i>
+            </div>
+            <!-- <div class="button button--primary">
+                <i class="icon-follow"></i>
+                <span>Follow</span>
+            </div> -->
+            <!-- <div class="button">
+                <i class="icon-settings"></i>
+                <span>Edit Profile</span>
+            </div> -->
+            <!-- <div class="button button--primary">Save</div> -->
+            <!-- <div class="button">Cancel</div> -->
+            <!-- <div class="button button--icon button--icon--small">
+                <i class="icon-close"></i>
+            </div> -->
+        </div>
+    </div>
+    <div class="row publication-statistics">
+        <div class="col-lg-8 offset-lg-2 col-12 offset-0">
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Views</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Stories</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Followers</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Members</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 tabber-container">
+            <div class="button-tabber button-tabber--publication">
+                <div class="button-tabber__item button-tabber__item--active">Stories</div>
+                <div class="button-tabber__item">Followers</div>
+                <div class="button-tabber__item">Members</div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="grid-style">
+                    <div>
+                        <h4>Grid style</h4>
+                        <p>Choose the way your readers will see your stories.</p>
+                    </div>
+                    <div>
+                        <i class="grid-icon grid-icon--selected icon-multi-grid"></i>
+                        <i class="grid-icon icon-single-grid"></i>
                     </div>
                 </div>
-                <div class="pub-info-container">
-                    <h1 id="a-title">{{publication?.title}}</h1>
-                    <p class="pub-description">{{publication?.description}}</p>
-                    <h3>
-                        {{'publication.followers' | translate}}
-                        <span id="followers-count">{{subscribers ? subscribers : 0}}</span>
-                        {{'publication.articles' | translate}}
-                        <span>{{articles ? articles : 0}}</span>
-                        {{'publication.views' | translate}}
-                        <span>{{publication?.views ? publication?.views : 0}}</span>
-                        {{'publication.members' | translate}}
-                        <span>{{publication?.membersCount ? publication?.membersCount : 0}}</span>
-                    </h3>
-                    <div class="text-center text-md-left mt-3 align-middle">
-                        <ng-container *ngIf="publication.memberStatus === MemberStatus.owner">
-                            <div class="follow-button mr-5 d-inline-block align-middle" tabindex="0"
-                                 [routerLink]="['/p/edit', publication.slug]">
-                                <i class="icon-settings"></i>
-                                <span>{{'header.settings' | translate}}</span>
+            </div>
+    </div> -->
+    <!-- <div class="row">
+        <div class="stories col-12 col-lg-8 offset-lg-2">
+            <div class="story story--grid story--coverless">
+                <div class="story__image">
+                    <span class="story__image__letter">W</span>
+                </div>
+                <div class="story__data">
+                    <div class="story__tags">
+                        <a href="#">2017</a>,
+                        <a href="#">Developer</a>,
+                        <a href="#">Fullstack</a>
+                    </div>
+                    <a href="#"><h4 class="story__title">A Guide to Becoming a Full-Stack Developer in 2017</h4></a>
+                    <div class="story__meta">
+                        <div class="avatar">
+                            <span>DB</span>
+                        </div>
+                        <div class="story__meta-info">
+                            <div class="story__meta-info__author">
+                                <a href="#">Daniel Borowski</a>
+                                <em>in</em>
+                                <a href="#">Design planet</a>
                             </div>
-                        </ng-container>
-
-                        <ng-container
-                                *ngIf="![MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else iAmMember">
-                            <div class="d-inline-block follow-button align-middle ">
-                                <ng-container *ngIf="publication.memberStatus === MemberStatus.no_info">
-                                <span class="mr-5">
-                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                    <span (click)="requestBecomeMember(publication?.slug)">{{'publication.become_member' | translate}}</span>
-                                </span>
-                                </ng-container>
-
-                                <ng-container  *ngIf="publication.memberStatus === MemberStatus.requested_to_be_a_contributor">
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span class="align-middle core-cancel" (click)="cancelBecomeMember(publication?.slug)">
-                                            {{'core.cancel' | translate}}
-                                        </span>
-                                    </span>
-                                </ng-container>
-
-                                <ng-container *ngIf="[MemberStatus.invited_to_be_a_contributor, MemberStatus.invited_to_be_an_editor].includes(publication.memberStatus)">
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span (click)="acceptInvitationBecomeMember(publication?.slug)">
-                                            {{'publication.become_member' | translate}}
-                                        </span>
-                                    </span>
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span class="align-middle core-cancel" (click)="rejectInvitationBecomeMember(publication?.slug)">
-                                            {{'core.cancel' | translate}}
-                                        </span>
-                                    </span>
-                                </ng-container>
+                            <div class="story__meta-info__date">
+                                <span>11 Dec 2018</span>
+                                <div class="story__meta-info__views">
+                                    <i class="icon-preview"></i>
+                                    <span>1K</span>
+                                </div>
                             </div>
-                        </ng-container>
-
-                        <ng-template #iAmMember>
-                            <div class="d-inline-block follow-button align-middle noHover">
-                                <span class="mr-5 ">{{'content.you_are_member' | translate}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="story story--grid" spasm="6">
+                <div class="story__image">
+                    <img src="http://via.placeholder.com/400x250">
+                    <div class="story__image__views">
+                        <i class="icon-preview"></i>
+                        <span>1K</span>
+                    </div>
+                    <div class="story__image__like">
+                        <i class="icon-like"></i>
+                    </div>
+                </div>
+                <div class="story__data">
+                    <div class="story__tags">
+                        <a href="#">2017</a>,
+                        <a href="#">Developer</a>,
+                        <a href="#">Fullstack</a>
+                    </div>
+                    <a href="#"><h4 class="story__title">A Guide to Becoming a Full-Stack Developer in 2017</h4></a>
+                    <div class="story__meta">
+                        <div class="avatar">
+                            <span>DB</span>
+                        </div>
+                        <div class="story__meta-info">
+                            <div class="story__meta-info__author">
+                                <a href="#">Daniel Borowski</a>
+                                <em>in</em>
+                                <a href="#">Design planet</a>
                             </div>
-                        </ng-template>
-
-                        <div *ngIf="publication"
-                             class="text-center text-md-left mr-5 d-inline-block align-middle follow-button">
-                            <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
-                                <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-                                <span>{{(canFollow ? 'publication.follow' : 'publication.unfollow') | translate}}</span>
+                            <div class="story__meta-info__date">
+                                <span>11 Dec 2018</span>
+                                <div class="story__meta-info__views">
+                                    <i class="icon-preview"></i>
+                                    <span>1K</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="story__meta-single-actions">
+                            <div class="button button--icon">
+                                <i class="icon-like"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <ng-container *ngIf="[MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else notMember">
-            <app-manage-publication [publication]="publication"></app-manage-publication>
-        </ng-container>
-
-        <ng-template #notMember>
-            <p>List of articles when you are not a member of the publication</p>
-        </ng-template>
-
+    </div> -->
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 tab-heading tab-heading--members">
+            <h2>Members</h2>
+            <div class="tab-heading__inner">
+                <i class="icon-search"></i>
+                <input type="text">
+            </div>
+            <div class="button">Invite Member</div>
+        </div>
     </div>
-</ng-template>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="followers col-12">
+            <div spasm="2">
+                <div class="user-card" spasm="6">
+                    <div class="user-card__upper-menu button button--icon button--icon--xsmall">
+                        <i class="icon-menu"></i>
+                    </div>
+                    <div class="user-card__image">
+                        <div class="avatar avatar--large">
+                            <img src="http://via.placeholder.com/90">
 
+                            <div class="avatar__sub">
+                                <div class="button button--icon button--icon--xsmall">
+                                    <i class="icon-follow"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="user-card__name">Marti Valencia</h4>
+                    <p class="user-card__role">Editor <i class="icon-arrow-up-stroke"></i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
+            <div class="tabber">
+                <div class="tabber__item">Requests <small>(2)</small></div>
+                <div class="tabber__item">Pending</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 requests">
+            <div class="requests__item" spasm="6">
+                <div class="requests__item__avatar">
+                    <div class="avatar">
+                        <img src="http://via.placeholder.com/90">
+                    </div>
+                </div>
+                <div class="requests__item__name">
+                    <h3>Amolika Shaikh</h3>
+                </div>
+                <div class="requests__item__actions">
+                    <div class="button button--primary">Confirm</div>
+                    <div class="button">Delete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
