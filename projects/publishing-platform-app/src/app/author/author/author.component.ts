@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { debounceTime, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { ArticleService } from '../../core/services/article.service';
 import { Account } from '../../core/services/models/account';
@@ -16,6 +16,8 @@ import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { DialogService } from '../../core/services/dialog.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 import { ContentService } from '../../core/services/content.service';
+import { DraftData } from '../../core/services/models/draft';
+import { DraftService } from '../../core/services/draft.service';
 
 @Component({
   selector: 'app-author',
@@ -34,6 +36,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
   resetStartBlock = false;
   public publishedContent: Content[] = [];
   editedContents = [];
+  public loading = true;
+  listType = 'single';
+  public drafts: Array<any>;
   public contentData = {
     slug: '5ceb9fc82765246c6cc55b47',
     author: {
@@ -91,6 +96,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     private errorService: ErrorService,
     private seo: SeoService,
     private contentService: ContentService,
+    private draftService: DraftService,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Optional() @Inject(REQUEST) private request: any
   ) {
@@ -298,8 +304,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   tabChange(e) {
-    console.log(e);
     this.selectedTab = e;
+    if (e == 2 && !this.drafts ) {
+      this.loading = true;
+      this.getDrafts();
+    }
   }
 
   accountClick(e) {
@@ -319,7 +328,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   editContents() {
-    console.log(this.publishedContent);
     this.editedContents = this.publishedContent.slice(0)
       .map(
         (content: any) => {
@@ -336,7 +344,49 @@ export class AuthorComponent implements OnInit, OnDestroy {
           };
         }
       );
-    console.log(this.editedContents);
+  }
+
+  getDrafts() {
+    this.draftService.getUserDrafts()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((drafts: DraftData[]) => {
+        this.drafts = drafts;
+        this.loading = false;
+      });
+  }
+
+  deleteDraft(id: number, index: number) {
+    this.dialogService.openConfirmDialog('')
+      .pipe(
+        filter(result => result),
+        switchMap(() => this.draftService.delete(id)),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+        if (this.drafts && index in this.drafts) {
+          this.drafts.splice(index, 1);
+        }
+      });
+  }
+
+  editDraft(id: string) {
+    this.router.navigate([`/content/editdraft/${id}`]);
+  }
+
+  deleteAllDrafts() {
+    this.dialogService.openConfirmDialog('')
+      .pipe(
+        filter(result => result),
+        tap(() => this.loading = true),
+        switchMap(() => this.draftService.deleteAll()),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+        this.drafts = [];
+        this.loading = false;
+      });
   }
 
   ngOnDestroy() {

@@ -48,10 +48,39 @@
   <ui-tab [className]="" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
   <div *ngIf="selectedTab == '1' && editedContents.length" class="text-center">
     <div *ngFor="let data of editedContents">
-      <ui-content-single [type]="'single'" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)" (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)" [contentData]="data"></ui-content-single>
+      <ui-content-single [type]="listType" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)" (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)" [contentData]="data"></ui-content-single>
     </div>
   </div>
   <div *ngIf="selectedTab == '2'">
+    <div style="padding: 50px 5px;" class="main-container clearfix"
+         *ngIf="drafts && drafts.length > 0;else no_content">
+      <mat-card class="post closed clearfix" *ngFor="let oDraft of drafts; let index = index">
+        <div class="card-info">
+          <div class="title-space">
+                  <span class="pointer" (click)="editDraft(oDraft.id)"
+                        style="font-weight: normal; font-size: 24px; margin-bottom: 24px;"> {{oDraft.title}} </span>
+            <div class="edit" style="float: right">
+              <a (click)="editDraft(oDraft.id)">
+                <i class="icon-edit"></i>
+              </a>
+              <a (click)="deleteDraft(oDraft.id, index)" class="delete-item">
+                <i class="icon-delete"></i>
+              </a>
+            </div>
+          </div>
 
+          <div class="date-space">
+            <i class="icon-uploaded"></i>
+            <span>
+                                        {{'content.created' | translate}}:
+              {{oDraft.lastModifiedDate * 1000 | date:'HH:mm '}}
+              {{('months.' + ((oDraft.lastModifiedDate * 1000) | date:'MMM') | translate)}},
+              {{(oDraft.lastModifiedDate * 1000) | date: ' dd, y'}}
+                                    </span>
+          </div>
+
+        </div>
+      </mat-card>
+    </div>
   </div>
 </div>
