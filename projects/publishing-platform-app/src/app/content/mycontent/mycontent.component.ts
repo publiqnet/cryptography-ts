@@ -163,16 +163,16 @@ export class MycontentComponent implements OnInit, OnDestroy {
     //   this.loading = false;
     // });
 
-    this.publicationService.getMyPublications()
-      .pipe(
-        map((publications: Publications) => {
-          return publications.owned.concat(publications.membership);
-        }),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((publications: Publication[]) => {
-        this.publications = publications;
-      });
+    // this.publicationService.getMyPublications()
+    //   .pipe(
+    //     map((publications: Publications) => {
+    //       return publications.owned.concat(publications.membership);
+    //     }),
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe((publications: Publication[]) => {
+    //     this.publications = publications;
+    //   });
   }
 
   seeMore() {

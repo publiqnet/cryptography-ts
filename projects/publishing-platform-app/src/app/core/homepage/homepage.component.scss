@@ -9,6 +9,12 @@
   background-color: #fff;
 }
 
+:host {
+  ::ng-deep .relevant-content__heading {
+    margin: 50px 0 0 0;
+  }
+}
+
 .topic-cards {
   padding: 35px calc(50% - 655px) 0;
   white-space: nowrap;
@@ -99,6 +105,10 @@
     background-color: rgba(#fff, .15);
     color: #ffffff;
 
+    &:focus {
+      background-color: rgba(#fff, .15);
+    }
+
     &::placeholder {
       color: #ffffff;
     }
@@ -111,36 +121,22 @@
     font-weight: 600;
     border-width: 0;
     height: 45px;
+
+    &:hover {
+      color: $blue!important;
+    }
+  }
+}
+
+.stories {
+  ngx-masonry {
+    //margin: 0 -5px;
   }
 }
 
 .publications {
   width: 100%;
-  padding: 25px 15px 25px 25px;
-
-  &__heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .icon-arrow-up {
-    display: inline-block;
-    font-size: 15px;
-  }
-
-  .arrow {
-    &--left  { transform: rotate(-90deg); }
-    &--right { transform: rotate(90deg); margin-left: 15px; }
-    &--inactive { color: pbq-color($grey, 400); }
-  }
-
-  h4 {
-    font: 700 15px/22px $open-sans;
-    color: $blue;
-    margin: 0;
-    text-transform: uppercase;
-  }
+  padding: 25px 0 25px 25px;
 }
 
 
@@ -148,10 +144,10 @@
   margin: 0 0 20px;
 }
 
-.stories__masonry-item {
+/*.stories__masonry-item {
   width: calc(100% / 3 - 15px * 2/3);
   padding: 0 10px;
   ::ng-deep .story--grid {
     width: 100%;
   }
-}
+}*/
