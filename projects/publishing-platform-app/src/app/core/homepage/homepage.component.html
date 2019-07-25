@@ -26,6 +26,13 @@
             <div class="publications">
                 <ui-publication-list [countByPage]="3" [data]="publicationData"></ui-publication-list>
             </div>
+            <div class="copyright-space">
+              <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
+              <div class="copyright-space__items">
+                <span class="copyright-space__items__item">JP</span>
+                <span class="copyright-space__items__item selected">EN</span>
+              </div>
+            </div>
         </div>
     </div>
     <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
