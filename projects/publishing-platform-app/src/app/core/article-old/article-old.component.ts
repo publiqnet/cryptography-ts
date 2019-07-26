@@ -234,12 +234,12 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
                   });
                 });
 
-              if (currentContent.full_account) {
-                currentContent.full_account = new Account(
-                  currentContent.full_account
-                );
-                this.fullAccount = currentContent.full_account;
-              }
+              // if (currentContent.full_account) {
+              //   currentContent.full_account = new Account(
+              //     currentContent.full_account
+              //   );
+              //   this.fullAccount = currentContent.full_account;
+              // }
               this.articleService.getArticleByIdData = currentContent;
               this.articleService.getArticleByIdDataChanged.next(currentContent);
             } else {
@@ -324,9 +324,9 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
         .subscribe(data => {
             if (data) {
               this.article = data;
-              if (this.fullAccount) {
-                this.article.full_account = this.fullAccount;
-              }
+              // if (this.fullAccount) {
+              //   this.article.full_account = this.fullAccount;
+              // }
 
               if (this.historyList) {
                 const currentContent = this.historyList.find(
@@ -356,28 +356,28 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
                 this.updateOgMetaTags();
               }
 
-              if (this.isAdult() && !this.dialogopend) {
-                this.dialogopend = true;
-                setTimeout(() => {
-                  const messages = this.translateService.instant('dialog.info');
-                  this.dialogService.openInfoDialog('for_adult', messages['for_adult_title'], this.articleService.dialogConfig)
-                    .pipe(
-                      takeUntil(this.unsubscribe$)
-                    )
-                    .subscribe(response => {
-                      if (response) {
-                        localStorage.setItem('for_adult', '1');
-                        this.generateAndShowArticle();
-                        return true;
-                      } else {
-                        this.platformLocation.back();
-                        return false;
-                      }
-                    });
-                });
-              } else {
-                this.generateAndShowArticle();
-              }
+              // if (this.isAdult() && !this.dialogopend) {
+              //   this.dialogopend = true;
+              //   setTimeout(() => {
+              //     const messages = this.translateService.instant('dialog.info');
+              //     this.dialogService.openInfoDialog('for_adult', messages['for_adult_title'], this.articleService.dialogConfig)
+              //       .pipe(
+              //         takeUntil(this.unsubscribe$)
+              //       )
+              //       .subscribe(response => {
+              //         if (response) {
+              //           localStorage.setItem('for_adult', '1');
+              //           this.generateAndShowArticle();
+              //           return true;
+              //         } else {
+              //           this.platformLocation.back();
+              //           return false;
+              //         }
+              //       });
+              //   });
+              // } else {
+              //   this.generateAndShowArticle();
+              // }
 
               if (this.channelService.shareThis) {
                 setTimeout(
@@ -505,9 +505,9 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
     const id = this.article['_id'] || this.article['ds_id'];
     if (list.length > 0) {
       list.forEach((article: Content, index) => {
-        if (article.ds_id === id) {
-          list.splice(index, 1);
-        }
+        // if (article.ds_id === id) {
+        //   list.splice(index, 1);
+        // }
       });
 
       if (list.length === 4) {
@@ -630,35 +630,35 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
   }
 
   public reportLike() {
-    if (!this.accountService.loggedIn()) {
-      this.dialogService.openLoginDialog()
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(() => {
-          if (this.accountService.loggedIn()) {
-            return true;
-          }
-        });
-      return false;
-    }
-    if (this.likeFeedbackStatus != 1) {
-      if (
-        this.articleHash &&
-        this.article.full_account &&
-        this.article.full_account.id &&
-        typeof this.likeFeedbackStatus !== 'undefined'
-      ) {
-        this.contentService.addFeedbackLike(
-          this.articleHash,
-          this.likeFeedbackStatus,
-          this.article.full_account.id
-        );
-      } else {
-        const message = this.translateService.instant('error');
-        this.notificationService.error(message['feedback_not_submitted']);
-      }
-    }
+    // if (!this.accountService.loggedIn()) {
+    //   this.dialogService.openLoginDialog()
+    //     .pipe(
+    //       takeUntil(this.unsubscribe$)
+    //     )
+    //     .subscribe(() => {
+    //       if (this.accountService.loggedIn()) {
+    //         return true;
+    //       }
+    //     });
+    //   return false;
+    // }
+    // if (this.likeFeedbackStatus != 1) {
+    //   if (
+    //     this.articleHash &&
+    //     this.article.full_account &&
+    //     this.article.full_account.id &&
+    //     typeof this.likeFeedbackStatus !== 'undefined'
+    //   ) {
+    //     this.contentService.addFeedbackLike(
+    //       this.articleHash,
+    //       this.likeFeedbackStatus,
+    //       this.article.full_account.id
+    //     );
+    //   } else {
+    //     const message = this.translateService.instant('error');
+    //     this.notificationService.error(message['feedback_not_submitted']);
+    //   }
+    // }
   }
 
   getLikeFeedbackActiveStatus() {
@@ -674,50 +674,50 @@ export class ArticleOldComponent implements OnInit, OnDestroy {
   }
 
   checkImageHashExist(article: Content) {
-    let fullName = article.full_account ? article.full_account : '';
-    if (article.full_account) {
-      fullName = article.full_account;
-    } else if (article.full_account) {
-      fullName = article.full_account;
-    } else {
-      fullName = '';
-    }
-    const meta = fullName.meta ? fullName.meta : '';
-    const image = meta.image_hash ? meta.image_hash : '';
-
-    return !!(
-      fullName &&
-      meta &&
-      image &&
-      image !== '' &&
-      !image.startsWith('http://127.0.0.1') &&
-      image.indexOf('_thumb') !== -1
-    )
-      ? image
-      : 'none';
+    // let fullName = article.full_account ? article.full_account : '';
+    // if (article.full_account) {
+    //   fullName = article.full_account;
+    // } else if (article.full_account) {
+    //   fullName = article.full_account;
+    // } else {
+    //   fullName = '';
+    // }
+    // const meta = fullName.meta ? fullName.meta : '';
+    // const image = meta.image_hash ? meta.image_hash : '';
+    //
+    // return !!(
+    //   fullName &&
+    //   meta &&
+    //   image &&
+    //   image !== '' &&
+    //   !image.startsWith('http://127.0.0.1') &&
+    //   image.indexOf('_thumb') !== -1
+    // )
+    //   ? image
+    //   : 'none';
   }
 
   isMyContent() {
-    return this.accountService.accountInfo &&
-    this.article &&
-    this.article.full_account
-      ? this.accountService.accountInfo.publicKey == this.article.full_account.publicKey
-      : false;
+    // return this.accountService.accountInfo &&
+    // this.article &&
+    // this.article.full_account
+    //   ? this.accountService.accountInfo.publicKey == this.article.full_account.publicKey
+    //   : false;
   }
 
   isAdult() {
-    if (isPlatformBrowser(this.platformId)) {
-      const forAdult = localStorage.getItem('for_adult') ? true : false;
-
-      return !forAdult &&
-      this.article &&
-      this.article.meta &&
-      !this.isMyContent() &&
-      (this.article.meta.for_adults == true ||
-        this.article.meta.for_adults == 'true')
-        ? true
-        : false;
-    }
+    // if (isPlatformBrowser(this.platformId)) {
+    //   const forAdult = localStorage.getItem('for_adult') ? true : false;
+    //
+    //   return !forAdult &&
+    //   this.article &&
+    //   this.article.meta &&
+    //   !this.isMyContent() &&
+    //   (this.article.meta.for_adults == true ||
+    //     this.article.meta.for_adults == 'true')
+    //     ? true
+    //     : false;
+    // }
   }
 
   showHistoryData(historyItem) {

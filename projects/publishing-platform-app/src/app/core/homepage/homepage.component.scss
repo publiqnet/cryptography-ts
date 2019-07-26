@@ -10,8 +10,14 @@
 }
 
 :host {
-  ::ng-deep .relevant-content__heading {
-    margin: 50px 0 0 0;
+  ::ng-deep .relevant-content {
+    &__heading {
+      margin: 50px 0 0;
+    }
+
+    &__items {
+      margin: 0 0 80px;
+    }
   }
 }
 
@@ -206,10 +212,3 @@
   }
 
 }
-/*.stories__masonry-item {
-  width: calc(100% / 3 - 15px * 2/3);
-  padding: 0 10px;
-  ::ng-deep .story--grid {
-    width: 100%;
-  }
-}*/
