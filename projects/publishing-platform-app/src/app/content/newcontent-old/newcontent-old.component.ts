@@ -60,12 +60,12 @@ const COMMA = 188;
 const IMAGE_GIF = 'gif';
 
 @Component({
-  selector: 'app-newcontent',
-  templateUrl: './newcontent.component.html',
-  styleUrls: ['./newcontent.component.scss'],
+  selector: 'app-newcontent-old',
+  templateUrl: './newcontent-old.component.html',
+  styleUrls: ['./newcontent-old.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class NewcontentComponent implements OnInit, OnDestroy {
+export class NewcontentOldComponent implements OnInit, OnDestroy {
   public contentForm: FormGroup;
   public errorMessages = undefined;
   public formSubmitted = false;
@@ -76,6 +76,8 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   private hasDraft = false;
   public hasEditableContent = false;
   public isSubmited = false;
+  public nuxSeen = true;
+  private boostInfo;
   private isArticleBoosted;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public coverSwiperConfig: SwiperOptions;
@@ -86,41 +88,14 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   @Input() editableContent?: Content;
   @Input() editableContentId?: string;
 
-  // new variables
-  showBoost = false;
-  public boostDropdownData = [
-    {
-      'value': 'Test value',
-      'text': 'Test text',
-      'user': {
-        'image': 'http://via.placeholder.com/120x120',
-        'first_name': 'Test',
-        'last_name': 'News',
-        'fullName': 'Test News'
-      }
-    }
-  ];
-  public boostPostData = {
-    'slug': '5ceb9fc82765246c6cc55b47',
-    'author': {
-      'slug': '1.0.2',
-      'first_name': 'Gohar',
-      'last_name': 'Avetisyan',
-      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK',
-      'fullName': 'Gohar Avetisyan'
-    },
-    'created': '11 dec 2019',
-    'published': '12 dec 2019',
-    'title': 'In the flesh: translating 2d scans into 3d prints',
-    'tags': [
-      '2017',
-      'DEVELOPER',
-      'FULLSTACK'
-    ],
-    'view_count': '1K'
-  };
-
   visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  openInputSpace = false;
+
+  // Enter, comma
+  separatorKeysCodes = [ENTER];
   title: String = '';
   headline: String = '';
   tags = [];
@@ -150,6 +125,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   isContentUpLoading = false;
   now = now();
   public titleMaxLenght = 120;
+  public headlineMaxLenght = 255;
   public maxTagsLength = 32;
   private editorContentObject;
   private editorObject;
@@ -689,9 +665,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmitButton(flag: boolean) {
-    this.showBoost = flag;
-  }
   initFroala($event) {
     if (isPlatformBrowser(this.platformId)) {
       this.editorInitObject = $event;
@@ -705,6 +678,10 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   characterCounter() {
     this.currentTitleLenght = this.contentForm.value.title ? this.contentForm.value.title.length : 0;
     this.currentHeadlineLenght = this.contentForm.value.headline ? this.contentForm.value.headline.length : 0;
+  }
+
+  goToPublicationPage(slug) {
+    this.router.navigate(['/p/' + slug]);
   }
 
   submit(password: string, boostInfo?) {
@@ -997,6 +974,63 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
   }
 
+  clickUploadCover() {
+    if (this.mainCoverImageChecker) {
+      this.mainCoverImage.nativeElement.click();
+    }
+  }
+
+  onCoverCkeckerChange(e) {
+    // console.log('onCoverCkeckerChange --');
+    this.saveDraftCheck = true;
+    if (e.checked == true) {
+      this.mainCoverImageChecker = true;
+      this.mainCoverImageUrl = this.coverImages[this.coverGallery.swiper.activeIndex];
+    } else {
+      this.mainCoverImageChecker = false;
+      this.mainCoverImageUrl = '';
+    }
+    this.saveDraft(this.draftId);
+    this.updateButtonDisable = false;
+  }
+
+  mainImageUpload(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      this.contentService.uploadMainPhoto(input.files[0]).subscribe(data => {
+        this.resetCurrentUrl(data.link);
+        this.mainCoverImageUri = data.uri;
+        this.mainCoverImageUrl = data.link;
+      });
+    }
+  }
+
+  listImageUpload(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      this.contentService.uploadListPhoto(input.files[0], this.contentId, this.actions.list);
+    }
+  }
+
+  clickUploadListImage() {
+    if (this.listImageChecker) {
+      this.listImage.nativeElement.click();
+    }
+  }
+
+  listImageCheckerChange(e) {
+    this.saveDraftCheck = true;
+    if (e.checked == true) {
+      this.listImageChecker = true;
+      this.listImageUrl = this.listImages[this.listGallery.swiper.activeIndex];
+    } else {
+      this.listImageChecker = false;
+      this.listImageUrl = '';
+    }
+    this.saveDraft(this.draftId);
+    this.updateButtonDisable = false;
+  }
+
   checkImageHashExist() {
     const image = this.account.image ? this.account.image : '';
     return !!(this.account && image && image !== '' && !image.startsWith('http://127.0.0.1'));
@@ -1175,8 +1209,84 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
   }
 
+  onCancel(): void {
+    this.hasPendingChanges.next(false);
+    this.router.navigate(['/content/mycontent']);
+  }
+
+  currentPublicationName() {
+    let selectedPublicationName = '';
+    this.publications.forEach((nextPublication) => {
+      if (nextPublication.slug == this.contentForm.value.publicationSlug) {
+        selectedPublicationName = nextPublication.title;
+      }
+    });
+
+    return selectedPublicationName;
+  }
+
+  editCoverPhoto() {
+    if (!this.mainCoverImageUrl) {
+      return;
+    }
+
+    let coverUrlForCropping = this.mainCoverImageUrl;
+
+    if (coverUrlForCropping.includes('?')) {
+      coverUrlForCropping = coverUrlForCropping.split('?')[0];
+    }
+
+    const coverImageUrl = coverUrlForCropping.replace('cropped', 'original');
+    const editData = {
+      'imageUrl': coverImageUrl,
+      'contentId': this.contentId
+    };
+
+    this.dialogService.openCoverEditDialog(editData)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(responseData => {
+        if (responseData && responseData[0] && responseData[1]) {
+          const obj = responseData[1];
+          if (!this.contentId && obj.content_id) {
+            this.contentId = obj.content_id;
+          }
+          if (obj && obj['content_cover_cropped_file']) {
+            const ts = Math.round((new Date()).getTime() / 1000);
+            for (const i in this.coverImages) {
+              if (this.coverImages[i] == this.mainCoverImageUrl) {
+                this.coverImages[i] = obj['content_cover_cropped_file'] + '?' + ts;
+                break; // Stop this loop, we found it!
+              }
+            }
+            this.mainCoverImageUrl = obj['content_cover_cropped_file'] + '?' + ts;
+            this.updateButtonDisable = false;
+            this.saveDraft(this.draftId);
+          }
+        }
+      });
+  }
+
+  enableNux() {
+    // order matters
+    this.nuxService.reset('editor');
+    this.nuxSeen = false;
+  }
+
   calculateContentLength(contentHtml) {
     return (contentHtml) ? contentHtml.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm, '').replace('&nbsp;', '').length : 0;
+  }
+
+  isValidMainCoverImage() {
+    if (this.mainCoverImageUrl) {
+      const mainImageExtension = this.mainCoverImageUrl.split('.').pop();
+      if (mainImageExtension && mainImageExtension != IMAGE_GIF) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   ngOnDestroy() {
