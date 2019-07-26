@@ -15,22 +15,7 @@ export const walletRoutes: Routes = [
                 path: '',
                 pathMatch: 'full',
                 component: WalletComponent
-            },
-            /*{
-                path: 'transactions',
-                pathMatch: 'full',
-                component: TransactionsComponent
-            },
-            {
-                path: 'transfer',
-                pathMatch: 'full',
-                component: TransferComponent
-            },
-            {
-                path: 'receive',
-                pathMatch: 'full',
-                component: ReceiveComponent
-            }*/
+            }
         ],
         canActivateChild: [AuthguardService]
     }
