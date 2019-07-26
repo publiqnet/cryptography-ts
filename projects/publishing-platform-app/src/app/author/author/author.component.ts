@@ -162,9 +162,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
           if (data && this.lastLoadedStories) {
             this.lastLoadedStories.forEach(content => {
               data.forEach(story => {
-                if (content.ds_id == story._id) {
-                  content.viewcount = story.viewcount;
-                }
+                // if (content.ds_id == story._id) {
+                //   content.viewcount = story.viewcount;
+                // }
               });
             });
           }

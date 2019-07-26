@@ -426,48 +426,48 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
       if (this.editableContent) {
         this.hasEditableContent = true;
-        if (Array.isArray(this.editableContent.meta.tags)) {
-          const tags = [];
-          this.editableContent.meta.tags.forEach(tag => {
-            tags.push(tag.value);
-          });
-          this.tags = tags;
-        }
+        // if (Array.isArray(this.editableContent.meta.tags)) {
+        //   const tags = [];
+        //   this.editableContent.meta.tags.forEach(tag => {
+        //     tags.push(tag.value);
+        //   });
+        //   this.tags = tags;
+        // }
 
-        this.content = this.editableContent.content && this.editableContent.content.data && this.editableContent.content.data.text ? this.editableContent.content.data.text : '';
-        this.currentEditorLenght = this.calculateContentLength(this.content);
-        this.headline = this.editableContent.meta.headline;
-        this.title = this.editableContent.meta.title;
-        this.coverImages = this.editableContent.meta.image_hash ? (this.coverImages = [this.editableContent.meta.image_hash]) : [];
-        this.mainCoverImageUrl = this.editableContent.meta.image_hash || '';
-        this.listImageUrl = this.editableContent.meta.thumbnail_hash || '';
-        this.listImages = this.editableContent.meta.thumbnail_hash ? (this.listImages = [this.editableContent.meta.thumbnail_hash]) : [];
-        this.mainCoverImageChecker = true;
-        this.listImageChecker = true;
-        this.sourceOfMaterial = (this.editableContent.meta.sourceOfMaterial || this.editableContent.meta.source_of_material) || '';
-        this.reference = this.editableContent.meta.reference || '';
-        this.forAdults = this.editableContent.meta.for_adults && this.editableContent.meta.for_adults == 'true' ? true : false;
-        this.now = this.editableContent.created;
-
-        this.publication_slug = this.editableContent.publication ? this.editableContent.publication.slug : '';
-        // slides the swiper to the chosen thumbnail
-        if (isPlatformBrowser(this.platformId)) {
-          if (this.coverImages.length > 1) {
-            // this.coverSwiperConfig.onInit = swiper => {
-            //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-            // };
-          }
-          if (this.listImages.length > 1) {
-            this.listSwiperConfig.onInit = swiper => {
-              swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
-            };
-          }
-        }
-
-        if (this.editableContent['_id']) {
-          this.editableStoryId = this.editableContent['_id'];
-          this.articleService.getListPromoByDsId(this.editableStoryId);
-        }
+        // this.content = this.editableContent.content && this.editableContent.content.data && this.editableContent.content.data.text ? this.editableContent.content.data.text : '';
+        // this.currentEditorLenght = this.calculateContentLength(this.content);
+        // this.headline = this.editableContent.meta.headline;
+        // this.title = this.editableContent.meta.title;
+        // this.coverImages = this.editableContent.meta.image_hash ? (this.coverImages = [this.editableContent.meta.image_hash]) : [];
+        // this.mainCoverImageUrl = this.editableContent.meta.image_hash || '';
+        // this.listImageUrl = this.editableContent.meta.thumbnail_hash || '';
+        // this.listImages = this.editableContent.meta.thumbnail_hash ? (this.listImages = [this.editableContent.meta.thumbnail_hash]) : [];
+        // this.mainCoverImageChecker = true;
+        // this.listImageChecker = true;
+        // this.sourceOfMaterial = (this.editableContent.meta.sourceOfMaterial || this.editableContent.meta.source_of_material) || '';
+        // this.reference = this.editableContent.meta.reference || '';
+        // this.forAdults = this.editableContent.meta.for_adults && this.editableContent.meta.for_adults == 'true' ? true : false;
+        // this.now = this.editableContent.created;
+        //
+        // this.publication_slug = this.editableContent.publication ? this.editableContent.publication.slug : '';
+        // // slides the swiper to the chosen thumbnail
+        // if (isPlatformBrowser(this.platformId)) {
+        //   if (this.coverImages.length > 1) {
+        //     // this.coverSwiperConfig.onInit = swiper => {
+        //     //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
+        //     // };
+        //   }
+        //   if (this.listImages.length > 1) {
+        //     this.listSwiperConfig.onInit = swiper => {
+        //       swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
+        //     };
+        //   }
+        // }
+        //
+        // if (this.editableContent['_id']) {
+        //   this.editableStoryId = this.editableContent['_id'];
+        //   this.articleService.getListPromoByDsId(this.editableStoryId);
+        // }
       }
 
       this.articleService.listPromoByDsIdChanged

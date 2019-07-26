@@ -14,6 +14,7 @@ import { Account } from './models/account';
 import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
+import { Content } from './models/content';
 
 // import {
 //   Aes,
@@ -985,6 +986,15 @@ export class ContentService {
   getMyContents(fromUri = null, count: number = 10): Observable<any> {
     const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
     return this.httpHelperService.call(HttpMethodTypes.get, url);
+  }
+
+  getHomePageContents(fromUri = null, count: number = 10): Observable<any> {
+    const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url)
+    .pipe(map(contentData => {
+      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+      return contentData;
+    }));
   }
 
   getContentByUri(uri: string): Observable<any> {
