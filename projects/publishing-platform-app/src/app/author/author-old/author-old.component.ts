@@ -17,11 +17,11 @@ import { DialogService } from '../../core/services/dialog.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 
 @Component({
-  selector: 'app-author',
-  templateUrl: './author.component.html',
-  styleUrls: ['./author.component.scss']
+  selector: 'app-author-old',
+  templateUrl: './author-old.component.html',
+  styleUrls: ['./author-old.component.scss']
 })
-export class AuthorComponent implements OnInit, OnDestroy {
+export class AuthorOldComponent implements OnInit, OnDestroy {
 
   private authorId: string;
   shortName;
