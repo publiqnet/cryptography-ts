@@ -1,1 +1,1 @@
-<ui-header [headerData]="headerData"></ui-header>
+<ui-header [headerData]="headerData" (userSignIn)="userAuth('login')" (userSignUp)="userAuth('register')" (navigationLink)="onRouteChange($event)"></ui-header>
