@@ -62,13 +62,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onRouteChange(event) {
     if (event.action == 'redirect') {
-      if (event.slug == 'profile') {
+      if (event.slug == 'logout') {
+        this.accountService.logout();
+      } else if (event.slug == 'profile') {
         this.router.navigate([`/a/${this.accountService.accountInfo.publicKey}`]);
       } else if (this.headerRoutesList[event.slug]) {
         this.router.navigate([this.headerRoutesList[event.slug]]);
       }
-    } else if (event.slug == 'logout') {
-      this.accountService.logout();
     }
   }
 
