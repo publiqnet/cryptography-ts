@@ -11,6 +11,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   public contentArray = [];
   public isMasonryLoaded = false;
+  public listType = 'grid';
 
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',

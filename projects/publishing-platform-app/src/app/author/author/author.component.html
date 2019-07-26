@@ -41,7 +41,6 @@
           </div>
         </div>
       </ng-template>
-
     </div>
   </div>
 </div>
@@ -50,13 +49,19 @@
     <div class="col-lg-8 col-xl-9 stories">
       <ui-tab [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
       <div *ngIf="selectedTab == '1' && editedContents.length" class="text-center">
-        <div [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
+        <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
           <ui-content-single *ngFor="let data of editedContents" ngxMasonryItem [type]="listType" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)"
+                             (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)"
+                             [contentData]="data"></ui-content-single>
+        </div>
+        <div *ngIf="listType == 'single'">
+          <ui-content-single *ngFor="let data of editedContents" [type]="listType" (accountClick)="accountClick($event)" (contentClick)="contentClick($event)"
                              (publicationClick)="publicationClick($event)" (tagClick)="tagClick($event)"
                              [contentData]="data"></ui-content-single>
         </div>
       </div>
       <div *ngIf="selectedTab == '2'">
+        <ui-button (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
         <div style="padding: 50px 5px;" class="main-container clearfix"
              *ngIf="drafts && drafts.length > 0;else no_content">
           <mat-card class="post closed clearfix" *ngFor="let oDraft of drafts; let index = index">

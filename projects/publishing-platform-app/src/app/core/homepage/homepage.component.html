@@ -9,8 +9,11 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
-            <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray;"></ui-content-single>
+        <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
+            <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray;" [contentData]="content"></ui-content-single>
+        </div>
+        <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
+            <ui-content-single [type]="listType" *ngFor="let content of contentArray;" [contentData]="content" ></ui-content-single>
         </div>
         <div class="col-lg-4 col-xl-3">
             <div class="welcome-to-media">
@@ -37,8 +40,11 @@
     </div>
     <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
     <div class="row">
-        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" ngx-masonry [options]="myOptions">
-            <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray.slice(0, 8);"></ui-content-single>
+        <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
+            <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content"></ui-content-single>
+        </div>
+        <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
+            <ui-content-single [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content" ></ui-content-single>
         </div>
     </div>
     <ui-relevant-content [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
