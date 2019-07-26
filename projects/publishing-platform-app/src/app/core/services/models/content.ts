@@ -1,4 +1,4 @@
-import { Boost } from './boost';
+import { Author, AuthorOptions } from './author';
 
 export enum PageOptions {
     homepageTagStories = <any>'homepageTagStories',
@@ -7,49 +7,40 @@ export enum PageOptions {
 }
 
 export interface ContentOptions {
-    author?;
-    content?;
-    created?;
-    published?;
-    ds_id?;
-    id?;
-    meta?;
-    full_account?;
-    num_ratings?;
-    sum_rating?;
-    view_count?;
-    viewcount?;
-    publication?;
-    revision?;
-    origin?;
-    boosted?;
-    boosts?: Boost[];
+    uri: string;
+    title: string;
+    text: string;
+    cover: any;
+    files: [];
+    published: string;
+    author: any;
+    publication: string;
 }
 
 export class Content {
-    author;
-    content;
-    created;
-    published;
-    ds_id;
-    id;
-    meta;
-    full_account;
-    num_ratings;
-    sum_rating;
-    view_count;
-    viewcount;
-    revision;
-    origin;
-    publication;
-    boosted;
-    boosts: Boost[];
+    uri: string;
+    title: string;
+    text: string;
+    cover: any;
+    files: [];
+    published: string;
+    author: Author;
+    image: string;
+    tags = [
+        '2017',
+        'DEVELOPER',
+        'FULLSTACK'
+    ];
+    view_count = '1K';
+    publication = null;
 
     constructor(options?: ContentOptions) {
         for (const i in options) {
             if (options.hasOwnProperty(i)) {
-                if (i === 'boosted') {
-                    this[i] = options[i];
+                if (i == 'author' && options[i]) {
+                    this[i] = new Author(options[i]);
+                } else if (i == 'cover' && options[i] && options[i].url) {
+                    this.image = options[i].url;
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }
