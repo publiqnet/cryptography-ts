@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +13,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
+
+  headerRoutesList = {
+    '' : '/',
+    'wallet' : '/wallet',
+    'new-story' : '/content/newcontent',
+    'profile' : '/content/newcontent',
+    'publications' : '/p/my-publications',
+  };
 
   constructor(
     private router: Router,
@@ -53,7 +61,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onRouteChange(event) {
-    if (event.slug == 'logout') {
+    if (event.action == 'redirect') {
+      if (event.slug == 'profile') {
+        this.router.navigate([`/a/${this.accountService.accountInfo.publicKey}`]);
+      } else if (this.headerRoutesList[event.slug]) {
+        this.router.navigate([this.headerRoutesList[event.slug]]);
+      }
+    } else if (event.slug == 'logout') {
       this.accountService.logout();
     }
   }

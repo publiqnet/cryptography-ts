@@ -74,17 +74,17 @@ export class SearchContentComponent implements OnInit, OnDestroy {
             const views = data[1];
             if (stories.length > this.storiesDefaultCount) {
               const lastIndex = stories.length - 1;
-              if (stories[lastIndex].id !== this.storiesStartFromBlock) {
-                this.storiesStartFromBlock = stories[lastIndex].id;
-                stories.pop();
-              }
+              // if (stories[lastIndex].id !== this.storiesStartFromBlock) {
+              //   this.storiesStartFromBlock = stories[lastIndex].id;
+              //   stories.pop();
+              // }
               views.pop();
             }
             stories.forEach(content => {
               views.forEach(view => {
-                if (content.ds_id == view._id) {
-                  content.viewcount = view.viewcount;
-                }
+                // if (content.ds_id == view._id) {
+                //   content.viewcount = view.viewcount;
+                // }
               });
             });
             return stories;
