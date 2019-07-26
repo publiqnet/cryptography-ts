@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxMasonryOptions } from 'ngx-masonry';
 
@@ -10,6 +10,8 @@ import { NgxMasonryOptions } from 'ngx-masonry';
 export class HomepageComponent implements OnInit, OnDestroy {
 
   public contentArray = [];
+  public isMasonryLoaded = false;
+  public listType = 'grid';
 
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
@@ -80,7 +82,6 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   ];
 
-
   constructor(
     private router: Router,
   ) {
@@ -136,6 +137,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
         },
         'view_count': '1K'
       });
+    }
+  }
+
+  onLayoutComplete(event) {
+    if (event && event.length > 1) {
+      this.isMasonryLoaded = true;
     }
   }
 
