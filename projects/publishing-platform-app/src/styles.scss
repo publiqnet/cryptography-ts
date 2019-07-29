@@ -1886,5 +1886,19 @@ p.sponsored{
   margin: 24px 0;
   .button-tabber__item{
     min-width: 94px!important;
+    font-size: 15px!important;
+  }
+}
+.preview-tab{
+  .dropdown__select{
+    justify-content: flex-end!important;
+    margin-bottom: 30px;
+    padding: 0!important;
+    .dropdown__placeholder{
+      font-weight: bold;
+      font-size: 22px!important;
+      color: #2B2B2B!important;
+      padding: 0 5px;
+    }
   }
 }

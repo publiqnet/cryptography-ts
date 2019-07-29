@@ -31,10 +31,10 @@
 <div class="publishing-space">
   <div id="publishMain" [ngClass]="{'visible' : showBoost === true}" class="publish__main">
     <span class="close-icon" (click)="onShowStepForm(false)"><i class="icon-close"></i></span>
-    <div class="publish__main--white-space">
+    <div class="publish__main--white-space publish__main--white-space--descktop">
       <div>
         <h3 *ngIf="!boostField">Preview</h3>
-        <ui-dropdown *ngIf="boostField" [type]="'role'" [roleData]='stepperData' (onRoleChange)="changeBoostView($event)"></ui-dropdown>
+        <ui-dropdown className="preview-tab" *ngIf="boostField" [type]="'role'" [roleData]='stepperData' (onRoleChange)="changeBoostView($event)"></ui-dropdown>
       </div>
 
       <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
@@ -76,8 +76,9 @@
     </div>
     <div class="publish__main--blue-space">
       <div>
-        <h3>Prepare your story readers</h3>
-        <p *ngIf="boostField">Are you sure you want to proceed?</p>
+        <h3 *ngIf="submitStep == 1">Prepare your story readers</h3>
+        <h3 *ngIf="boostField || submitStep == 2">New story submission requires 0.005 PBQ.</h3>
+        <p *ngIf="boostField || submitStep == 2">Are you sure you want to proceed?</p>
       </div>
 
       <div class="add-tag">
@@ -88,12 +89,25 @@
 
           <span class="add-tag__label">Add to Publication</span>
           <ui-dropdown *ngIf="boostDropdownData" [optionsData]="boostDropdownData" [type]="'withIcon'"></ui-dropdown>
+
+          <!--for mobile-->
+          <!--FOR ADDING OR CHANGING COVER PIC -->
+          <ng-container *ngIf="(!boostField || boostView == 'preview')">
+            <div class="add__cover add__cover--mobile" *ngIf="!mainCoverImageUrl">
+              <label class="cover__img" for="coverPic1">
+                <input type="file" accept="image/jpeg,image/png" id="coverPic1">
+                <i class="icon-picture"></i>
+                <span>Add cover</span>
+              </label>
+            </div>
+          </ng-container>
+          <!--end-->
         </ng-container>
 
         <!--boost step-->
         <ng-container *ngIf="submitStep == 2">
           <span class="add-tag__label">Enter your password to submit story</span>
-          <ui-input type="password"></ui-input>
+          <ui-input type="password" className="add-tag-input"></ui-input>
 
           <div class="boost-story">
             <div class="boost-story__field">
@@ -110,7 +124,7 @@
         </ng-container>
 
       </div>
-      <span class="continue-later" *ngIf="!boostField">Continue Later</span>
+      <span class="continue-later" [hidden]="!boostField">Continue Later</span>
     </div>
     <span class="white-overlay" (click)="onShowStepForm(false)"></span>
   </div>
