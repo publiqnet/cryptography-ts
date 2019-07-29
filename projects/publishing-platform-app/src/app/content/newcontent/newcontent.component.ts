@@ -38,26 +38,12 @@ import { PublicationService } from '../../core/services/publication.service';
 import { Publication } from '../../core/services/models/publication';
 import { ChannelService } from '../../core/services/channel.service';
 import { NuxService } from '../../core/services/nux.service';
-import { NewstorySubmissionComponent } from '../../core/newstory-submission/newstory-submission.component';
 import { ValidationService } from '../../core/validator/validator.service';
 import { Boost } from '../../core/services/models/boost';
 import { DraftService } from '../../core/services/draft.service';
-import { Publications } from '../../core/services/models/publications';
 import { SwiperOptions } from 'swiper';
 
 declare const $: any;
-const scrollElementIntoView = (element: HTMLElement) => {
-
-  const scrollTop = window.pageYOffset || element.scrollTop;
-
-  const finalOffset = Math.max(0, element.getBoundingClientRect().top + scrollTop - 300);
-
-  $('html, body').animate({
-    scrollTop: finalOffset
-  });
-};
-const COMMA = 188;
-const IMAGE_GIF = 'gif';
 
 @Component({
   selector: 'app-newcontent',
@@ -88,6 +74,7 @@ export class NewcontentComponent implements OnInit, OnDestroy {
 
   // new variables
   showBoost = false;
+  boostField = false;
   public boostDropdownData = [
     {
       'value': 'Test value',
@@ -119,6 +106,43 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     ],
     'view_count': '1K'
   };
+  public boostPostDataImage = {
+    'slug': '5ceb9fc82765246c6cc55b47',
+    'author': {
+      'slug': '1.0.2',
+      'first_name': 'Gohar',
+      'last_name': 'Avetisyan',
+      'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+    },
+    'created': '11 dec 2019',
+    'published': '12 dec 2019',
+    'title': 'In the flesh: translating 2d scans into 3d prints',
+    'tags': [
+      '2017',
+      'DEVELOPER',
+      'FULLSTACK'
+    ],
+    'image': 'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+    'publication': {
+      'title': 'UX Planet',
+      'slug': 'ux_planet'
+    },
+    'view_count': '1K'
+  };
+  public boostTab = [
+    {
+      'value': '1',
+      'text': 'Day'
+    },
+    {
+      'value': '2',
+      'text': 'Days',
+    },
+    {
+      'value': '3',
+      'text': 'Days',
+    }
+  ];
 
   visible = true;
   title: String = '';
@@ -271,54 +295,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     }
   };
 
-  listSwiperConfig: any = {
-    prevButton: '.list-photo-prev',
-    nextButton: '.list-photo-next',
-    slideToClickedSlide: true,
-    slidesPerView: '1',
-    observer: true,
-    observeParents: true,
-    breakpoints: {
-      // when window width is <= 480px
-      480: {
-        slidesPerView: 1,
-      },
-      // when window width is <= 640px
-      640: {
-        slidesPerView: 1,
-      },
-      // when window width is <= 640px
-      1024: {
-        slidesPerView: 1,
-      }
-    },
-    onInit: (e) => {
-      if (this.listImages.length && this.listImageUrl) {
-        e.slideTo(this.listImages.indexOf(this.listImageUrl));
-      }
-    },
-    onSlideChangeEnd: (e) => {
-      const currentListImage = this.listImageUrl;
-      if (e.clickedSlide && e.clickedSlide.attributes['data-image']) {
-        this.listImageUrl = e.clickedSlide.attributes['data-image'].value;
-      } else if (this.listImages && this.listImages[e.activeIndex]) {
-        this.listImageUrl = this.listImages[e.activeIndex];
-      }
-
-      this.swiperHeight = e.slides[e.activeIndex].querySelector('img').offsetHeight;
-      if (currentListImage != this.listImageUrl) {
-        this.saveDraft(this.draftId);
-      }
-    },
-    onSlideChangeStart: (e) => {
-      if (this.listImages && this.listImages[e.activeIndex]) {
-        this.listImageUrl = this.listImages[e.activeIndex];
-      }
-
-      this.saveDraft(this.draftId);
-    }
-  };
-
   swiperHeight = null;
 
   private createContentFee = 50000;
@@ -350,348 +326,24 @@ export class NewcontentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
-      this.coverSwiperConfig = {
-        // prevButton: '.cover-photo-prev',
-        // nextButton: '.cover-photo-next',
-        slideToClickedSlide: true,
-        // slidesPerView: '1',
-        observer: true,
-        observeParents: true,
-        breakpoints: {
-          // when window width is <= 480px
-          480: {
-            slidesPerView: 1,
-          },
-          // when window width is <= 640px
-          640: {
-            slidesPerView: 1,
-          },
-          // when window width is <= 640px
-          1024: {
-            slidesPerView: 1,
-          }
-        },
-        // onInit: (e) => {
-        //   if (this.coverImages.length && this.mainCoverImageUrl) {
-        //     e.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-        //   }
-        // },
-        // onSlideChangeEnd: (e) => {
-        //   const currentMainImage = this.mainCoverImageUrl;
-        //   if (e.clickedSlide && e.clickedSlide.attributes['data-image']) {
-        //     this.mainCoverImageUrl = e.clickedSlide.attributes['data-image'].value;
-        //   } else if (this.coverImages && this.coverImages[e.activeIndex]) {
-        //     this.mainCoverImageUrl = this.coverImages[e.activeIndex];
-        //   }
-        //
-        //   if (currentMainImage != this.mainCoverImageUrl) {
-        //     this.saveDraft(this.draftId);
-        //   }
-        // },
-        // onSlideChangeStart: (e) => {
-        //   if (this.coverImages && this.coverImages[e.activeIndex]) {
-        //     this.mainCoverImageUrl = this.coverImages[e.activeIndex];
-        //   }
-        //
-        //   this.saveDraft(this.draftId);
-        // }
-      };
-      this.coverSwiperConfig = {
-        pagination: { el: '.swiper-pagination', clickable: true },
-        navigation: {
-          nextEl: '.cover-photo-next',
-          prevEl: '.cover-photo-prev'
-        },
-        spaceBetween: 30
-      };
-
-      this.isContentUpLoading = false;
-      this.isSubmited = false;
-      this.contentService.hideFooter$.emit(true);
 
       FroalaEditorCustomConfigs();
 
-      if (this.draft) {
-        this.hasDraft = true;
-        // ===> insert draft content into editor here <===
-        if (Array.isArray(this.draft.tags)) {
-          this.tags = this.draft.tags;
-        }
-        this.content = this.draft.content;
-        this.currentEditorLenght = this.calculateContentLength(this.content);
-        this.headline = this.draft.headline;
-        this.title = this.draft.title;
-        // console.log('fromDraft');
-        this.coverImages = this.draft.coverImages || [];
-        this.mainCoverImageUrl = this.draft.mainCoverImageUrl || '';
-        this.listImageUrl = this.draft.mainListImageUrl || '';
-        this.listImages = this.draft.listImages || [];
-        this.mainCoverImageChecker = this.draft.mainCoverImageChecker;
-        this.listImageChecker = this.draft.listImageChecker;
-        this.sourceOfMaterial = this.draft.sourceOfMaterial || '';
-        this.reference = this.draft.reference || '';
-        this.forAdults = this.draft.forAdults;
-        this.contentId = this.draft.contentId;
-        this.publication_slug = this.draft.publication ? this.draft.publication : '';
-        this.contentUris = this.draft.contentUris;
-        this.contentId = this.draft.id;
-        // slides the swiper to the chosen thumbnail
-        if (this.coverImages && this.coverImages.length > 1) {
-          // this.coverSwiperConfig.onInit = swiper => {
-          //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-          // };
-        }
-        if (this.listImages && this.listImages.length > 1) {
-          // this.listSwiperConfig.onInit = swiper => {
-          //   swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
-          // };
-        }
-      }
-
-      if (this.editableContent) {
-        this.hasEditableContent = true;
-        // if (Array.isArray(this.editableContent.meta.tags)) {
-        //   const tags = [];
-        //   this.editableContent.meta.tags.forEach(tag => {
-        //     tags.push(tag.value);
-        //   });
-        //   this.tags = tags;
-        // }
-
-        // this.content = this.editableContent.content && this.editableContent.content.data && this.editableContent.content.data.text ? this.editableContent.content.data.text : '';
-        // this.currentEditorLenght = this.calculateContentLength(this.content);
-        // this.headline = this.editableContent.meta.headline;
-        // this.title = this.editableContent.meta.title;
-        // this.coverImages = this.editableContent.meta.image_hash ? (this.coverImages = [this.editableContent.meta.image_hash]) : [];
-        // this.mainCoverImageUrl = this.editableContent.meta.image_hash || '';
-        // this.listImageUrl = this.editableContent.meta.thumbnail_hash || '';
-        // this.listImages = this.editableContent.meta.thumbnail_hash ? (this.listImages = [this.editableContent.meta.thumbnail_hash]) : [];
-        // this.mainCoverImageChecker = true;
-        // this.listImageChecker = true;
-        // this.sourceOfMaterial = (this.editableContent.meta.sourceOfMaterial || this.editableContent.meta.source_of_material) || '';
-        // this.reference = this.editableContent.meta.reference || '';
-        // this.forAdults = this.editableContent.meta.for_adults && this.editableContent.meta.for_adults == 'true' ? true : false;
-        // this.now = this.editableContent.created;
-        //
-        // this.publication_slug = this.editableContent.publication ? this.editableContent.publication.slug : '';
-        // // slides the swiper to the chosen thumbnail
-        // if (isPlatformBrowser(this.platformId)) {
-        //   if (this.coverImages.length > 1) {
-        //     // this.coverSwiperConfig.onInit = swiper => {
-        //     //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-        //     // };
-        //   }
-        //   if (this.listImages.length > 1) {
-        //     this.listSwiperConfig.onInit = swiper => {
-        //       swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
-        //     };
-        //   }
-        // }
-        //
-        // if (this.editableContent['_id']) {
-        //   this.editableStoryId = this.editableContent['_id'];
-        //   this.articleService.getListPromoByDsId(this.editableStoryId);
-        // }
-      }
-
-      this.articleService.listPromoByDsIdChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((data: Boost[]) => {
-          this.isArticleBoosted = (data && data[0] != undefined);
-        });
-
       this.buildForm();
 
-      this.route.queryParams
-        .pipe(
-          filter(params => params != null),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(params => {
-          if (params.publicationSlug) {
-            this.contentForm.controls.publicationSlug.setValue(params.publicationSlug);
-            this.publication_slug = params.publicationSlug;
-          }
-        });
-
-      this.contentForm.valueChanges
-        .pipe(
-          debounceTime(3000),
-          map(() => {
-            this.hasPendingChanges.emit(true);
-            if (!this.isSubmited) {
-              this.saveDraft(this.draftId);
-            }
-          }),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(() => {
-            this.updateButtonDisable = false;
-            this.errorMessages = '';
-
-            this.saveDraftCheck = !!(
-              this.contentForm.value.title ||
-              this.contentForm.value.headline ||
-              // this.contentForm.value.tags.length ||
-              this.mainCoverImageUrl ||
-              this.listImageUrl ||
-              this.contentForm.value.content
-            );
-
-            this.errorMessages = '';
-            this.conditionsWarning = '';
-          },
-          err => console.log(err)
-        );
-
-      this.account = this.accountService.getAccount();
-
-      // this.publicationService.getMyPublications()
-      // .pipe(
-      //   map((publications: Publications) => {
-      //     return publications.owned.concat(publications.membership);
-      //   }),
-      //   takeUntil(this.unsubscribe$)
-      // )
-      // .subscribe((publications: Publication[]) => {
-      //   this.publications = publications;
-      // });
-
-      this.loadingOnSave = false;
-      this.errorService.errorEventEmiter
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((data: ErrorEvent) => {
-          if (['addDraft', 'editDraft'].includes(data.action)) {
-            this.loadingOnSave = false;
-            this.notificationService.error(data.message);
-          } else if (['deleteDraft'].includes(data.action)) {
-            this.notificationService.error(data.message);
-          } else if (['uploadMainPhoto', 'uploadListPhoto'].includes(data.action)) {
-            this.notificationService.error(this.errorService.getError('image_upload_error'));
-          } else if (data.action === 'submit') {
-            this.formSubmitted = false;
-            this.notificationService.error(
-              data.message
-            );
-            if (this.loadingOnSave) {
-              this.loadingOnSave = false;
-            }
-
-            this.isSubmited = false;
-          }
-        });
-
-      this.draftService.draftData$
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((draft: DraftData) => {
-            if (draft) {
-              this.hasDraft = true;
-              const message = this.translateService.instant('content.draft_saved');
-              this.notificationService.autoSave(message);
-              this.draftId = draft.id;
-              if (!this.contentId) {
-                this.contentId = this.draftId;
-              }
-            }
-          }
-        );
-
-      this.contentService.uploadMainPhotoDataChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(result => {
-            this.saveDraftCheck = true;
-
-            if (!this.contentId && result.content_id) {
-              this.contentId = result.content_id;
-            }
-            if (
-              result.content_original_main_file &&
-              result.content_thumb_main_file
-            ) {
-              this.resetCurrentUrl(
-                result.content_original_main_file,
-                result.content_thumb_main_file
-              );
-            }
-          }
-        );
-
-      this.contentService.uploadListPhotoDataChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(result => {
-          this.saveDraftCheck = true;
-
-          if (!this.contentId && result.content_id) {
-            this.contentId = result.content_id;
-          }
-          if (
-            result.content_original_list_file &&
-            result.content_thumb_list_file
-          ) {
-            this.resetCurrentUrl(
-              result.content_original_list_file,
-              result.content_thumb_list_file
-            );
-          }
-        });
-
-      this.contentService.articleUpLoadingChanged
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(
-          data => {
-            this.isContentUpLoading = data;
-          }
-        );
-
-      this.accountService.accountUpdated$
-        .pipe(
-          filter(result => result != null),
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(result => {
-          // this.nuxSeen = result.nuxEditor;
-          // // this.nuxSeen = false;
-          // // console.log('nux', this.nuxSeen, result);
-          // const currentOptionLang = this.contentOptions.language == 'en_us' ? 'en' : 'jp';
-          // if (result.language != currentOptionLang && this.editorObject) {
-          //   this.contentOptions.language = (result.language == 'en') ? 'en_us' : 'ja';
-          //
-          //   const currentContent = this.editorContentObject.html.get();
-          //   this.editorInitObject.destroy();
-          //   this.editorInitObject.initialize();
-          //   if (currentContent) {
-          //     this.editorContentObject.html.set(currentContent);
-          //   }
-          // }
-          //
-          // this.translateService.get('content')
-          //   .pipe(
-          //     takeUntil(this.unsubscribe$)
-          //   )
-          //   .subscribe(data => {
-          //     if (this.editorContentObject && data.content) {
-          //       this.editorContentObject.$placeholder[0].textContent = data.content;
-          //     }
-          //   });
-        });
     }
   }
 
+  // new
   onSubmitButton(flag: boolean) {
     this.showBoost = flag;
   }
+
+  onBoostToggle() {
+    this.boostField = !this.boostField;
+  }
+  // new-end
+
   initFroala($event) {
     if (isPlatformBrowser(this.platformId)) {
       this.editorInitObject = $event;
@@ -776,71 +428,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
           });
       }
     });
-
-    /////////////////////////////////////////////////////////////////////////////
-
-    // this.submitContent(this.contentForm.value, contentData, password);
-
-    // if (boostInfo) {
-    //   this.boostInfo = boostInfo;
-    // }
-    //
-    // // this.isContentUpLoading = true;
-    // this.isSubmited = true;
-    // if (this.tags && this.tags.length) {
-    //   this.contentForm.value.tags = this.tags;
-    // }
-    //
-    // if (this.editorContentObject) {
-    //   this.contentForm.patchValue({content: this.editorContentObject.html.get()});
-    //   this.contentForm.value.tags = (this.tags && this.tags.length) ? this.tags : [];
-    // }
-    //
-    // let nextImageData = '';
-    // let currentSrc = '';
-    // const contentData = this.contentForm.value.content;
-    //
-    // const imagesData = contentData.match(
-    //   /<img([^>]+)src="[/]?([^"]+)"([^>]*)>|<( *)img( *)[/>|>]/g
-    // );
-    //
-    // if (imagesData && imagesData.length) {
-    //   let imagesError = 0;
-    //   imagesData.map(image => {
-    //     if (image) {
-    //       nextImageData = image.match(/src\=([^\s]*)\s/)[1];
-    //       currentSrc = nextImageData.substring(1, nextImageData.length - 1);
-    //       if (currentSrc.indexOf(environment.filestorage_link) === -1) {
-    //         imagesError++;
-    //       }
-    //     }
-    //   });
-    //
-    //   if (!imagesError) {
-    //     this.submitContent(
-    //       this.contentForm.value,
-    //       this.mainCoverImageUrl,
-    //       this.listImageUrl,
-    //       this.contentId,
-    //       password
-    //     );
-    //   } else {
-    //     this.dialogService.openInfoDialog(
-    //       'message',
-    //       this.errorService.getError('image_upload_error_explanation'),
-    //       this.articleService.dialogConfig
-    //     );
-    //     return false;
-    //   }
-    // } else {
-    //   this.submitContent(
-    //     this.contentForm.value,
-    //     this.mainCoverImageUrl,
-    //     this.listImageUrl,
-    //     this.contentId,
-    //     password
-    //   );
-    // }
   }
 
   afterContentSubmit() {
@@ -898,60 +485,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
       // forAdults: new FormControl(this.forAdults, []),
       publicationSlug: new FormControl(this.publication_slug || 'none')
     });
-  }
-
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-    let result = [];
-
-    if (value.indexOf(',') > -1) {
-      result = value.split(',');
-      result = result.filter(function (e) {
-        return e != '';
-      });
-      if (result && result.length > 3) {
-        result = result.slice(0, 3);
-      }
-    }
-
-    // Add our person
-    if (result && result.length > 1) {
-      result.forEach(value => {
-        this.pushTag(value);
-      });
-    } else {
-      this.pushTag(value);
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-  }
-
-  pushTag(value) {
-    if ((value || '').trim() && this.tags && this.tags.length < 3 && (value.trim().length <= this.maxTagsLength)) {
-      if (!this.currentTags.includes(value.trim())) {
-        this.tags.push(value.trim());
-        this.currentTags.push(value.trim());
-      }
-    }
-  }
-
-  remove(itemTag: any): void {
-    const index = this.tags.indexOf(itemTag);
-
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-      this.currentTags.splice(index, 1);
-    }
-
-    if (!this.tags.length) {
-      this.contentForm.controls['tags'].setErrors({'incorrect': true});
-    }
-
-    this.contentForm.updateValueAndValidity({onlySelf: true, emitEvent: true});
   }
 
   saveDraft(id = null) {
@@ -1041,139 +574,6 @@ export class NewcontentComponent implements OnInit, OnDestroy {
     this.saveDraft(this.draftId);
   }
 
-  openDialogSubmission() {
-    this.showErrors = false;
-    if (!this.contentForm.valid) {
-      this.showErrors = true;
-      this.notificationService.error(this.translateService.instant('content.required'));
-      Object.keys(this.contentForm.controls).some((controlname) => {
-        if (this.contentForm.controls[controlname].invalid) {
-          scrollElementIntoView(this[controlname + 'Element'].nativeElement);
-          return true;
-        }
-        return false;
-      });
-      return;
-    }
-    const dialogMessages = this.translateService.instant('dialog');
-    const message = this.hasEditableContent ? dialogMessages['confirm']['update_story_title'] : dialogMessages['confirm']['new_story_title'];
-    if (!this.accountService.accountInfo.firstName) {
-      this.dialogService.openInfoDialog('settings', dialogMessages['info']['settings_title'], {
-        width: '700px',
-        height: '450px',
-        panelClass: 'story-page'
-      });
-    } else {
-      if (this.isArticleBoosted) {
-        this.dialogService.openConfirmDialog(message)
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe(done => {
-            if (done) {
-              if (!this.accountService.accountInfo.balance || this.accountService.accountInfo.balance < this.createContentFee) {
-                this.notificationService.error(this.errorService.getError('create_content_balance_error'));
-                return false;
-              } else {
-                const titleText = this.translateService.instant('dialog.password.title');
-                const descriptionText = this.translateService.instant('dialog.password.description');
-                this.dialogService.openInputPasswordDialog('show-private-key', titleText, descriptionText, {
-                  maxWidth: '600px',
-                  panelClass: 'modal-padding'
-                })
-                  .pipe(
-                    takeUntil(this.unsubscribe$)
-                  )
-                  .subscribe(data => {
-                    if (data && data.password) {
-                      return this.submit(data.password);
-                    }
-                  });
-              }
-            }
-          });
-      } else {
-        const dialogRef = this.dialog.open(NewstorySubmissionComponent, {
-          width: '460px',
-          panelClass: 'newstory-submission',
-          data: {message, editableContent: this.hasEditableContent}
-        }).afterClosed()
-          .pipe(
-            takeUntil(this.unsubscribe$)
-          )
-          .subscribe(done => {
-            if (done) {
-              if (false) {
-                this.notificationService.error(this.errorService.getError('boost_content_balance_error'));
-                return false;
-              } else {
-                const titleText = this.translateService.instant('dialog.password.title');
-                const descriptionText = this.translateService.instant('dialog.password.description');
-                this.dialogService.openInputPasswordDialog('show-private-key', titleText, descriptionText, {
-                  maxWidth: '600px',
-                  panelClass: 'modal-padding'
-                })
-                  .pipe(
-                    takeUntil(this.unsubscribe$)
-                  )
-                  .subscribe(data => {
-                    if (data && data.password) {
-                      if (done.boostEnabled) {
-                        return this.submit(data.password, done);
-                      }
-                      return this.submit(data.password);
-                    }
-                  });
-              }
-            }
-          });
-      }
-    }
-  }
-
-  public openDialog() {
-    if (this.contentForm.invalid) {
-      return;
-    }
-
-    const dialogMessages = this.translateService.instant('dialog');
-    if (!this.accountService.accountInfo.firstName) {
-      this.dialogService.openInfoDialog('settings', dialogMessages['info']['settings_title'], {
-        width: '700px',
-        height: '450px',
-        panelClass: 'story-page'
-      });
-    } else {
-      const message = this.hasEditableContent ? dialogMessages['confirm']['update_story_title'] : dialogMessages['confirm']['new_story_title'];
-      this.dialogService.openConfirmDialog(message)
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(done => {
-          if (done) {
-            if (!this.accountService.accountInfo.balance || this.accountService.accountInfo.balance < this.createContentFee) {
-              this.notificationService.error(this.errorService.getError('create_content_balance_error'));
-              return false;
-            } else {
-              const titleText = this.translateService.instant('dialog.password.title');
-              const descriptionText = this.translateService.instant('dialog.password.description');
-              this.dialogService.openInputPasswordDialog('show-private-key', titleText, descriptionText, {
-                maxWidth: '600px',
-                panelClass: 'modal-padding'
-              })
-                .pipe(
-                  takeUntil(this.unsubscribe$)
-                )
-                .subscribe(data => {
-                  if (data && data.password) {
-                    return this.submit(data.password);
-                  }
-                });
-            }
-          }
-        });
-    }
-  }
 
   calculateContentLength(contentHtml) {
     return (contentHtml) ? contentHtml.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm, '').replace('&nbsp;', '').length : 0;
