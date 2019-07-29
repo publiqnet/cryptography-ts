@@ -17,7 +17,7 @@ import { DialogService } from '../../core/services/dialog.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 
 @Component({
-  selector: 'app-author',
+  selector: 'app-author-old',
   templateUrl: './author-old.component.html',
   styleUrls: ['./author-old.component.scss']
 })

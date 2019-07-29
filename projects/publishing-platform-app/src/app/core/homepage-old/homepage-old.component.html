@@ -1,157 +1,157 @@
-<div class="vh-centered" *ngIf="loading">
-    <mat-spinner></mat-spinner>
-</div>
+<!--<div class="vh-centered" *ngIf="loading">-->
+    <!--<mat-spinner></mat-spinner>-->
+<!--</div>-->
 
-<div class="main-wrap" *ngIf="!loading">
-    <div class="inner-wrap-main">
-        <div class="main-wrap">
-            <div class="trending-section-wrapper" *ngIf="mainStory">
-                <div class="spacer"></div>
-                <div class="featured-section-wrapper" lazy-load-images>
-                    <div>
-                        <div class="featured-tags">
-                            <a *ngFor="let tag of mainStory.meta.displayTags; let lastTag = last;" routerLink="/t/{{tag}}">
-                                {{ tag }}{{lastTag ? '' : ', '}}
-                            </a>
-                        </div>
-                        <a (click)="redirect(mainStory)" class="featured-title">
-                            <h3>{{mainStory.meta.title}}</h3>
-                        </a>
-                        <div class="datetime">
-                            <span>
-                                <i class="icon-uploaded"></i>
-                                {{getCorrectDateFormat(mainStory.created) | date:'d'}}
-                                {{('months.' + (getCorrectDateFormat(mainStory.created)| date:'MMM')) | translate}},
-                                {{getCorrectDateFormat(mainStory.created) | date: 'HH:mm'}}
-                            </span>
-                            <span *ngIf="mainStory.viewcount !== undefined">
-                                <i class="icon-views"></i>{{mainStory.viewcount}}
-                            </span>
-                        </div>
-                    </div>
-                    <img *ngIf="mainStoryImageHash" [src]="mainStoryImageHash" (click)="redirect(mainStory)">
-                    <div class="featured-author">
-                      <!--Todo: make checkImageHashExist() getter-->
-                        <div class="avatar" [attr.data-background-src]="checkImageHashExist() !== 'none' ? checkImageHashExist() : null">
-                            <span *ngIf="checkImageHashExist() === 'none'" class="vh-centered ng-star-inserted">
-                                {{mainStory.full_account?.shortName}}
-                            </span>
-                        </div>
+<!--<div class="main-wrap" *ngIf="!loading">-->
+    <!--<div class="inner-wrap-main">-->
+        <!--<div class="main-wrap">-->
+            <!--<div class="trending-section-wrapper" *ngIf="mainStory">-->
+                <!--<div class="spacer"></div>-->
+                <!--<div class="featured-section-wrapper" lazy-load-images>-->
+                    <!--<div>-->
+                        <!--<div class="featured-tags">-->
+                            <!--<a *ngFor="let tag of mainStory.meta.displayTags; let lastTag = last;" routerLink="/t/{{tag}}">-->
+                                <!--{{ tag }}{{lastTag ? '' : ', '}}-->
+                            <!--</a>-->
+                        <!--</div>-->
+                        <!--<a (click)="redirect(mainStory)" class="featured-title">-->
+                            <!--<h3>{{mainStory.meta.title}}</h3>-->
+                        <!--</a>-->
+                        <!--<div class="datetime">-->
+                            <!--<span>-->
+                                <!--<i class="icon-uploaded"></i>-->
+                                <!--{{getCorrectDateFormat(mainStory.created) | date:'d'}}-->
+                                <!--{{('months.' + (getCorrectDateFormat(mainStory.created)| date:'MMM')) | translate}},-->
+                                <!--{{getCorrectDateFormat(mainStory.created) | date: 'HH:mm'}}-->
+                            <!--</span>-->
+                            <!--<span *ngIf="mainStory.viewcount !== undefined">-->
+                                <!--<i class="icon-views"></i>{{mainStory.viewcount}}-->
+                            <!--</span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<img *ngIf="mainStoryImageHash" [src]="mainStoryImageHash" (click)="redirect(mainStory)">-->
+                    <!--<div class="featured-author">-->
+                      <!--&lt;!&ndash;Todo: make checkImageHashExist() getter&ndash;&gt;-->
+                        <!--<div class="avatar" [attr.data-background-src]="checkImageHashExist() !== 'none' ? checkImageHashExist() : null">-->
+                            <!--<span *ngIf="checkImageHashExist() === 'none'" class="vh-centered ng-star-inserted">-->
+                                <!--{{mainStory.full_account?.shortName}}-->
+                            <!--</span>-->
+                        <!--</div>-->
 
-                        <a class="author-link" routerLink="/a/{{mainStory.full_account?.name}}">
-                            {{mainStory.full_account?.firstName}} {{mainStory.full_account?.lastName}}
-                        </a>
-                        <span style="margin: 0 8px;" *ngIf="mainStory.publication"> {{'shared.in' | translate}} </span>
-                        <a (click)="goToPublicationPage(mainStory.publication?.slug)" tabindex="0">
-                            {{mainStory.publication?.title}}
-                        </a>
-                    </div>
-                </div>
-                <div class="trending-sidebar-wrapper">
-                    <!--<div class="trending-item" *ngFor="let d of [1,2,3,4,5,6];">-->
-                    <div class="trending-item" *ngFor="let story of homepageStories | slice: 0:6; let i = index;">
-                        <a>
-                            <div (click)="redirect(story)" class="trending-image"
-                                 [ngStyle]="{'background-image':'url(' + getImage(story)  + ')'}">
-                            </div>
-                        </a>
+                        <!--<a class="author-link" routerLink="/a/{{mainStory.full_account?.name}}">-->
+                            <!--{{mainStory.full_account?.firstName}} {{mainStory.full_account?.lastName}}-->
+                        <!--</a>-->
+                        <!--<span style="margin: 0 8px;" *ngIf="mainStory.publication"> {{'shared.in' | translate}} </span>-->
+                        <!--<a (click)="goToPublicationPage(mainStory.publication?.slug)" tabindex="0">-->
+                            <!--{{mainStory.publication?.title}}-->
+                        <!--</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="trending-sidebar-wrapper">-->
+                    <!--&lt;!&ndash;<div class="trending-item" *ngFor="let d of [1,2,3,4,5,6];">&ndash;&gt;-->
+                    <!--<div class="trending-item" *ngFor="let story of homepageStories | slice: 0:6; let i = index;">-->
+                        <!--<a>-->
+                            <!--<div (click)="redirect(story)" class="trending-image"-->
+                                 <!--[ngStyle]="{'background-image':'url(' + getImage(story)  + ')'}">-->
+                            <!--</div>-->
+                        <!--</a>-->
 
-                        <div class="trending-info">
-                            <div class="datetime">
-                                <span>
-                                    {{getCorrectDateFormat(story.created) | date:'d'}}
-                                    {{('months.' + (getCorrectDateFormat(story.created)| date:'MMM')) | translate}},
-                                    {{getCorrectDateFormat(story.created) | date: 'HH:mm'}}
-                                </span>
-                                <ng-container *ngIf="story.viewcount !== undefined">
-                                    <i class="icon-views"></i>
-                                    <span>{{story.viewcount}}</span>
-                                </ng-container>
-                            </div>
-                            <!--<a (click)="redirect(i)"><h4>{{(article.meta.title | slice:0:40 ) + '...'}}</h4></a>-->
-                            <a (click)="redirect(story)"><h4>{{(story.meta.title.length>40)? (story.meta.title | slice:0:40)+'..':(story.meta.title)}}</h4></a>
-                            <div class="trending-author">
-                                <a routerLink="/a/{{story?.full_account?.name}}">{{story?.full_account?.firstName}} {{story?.full_account?.lastName}}</a>
-                                <span  *ngIf="story?.publication"> {{'shared.in' | translate}} </span>
-                            <a (click)="goToPublicationPage(story.publication?.slug)" tabindex="0"> {{story.publication?.title}}</a>
-                            </div>
-                            <div class="trending-tag-list">
-                                <a *ngFor="let tag of story.meta.displayTags; let lastTag = last;" routerLink="/t/{{tag}}">{{ tag }}{{lastTag ? '' : ', '}}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="spacer"></div>
-            </div>
+                        <!--<div class="trending-info">-->
+                            <!--<div class="datetime">-->
+                                <!--<span>-->
+                                    <!--{{getCorrectDateFormat(story.created) | date:'d'}}-->
+                                    <!--{{('months.' + (getCorrectDateFormat(story.created)| date:'MMM')) | translate}},-->
+                                    <!--{{getCorrectDateFormat(story.created) | date: 'HH:mm'}}-->
+                                <!--</span>-->
+                                <!--<ng-container *ngIf="story.viewcount !== undefined">-->
+                                    <!--<i class="icon-views"></i>-->
+                                    <!--<span>{{story.viewcount}}</span>-->
+                                <!--</ng-container>-->
+                            <!--</div>-->
+                            <!--&lt;!&ndash;<a (click)="redirect(i)"><h4>{{(article.meta.title | slice:0:40 ) + '...'}}</h4></a>&ndash;&gt;-->
+                            <!--<a (click)="redirect(story)"><h4>{{(story.meta.title.length>40)? (story.meta.title | slice:0:40)+'..':(story.meta.title)}}</h4></a>-->
+                            <!--<div class="trending-author">-->
+                                <!--<a routerLink="/a/{{story?.full_account?.name}}">{{story?.full_account?.firstName}} {{story?.full_account?.lastName}}</a>-->
+                                <!--<span  *ngIf="story?.publication"> {{'shared.in' | translate}} </span>-->
+                            <!--<a (click)="goToPublicationPage(story.publication?.slug)" tabindex="0"> {{story.publication?.title}}</a>-->
+                            <!--</div>-->
+                            <!--<div class="trending-tag-list">-->
+                                <!--<a *ngFor="let tag of story.meta.displayTags; let lastTag = last;" routerLink="/t/{{tag}}">{{ tag }}{{lastTag ? '' : ', '}}</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="spacer"></div>-->
+            <!--</div>-->
 
-            <div class="article-card-list-container">
-                <app-article-card-list *ngIf="homepageStoriesHeadPart && homepageStoriesHeadPart.length > 0"
-                                       [articles]="homepageStoriesHeadPart"
-                                       [calculateViewCount]=false
-                                       [homepageGrid]="true">
-                </app-article-card-list>
+            <!--<div class="article-card-list-container">-->
+                <!--<app-article-card-list *ngIf="homepageStoriesHeadPart && homepageStoriesHeadPart.length > 0"-->
+                                       <!--[articles]="homepageStoriesHeadPart"-->
+                                       <!--[calculateViewCount]=false-->
+                                       <!--[homepageGrid]="true">-->
+                <!--</app-article-card-list>-->
 
-                <app-article-small-card-list *ngIf="homepageStoriesHeadPart && homepageStoriesHeadPart.length > 0 && tagsStories.length >= 3"
-                                       [articles]="tagsStories">
-                </app-article-small-card-list>
+                <!--<app-article-small-card-list *ngIf="homepageStoriesHeadPart && homepageStoriesHeadPart.length > 0 && tagsStories.length >= 3"-->
+                                       <!--[articles]="tagsStories">-->
+                <!--</app-article-small-card-list>-->
 
 
-                <app-article-card-list *ngIf="homepageStoriesBodyPart && homepageStoriesBodyPart.length > 0"
-                                       [articles]="homepageStoriesBodyPart"
-                                       [calculateViewCount]=false
-                                       [homepageGrid]="false">
-                </app-article-card-list>
+                <!--<app-article-card-list *ngIf="homepageStoriesBodyPart && homepageStoriesBodyPart.length > 0"-->
+                                       <!--[articles]="homepageStoriesBodyPart"-->
+                                       <!--[calculateViewCount]=false-->
+                                       <!--[homepageGrid]="false">-->
+                <!--</app-article-card-list>-->
 
-                <!--TODO Need Change-->
-               <!-- <app-article-small-card-list *ngIf="homepageStoriesBodyPart && homepageStoriesBodyPart.length > 0 && tagsStories.length > 0"
-                                             [articles]="tagsStories">
-                </app-article-small-card-list>-->
+                <!--&lt;!&ndash;TODO Need Change&ndash;&gt;-->
+               <!--&lt;!&ndash; <app-article-small-card-list *ngIf="homepageStoriesBodyPart && homepageStoriesBodyPart.length > 0 && tagsStories.length > 0"-->
+                                             <!--[articles]="tagsStories">-->
+                <!--</app-article-small-card-list>&ndash;&gt;-->
 
-                <div *ngIf="logined">
-                    <app-article-card-list *ngIf="homepageStoriesFooterPart1 && homepageStoriesFooterPart1.length > 0"
-                                           [articles]="homepageStoriesFooterPart1"
-                                           [calculateViewCount]=false
-                                           [homepageGrid]="false">
-                    </app-article-card-list>
+                <!--<div *ngIf="logined">-->
+                    <!--<app-article-card-list *ngIf="homepageStoriesFooterPart1 && homepageStoriesFooterPart1.length > 0"-->
+                                           <!--[articles]="homepageStoriesFooterPart1"-->
+                                           <!--[calculateViewCount]=false-->
+                                           <!--[homepageGrid]="false">-->
+                    <!--</app-article-card-list>-->
 
-                    <app-article-small-card-list *ngIf="homepageStories && homepageStories.length > 0 && authorsStories && (authorsStories.length == 3 || authorsStories.length == 6)"
-                                                 [articles]="authorsStories">
-                    </app-article-small-card-list>
+                    <!--<app-article-small-card-list *ngIf="homepageStories && homepageStories.length > 0 && authorsStories && (authorsStories.length == 3 || authorsStories.length == 6)"-->
+                                                 <!--[articles]="authorsStories">-->
+                    <!--</app-article-small-card-list>-->
 
-                    <app-article-card-list *ngIf="homepageStoriesFooterPart2 && homepageStoriesFooterPart2.length > 0"
-                                           [articles]="homepageStoriesFooterPart2"
-                                           [calculateViewCount]=false
-                                           [homepageGrid]="false">
-                    </app-article-card-list>
-                </div>
+                    <!--<app-article-card-list *ngIf="homepageStoriesFooterPart2 && homepageStoriesFooterPart2.length > 0"-->
+                                           <!--[articles]="homepageStoriesFooterPart2"-->
+                                           <!--[calculateViewCount]=false-->
+                                           <!--[homepageGrid]="false">-->
+                    <!--</app-article-card-list>-->
+                <!--</div>-->
 
-                <div *ngIf="!logined">
-                    <app-article-card-list *ngIf="homepageStoriesFooterPart && homepageStoriesFooterPart.length > 0"
-                                           [articles]="homepageStoriesFooterPart"
-                                           [calculateViewCount]=false
-                                           [homepageGrid]="false">
-                    </app-article-card-list>
-                </div>
-            </div>
+                <!--<div *ngIf="!logined">-->
+                    <!--<app-article-card-list *ngIf="homepageStoriesFooterPart && homepageStoriesFooterPart.length > 0"-->
+                                           <!--[articles]="homepageStoriesFooterPart"-->
+                                           <!--[calculateViewCount]=false-->
+                                           <!--[homepageGrid]="false">-->
+                    <!--</app-article-card-list>-->
+                <!--</div>-->
+            <!--</div>-->
 
-        </div>
+        <!--</div>-->
 
-        <div class="empty" *ngIf="seeMoreLoading">
-            <div style="display: inline-block">
-                <mat-spinner></mat-spinner>
-            </div>
-        </div>
+        <!--<div class="empty" *ngIf="seeMoreLoading">-->
+            <!--<div style="display: inline-block">-->
+                <!--<mat-spinner></mat-spinner>-->
+            <!--</div>-->
+        <!--</div>-->
 
-        <ng-container *ngIf="seeMoreChecker">
-            <div
-                    class="search-results"
-                    infiniteScroll
-                    [infiniteScrollDistance]="1"
-                    [infiniteScrollThrottle]="50"
-                    [infiniteScrollDisabled]="blockInfiniteScroll"
-                    (scrolled)="seeMore()"
-            ></div>
-        </ng-container>
+        <!--<ng-container *ngIf="seeMoreChecker">-->
+            <!--<div-->
+                    <!--class="search-results"-->
+                    <!--infiniteScroll-->
+                    <!--[infiniteScrollDistance]="1"-->
+                    <!--[infiniteScrollThrottle]="50"-->
+                    <!--[infiniteScrollDisabled]="blockInfiniteScroll"-->
+                    <!--(scrolled)="seeMore()"-->
+            <!--&gt;</div>-->
+        <!--</ng-container>-->
 
-    </div>
-</div>
+    <!--</div>-->
+<!--</div>-->
