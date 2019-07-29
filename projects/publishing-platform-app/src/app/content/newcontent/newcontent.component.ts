@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AccountService } from '../../core/services/account.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { forkJoin, of, ReplaySubject } from 'rxjs';
+import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
+import { DraftData } from '../../core/services/models/draft';
+import { DraftService } from '../../core/services/draft.service';
 
 declare const $: any;
 
@@ -17,7 +19,7 @@ declare const $: any;
   styleUrls: ['./newcontent.component.scss']
 })
 export class NewContentComponent implements OnInit, OnDestroy {
-  showBoost: boolean = false;
+  showStoryForm: boolean = false;
   boostField: boolean = false;
   public contentId: number;
   private editorObject;
@@ -40,19 +42,27 @@ export class NewContentComponent implements OnInit, OnDestroy {
   public submitStep: number = 1;
   public boostView = 'boost';
   public stepperData = [];
+  private hasDraft = false;
+  public isSubmited = false;
+
+  private unsubscribe$ = new ReplaySubject<void>(1);
+  @Input() draftId: number;
 
   constructor(
     private router: Router,
     public accountService: AccountService,
     private formBuilder: FormBuilder,
     public translateService: TranslateService,
-    private contentService: ContentService
+    private contentService: ContentService,
+    private draftService: DraftService
   ) {
   }
 
   ngOnInit() {
     this.initDefaultData();
     this.buildForm();
+
+    this.initSubscribes();
   }
 
   private buildForm(): void {
@@ -73,6 +83,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
         //     ? {'contentLength': {value: this.currentEditorLenght}}
         //     : null;
         // }
+      ]),
+      password: new FormControl('', [
+        ValidationService.passwordValidator
       ]),
       publication: new FormControl(this.publication || 'none')
     });
@@ -248,6 +261,61 @@ export class NewContentComponent implements OnInit, OnDestroy {
     };
   }
 
+  initSubscribes() {
+
+    this.contentForm.valueChanges
+      .pipe(
+        debounceTime(3000),
+        map(() => {
+          if (!this.isSubmited) {
+            this.saveDraft(this.draftId);
+          }
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+
+      },
+      err => console.log(err)
+      );
+
+    this.draftService.draftData$
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((draft: DraftData) => {
+        if (draft) {
+          this.hasDraft = true;
+          const message = this.translateService.instant('content.draft_saved');
+          this.draftId = draft.id;
+          if (!this.contentId) {
+            this.contentId = this.draftId;
+          }
+        }
+      });
+  }
+
+  saveDraft(id = null) {
+    // if (this.tags && this.tags.length) {
+    //   this.contentForm.value.tags = this.tags;
+    // }
+    // if (typeof this.contentForm.value.tags === 'string' || this.contentForm.value.tags instanceof String) {
+    //   this.contentForm.value.tags = [this.contentForm.value.tags];
+    // }
+    const newDraft: any = {
+      title: this.contentForm.value.title || '',
+      content: this.contentForm.value.content || '',
+      publication: this.contentForm.value.publication,
+      contentUris: this.contentUris || {}
+    };
+
+    if (id) {
+      this.draftService.update(id, newDraft);
+    } else {
+      this.draftService.create(newDraft);
+    }
+  }
+
   initFroala($event) {
     this.editorInitObject = $event;
     this.editorInitObject.initialize();
@@ -257,22 +325,40 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   onShowStepForm(flag: boolean) {
-    this.showBoost = flag;
+    console.log('onShowStepForm');
+    if (flag && this.showStoryForm == true) {
+      this.changeStep();
+    } else {
+      this.submitStep = 1;
+      this.boostField = false;
+      this.boostView = 'boost';
+    }
+    this.showStoryForm = flag;
   }
 
   onBoostToggle() {
     this.boostField = !this.boostField;
   }
 
-  changeStep(step = 2) {
-    this.submitStep = step;
+  changeStep() {
+    if (this.submitStep == 1) {
+      this.submitStep = 2;
+    } else if (this.submitStep == 2) {
+      console.log('submit', this.contentForm.value);
+      this.submit();
+    }
   }
 
   changeBoostView(event) {
     this.boostView = event.slug;
   }
 
-  submit(password: string, boostInfo?) {
+  onPasswordChange(event) {
+    this.contentForm.controls['password'].setValue(event.value);
+  }
+
+  submit() {
+    const password = this.contentForm.value.password;
     const contentTitle = `<h1>${this.contentForm.value.title}</h1>`;
     let uploadedContentHtml = '';
     const contentBlocks = this.editorContentObject.html.blocks();
@@ -362,6 +448,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
