@@ -18,9 +18,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
   seeMoreLoading = false;
   public blockInfiniteScroll = false;
   requestMade = false;
-  private storiesDefaultCount = 30;
-  private firstBlock = 30;
-
+  private storiesDefaultCount = 6;
+  public firstRelevantBlock = [];
+  public secondRelevantBlock = [];
+  public firstContentBlock = [];
+  public secondContentBlock = [];
+  public loadedContentBlock = [];
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -93,18 +96,21 @@ export class HomepageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private contentService: ContentService
-  ) {
-
-  }
+  ) { }
 
   ngOnInit() {
-    this.contentService.getHomePageContents(this.firstBlock, this.storiesDefaultCount)
-    .subscribe((contentData: any) => {
+    this.contentService.getHomePageContents(null, this.storiesDefaultCount)
+      .subscribe((contentData: any) => {
         this.contentArray = contentData.data;
         this.seeMoreChecker = contentData.more;
         this.seeMoreLoading = false;
+        this.firstRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
+        this.secondRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
+        this.firstContentBlock = this.contentArray.slice(0, this.storiesDefaultCount / 2);
+        this.secondContentBlock = this.contentArray.slice(this.storiesDefaultCount / 2, this.storiesDefaultCount);
+        this.loadedContentBlock = this.contentArray.slice(this.storiesDefaultCount);
       }
-    );
+      );
 
   }
 
@@ -117,10 +123,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;
-    this.contentService.getHomePageContents(this.storiesDefaultCount, this.contentArray[this.contentArray.length - 1].uri).subscribe(
+    this.contentService.getHomePageContents(this.contentArray[this.contentArray.length - 1].uri, this.storiesDefaultCount).subscribe(
       (data: any) => {
         this.seeMoreChecker = data.more;
         this.seeMoreLoading = false;
+        this.contentArray = this.contentArray.concat(data.data);
+        this.loadedContentBlock = this.loadedContentBlock.concat(data.data);
       }
     );
   }
