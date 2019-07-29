@@ -28,7 +28,7 @@ import { Publications } from '../../core/services/models/publications';
   templateUrl: './mycontent.component.html',
   styleUrls: ['./mycontent.component.scss', '../../../assets/css/screen.scss']
 })
-export class MycontentComponent implements OnInit, OnDestroy {
+export class MyContentComponent implements OnInit, OnDestroy {
   public publishedContent: Content[] = [];
   public drafts: Array<any>;
   public pendingProcess: boolean;
