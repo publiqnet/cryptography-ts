@@ -47,12 +47,7 @@
             <span>Add cover</span>
           </label>
         </div>
-
-        <!--story grid look-->
-        <ui-content-single *ngIf="!mainCoverImageUrl" className="boost-post" type="grid" [contentData]="boostPostData"></ui-content-single>
-
-        <!--story grid look with image-->
-        <ui-content-single *ngIf="mainCoverImageUrl" className="boost-post-img" type="grid" [contentData]="boostPostDataImage"></ui-content-single>
+        <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
       </ng-container>
 
       <ng-template #isBoosted>

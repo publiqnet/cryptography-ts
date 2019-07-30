@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ValidationService } from '../../core/validator/validator.service';
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin, of, ReplaySubject } from 'rxjs';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
 import { DraftData } from '../../core/services/models/draft';
@@ -38,8 +38,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
   titleOptions: object;
   contentOptions: object;
   public boostDropdownData = [];
-  public boostPostData = {};
-  public boostPostDataImage = {};
+  public currentContentData = {};
   public boostTab = [];
   public mainCoverImageUri: string;
   public mainCoverImageUrl: string;
@@ -96,62 +95,20 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   initDefaultData() {
-    this.boostPostData = {
-      'slug': '5ceb9fc82765246c6cc55b47',
-      'author': {
-        'slug': '1.0.2',
-        'first_name': 'Gohar',
-        'last_name': 'Avetisyan',
-        'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK',
-        'fullName': 'Gohar Avetisyan'
-      },
-      'created': '11 dec 2019',
-      'published': '1563889376',
-      'title': 'In the flesh: translating 2d scans into 3d prints',
-      'tags': [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-      ],
-      'view_count': '1K'
-    };
-
-    this.boostPostDataImage = {
-      'slug': '5ceb9fc82765246c6cc55b47',
-      'author': {
-        'slug': '1.0.2',
-        'first_name': 'Gohar',
-        'last_name': 'Avetisyan',
-        'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
-      },
-      'created': '11 dec 2019',
-      'published': '1563889376',
-      'title': 'In the flesh: translating 2d scans into 3d prints',
-      'tags': [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-      ],
-      'image': 'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-      'publication': {
-        'title': 'UX Planet',
-        'slug': 'ux_planet'
-      },
-      'view_count': '1K'
-    };
+    this.initSubmitFormView();
 
     this.boostTab = [
       {
         'value': '1',
-        'text': 'Day'
+        'text': '1 Day'
       },
       {
         'value': '2',
-        'text': 'Days',
+        'text': '3 Days',
       },
       {
         'value': '3',
-        'text': 'Days',
+        'text': '7 Days',
       }
     ];
 
@@ -355,10 +312,36 @@ export class NewContentComponent implements OnInit, OnDestroy {
     };
   }
 
-  initSubscribes() {
+  initSubmitFormView () {
+    let title = (this.contentForm && this.contentForm.value) ? this.contentForm.value.title : '';
+    title = title.replace(/<\/?[^>]+(>|$)/g, '');
+    this.currentContentData = {
+      'author': {
+        'slug': this.accountService.accountInfo.publicKey,
+        'first_name': this.accountService.accountInfo.firstName,
+        'last_name': this.accountService.accountInfo.lastName,
+        'image': this.accountService.accountInfo.image
+      },
+      'published': '1563889376',
+      'title': title,
+      'tags': [
+        '2017',
+        'DEVELOPER',
+        'FULLSTACK'
+      ],
+      'image': this.mainCoverImageUrl,
+      'publication': {
+        'title': 'UX Planet',
+        'slug': 'ux_planet'
+      },
+      'view_count': '1K'
+    };
+  }
 
+  initSubscribes() {
     this.contentForm.valueChanges
       .pipe(
+        tap(() => this.initSubmitFormView()),
         debounceTime(3000),
         map(() => {
           if (!this.isSubmited) {
@@ -368,7 +351,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-
       },
       err => console.log(err)
       );
