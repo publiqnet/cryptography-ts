@@ -187,6 +187,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
         H3: 'H3',
         H4: 'H4'
       },
+      // fontSizeDefaultSelection: '40',
+      // fontSize: '40',
+      // fontSizeUnit: 'px',
       listAdvancedTypes: false,
       linkText: false,
       linkInsertButtons: ['linkBack'],
