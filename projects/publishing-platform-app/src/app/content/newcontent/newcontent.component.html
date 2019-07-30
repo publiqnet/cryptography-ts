@@ -5,7 +5,7 @@
         <div class="post-field">
           <!--title-->
           <div class="post-field__areas">
-              <textarea [froalaEditor]="contentOptions" rows="10" formControlName="title" placeholder="{{'content.title' | translate}}" (froalaInit)="initFroala($event)"></textarea>
+              <textarea [froalaEditor]="titleOptions" rows="10" formControlName="title" (froalaInit)="initTitleFroala($event)"></textarea>
           </div>
           <!--content-->
           <div id="editor-froala">

@@ -22,9 +22,12 @@ export class NewContentComponent implements OnInit, OnDestroy {
   showStoryForm: boolean = false;
   boostField: boolean = false;
   public contentId: number;
-  private editorObject;
-  private editorInitObject;
+  private contentObject;
+  private editorContentInitObject;
   private editorContentObject;
+  private titleObject;
+  private editorTitleInitObject;
+  private editorTitleObject;
   public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
@@ -32,6 +35,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
   title: string;
   content: string;
   publication: string;
+  titleOptions: object;
   contentOptions: object;
   public boostDropdownData = [];
   public boostPostData = {};
@@ -169,6 +173,96 @@ export class NewContentComponent implements OnInit, OnDestroy {
       }
     ];
 
+    this.titleOptions = {
+      key: environment.froala_editor_key,
+      toolbarInline: true,
+      toolbarButtons: ['bold', 'italic', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
+      language: (this.accountService.accountInfo && this.accountService.accountInfo.language == 'jp') ? 'ja' : 'en_us',
+      dragInline: false,
+      pastePlain: true,
+      imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
+      videoEditButtons: [],
+      quickInsertButtons: ['image', 'video'],
+      imageUpload: true,
+      imageUploadMethod: 'POST',
+      paragraphFormat: {
+        N: 'Normal',
+        H2: 'H2',
+        H3: 'H3',
+        H4: 'H4'
+      },
+      listAdvancedTypes: false,
+      linkText: false,
+      linkInsertButtons: ['linkBack'],
+      imageUploadURL: this.contentUrl,
+      videoAllowedTypes: ['mp4', 'webm', 'ogg'],
+      imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
+      charCounterMax: 65535,
+      charCounterCount: false,
+      lineBreakerTags: ['table', 'hr', 'form'],
+      linkAlwaysBlank: true,
+      imageMaxSize: 5 * 1024 * 1024, // 5MB
+      pasteDeniedAttrs: ['class', 'id', 'style', 'srcset'],
+      imageResize: false,
+      imageEditButtons: ['imageCaption'],
+      imagePasteProcess: true,
+      imageDefaultWidth: null,
+      requestHeaders: {
+        'X-API-TOKEN': (this.accountService.accountInfo && this.accountService.accountInfo.token)
+          ? this.accountService.accountInfo.token
+          : ''
+      },
+      events: {
+        'froalaEditor.initialized': (e, editor) => {
+          this.titleObject = e;
+          this.editorTitleObject = editor;
+        },
+        'froalaEditor.html.set': function (e, editor) {
+          editor.events.trigger('charCounter.update');
+        },
+        'froalaEditor.contentChanged': (e, editor) => {
+          // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
+        },
+        // 'froalaEditor.image.beforeUpload': (e, editor, images) => {
+        //   editor.opts.imageUploadParams = {
+        //     action: 3,
+        //     content_id: this.contentId
+        //   };
+        // },
+        'froalaEditor.image.inserted': (e, editor, img, response) => {
+          if (response) {
+            const responseData = JSON.parse(response);
+            this.contentUris[responseData.uri] = responseData.link;
+            const uploadedImage = responseData.content_original_sample_file;
+
+            if (!this.contentId && responseData.content_id) {
+              this.contentId = responseData.content_id;
+            }
+
+            if (uploadedImage) {
+              // this.resetCurrentUrl(uploadedImage);
+            }
+
+            if (img && img.get(0).height) {
+              $(img).attr('height', img.get(0).height);
+            }
+
+            if (img && img.get(0).width) {
+              $(img).attr('width', img.get(0).width);
+            }
+
+            $(img).closest('p').find('br:first').remove();
+            $(img).closest('p').after('<p data-empty="true"><br></p>');
+          }
+        },
+        'froalaEditor.image.error': (e, editor, error, response) => {
+        },
+        'froalaEditor.video.inserted': function (e, editor, $video) {
+          $video.closest('p').find('br:last').remove();
+          $video.closest('p').after('<p data-empty="true"><br></p>');
+        }
+      }
+    };
     this.contentOptions = {
       key: environment.froala_editor_key,
       toolbarInline: true,
@@ -210,7 +304,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       },
       events: {
         'froalaEditor.initialized': (e, editor) => {
-          this.editorObject = e;
+          this.contentObject = e;
           this.editorContentObject = editor;
         },
         'froalaEditor.html.set': function (e, editor) {
@@ -316,9 +410,17 @@ export class NewContentComponent implements OnInit, OnDestroy {
     }
   }
 
+  initTitleFroala($event) {
+    this.editorTitleInitObject = $event;
+    this.editorTitleInitObject.initialize();
+    setTimeout(() => {
+      this.editorTitleObject.$placeholder[0].textContent = this.translateService.instant('content.title');
+    }, 20);
+  }
+
   initFroala($event) {
-    this.editorInitObject = $event;
-    this.editorInitObject.initialize();
+    this.editorContentInitObject = $event;
+    this.editorContentInitObject.initialize();
     setTimeout(() => {
       this.editorContentObject.$placeholder[0].textContent = this.translateService.instant('content.content');
     }, 20);
