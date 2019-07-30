@@ -14,6 +14,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { ArticleComponent } from './article/article.component';
 import { TemplateComponent } from './template/template.component';
 import { HeaderComponent } from './header/header.component';
+import { HeaderOldComponent } from './header-old/header-old.component';
 import { FooterComponent } from './footer/footer.component';
 import { AuthguardService } from './services/authguard.service';
 import { AccountService } from './services/account.service';
@@ -82,6 +83,7 @@ export function createTranslateLoader(http: HttpClient) {
         ArticleComponent,
         ArticleOldComponent,
         TemplateComponent,
+        HeaderOldComponent,
         HeaderComponent,
         FooterComponent,
         TagListComponent,

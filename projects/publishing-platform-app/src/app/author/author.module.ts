@@ -8,6 +8,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { AuthorComponent } from './author/author.component';
 import { AuthorRoutingModule } from './author-routhing.module';
 import { SharedModule } from '../shared/shared.module';
+import { NgxMasonryModule } from 'ngx-masonry';
+import { AuthorOldComponent } from './author-old/author-old.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/home/', '.json');
@@ -24,9 +26,10 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient]
       },
       isolate: true
-    })
+    }),
+    NgxMasonryModule
   ],
-  declarations: [AuthorComponent],
+  declarations: [AuthorOldComponent, AuthorComponent],
   providers: []
 })
 export class AuthorModule {}

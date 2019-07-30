@@ -380,32 +380,30 @@ export class AccountService {
   }
 
   logout() {
-    if (isPlatformBrowser(this.platformId)) {
-      const token = this.accountInfo.token;
-      this.SetAccountInfo = null;
-      localStorage.removeItem('auth');
-      localStorage.removeItem('encrypted_brain_key');
-      this.brainKey = '';
+    const token = this.accountInfo.token;
+    this.SetAccountInfo = null;
+    localStorage.removeItem('auth');
+    localStorage.removeItem('encrypted_brain_key');
+    this.brainKey = '';
 
-      localStorage.removeItem('for_adult');
-      localStorage.setItem('lang', 'en');
-      localStorage.removeItem(this.userFavouriteTagsKey);
-      // this.publicKey = '';
+    localStorage.removeItem('for_adult');
+    localStorage.setItem('lang', 'en');
+    localStorage.removeItem(this.userFavouriteTagsKey);
+    // this.publicKey = '';
 
-      this.accountUpdated$.next(null);
-      // this.unsetBalance();
-      // this.logoutData = null;
-      this.logoutDataChanged.next(null);
+    this.accountUpdated$.next(null);
+    // this.unsetBalance();
+    // this.logoutData = null;
+    this.logoutDataChanged.next(null);
 
-      this.http
-        .post(this.userUrl + '/signout', '', {
-          headers: new HttpHeaders({'X-API-TOKEN': token})
-        })
-        .subscribe(
-          () => {},
-          error => this.errorService.handleError('logout', error)
-        );
-    }
+    this.http
+      .post(this.userUrl + '/signout', '', {
+        headers: new HttpHeaders({'X-API-TOKEN': token})
+      })
+      .subscribe(
+        () => {},
+        error => this.errorService.handleError('logout', error)
+      );
   }
 
   loggedIn() {

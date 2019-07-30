@@ -1,11 +1,22 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-xl-9">
-            <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
+            <div class="grid-style">
+                <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
+                <div class="grid-style__items">
+                    <i (click)="listType = 'grid'" class="grid-icon grid-icon--selected icon-multi-grid"></i>
+                    <i (click)="listType = 'single'" class="grid-icon icon-single-grid"></i>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)"  ngx-masonry [options]="myOptions">
-            <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray;"></ui-content-single>
-        </div>
+        <ng-container *ngIf="contentArray.length">
+            <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
+                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray;" [contentData]="content"></ui-content-single>
+            </div>
+            <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
+                <ui-content-single [type]="listType" *ngFor="let content of contentArray;" [contentData]="content"></ui-content-single>
+            </div>
+        </ng-container>
         <div class="col-lg-4 col-xl-3">
             <div class="welcome-to-media">
                 <i class="icon-close"></i>
@@ -20,13 +31,34 @@
             <div class="publications">
                 <ui-publication-list [countByPage]="3" [data]="publicationData"></ui-publication-list>
             </div>
+            <div class="copyright-space">
+                <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
+                <div class="copyright-space__items">
+                    <span class="copyright-space__items__item">JP</span>
+                    <span class="copyright-space__items__item selected">EN</span>
+                </div>
+            </div>
         </div>
     </div>
-    <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
-    <div class="row">
-        <div class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" ngx-masonry [options]="myOptions">
-            <ui-content-single ngxMasonryItem type="grid" [contentData]="content" *ngFor="let content of contentArray.slice(0, 8);"></ui-content-single>
+    <ng-container *ngIf="contentArray.length">
+        <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
+        <div class="row">
+            <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
+                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content"></ui-content-single>
+            </div>
+            <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
+                <ui-content-single [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content"></ui-content-single>
+            </div>
+        </div>
+        <ui-relevant-content [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
+    </ng-container>
+
+    <div class="empty" *ngIf="seeMoreLoading">
+        <div style="display: inline-block">
+            <mat-spinner></mat-spinner>
         </div>
     </div>
-    <ui-relevant-content [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
+    <ng-container *ngIf="seeMoreChecker">
+        <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
+    </ng-container>
 </div>

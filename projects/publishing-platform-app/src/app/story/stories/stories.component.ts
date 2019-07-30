@@ -87,25 +87,25 @@ export class StoriesComponent implements OnInit, OnDestroy {
 
           if (stories.length > this.storiesDefaultCount) {
             const lastIndex = stories.length - 1;
-            if (stories[lastIndex].id !== this.startFromBlock) {
-              this.startFromBlock = stories[lastIndex].id;
-              stories.pop();
-            }
+            // if (stories[lastIndex].id !== this.startFromBlock) {
+            //   this.startFromBlock = stories[lastIndex].id;
+            //   stories.pop();
+            // }
           }
           stories.forEach((story: Content) => {
             if (views.length) {
               views.forEach(view => {
-                if (story.ds_id == view._id) {
-                  story.viewcount = view.viewcount;
-                }
+                // if (story.ds_id == view._id) {
+                //   story.viewcount = view.viewcount;
+                // }
               });
             }
 
             if (publications.length) {
               publications.forEach(nextPublication => {
-                if (story.ds_id == nextPublication.dsId) {
-                  story.publication = nextPublication.publication;
-                }
+                // if (story.ds_id == nextPublication.dsId) {
+                //   story.publication = nextPublication.publication;
+                // }
               });
             }
           });

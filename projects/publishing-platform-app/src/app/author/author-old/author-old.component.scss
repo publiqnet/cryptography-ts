@@ -17,10 +17,7 @@
     vertical-align: middle;
   }
 }
-.delete-draft{
-  color:#3366FF!important;
-  font-size:13px;
-}
+
 .acc-name {
   display: inline-block;
   max-width: 100%;
@@ -106,10 +103,4 @@
 
 .empty {
   font-family: "Open Sans", sans-serif;
-}
-
-.container {
-  ::ng-deep .author-tab {
-    margin-bottom: 30px;
-  }
 }

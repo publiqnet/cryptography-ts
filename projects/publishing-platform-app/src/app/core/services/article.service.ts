@@ -146,18 +146,18 @@ export class ArticleService {
           (result: { boostedArticlesCount: number, articles: Content[] }) => {
             const data = this.fixTimeString(result.articles);
             const dsIdArray = [];
-            data.forEach((article: Content) => {
-              dsIdArray.push(article.ds_id);
-            });
+            // data.forEach((article: Content) => {
+            //   dsIdArray.push(article.ds_id);
+            // });
             this.publicationService
               .getArticlePublication(dsIdArray)
               .subscribe((pubs: Array<any>) => {
                 if (pubs.length) {
                   data.map((article: Content) => {
                     pubs.forEach(publication => {
-                      if (article.ds_id === publication.dsId) {
-                        article.publication = publication.publication;
-                      }
+                      // if (article.ds_id === publication.dsId) {
+                      //   article.publication = publication.publication;
+                      // }
                     });
                   });
                 }
@@ -262,9 +262,9 @@ export class ArticleService {
           data = this.fixTimeString(data);
 
           const dsIdArray = [];
-          data.forEach((article: Content) => {
-            dsIdArray.push(article.ds_id);
-          });
+          // data.forEach((article: Content) => {
+          //   dsIdArray.push(article.ds_id);
+          // });
           if (forPage === PageOptions.homepageTagStories) {
             this.publicationService.loadStoriesPublicationByDsId(dsIdArray, PageOptions.homepageTagStories);
             this.getContentViews(dsIdArray, PageOptions.homepageTagStories);
@@ -312,12 +312,12 @@ export class ArticleService {
             }
             const dsIdArray = [];
             data.forEach((article: Content) => {
-              if (article && article.created) {
-                if (article.created.slice(-1) !== 'Z') {
-                  article.created = article.created + 'Z';
-                }
-              }
-              dsIdArray.push(article.ds_id);
+              // if (article && article.created) {
+              //   if (article.created.slice(-1) !== 'Z') {
+              //     article.created = article.created + 'Z';
+              //   }
+              // }
+              // dsIdArray.push(article.ds_id);
             });
 
             this.publicationService.loadStoriesPublicationByDsId(dsIdArray, PageOptions.homepageAuthorStories);
@@ -482,9 +482,9 @@ export class ArticleService {
     if (isPlatformBrowser(this.platformId)) {
       this.http.get(url).subscribe(
         (data: Content) => {
-          if (data && data.created && data.created.slice(-1) !== 'Z') {
-            data.created = data.created + 'Z';
-          }
+          // if (data && data.created && data.created.slice(-1) !== 'Z') {
+          //   data.created = data.created + 'Z';
+          // }
           if (data['content']) {
             data['meta'].tags = ArticleService.generateTags(data['meta'].tags);
 
@@ -559,9 +559,9 @@ export class ArticleService {
     if (isPlatformBrowser(this.platformId)) {
       this.http.get(url).subscribe(
         (data: Content) => {
-          if (data && data.created && data.created.slice(-1) !== 'Z') {
-            data.created = data.created + 'Z';
-          }
+          // if (data && data.created && data.created.slice(-1) !== 'Z') {
+          //   data.created = data.created + 'Z';
+          // }
           if (data['content']) {
             data['meta'].tags = ArticleService.generateTags(data['meta'].tags);
 
@@ -610,9 +610,9 @@ export class ArticleService {
           map((stories: any[]) => {
             if (stories && stories.length) {
               const dsIdArray = [];
-              stories.forEach((story: Content) => {
-                dsIdArray.push(story.ds_id);
-              });
+              // stories.forEach((story: Content) => {
+              //   dsIdArray.push(story.ds_id);
+              // });
               this.publicationService.loadStoriesPublicationByDsId(dsIdArray);
               this.loadStoriesViewsByDsId(dsIdArray);
             }
@@ -916,18 +916,18 @@ export class ArticleService {
           (data: Content[]) => {
             data = this.fixTimeString(data);
             const dsIdArray = [];
-            data.forEach((article: Content) => {
-              dsIdArray.push(article.ds_id);
-            });
+            // data.forEach((article: Content) => {
+            //   dsIdArray.push(article.ds_id);
+            // });
             this.publicationService
               .getArticlePublication(dsIdArray)
               .subscribe((pubs: Array<any>) => {
                 if (pubs.length) {
                   data.map((article: Content) => {
                     pubs.forEach(publication => {
-                      if (article.ds_id === publication.dsId) {
-                        article.publication = publication.publication;
-                      }
+                      // if (article.ds_id === publication.dsId) {
+                      //   article.publication = publication.publication;
+                      // }
                     });
                   });
                 }
@@ -965,18 +965,18 @@ export class ArticleService {
         .subscribe(
           data => {
             const dsIdArray = [];
-            data.forEach((article: Content) => {
-              dsIdArray.push(article.ds_id);
-            });
+            // data.forEach((article: Content) => {
+            //   dsIdArray.push(article.ds_id);
+            // });
             this.publicationService
               .getArticlePublication(dsIdArray)
               .subscribe((pubs: Array<any>) => {
                 if (pubs.length) {
                   data.map((article: Content) => {
                     pubs.forEach(publication => {
-                      if (article.ds_id === publication.dsId) {
-                        article.publication = publication.publication;
-                      }
+                      // if (article.ds_id === publication.dsId) {
+                      //   article.publication = publication.publication;
+                      // }
                     });
                   });
                 }
