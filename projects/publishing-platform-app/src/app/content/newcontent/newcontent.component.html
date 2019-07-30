@@ -14,8 +14,8 @@
         </div>
 
         <div class="post-field-fixed">
-          <button class="button--publish" (click)="onShowStepForm(true)" [ngClass]="{'animate' : showBoost === true, 'with-submit' : boostField}">
-            <span class="visible--span" (click)="changeStep()">{{(submitStep == 1) ? 'Next' : 'Publish'}}</span>
+          <button class="button--publish" (click)="onShowStepForm(true)" [ngClass]="{'animate' : showStoryForm === true, 'with-submit' : boostField}">
+            <span class="visible--span">{{(submitStep == 1) ? 'Next' : 'Publish'}}</span>
             <i class="icon-arrow-link"></i>
             <!--TODO: tooltip-->
             <span class="custom-tooltip" *ngIf="false">
@@ -29,7 +29,7 @@
 </div>
 
 <div class="publishing-space">
-  <div id="publishMain" [ngClass]="{'visible' : showBoost === true}" class="publish__main">
+  <div id="publishMain" [ngClass]="{'visible' : showStoryForm === true}" class="publish__main">
     <span class="close-icon" (click)="onShowStepForm(false)"><i class="icon-close"></i></span>
     <div class="publish__main--white-space publish__main--white-space--descktop">
       <div>
@@ -107,7 +107,7 @@
         <!--boost step-->
         <ng-container *ngIf="submitStep == 2">
           <span class="add-tag__label">Enter your password to submit story</span>
-          <ui-input type="password" className="add-tag-input"></ui-input>
+          <ui-input type="password" [placeholder]="'Password'" className="add-tag-input" (_onChange)="onPasswordChange($event)"></ui-input>
 
           <div class="boost-story">
             <div class="boost-story__field">

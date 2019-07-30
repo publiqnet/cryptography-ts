@@ -9,12 +9,12 @@
                 </div>
             </div>
         </div>
-        <ng-container *ngIf="contentArray.length">
+        <ng-container *ngIf="firstContentBlock.length">
             <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
-                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray;" [contentData]="content"></ui-content-single>
+                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of firstContentBlock;" [contentData]="content"></ui-content-single>
             </div>
             <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
-                <ui-content-single [type]="listType" *ngFor="let content of contentArray;" [contentData]="content"></ui-content-single>
+                <ui-content-single [type]="listType" *ngFor="let content of firstContentBlock;" [contentData]="content"></ui-content-single>
             </div>
         </ng-container>
         <div class="col-lg-4 col-xl-3">
@@ -41,16 +41,26 @@
         </div>
     </div>
     <ng-container *ngIf="contentArray.length">
-        <ui-relevant-content [type]="'all-single'" [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
-        <div class="row">
+        <ui-relevant-content *ngIf="firstRelevantBlock.length" [type]="'all-single'" [contentList]="firstRelevantBlock" title="Interesting writers"></ui-relevant-content>
+        <div class="row" *ngIf="secondContentBlock.length">
             <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
-                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content"></ui-content-single>
+                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of secondContentBlock" [contentData]="content"></ui-content-single>
             </div>
             <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
-                <ui-content-single [type]="listType" *ngFor="let content of contentArray.slice(0, 8);" [contentData]="content"></ui-content-single>
+                <ui-content-single [type]="listType" *ngFor="let content of secondContentBlock;" [contentData]="content"></ui-content-single>
             </div>
         </div>
-        <ui-relevant-content [contentList]="contentArray.slice(0, 8)" title="Interesting writers"></ui-relevant-content>
+        <ui-relevant-content *ngIf="secondRelevantBlock.length" [contentList]="secondRelevantBlock" title="Interesting writers"></ui-relevant-content>
+    </ng-container>
+    <ng-container *ngIf="loadedContentBlock.length">
+        <div class="row">
+            <div *ngIf="listType == 'grid'" class="col-lg-8 col-xl-9 stories" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
+                <ui-content-single ngxMasonryItem [type]="listType" *ngFor="let content of loadedContentBlock" [contentData]="content"></ui-content-single>
+            </div>
+            <div *ngIf="listType == 'single'" class="col-lg-8 col-xl-9">
+                <ui-content-single [type]="listType" *ngFor="let content of loadedContentBlock" [contentData]="content"></ui-content-single>
+            </div>
+        </div>
     </ng-container>
 
     <div class="empty" *ngIf="seeMoreLoading">
