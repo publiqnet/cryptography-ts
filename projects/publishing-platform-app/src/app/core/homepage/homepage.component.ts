@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { ContentService } from '../services/content.service';
 import { Content } from '../services/models/content';
+import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-homepage',
@@ -19,12 +21,13 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public blockInfiniteScroll = false;
   requestMade = false;
   public startFromUri = null;
-  public storiesDefaultCount = 2;
+  public storiesDefaultCount = 4;
   public firstRelevantBlock = [];
   public secondRelevantBlock = [];
   public firstContentBlock = [];
   public secondContentBlock = [];
   public loadedContentBlock = [];
+  private unsubscribe$ = new ReplaySubject<void>(1);
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -100,7 +103,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount + 1)
+    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
       .subscribe((contentData: any) => {
         this.contentArray = contentData.data;
         this.seeMoreChecker = contentData.more;
@@ -117,12 +123,9 @@ export class HomepageComponent implements OnInit, OnDestroy {
   }
 
   calculateLastStoriUri() {
-    if (this.contentArray.length > this.storiesDefaultCount) {
-      const lastIndex = this.contentArray.length - 1;
-      if (this.contentArray[lastIndex].uri !== this.startFromUri) {
-        this.startFromUri = this.contentArray[lastIndex].uri;
-        this.contentArray.pop();
-      }
+    const lastIndex = this.contentArray.length - 1;
+    if (this.contentArray[lastIndex].uri !== this.startFromUri) {
+      this.startFromUri = this.contentArray[lastIndex].uri;
     }
   }
 
@@ -135,19 +138,24 @@ export class HomepageComponent implements OnInit, OnDestroy {
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;
-    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount).subscribe(
+    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
       (data: any) => {
         this.seeMoreChecker = data.more;
         this.seeMoreLoading = false;
-        this.calculateLastStoriUri();
         this.contentArray = this.contentArray.concat(data.data);
         this.loadedContentBlock = this.loadedContentBlock.concat(data.data);
+        this.calculateLastStoriUri();
         this.blockInfiniteScroll = false;
       }
     );
   }
 
   ngOnDestroy() {
-
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
