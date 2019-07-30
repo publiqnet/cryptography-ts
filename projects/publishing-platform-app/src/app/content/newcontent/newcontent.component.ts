@@ -47,6 +47,10 @@ export class NewContentComponent implements OnInit, OnDestroy {
   public stepperData = [];
   private hasDraft = false;
   public isSubmited = false;
+  public boostPrice: number;
+  public boostDays: number;
+  private uploadedContentUri: string;
+  public submitError: boolean = false;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   @Input() draftId: number;
@@ -64,7 +68,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initDefaultData();
     this.buildForm();
-
     this.initSubscribes();
   }
 
@@ -95,6 +98,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   initDefaultData() {
+    this.boostPrice = 50;
+    this.boostDays = 1;
     this.initSubmitFormView();
 
     this.boostTab = [
@@ -103,11 +108,11 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'text': '1 Day'
       },
       {
-        'value': '2',
+        'value': '3',
         'text': '3 Days',
       },
       {
-        'value': '3',
+        'value': '7',
         'text': '7 Days',
       }
     ];
@@ -220,6 +225,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
         }
       }
     };
+
     this.contentOptions = {
       key: environment.froala_editor_key,
       toolbarInline: true,
@@ -273,12 +279,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'froalaEditor.contentChanged': (e, editor) => {
           // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
         },
-        // 'froalaEditor.image.beforeUpload': (e, editor, images) => {
-        //   editor.opts.imageUploadParams = {
-        //     action: 3,
-        //     content_id: this.contentId
-        //   };
-        // },
         'froalaEditor.image.inserted': (e, editor, img, response) => {
           if (response) {
             const responseData = JSON.parse(response);
@@ -315,9 +315,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
     };
   }
 
-  initSubmitFormView () {
-    let title = (this.contentForm && this.contentForm.value) ? this.contentForm.value.title : '';
-    title = title.replace(/<\/?[^>]+(>|$)/g, '');
+  initSubmitFormView() {
+    this.submitError = false;
+    const title = (this.contentForm && this.contentForm.value && this.contentForm.value.title) ? this.contentForm.value.title.replace(/<\/?[^>]+(>|$)/g, '') : '';
     this.currentContentData = {
       'author': {
         'slug': this.accountService.accountInfo.publicKey,
@@ -354,8 +354,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-      },
-      err => console.log(err)
+        },
+        err => console.log(err)
       );
 
     this.draftService.draftData$
@@ -375,12 +375,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   saveDraft(id = null) {
-    // if (this.tags && this.tags.length) {
-    //   this.contentForm.value.tags = this.tags;
-    // }
-    // if (typeof this.contentForm.value.tags === 'string' || this.contentForm.value.tags instanceof String) {
-    //   this.contentForm.value.tags = [this.contentForm.value.tags];
-    // }
     const newDraft: any = {
       title: this.contentForm.value.title || '',
       content: this.contentForm.value.content || '',
@@ -412,7 +406,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   onShowStepForm(flag: boolean) {
-    console.log('onShowStepForm');
     if (flag && this.showStoryForm == true) {
       this.changeStep();
     } else {
@@ -431,7 +424,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
     if (this.submitStep == 1) {
       this.submitStep = 2;
     } else if (this.submitStep == 2) {
-      console.log('submit', this.contentForm.value);
       this.submit();
     }
   }
@@ -445,8 +437,13 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    if (!this.contentForm.value.content) {
+      this.submitError = true;
+      return false;
+    }
     const password = this.contentForm.value.password;
-    const contentTitle = `<h1>${this.contentForm.value.title}</h1>`;
+    const title = (this.contentForm && this.contentForm.value && this.contentForm.value.title) ? this.contentForm.value.title.replace(/<\/?[^>]+(>|$)/g, '') : '';
+    const contentTitle = (title) ? `<h1>${title}</h1>` : '';
     let uploadedContentHtml = '';
     const contentBlocks = this.editorContentObject.html.blocks();
     const calls = [];
@@ -470,68 +467,74 @@ export class NewContentComponent implements OnInit, OnDestroy {
     });
 
     forkJoin(calls).subscribe((data: any) => {
-      if (data.length) {
-        data.forEach((nextResult) => {
-          if (nextResult['uri']) {
-            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
-            this.contentUris[nextResult['uri']] = nextResult['link'];
-          } else {
-            uploadedContentHtml += nextResult;
-          }
-        });
-      }
-
-      let contentData = `${contentTitle} ${uploadedContentHtml}`;
-      if (this.mainCoverImageUri && this.mainCoverImageUrl) {
-        this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
-        const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
-        contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
-      }
-
-      console.log(this.contentUris, this.mainCoverImageUri, this.mainCoverImageUrl);
-
-      this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
-
-      if (Object.keys(this.contentUris).length) {
-        this.contentService.signFiles(Object.keys(this.contentUris), password)
-          .pipe(
-            switchMap((data: any) => {
-              return this.submitContent(contentData, password);
-            })
-          ).subscribe(data => {
-          this.afterContentSubmit();
-        });
-      } else {
-        this.submitContent(contentData, password)
-          .subscribe(data => {
-            console.log('NO signFiles - ', data);
-            this.afterContentSubmit();
+        if (data.length) {
+          data.forEach((nextResult) => {
+            if (nextResult['uri']) {
+              uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+              this.contentUris[nextResult['uri']] = nextResult['link'];
+            } else {
+              uploadedContentHtml += nextResult;
+            }
           });
-      }
-    });
+        }
+
+        let contentData = `${contentTitle} ${uploadedContentHtml}`;
+        if (this.mainCoverImageUri && this.mainCoverImageUrl) {
+          this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
+          const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+          contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
+        }
+
+        this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
+
+        if (Object.keys(this.contentUris).length) {
+          this.contentService.signFiles(Object.keys(this.contentUris), password)
+            .pipe(
+              switchMap((data: any) => {
+                return this.submitContent(contentData, password);
+              }),
+              switchMap((data: any) => {
+                return (this.boostField) ? this.contentService.contentBoost(this.uploadedContentUri, this.boostPrice, this.boostDays, password) : of(data);
+              })
+            ).subscribe(data => {
+              this.afterContentSubmit();
+            },
+            error => {
+              this.submitError = true;
+              console.log('error 1 - ', error);
+            });
+        }
+      },
+      error => {
+        console.log('error 2 - ', error);
+      });
   }
 
   afterContentSubmit() {
-    this.accountService.getAccountData();
-    // if (this.draftId) {
-    //   this.draftService.delete(this.draftId).subscribe();
-    // }
-    // if (this.boostInfo && this.boostInfo.boostEnabled) {
-    //   this.contentService.articleBoost(this.password, )
-    // }
+    if (this.draftId) {
+      this.draftService.delete(this.draftId).subscribe();
+    }
     this.router.navigate(['/content/mycontent']);
   }
 
   private submitContent(contentData, password) {
-    let uploadedContentURI = '';
+    this.uploadedContentUri = '';
     return this.contentService.unitUpload(contentData)
       .pipe(
         switchMap((data: any) => {
-          uploadedContentURI = data.uri;
+          this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(uploadedContentURI, this.contentId))
+        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId))
       );
+  }
+
+  onRangeChange(event) {
+    this.boostPrice = event.target.value;
+  }
+
+  tabChange(event) {
+    this.boostDays = event;
   }
 
   ngOnDestroy() {

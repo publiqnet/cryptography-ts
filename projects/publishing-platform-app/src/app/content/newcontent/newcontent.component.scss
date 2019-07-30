@@ -547,6 +547,10 @@
 //  left: -37px!important;
 //}
 
+::ng-deep .password-error .input {
+  border: 1px solid #FE3A52!important;
+}
+
 ::ng-deep .fr-element img {
   cursor: pointer;
   max-width: 100%;
