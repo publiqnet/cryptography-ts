@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { NewcontentComponent } from './newcontent/newcontent.component';
+import { NewContentComponent } from './newcontent/newcontent.component';
 import { AuthguardService } from '../core/services/authguard.service';
-import { MycontentComponent } from './mycontent/mycontent.component';
+import { MyContentComponent } from './mycontent/mycontent.component';
 import { EditDraftComponent } from './edit-draft/edit-draft.component';
 import { EditContentComponent } from './edit-content/edit-content.component';
 import { PendingChangesGuard } from '../guards/pending-changes-guard.service';
@@ -18,12 +18,12 @@ export const contentRoutes: Routes = [
       },
       {
         path: 'mycontent',
-        component: MycontentComponent,
+        component: MyContentComponent,
         canActivate: [AuthguardService]
       },
       {
         path: 'newcontent',
-        component: NewcontentComponent,
+        component: NewContentComponent,
         canActivate: [AuthguardService]
       },
       {
