@@ -61,9 +61,9 @@
           <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="tabChange($event)"></ui-tab>
 
           <div class="boost-progress__balance">
-            <span>Your Balance: <b>260 PBQ</b></span>
+            <span>Your Balance: <b>{{accountService.accountInfo.balance | number:'0.0-8'}} PBQ</b></span>
             <div class="boost-progress__balance__amount">
-              You will spend <b>40 PBQ</b> per 1 day.
+              You will spend <b>{{(boostPrice/boostDays) | number : '1.2-2'}} PBQ</b> per 1 day.
             </div>
           </div>
         </div>

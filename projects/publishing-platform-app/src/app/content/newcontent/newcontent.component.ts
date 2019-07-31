@@ -51,6 +51,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
   public boostDays: number;
   private uploadedContentUri: string;
   public submitError: boolean = false;
+  public titleText: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   @Input() draftId: number;
@@ -185,12 +186,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'froalaEditor.contentChanged': (e, editor) => {
           // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
         },
-        // 'froalaEditor.image.beforeUpload': (e, editor, images) => {
-        //   editor.opts.imageUploadParams = {
-        //     action: 3,
-        //     content_id: this.contentId
-        //   };
-        // },
         'froalaEditor.image.inserted': (e, editor, img, response) => {
           if (response) {
             const responseData = JSON.parse(response);
@@ -317,7 +312,31 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   initSubmitFormView() {
     this.submitError = false;
-    const title = (this.contentForm && this.contentForm.value && this.contentForm.value.title) ? this.contentForm.value.title.replace(/<\/?[^>]+(>|$)/g, '') : '';
+
+    this.titleText = '';
+    this.mainCoverImageUrl = '';
+    this.mainCoverImageUri = '';
+    if (this.editorTitleObject) {
+      const titleBlocks = this.editorTitleObject.html.blocks();
+      titleBlocks.forEach((node) => {
+        const nodeHtml = $.trim(node.innerHTML);
+        if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
+          if (this.titleText == '') {
+            this.titleText = nodeHtml;
+          }
+        } else if (nodeHtml.match(/<img/)) {
+          if (this.mainCoverImageUrl == '' || this.mainCoverImageUri == '') {
+            const outerText = node.outerHTML;
+            const regex = /<img[^>]*src="([^"]*)"/g;
+            const imgSrc = regex.exec(outerText)[1];
+            const imgUri = Object.keys(this.contentUris).find(key => this.contentUris[key] === imgSrc);
+            this.mainCoverImageUrl = imgSrc;
+            this.mainCoverImageUri = imgUri;
+          }
+        }
+      });
+    }
+
     this.currentContentData = {
       'author': {
         'slug': this.accountService.accountInfo.publicKey,
@@ -326,7 +345,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'image': this.accountService.accountInfo.image
       },
       'published': '1563889376',
-      'title': title,
+      'title': this.titleText,
       'tags': [
         '2017',
         'DEVELOPER',
@@ -376,7 +395,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   saveDraft(id = null) {
     const newDraft: any = {
-      title: this.contentForm.value.title || '',
+      title: this.titleText || '',
       content: this.contentForm.value.content || '',
       publication: this.contentForm.value.publication,
       contentUris: this.contentUris || {}
@@ -442,13 +461,15 @@ export class NewContentComponent implements OnInit, OnDestroy {
       return false;
     }
     const password = this.contentForm.value.password;
-    const title = (this.contentForm && this.contentForm.value && this.contentForm.value.title) ? this.contentForm.value.title.replace(/<\/?[^>]+(>|$)/g, '') : '';
-    const contentTitle = (title) ? `<h1>${title}</h1>` : '';
+    const contentTitle = (this.titleText) ? `<h1>${this.titleText}</h1>` : '';
     let uploadedContentHtml = '';
     const contentBlocks = this.editorContentObject.html.blocks();
     const calls = [];
 
-    contentBlocks.forEach((node) => {
+    const titleBlocks = this.editorTitleObject.html.blocks();
+    const allContentBlocks = [ ...titleBlocks, ...contentBlocks];
+
+    allContentBlocks.forEach((node) => {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         calls.push(this.contentService.uploadTextFiles(nodeHtml));
