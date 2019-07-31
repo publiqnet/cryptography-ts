@@ -1841,3 +1841,64 @@ p.sponsored{
   color: #ffffff;
 }
 
+//todo:
+
+.boost-post{
+  width: 100%!important;
+}
+.boost-post-img{
+  width: 100%!important;
+  border: 1px solid #DEE2E6;
+  box-shadow: none!important;
+}
+.add-tag .boost-story div{
+  .switch{
+    width: 31px!important;
+    height: 18px!important;
+  }
+  .switch__slider:before{
+    height: 10px!important;
+    width: 10px!important;
+    left: 5px!important;
+    bottom: 5px!important;
+  }
+  .switch input:checked + .switch__slider:before{
+    transform: translateX(12px)!important;
+  }
+}
+.publish__main--blue-space .add-tag .dropdown{
+  max-width: 100%;
+  width: 100%;
+  .dropdown__select{
+    padding: 15px 16px;
+    span{
+      font-size: 15px;
+      color: #8D929A;
+      font-weight: 400;
+    }
+  }
+}
+.add-tag-input{
+  background-color: #ECF0F3!important;
+}
+.boost-tabber{
+  z-index: 1;
+  margin: 24px 0;
+  .button-tabber__item{
+    min-width: 94px!important;
+    font-size: 15px!important;
+  }
+}
+.preview-tab{
+  .dropdown__select{
+    justify-content: flex-end!important;
+    margin-bottom: 30px;
+    padding: 0!important;
+    .dropdown__placeholder{
+      font-weight: bold;
+      font-size: 22px!important;
+      color: #2B2B2B!important;
+      padding: 0 5px;
+    }
+  }
+}
