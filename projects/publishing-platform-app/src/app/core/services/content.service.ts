@@ -985,7 +985,19 @@ export class ContentService {
 
   getMyContents(fromUri = null, count: number = 10): Observable<any> {
     const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
-    return this.httpHelperService.call(HttpMethodTypes.get, url);
+    return this.httpHelperService.call(HttpMethodTypes.get, url)
+    .pipe(map(contentData => {
+      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+      return contentData;
+    }));
+  }
+
+  getContents(publickey, fromUri = null, count: number = 10): Observable<any> {
+    const url = `${environment.backend}/api/contents/${publickey}/${count}/${fromUri}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.get, url).pipe(map(contentData => {
+      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+      return contentData;
+    }));
   }
 
   getHomePageContents(fromUri = null, count: number = 10): Observable<any> {
