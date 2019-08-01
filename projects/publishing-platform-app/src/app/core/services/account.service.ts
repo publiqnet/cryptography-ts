@@ -204,7 +204,7 @@ export class AccountService {
   }
 
   getAuthorByPublicKey(publicKey: string) {
-    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    const authToken = (this.loggedIn() && localStorage.getItem('auth')) ? localStorage.getItem('auth') : '';
     const url = this.userUrl + `/author-data/${publicKey}`;
     return this.httpHelper.call(HttpMethodTypes.get, url, null, null, false, !!authToken)
       .pipe(
