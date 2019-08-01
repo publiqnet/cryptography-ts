@@ -1,11 +1,8 @@
 <div class="signinup">
   <div class="signinup__side signinup__side--light">
     <div class="signinup__header">
-      <img src="../../../assets/images/publiq-logo.svg"
-           class="signinup__header__logo d-none d-lg-none d-sm-inline-block">
-      <ui-tab *ngIf="['login', 'register'].includes(activeRoute)" [type]="'navigation'" [currentValue]="activeRoute" [className]="'tabber'" (onTabChange)="changeTab($event)"
-              [tabs]="tabberData"></ui-tab>
-      <!--<img src="../../../assets/images/close.svg">-->
+      <img src="../../../assets/images/publiq-logo.svg" class="signinup__header__logo d-none d-lg-none d-sm-inline-block">
+      <ui-tab *ngIf="['login', 'register'].includes(activeRoute)" [type]="'navigation'" [currentValue]="activeRoute" [className]="'tabber'" (onTabChange)="changeTab($event)" [tabs]="tabberData"></ui-tab>
     </div>
     <div class="signinup__content">
       <div class="signinup__inner">
@@ -13,21 +10,14 @@
       </div>
     </div>
     <div class="signinup__footer">
-      <!--FOR SIGNIN-->
-      <a href="#" *ngIf="activeRoute == 'login'" class="" (click)="changeRoute($event, '/user/recover')">Forgot your
-        password?</a>
-      <!--FOR REGISTERING EMAIL-->
+      <a href="#" *ngIf="activeRoute == 'login'" class="" (click)="changeRoute($event, '/user/recover')">Forgot your password?</a>
       <p class="signinup__footer--terms d-none">By registering you agree to our <a href="">Terms & Conditions</a></p>
-      <!--FOR RESET PASSWORD-->
-      <a href="#" *ngIf="activeRoute != 'login'" (click)="changeRoute($event, '/user/login')">Back to login <i
-        class="icon-arrow-right"></i></a>
+      <a href="#" *ngIf="activeRoute != 'login'" (click)="changeRoute($event, '/user/login')">Back to login <i class="icon-arrow-right"></i></a>
     </div>
   </div>
   <div class="signinup__side signinup__side--dark d-none d-sm-inline-block">
     <div class="signinup__header">
-      <img src="../../../assets/images/publiq-logo-white.svg" class="signinup__header__logo d-none d-lg-inline-block"
-           alt="PUBLIQ">
-
+      <img src="../../../assets/images/publiq-logo-white.svg" [routerLink]="['/']" class="signinup__header__logo d-none d-lg-inline-block pointer" alt="PUBLIQ">
       <div class="signinup__header__language">
         <span class="language--active">EN</span>
         <span>JP</span>
@@ -65,7 +55,6 @@
         <div class="signinup__slider__bullets d-none d-lg-inline-block"></div>
       </div>
     </div>
-
     <div class="signinup__footer">
       <a href="#">About</a>
       <a href="#">Privacy</a>
