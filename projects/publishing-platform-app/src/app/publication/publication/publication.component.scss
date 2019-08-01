@@ -74,14 +74,20 @@
         transition: 300ms opacity;
         vertical-align: middle;
 
-        &.button--icon {
-          margin-left: 10px;
-        }
-
         &:hover {
           opacity: 1;
           background-color: pbq-color($grey, 700);
         }
+      }
+
+      ::ng-deep .dropdown-item__opener {
+        margin-left: 10px;
+        width: 33px; height: 33px;
+        vertical-align: middle;
+        text-align: center;
+        background-color: pbq-color($grey, 700);
+        opacity: .8; color: #ffffff;
+        border-radius: 50%;
       }
 
       @include media-lg {
@@ -179,7 +185,7 @@
     text-align: right;
     border-bottom: none!important;
 
-    .avatar {
+    ::ng-deep .avatar {
       margin-right: 15px;
       box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.07);
     }
@@ -190,7 +196,7 @@
     }
 
     &--editable {
-      .avatar {
+      ::ng-deep .avatar {
         position: relative;
 
         &:after {
@@ -311,7 +317,7 @@
     }
   }
 
-  .user-card {
+  /*.user-card {
     margin: 0 10px 10px 0;
     &__image {
       position: relative;
@@ -327,6 +333,18 @@
           border: 3px solid pbq-color($blue, 400);
         }
       }
+    }
+  }*/
+
+  ::ng-deep .role-card {
+    width: 210px;
+    display: inline-flex;
+    margin: 0 10px 10px 0;
+  }
+
+  ui-user-single:last-child {
+    ::ng-deep .role-card {
+      margin-right: 0;
     }
   }
 }
@@ -397,11 +415,13 @@
     flex: 1;
   }
 
-  .button {
+  ui-button {
     font-weight: 600;
 
     @include media-sm {
       flex: 0 0 100%;
+
+      ::ng-deep .button { width: 100%; }
     }
   }
 
@@ -469,7 +489,7 @@
     margin: 0 0 50px;
 
     &__avatar {
-      .avatar {
+      ::ng-deep .avatar {
         width: 50px; height: 50px;
       }
     }
@@ -491,10 +511,10 @@
     &__actions {
       font-size: 0;
 
-      .button {
-        padding: 0 25px;
+      ui-button {
+        //padding: 0 25px;
 
-        &:first-child {
+        &:first-of-type {
           margin-right: 10px;
         }
       }
@@ -509,14 +529,24 @@
         flex: 0 0 100%;
         display: inline-flex;
 
-        .button {
+        ui-button {
           flex: 1;
+
+          ::ng-deep .button {
+            width: 100%;
+          }
         }
       }
     }
   }
+
+  ::ng-deep .pending-status-card {
+    margin: 0 0 50px;
+  }
 }
 
-.button-tabber {
-  margin: 0 0 20px;
+:host {
+  ::ng-deep .button-tabber {
+    margin: 0 0 20px;
+  }
 }

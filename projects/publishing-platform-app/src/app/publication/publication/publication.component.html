@@ -23,29 +23,12 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="menu menu--icon menu--dark">
-                <div class="menu__item">
-                    <i class="icon-reposition menu__icon"></i>
-                    <span class="menu__text">Reposition</span>
-                </div>
-                <div class="menu__item">
-                    <i class="icon-delete menu__icon"></i>
-                    <span class="menu__text">Delete</span>
-                </div>
-                <div class="menu__item">
-                    <i class="icon-hidden menu__icon"></i>
-                    <span class="menu__text">Hide cover</span>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="row publication-metadata">
         <div class="col-lg-2 col-md-2 publication-metadata__avatar"><!-- publication-metadata__avatar--editable -->
-            <div class="avatar avatar--large avatar--squaric">
-                <img src="http://via.placeholder.com/130x130" alt="">
-            </div>
+            <ui-avatar size="large" [isSquaric]="true" [avatarData]="{image:'http://via.placeholder.com/130x130', fullName: 'Cats'}"></ui-avatar>
+            <!-- <div class="avatar avatar--large avatar--squaric">
+                <img src="" alt="">
+            </div> -->
             <!-- <i class="icon-close"></i> -->
         </div>
         <div class="col-lg-6 col-md-7 col">
@@ -53,9 +36,7 @@
             <h3 class="publication-metadata__description"><span>Daniel Borowski</span><!-- <i class="icon-edit editable-icon"></i> --></h3>
         </div>
         <div class="col-lg-2 col-md-3 col-12">
-            <div class="button button--icon">
-                <i class="icon-settings"></i>
-            </div>
+            <ui-button icon="icon-settings" [iconButton]="true" iconClassName="settings"></ui-button>
             <!-- <div class="button button--primary">
                 <i class="icon-follow"></i>
                 <span>Follow</span>
@@ -93,11 +74,13 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container">
-            <div class="button-tabber button-tabber--publication">
+            <!-- <div class="button-tabber button-tabber--publication">
                 <div class="button-tabber__item button-tabber__item--active">Stories</div>
                 <div class="button-tabber__item">Followers</div>
                 <div class="button-tabber__item">Members</div>
-            </div>
+            </div> -->
+
+            <ui-tab type="buttons" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'followers', text: 'Followers'}, {value: 'members', text: 'Members'}]" currentValue="members"></ui-tab>
         </div>
     </div>
     <!-- <div class="row">
@@ -203,14 +186,14 @@
                 <i class="icon-search"></i>
                 <input type="text">
             </div>
-            <div class="button">Invite Member</div>
+            <ui-button text="Invite Member"></ui-button>
         </div>
     </div>
 </div>
 <div class="container-fluid">
     <div class="row">
         <div class="followers col-12">
-            <div spasm="2">
+            <!-- <div spasm="2">
                 <div class="user-card" spasm="6">
                     <div class="user-card__upper-menu button button--icon button--icon--xsmall">
                         <i class="icon-menu"></i>
@@ -229,6 +212,12 @@
                     <h4 class="user-card__name">Marti Valencia</h4>
                     <p class="user-card__role">Editor <i class="icon-arrow-up-stroke"></i></p>
                 </div>
+            </div> -->
+            <div>
+                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]" *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+            </div>
+             <div>
+                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]" *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
             </div>
         </div>
     </div>
@@ -236,28 +225,28 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
-            <div class="tabber">
+            <!-- <div class="tabber">
                 <div class="tabber__item">Requests <small>(2)</small></div>
                 <div class="tabber__item">Pending</div>
-            </div>
+            </div> -->
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: 2}, {value: 'pending', text: 'Pending'}]" currentValue="requests"></ui-tab>
         </div>
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests">
-            <div class="requests__item" spasm="6">
+            <div class="requests__item" *ngFor="let d of [1,2,3,4,5,6,7,8,9];">
                 <div class="requests__item__avatar">
-                    <div class="avatar">
-                        <img src="http://via.placeholder.com/90">
-                    </div>
+                    <ui-avatar [avatarData]="{image: 'http://via.placeholder.com/90', fullName: 'Amolika Shaikh'}"></ui-avatar>
                 </div>
                 <div class="requests__item__name">
                     <h3>Amolika Shaikh</h3>
                 </div>
                 <div class="requests__item__actions">
-                    <div class="button button--primary">Confirm</div>
-                    <div class="button">Delete</div>
+                    <ui-button type="primary" text="Confirm"></ui-button>
+                    <ui-button text="Delete"></ui-button>
                 </div>
             </div>
+            <!-- <ui-user-single type="pending" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" *ngFor="let d of [1,2,3,4,5,6,7,8,9];"></ui-user-single> -->
         </div>
     </div>
 </div>
