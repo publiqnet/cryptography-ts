@@ -20,7 +20,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public blockInfiniteScroll = false;
   requestMade = false;
   public startFromUri = null;
-  public storiesDefaultCount = 4;
+  public storiesDefaultCount = 20;
   public firstRelevantBlock = [];
   public secondRelevantBlock = [];
   public firstContentBlock = [];

@@ -106,30 +106,32 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe((contents: any) => {
         this.publishedContent = contents.data;
       }, error => this.errorService.handleError('loadAuthorData', error));
+
     this.accountService.followAuthorChanged
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
-        this.accountService.getAuthorByPublicKey(this.author.publicKey);
-        this.canFollow = false;
-      }
+          this.accountService.getAuthorByPublicKey(this.author.publicKey);
+          this.canFollow = false;
+        }
       );
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-        if (data.action === 'loadAuthorData') {
-          this.router.navigate(['/page-not-found']);
-        } else if (data.action == 'loadAuthorStories') {
-          console.log('--error--', data.message);
-        } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-          this.notification.error(data.message);
+          if (data.action === 'loadAuthorData') {
+            this.router.navigate(['/page-not-found']);
+          } else if (data.action == 'loadAuthorStories') {
+            console.log('--error--', data.message);
+          } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
+            this.notification.error(data.message);
+          }
         }
-      }
       );
   }
+
   tabChange(e) {
     this.selectedTab = e;
     if (e == 2 && !this.drafts) {

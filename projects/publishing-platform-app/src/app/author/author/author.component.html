@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-lg-8 col-xl-9 stories">
             <ui-tab *ngIf="isCurrentUser" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
-            <div *ngIf="(selectedTab == '1' && publishedContent.length) || !isCurrentUser" class="text-center">
+            <div *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center">
                 <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
                     <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
                         (tagClick)="utilService.routerChangeHelper('tag',$event)" ngxMasonryItem [type]="listType" [contentData]="data"></ui-content-single>
