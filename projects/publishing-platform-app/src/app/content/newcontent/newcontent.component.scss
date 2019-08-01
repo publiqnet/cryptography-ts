@@ -546,3 +546,29 @@
 //  top: -5px!important;
 //  left: -37px!important;
 //}
+
+::ng-deep .password-error .input {
+  border: 1px solid #FE3A52!important;
+}
+
+::ng-deep .fr-element img {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+::ng-deep .post-field__areas .fr-wrapper.show-placeholder{
+  font-family: 'Vollkorn', serif;
+  font-size: 40px;
+}
+
+::ng-deep .post-field__areas .fr-element.fr-view p{
+  font-family: 'Vollkorn', serif;
+  font-size: 40px;
+  margin: 0;
+}
+
+::ng-deep .post-field__areas .fr-quick-insert.fr-visible{
+  top: 50%!important;
+  transform: translateY(-50%);
+  display: block;
+}

@@ -47,12 +47,7 @@
             <span>Add cover</span>
           </label>
         </div>
-
-        <!--story grid look-->
-        <ui-content-single *ngIf="!mainCoverImageUrl" className="boost-post" type="grid" [contentData]="boostPostData"></ui-content-single>
-
-        <!--story grid look with image-->
-        <ui-content-single *ngIf="mainCoverImageUrl" className="boost-post-img" type="grid" [contentData]="boostPostDataImage"></ui-content-single>
+        <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
       </ng-container>
 
       <ng-template #isBoosted>
@@ -60,15 +55,15 @@
         <div class="boost-progress">
           <div class="boost-progress__item">
             <span>Total budget</span>
-            <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]='50' [titleName]="'PBQ'"></ui-progress>
+            <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice" [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
           </div>
 
-          <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="1"></ui-tab>
+          <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="tabChange($event)"></ui-tab>
 
           <div class="boost-progress__balance">
-            <span>Your Balance: <b>260 PBQ</b></span>
+            <span>Your Balance: <b>{{accountService.accountInfo.balance | number:'0.0-8'}} PBQ</b></span>
             <div class="boost-progress__balance__amount">
-              You will spend <b>40 PBQ</b> per 1 day.
+              You will spend <b>{{(boostPrice/boostDays) | number : '1.2-2'}} PBQ</b> per 1 day.
             </div>
           </div>
         </div>
@@ -107,7 +102,7 @@
         <!--boost step-->
         <ng-container *ngIf="submitStep == 2">
           <span class="add-tag__label">Enter your password to submit story</span>
-          <ui-input type="password" [placeholder]="'Password'" className="add-tag-input" (_onChange)="onPasswordChange($event)"></ui-input>
+          <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'" [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
 
           <div class="boost-story">
             <div class="boost-story__field">
