@@ -56,9 +56,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
       'value': '2',
       'text': 'Drafts',
       'active': true
+    },
+    {
+      'value': '3',
+      'text': 'Settings',
+      'active': true
     }
   ];
   author: Account;
+  editMode: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -112,6 +118,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.calculateLastStoriUri();
         this.seeMoreChecker = contents.more;
         this.seeMoreLoading = false;
+        this.editMode = true;
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
