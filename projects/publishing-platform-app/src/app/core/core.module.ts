@@ -50,6 +50,7 @@ import { CryptService } from './services/crypt.service';
 import { ArticleOldComponent } from './article-old/article-old.component';
 import { HomepageOldComponent } from './homepage-old/homepage-old.component';
 import { NgxMasonryModule } from 'ngx-masonry';
+import { UtilService } from './services/util.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -120,7 +121,8 @@ export function createTranslateLoader(http: HttpClient) {
         NuxService,
         ChannelService,
         LinkService,
-        DraftService
+        DraftService,
+        UtilService
     ],
     exports: [SharedModule],
     entryComponents: [
