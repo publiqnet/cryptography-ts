@@ -11,7 +11,6 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { Content } from '../../core/services/models/content';
 import { DialogService } from '../../core/services/dialog.service';
 import { ContentService } from '../../core/services/content.service';
-import { DraftData } from '../../core/services/models/draft';
 import { DraftService } from '../../core/services/draft.service';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { UtilService } from '../../core/services/util.service';
@@ -42,6 +41,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
   public drafts: Array<any>;
   private unsubscribe$ = new ReplaySubject<void>(1);
   selectedTab: string;
+  public blockInfiniteScroll = false;
+  public seeMoreChecker = false;
+  seeMoreLoading = false;
+  public startFromUri = null;
+  public storiesDefaultCount = 4;
   tabs = [
     {
       'value': '1',
@@ -96,15 +100,18 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
-            return this.contentService.getMyContents();
+            return this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount);
           } else {
-            return this.contentService.getContents(this.authorId);
+            return this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
           }
         }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe((contents: any) => {
         this.publishedContent = contents.data;
+        this.calculateLastStoriUri();
+        this.seeMoreChecker = contents.more;
+        this.seeMoreLoading = false;
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
@@ -112,23 +119,23 @@ export class AuthorComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
-          this.accountService.getAuthorByPublicKey(this.author.publicKey);
-          this.canFollow = false;
-        }
+        this.accountService.getAuthorByPublicKey(this.author.publicKey);
+        this.canFollow = false;
+      }
       );
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-          if (data.action === 'loadAuthorData') {
-            this.router.navigate(['/page-not-found']);
-          } else if (data.action == 'loadAuthorStories') {
-            console.log('--error--', data.message);
-          } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-            this.notification.error(data.message);
-          }
+        if (data.action === 'loadAuthorData') {
+          this.router.navigate(['/page-not-found']);
+        } else if (data.action == 'loadAuthorStories') {
+          console.log('--error--', data.message);
+        } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
+          this.notification.error(data.message);
         }
+      }
       );
   }
 
@@ -145,7 +152,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((drafts: DraftData[]) => {
+      .subscribe((drafts) => {
         this.drafts = drafts;
         this.loading = false;
       });
@@ -187,6 +194,31 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (event && event.length > 1) {
       this.isMasonryLoaded = true;
     }
+  }
+
+  calculateLastStoriUri() {
+    const lastIndex = this.publishedContent.length - 1;
+    if (this.publishedContent[lastIndex].uri !== this.startFromUri) {
+      this.startFromUri = this.publishedContent[lastIndex].uri;
+    }
+  }
+
+  seeMore() {
+    this.seeMoreLoading = true;
+    this.blockInfiniteScroll = true;
+    const contentObservable =  this.isCurrentUser ?  this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount) : this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
+    contentObservable.pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
+          (data: any) => {
+            this.seeMoreChecker = data.more;
+            this.seeMoreLoading = false;
+            this.publishedContent = this.publishedContent.concat(data.data);
+            this.calculateLastStoriUri();
+            this.blockInfiniteScroll = false;
+          }
+        );
   }
 
   ngOnDestroy() {

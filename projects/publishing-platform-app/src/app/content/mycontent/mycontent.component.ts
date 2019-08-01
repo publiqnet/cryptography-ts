@@ -19,8 +19,6 @@ import { PublicationService } from '../../core/services/publication.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 import { Content } from '../../core/services/models/content';
 import { DraftService } from '../../core/services/draft.service';
-import { DraftData } from '../../core/services/models/draft';
-import { Publications } from '../../core/services/models/publications';
 
 
 @Component({
@@ -248,7 +246,7 @@ export class MyContentComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((drafts: DraftData[]) => {
+      .subscribe((drafts) => {
         this.drafts = drafts;
         this.loading = false;
       });

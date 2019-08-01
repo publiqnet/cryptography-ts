@@ -47,36 +47,19 @@
                     <ui-content-single *ngFor="let data of publishedContent" [type]="listType" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
                         (tagClick)="utilService.routerChangeHelper('tag',$event)" [contentData]="data"></ui-content-single>
                 </div>
+                <div class="empty" *ngIf="seeMoreLoading">
+                    <div style="display: inline-block">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                </div>
+                <ng-container *ngIf="seeMoreChecker">
+                    <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
+                </ng-container>
             </div>
             <div *ngIf="selectedTab == '2'">
                 <ui-button (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
-                <div style="padding: 50px 5px;" class="main-container clearfix" *ngIf="drafts && drafts.length > 0;else no_content">
-                    <mat-card class="post closed clearfix" *ngFor="let oDraft of drafts; let index = index">
-                        <div class="card-info">
-                            <div class="title-space">
-                                <span class="pointer" (click)="editDraft(oDraft.id)" style="font-weight: normal; font-size: 24px; margin-bottom: 24px;"> {{oDraft.title}} </span>
-                                <div class="edit" style="float: right">
-                                    <a (click)="editDraft(oDraft.id)">
-                                        <i class="icon-edit"></i>
-                                    </a>
-                                    <a (click)="deleteDraft(oDraft.id, index)" class="delete-item">
-                                        <i class="icon-delete"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="date-space">
-                                <i class="icon-uploaded"></i>
-                                <span>
-                                        {{'content.created' | translate}}:
-                  {{oDraft.lastModifiedDate * 1000 | date:'HH:mm '}}
-                  {{('months.' + ((oDraft.lastModifiedDate * 1000) | date:'MMM') | translate)}},
-                  {{(oDraft.lastModifiedDate * 1000) | date: ' dd, y'}}
-                                    </span>
-                            </div>
-
-                        </div>
-                    </mat-card>
+                <div *ngIf="drafts && drafts.length > 0;else no_content">
+                    <ui-draft *ngFor="let oDraft of drafts; let index = index" [type]="'single'" (deleteClick)="deleteDraft(oDraft.id, index)" (editClick)="editDraft(oDraft.id)" (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
                 </div>
                 <ng-template #no_content></ng-template>
             </div>
