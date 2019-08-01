@@ -27,13 +27,10 @@ export class Draft {
   constructor(options?: DraftOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        // if (['created', 'updated'].includes(i)) {
-        //   this[i] = new Date(data[i]);
-        // } else {
-        //   this[i] = data[i];
-        // }
         if (i == 'id') {
           this['slug'] = options[i] ? options[i] : '';
+          this[i] = options[i] ? options[i] : '';
+        } else {
           this[i] = options[i] ? options[i] : '';
         }
       }

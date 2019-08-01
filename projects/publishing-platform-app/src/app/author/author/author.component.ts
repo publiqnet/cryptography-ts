@@ -155,7 +155,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe((drafts) => {
         this.drafts = drafts;
         this.loading = false;
-        console.log(this.drafts);
       });
   }
 
