@@ -8,7 +8,6 @@ import { forkJoin, of, ReplaySubject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
-import { DraftData } from '../../core/services/models/draft';
 import { DraftService } from '../../core/services/draft.service';
 
 declare const $: any;
@@ -381,7 +380,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((draft: DraftData) => {
+      .subscribe((draft) => {
         if (draft) {
           this.hasDraft = true;
           const message = this.translateService.instant('content.draft_saved');

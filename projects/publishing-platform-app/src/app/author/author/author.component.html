@@ -47,6 +47,14 @@
                     <ui-content-single *ngFor="let data of publishedContent" [type]="listType" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
                         (tagClick)="utilService.routerChangeHelper('tag',$event)" [contentData]="data"></ui-content-single>
                 </div>
+                <div class="empty" *ngIf="seeMoreLoading">
+                    <div style="display: inline-block">
+                        <mat-spinner></mat-spinner>
+                    </div>
+                </div>
+                <ng-container *ngIf="seeMoreChecker">
+                    <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
+                </ng-container>
             </div>
             <div *ngIf="selectedTab == '2'">
                 <ui-button (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>

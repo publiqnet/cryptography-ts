@@ -3,8 +3,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-
-import { DraftData } from '../../core/services/models/draft';
 import { ArticleService } from '../../core/services/article.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DraftService } from '../../core/services/draft.service';
@@ -15,7 +13,7 @@ import { DraftService } from '../../core/services/draft.service';
   styleUrls: ['./edit-draft.component.scss']
 })
 export class EditDraftComponent implements OnInit, OnDestroy {
-  public draft: DraftData;
+  public draft;
   public draftId: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
@@ -39,7 +37,7 @@ export class EditDraftComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((draft: DraftData) => {
+      .subscribe((draft) => {
           this.draft = draft;
           console.log(this.draft);
       });
