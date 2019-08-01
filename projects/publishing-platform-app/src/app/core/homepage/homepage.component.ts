@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { ContentService } from '../services/content.service';
-import { Content } from '../services/models/content';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { UtilService } from '../services/util.service';
 
 @Component({
   selector: 'app-homepage',
@@ -21,7 +20,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public blockInfiniteScroll = false;
   requestMade = false;
   public startFromUri = null;
-  public storiesDefaultCount = 4;
+  public storiesDefaultCount = 20;
   public firstRelevantBlock = [];
   public secondRelevantBlock = [];
   public firstContentBlock = [];
@@ -98,8 +97,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private router: Router,
-    private contentService: ContentService
+    private contentService: ContentService,
+    public utilService: UtilService
   ) { }
 
   ngOnInit() {
@@ -143,15 +142,15 @@ export class HomepageComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-      (data: any) => {
-        this.seeMoreChecker = data.more;
-        this.seeMoreLoading = false;
-        this.contentArray = this.contentArray.concat(data.data);
-        this.loadedContentBlock = this.loadedContentBlock.concat(data.data);
-        this.calculateLastStoriUri();
-        this.blockInfiniteScroll = false;
-      }
-    );
+        (data: any) => {
+          this.seeMoreChecker = data.more;
+          this.seeMoreLoading = false;
+          this.contentArray = this.contentArray.concat(data.data);
+          this.loadedContentBlock = this.loadedContentBlock.concat(data.data);
+          this.calculateLastStoriUri();
+          this.blockInfiniteScroll = false;
+        }
+      );
   }
 
   ngOnDestroy() {

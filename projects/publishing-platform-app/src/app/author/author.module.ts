@@ -10,6 +10,7 @@ import { AuthorRoutingModule } from './author-routhing.module';
 import { SharedModule } from '../shared/shared.module';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { AuthorOldComponent } from './author-old/author-old.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/home/', '.json');
@@ -27,7 +28,8 @@ export function createTranslateLoader(http: HttpClient) {
       },
       isolate: true
     }),
-    NgxMasonryModule
+    NgxMasonryModule,
+    InfiniteScrollModule
   ],
   declarations: [AuthorOldComponent, AuthorComponent],
   providers: []

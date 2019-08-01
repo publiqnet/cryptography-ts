@@ -29,7 +29,7 @@ import { ContentService } from '../../core/services/content.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ArticleService } from '../../core/services/article.service';
-import { Draft, DraftData, IDraft } from '../../core/services/models/draft';
+import { Draft } from '../../core/services/models/draft';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DialogService } from '../../core/services/dialog.service';
 import { FroalaEditorCustomConfigs } from './froala-editor-custom-configs';
@@ -393,35 +393,35 @@ export class NewcontentOldComponent implements OnInit, OnDestroy {
         if (Array.isArray(this.draft.tags)) {
           this.tags = this.draft.tags;
         }
-        this.content = this.draft.content;
-        this.currentEditorLenght = this.calculateContentLength(this.content);
-        this.headline = this.draft.headline;
-        this.title = this.draft.title;
-        // console.log('fromDraft');
-        this.coverImages = this.draft.coverImages || [];
-        this.mainCoverImageUrl = this.draft.mainCoverImageUrl || '';
-        this.listImageUrl = this.draft.mainListImageUrl || '';
-        this.listImages = this.draft.listImages || [];
-        this.mainCoverImageChecker = this.draft.mainCoverImageChecker;
-        this.listImageChecker = this.draft.listImageChecker;
-        this.sourceOfMaterial = this.draft.sourceOfMaterial || '';
-        this.reference = this.draft.reference || '';
-        this.forAdults = this.draft.forAdults;
-        this.contentId = this.draft.contentId;
-        this.publication_slug = this.draft.publication ? this.draft.publication : '';
-        this.contentUris = this.draft.contentUris;
-        this.contentId = this.draft.id;
-        // slides the swiper to the chosen thumbnail
-        if (this.coverImages && this.coverImages.length > 1) {
-          // this.coverSwiperConfig.onInit = swiper => {
-          //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
-          // };
-        }
-        if (this.listImages && this.listImages.length > 1) {
-          // this.listSwiperConfig.onInit = swiper => {
-          //   swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
-          // };
-        }
+        // this.content = this.draft.content;
+        // this.currentEditorLenght = this.calculateContentLength(this.content);
+        // this.headline = this.draft.headline;
+        // this.title = this.draft.title;
+        // // console.log('fromDraft');
+        // this.coverImages = this.draft.coverImages || [];
+        // this.mainCoverImageUrl = this.draft.mainCoverImageUrl || '';
+        // this.listImageUrl = this.draft.mainListImageUrl || '';
+        // this.listImages = this.draft.listImages || [];
+        // this.mainCoverImageChecker = this.draft.mainCoverImageChecker;
+        // this.listImageChecker = this.draft.listImageChecker;
+        // this.sourceOfMaterial = this.draft.sourceOfMaterial || '';
+        // this.reference = this.draft.reference || '';
+        // this.forAdults = this.draft.forAdults;
+        // this.contentId = this.draft.contentId;
+        // this.publication_slug = this.draft.publication ? this.draft.publication : '';
+        // this.contentUris = this.draft.contentUris;
+        // this.contentId = this.draft.id;
+        // // slides the swiper to the chosen thumbnail
+        // if (this.coverImages && this.coverImages.length > 1) {
+        //   // this.coverSwiperConfig.onInit = swiper => {
+        //   //   swiper.slideTo(this.coverImages.indexOf(this.mainCoverImageUrl));
+        //   // };
+        // }
+        // if (this.listImages && this.listImages.length > 1) {
+        //   // this.listSwiperConfig.onInit = swiper => {
+        //   //   swiper.slideTo(this.listImages.indexOf(this.listImageUrl));
+        //   // };
+        // }
       }
 
       // if (this.editableContent) {
@@ -561,22 +561,22 @@ export class NewcontentOldComponent implements OnInit, OnDestroy {
           }
         });
 
-      this.draftService.draftData$
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe((draft: DraftData) => {
-            if (draft) {
-              this.hasDraft = true;
-              const message = this.translateService.instant('content.draft_saved');
-              this.notificationService.autoSave(message);
-              this.draftId = draft.id;
-              if (!this.contentId) {
-                this.contentId = this.draftId;
-              }
-            }
-          }
-        );
+      // this.draftService.draftData$
+      //   .pipe(
+      //     takeUntil(this.unsubscribe$)
+      //   )
+      //   .subscribe((draft) => {
+      //       if (draft) {
+      //         this.hasDraft = true;
+      //         const message = this.translateService.instant('content.draft_saved');
+      //         this.notificationService.autoSave(message);
+      //         this.draftId = draft.id;
+      //         if (!this.contentId) {
+      //           this.contentId = this.draftId;
+      //         }
+      //       }
+      //     }
+      //   );
 
       this.contentService.uploadMainPhotoDataChanged
         .pipe(

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DraftData, IDraft } from './models/draft';
+import { DraftOptions, Draft } from './models/draft';
 import { environment } from '../../../environments/environment';
 import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { Observable, Subject } from 'rxjs';
@@ -9,7 +9,7 @@ import { filter, map } from 'rxjs/operators';
 export class DraftService {
 
   draftData$ = new Subject<any>();
-  draftData: DraftData = null;
+  draftData: DraftOptions = null;
 
   private observers: object = {
     'getUserDrafts': { name: '_getUserDrafts', refresh: false }
@@ -35,7 +35,7 @@ export class DraftService {
     this.draftData$.next(this.draftData);
   }
 
-  create(draft: IDraft): void {
+  create(draft: DraftOptions): void {
     const url = this.url + `/draft/create`;
     this.httpHelperService.call(HttpMethodTypes.put, url, draft)
       .subscribe(
@@ -50,7 +50,7 @@ export class DraftService {
       );
   }
 
-  update(id: number, draft: IDraft): void {
+  update(id: number, draft: DraftOptions): void {
     const url = this.url + `/draft/${id}`;
 
     this.httpHelperService.call(HttpMethodTypes.post, url, draft)
@@ -66,12 +66,12 @@ export class DraftService {
       );
   }
 
-  get(id: string): Observable <DraftData> {
+  get(id: string): Observable <DraftOptions> {
     const url = this.url + `/draft/${id}`;
-    return this.httpHelperService.call(HttpMethodTypes.get, url).pipe(map(data => new DraftData(data)));
+    return this.httpHelperService.call(HttpMethodTypes.get, url).pipe(map(data => new Draft(data)));
   }
 
-  getUserDrafts(): Observable<DraftData[]> {
+  getUserDrafts(): Observable<DraftOptions[]> {
     const url = this.url + `/drafts`;
     const callData = this.observers['getUserDrafts'];
     return this.httpObserverService.observerCall(callData.name, this.httpHelperService.call(HttpMethodTypes.get, url)
@@ -79,7 +79,7 @@ export class DraftService {
         filter(data => data != null),
         map(data => {
           callData.refresh = false;
-          return data.map(draft => new DraftData(draft));
+          return data.map(draft => new Draft(draft));
         })
       ), callData.refresh);
   }

@@ -1,3 +1,4 @@
+import { environment } from 'projects/publishing-platform-app/src/environments/environment';
 
 export interface AuthorOptions {
     address: string;
@@ -23,6 +24,8 @@ export class Author {
                 } else if (i == 'address') {
                     this['slug'] = options[i] ? options[i] : '';
                     this[i] = options[i] ? options[i] : '';
+                } else if (['image'].includes(i)) {
+                    this[i] = (options[i] && options[i].indexOf('https://') !== 0) ? environment.backend + '/' + options[i] : options[i];
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }
