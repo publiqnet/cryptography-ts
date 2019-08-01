@@ -178,10 +178,12 @@ export class AccountService {
     const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
     if (authToken) {
       const url = this.userUrl;
-      return this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+
+      return this.httpHelper.call(HttpMethodTypes.get, url)
         .pipe(
           map((userInfo: any) => {
             this.SetAccountInfo = userInfo;
+            this.brainKeyEncrypted = localStorage.getItem('encrypted_brain_key');
             return userInfo;
           })
         );
@@ -202,7 +204,7 @@ export class AccountService {
   }
 
   getAuthorByPublicKey(publicKey: string) {
-    const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
+    const authToken = (this.loggedIn() && localStorage.getItem('auth')) ? localStorage.getItem('auth') : '';
     const url = this.userUrl + `/author-data/${publicKey}`;
     return this.httpHelper.call(HttpMethodTypes.get, url, null, null, false, !!authToken)
       .pipe(
@@ -246,13 +248,11 @@ export class AccountService {
   }
 
   loginSession(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
     // if accountData is present, do not login again
     if (this.accountInfo) {
       return;
     }
+
     const authToken = localStorage.getItem('auth');
     if (!authToken) {
       this.errorService.handleError('loginSession', {
@@ -260,24 +260,23 @@ export class AccountService {
         error: {message: 'invalid_session_id'}
       });
     }
+
     const url = this.userUrl;
-    this.http
-      .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+
+    this.httpHelper.call(HttpMethodTypes.get, url)
       .pipe(
         map((userInfo: any) => {
           this.SetAccountInfo = userInfo;
           this.brainKeyEncrypted = localStorage.getItem('encrypted_brain_key');
           return userInfo;
         })
-      )
-      .subscribe(
-        data => {
-          this.loginSessionData = data;
-          this.loginSessionDataChanged.next(this.loginSessionData);
-        },
-        error => this.errorService.handleError('loginSession', error, url)
-      );
-
+      ).subscribe(
+      data => {
+        this.loginSessionData = data;
+        this.loginSessionDataChanged.next(this.loginSessionData);
+      },
+      error => this.errorService.handleError('loginSession', error, url)
+    );
   }
 
   loadAuthorSubscribers(accountName: string) {
@@ -401,7 +400,8 @@ export class AccountService {
         headers: new HttpHeaders({'X-API-TOKEN': token})
       })
       .subscribe(
-        () => {},
+        () => {
+        },
         error => this.errorService.handleError('logout', error)
       );
   }

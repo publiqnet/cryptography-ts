@@ -4,6 +4,11 @@ import PubliqTransaction from 'blockchain-models-ts/bin/models/PubliqTransaction
 import PubliqFile from 'blockchain-models-ts/bin/models/PubliqFile';
 import PubliqContentUnit from 'blockchain-models-ts/bin/models/PubliqContentUnit';
 import { environment } from '../../../environments/environment';
+import PubliqSponsorContentUnit from 'blockchain-models-ts/bin/models/PubliqSponsorContentUnit';
+import PubliqSignedTransaction from 'blockchain-models-ts/bin/models/PubliqSignedTransaction';
+import PubliqAuthority from 'blockchain-models-ts/bin/models/PubliqAuthority';
+import PubliqBroadcast from 'blockchain-models-ts/bin/models/PubliqBroadcast';
+import { UtilsService } from 'shared-lib';
 
 KeyPair.setPublicKeyPrefix(environment.coinName);
 
@@ -11,6 +16,51 @@ KeyPair.setPublicKeyPrefix(environment.coinName);
 export class CryptService {
 
   constructor() {}
+
+  getSignBoost(fromBrainKey: string, uri: string, amount: number, hours: number) {
+    const keyPair = new KeyPair(fromBrainKey);
+    const fromPublicKey = keyPair.PpublicKey;
+
+    const now = new Date();
+    const now_1h = new Date(now.getTime() + (60 * 60 * 1000));
+
+    const amountData = this.amountStringToWholeFraction(amount);
+
+    const boostObj =  new PubliqSponsorContentUnit( {
+      sponsorAddress: fromPublicKey,
+      uri: uri,
+      startTimePoint: +now,
+      hours: hours,
+      amount: amountData,
+    });
+
+    const transactionObj = new PubliqTransaction({
+      creation: +now,
+      expiry: +now_1h,
+      fee: {
+        whole: 0, fraction: 0
+      },
+      action: boostObj
+    });
+
+    return keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
+  }
+
+  amountStringToWholeFraction(amountString) {
+    const fractionCoif = 100000000;
+    const amountArr = ('' + amountString).split('.');
+    const whole = amountArr[0] ? +amountArr[0] : 0;
+    let fraction = 0;
+    if (amountArr[1]) {
+      const x = UtilsService.multFloats((+('0.' + amountArr[1])), fractionCoif);
+      fraction = parseInt(x + '', 10);
+    }
+
+    return {
+      whole,
+      fraction
+    };
+  }
 
   getSignedData(brainKey: string, actionObj) {
     const now = new Date();

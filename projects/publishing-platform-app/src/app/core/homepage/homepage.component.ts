@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { ContentService } from '../services/content.service';
-import { Content } from '../services/models/content';
+import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { UtilService } from '../services/util.service';
 
 @Component({
   selector: 'app-homepage',
@@ -18,9 +19,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
   seeMoreLoading = false;
   public blockInfiniteScroll = false;
   requestMade = false;
-  private storiesDefaultCount = 30;
-  private firstBlock = 30;
-
+  public startFromUri = null;
+  public storiesDefaultCount = 20;
+  public firstRelevantBlock = [];
+  public secondRelevantBlock = [];
+  public firstContentBlock = [];
+  public secondContentBlock = [];
+  public loadedContentBlock = [];
+  private unsubscribe$ = new ReplaySubject<void>(1);
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -91,21 +97,35 @@ export class HomepageComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private router: Router,
-    private contentService: ContentService
-  ) {
-
-  }
+    private contentService: ContentService,
+    public utilService: UtilService
+  ) { }
 
   ngOnInit() {
-    this.contentService.getHomePageContents(this.firstBlock, this.storiesDefaultCount)
-    .subscribe((contentData: any) => {
+    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((contentData: any) => {
         this.contentArray = contentData.data;
         this.seeMoreChecker = contentData.more;
         this.seeMoreLoading = false;
-      }
-    );
+        if (this.contentArray.length) {
+          this.calculateLastStoriUri();
+          this.firstRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
+          this.secondRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
+          this.firstContentBlock = this.contentArray.slice(0, this.storiesDefaultCount / 2);
+          this.secondContentBlock = this.contentArray.slice(this.storiesDefaultCount / 2, this.storiesDefaultCount);
+          this.loadedContentBlock = this.contentArray.slice(this.storiesDefaultCount);
+        }
+      });
+  }
 
+  calculateLastStoriUri() {
+    const lastIndex = this.contentArray.length - 1;
+    if (this.contentArray[lastIndex].uri !== this.startFromUri) {
+      this.startFromUri = this.contentArray[lastIndex].uri;
+    }
   }
 
   onLayoutComplete(event) {
@@ -117,15 +137,24 @@ export class HomepageComponent implements OnInit, OnDestroy {
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;
-    this.contentService.getHomePageContents(this.storiesDefaultCount, this.contentArray[this.contentArray.length - 1].uri).subscribe(
-      (data: any) => {
-        this.seeMoreChecker = data.more;
-        this.seeMoreLoading = false;
-      }
-    );
+    this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        (data: any) => {
+          this.seeMoreChecker = data.more;
+          this.seeMoreLoading = false;
+          this.contentArray = this.contentArray.concat(data.data);
+          this.loadedContentBlock = this.loadedContentBlock.concat(data.data);
+          this.calculateLastStoriUri();
+          this.blockInfiniteScroll = false;
+        }
+      );
   }
 
   ngOnDestroy() {
-
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

@@ -19,8 +19,6 @@ import { PublicationService } from '../../core/services/publication.service';
 import { AuthorStats } from '../../core/services/models/authorStats';
 import { Content } from '../../core/services/models/content';
 import { DraftService } from '../../core/services/draft.service';
-import { DraftData } from '../../core/services/models/draft';
-import { Publications } from '../../core/services/models/publications';
 
 
 @Component({
@@ -28,7 +26,7 @@ import { Publications } from '../../core/services/models/publications';
   templateUrl: './mycontent.component.html',
   styleUrls: ['./mycontent.component.scss', '../../../assets/css/screen.scss']
 })
-export class MycontentComponent implements OnInit, OnDestroy {
+export class MyContentComponent implements OnInit, OnDestroy {
   public publishedContent: Content[] = [];
   public drafts: Array<any>;
   public pendingProcess: boolean;
@@ -248,7 +246,7 @@ export class MycontentComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((drafts: DraftData[]) => {
+      .subscribe((drafts) => {
         this.drafts = drafts;
         this.loading = false;
       });

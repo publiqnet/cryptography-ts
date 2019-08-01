@@ -1,57 +1,37 @@
-export interface Draft { // todo delete
-  id?: number;
+import { Author } from './author';
+
+export interface DraftOptions { // todo delete
+  slug: any;
+  id: any;
+  author: Author;
+  created: string;
+  published: string;
   title: string;
-  headline: string;
   tags: Array<string>;
-  coverImages: Array<string>;
-  mainCoverImageUrl: string;
-  mainCoverImageChecker: boolean;
-  listImages: Array<string>;
-  mainListImageUrl: string;
-  listImageChecker: boolean;
-  content: string;
-  lastModifiedDate: number;
-  sourceOfMaterial: string;
-  reference: string;
-  forAdults: boolean;
-  contentId: number;
-  publication: string;
-  contentUris: Array<any>;
+  image: string;
+  publication: any;
+  view_count: string;
 }
 
-export interface IDraft {
-  content: string;
-  forAdults: boolean;
-  headline: string;
-  reference: string;
-  sourceOfMaterial: string;
+export class Draft {
+  slug: any;
+  id: any;
+  author: Author;
+  created: string;
+  published: string;
   title: string;
-  id?: string;
-  created?: string;
-  updated?: string;
-  publication?: string;
-  contentUris: Array<any>;
-}
-
-export class DraftData {
-  content: string;
-  forAdults: boolean;
-  headline: string;
-  reference: string;
-  sourceOfMaterial: string;
-  title: string;
-  id: number;
-  publication?: string;
-  created: Date;
-  updated: Date;
-
-  constructor(data: IDraft) {
-    for (const i in data) {
-      if (data.hasOwnProperty(i)) {
-        if (['created', 'updated'].includes(i)) {
-          this[i] = new Date(data[i]);
+  tags: Array<string>;
+  image: string;
+  publication: any;
+  view_count: string;
+  constructor(options?: DraftOptions) {
+    for (const i in options) {
+      if (options.hasOwnProperty(i)) {
+        if (i == 'id') {
+          this['slug'] = options[i] ? options[i] : '';
+          this[i] = options[i] ? options[i] : '';
         } else {
-          this[i] = data[i];
+          this[i] = options[i] ? options[i] : '';
         }
       }
     }
