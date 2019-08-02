@@ -4,6 +4,7 @@ import { ContentService } from '../services/content.service';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { UtilService } from '../services/util.service';
+import { PublicationService } from '../services/publication.service';
 
 @Component({
   selector: 'app-homepage',
@@ -18,7 +19,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public seeMoreChecker = false;
   seeMoreLoading = false;
   public blockInfiniteScroll = false;
-  requestMade = false;
+  public welcomeBlockVisible = true;
   public startFromUri = null;
   public storiesDefaultCount = 20;
   public firstRelevantBlock = [];
@@ -26,6 +27,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public firstContentBlock = [];
   public secondContentBlock = [];
   public loadedContentBlock = [];
+  public publicationsList = [];
+  public hasMorePublications = false;
+  public publicationsFromSlug = null;
+  public publicationsDefaultCount = 3;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public myOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
@@ -33,73 +38,12 @@ export class HomepageComponent implements OnInit, OnDestroy {
     gutter: 10
   };
 
-  public publicationData = [
-    {
-      'title': 'UX Topics 1',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': '',
-      'cover': '',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': true,
-      'status': 0
-    },
-    {
-      'title': 'UX Topics 2',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': '',
-      'cover': '',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': true,
-      'status': 0
-    },
-    {
-      'title': 'UX Topics 3',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': 'http://via.placeholder.com/120x120',
-      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': false,
-      'status': 0
-    },
-    {
-      'title': 'UX Topics 4',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': 'http://via.placeholder.com/120x120',
-      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': false,
-      'status': 0
-    },
-    {
-      'title': 'UX Topics 5',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': 'http://via.placeholder.com/120x120',
-      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': false,
-      'status': 0
-    },
-    {
-      'title': 'UX Topics 6',
-      'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
-      'logo': 'http://via.placeholder.com/120x120',
-      'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
-      'slug': 'ux_topics',
-      'subscribers': 1234,
-      'following': false,
-      'status': 0
-    }
-  ];
-
   constructor(
     private contentService: ContentService,
+    private publicationService: PublicationService,
     public utilService: UtilService
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
@@ -107,6 +51,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((contentData: any) => {
+        this.loadMorePublications();
         this.contentArray = contentData.data;
         this.seeMoreChecker = contentData.more;
         this.seeMoreLoading = false;
@@ -119,6 +64,23 @@ export class HomepageComponent implements OnInit, OnDestroy {
           this.loadedContentBlock = this.contentArray.slice(this.storiesDefaultCount);
         }
       });
+  }
+
+  loadMorePublications() {
+    this.publicationService.getPublications(this.publicationsFromSlug, this.publicationsDefaultCount)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        (publicationsListData: any) => {
+          this.hasMorePublications = publicationsListData.more;
+          this.publicationsList = this.publicationsList.concat(publicationsListData.publications);
+          const lastIndex = this.publicationsList.length - 1;
+          if (this.publicationsList[lastIndex].slug !== this.publicationsFromSlug) {
+            this.publicationsFromSlug = this.publicationsList[lastIndex].slug;
+          }
+        }
+      );
   }
 
   calculateLastStoriUri() {

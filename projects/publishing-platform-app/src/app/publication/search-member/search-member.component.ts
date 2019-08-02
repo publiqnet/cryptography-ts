@@ -173,18 +173,18 @@ export class SearchMemberComponent implements OnInit, OnChanges, OnDestroy {
         [{name: 'Contributor', value: this.MemberStatus.contributor}, {name: 'Editor', value: this.MemberStatus.editor}] :
         [{name: 'Contributor', value: this.MemberStatus.contributor}];
 
-      this.selected = this.statuses[0].value;
-      this.members = this.publication.contributors.concat(this.publication.editors).concat(this.publication.owner);
-
-      if (this.members.length > 0) {
-        this.memberEmails = this.members
-          .filter((account: Account) => account.email && !account.publicKey)
-          .map(el => el.email);
-
-        this.memberKeys = this.members
-          .filter((account: Account) => account.publicKey)
-          .map(el => el.publicKey);
-      }
+      // this.selected = this.statuses[0].value;
+      // this.members = this.publication.contributors.concat(this.publication.editors).concat(this.publication.owner);
+      //
+      // if (this.members.length > 0) {
+      //   this.memberEmails = this.members
+      //     .filter((account: Account) => account.email && !account.publicKey)
+      //     .map(el => el.email);
+      //
+      //   this.memberKeys = this.members
+      //     .filter((account: Account) => account.publicKey)
+      //     .map(el => el.publicKey);
+      // }
     }
   }
 
