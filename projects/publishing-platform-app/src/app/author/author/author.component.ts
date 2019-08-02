@@ -154,6 +154,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
+  onEditMode(flag: boolean) {
+    this.editMode = flag;
+  }
+
   getDrafts() {
     this.draftService.getUserDrafts()
       .pipe(
