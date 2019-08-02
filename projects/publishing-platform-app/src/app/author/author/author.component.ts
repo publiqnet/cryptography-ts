@@ -231,6 +231,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
         );
   }
 
+  getAuthorName() {
+    return (this.author.fullName == '') ? ((this.isCurrentUser) ? 'Add your name' : '') : this.author.fullName;
+  }
+
   ngOnDestroy() {
     if (isPlatformBrowser(this.platformId)) {
       this.articlesLoaded = false;

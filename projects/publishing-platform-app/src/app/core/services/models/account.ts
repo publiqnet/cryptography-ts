@@ -26,6 +26,7 @@ export interface AccountOptions {
   views?: number;
   articlesCount?: number;
   isSubscribed?;
+  bio?: string;
 }
 export class Account {
   options;
@@ -52,6 +53,7 @@ export class Account {
   views?: number;
   articlesCount?: number;
   isSubscribed?;
+  bio?: string;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {
