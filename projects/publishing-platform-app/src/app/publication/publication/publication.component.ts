@@ -7,7 +7,7 @@ import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { AccountService } from '../../core/services/account.service';
 import { PublicationService } from '../../core/services/publication.service';
-import { Publication, PublicationSubscribersResponse } from '../../core/services/models/publication';
+import { Publication } from '../../core/services/models/publication';
 import { environment } from '../../../environments/environment';
 import { ChannelService } from '../../core/services/channel.service';
 import { SeoService } from '../../core/services/seo.service';
@@ -96,16 +96,16 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   private setSeo(): void {
-    if (!this.publication) {
-      return;
-    }
-    const title = this.publication.title;
-    const description = this.publication.description;
-    const image = this.publication.socialImage || this.publication.cover
-      ? this.publication.socialImage || this.publication.cover
-      : 'https://publiq.network/media/images/92169.png';
-    const url = environment.main_site_url + this.router.url;
-    this.seoService.generateTags({title, description, image, url});
+    // if (!this.publication) {
+    //   return;
+    // }
+    // const title = this.publication.title;
+    // const description = this.publication.description;
+    // const image = this.publication.socialImage || this.publication.cover
+    //   ? this.publication.socialImage || this.publication.cover
+    //   : 'https://publiq.network/media/images/92169.png';
+    // const url = environment.main_site_url + this.router.url;
+    // this.seoService.generateTags({title, description, image, url});
   }
 
   getPublicationArticles() {
