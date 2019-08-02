@@ -22,6 +22,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public welcomeBlockVisible = true;
   public startFromUri = null;
   public storiesDefaultCount = 20;
+  public storiesPerBlock = 9;
   public firstRelevantBlock = [];
   public secondRelevantBlock = [];
   public firstContentBlock = [];
@@ -59,8 +60,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
           this.calculateLastStoriUri();
           this.firstRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
           this.secondRelevantBlock = this.contentArray.slice(0, this.storiesDefaultCount);
-          this.firstContentBlock = this.contentArray.slice(0, this.storiesDefaultCount / 2);
-          this.secondContentBlock = this.contentArray.slice(this.storiesDefaultCount / 2, this.storiesDefaultCount);
+          this.firstContentBlock = this.contentArray.slice(0, this.storiesPerBlock);
+          this.secondContentBlock = this.contentArray.slice(this.storiesPerBlock, this.storiesDefaultCount);
           this.loadedContentBlock = this.contentArray.slice(this.storiesDefaultCount);
         }
       });
