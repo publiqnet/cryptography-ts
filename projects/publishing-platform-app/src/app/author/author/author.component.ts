@@ -118,7 +118,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.calculateLastStoriUri();
         this.seeMoreChecker = contents.more;
         this.seeMoreLoading = false;
-        this.editMode = true;
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
