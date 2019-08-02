@@ -8,6 +8,7 @@ export interface PublicationOptions {
   logo: string;
   color: string;
   memberStatus: number;
+  subscribed: boolean;
 }
 
 export class Publication {
@@ -18,6 +19,7 @@ export class Publication {
   logo: string;
   color: string;
   memberStatus: number;
+  subscribed: boolean;
 
   constructor(options?: PublicationOptions) {
     for (const i in options) {
@@ -26,7 +28,7 @@ export class Publication {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else if (i === 'color') {
           this[i] = options[i] ? '#' + options[i] : '';
-        } else if (['memberStatus'].includes(i)) {
+        } else if (['memberStatus', 'subscribed'].includes(i)) {
           this[i] = options[i];
         } else {
           this[i] = options[i] ? options[i] : '';
