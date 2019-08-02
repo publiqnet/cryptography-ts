@@ -482,65 +482,7 @@
 }
 
 .requests {
-  &__item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 0 50px;
-
-    &__avatar {
-      ::ng-deep .avatar {
-        width: 50px; height: 50px;
-      }
-    }
-
-    &__name {
-      flex: 1;
-      overflow: hidden;
-      white-space: nowrap;
-
-      h3 {
-        margin: 0 20px 0;
-        font: 700 17px/23px $vollkorn;
-        color: pbq-color($lightgrey, 700);
-        text-overflow: ellipsis;
-        overflow: hidden;
-      }
-    }
-
-    &__actions {
-      font-size: 0;
-
-      ui-button {
-        //padding: 0 25px;
-
-        &:first-of-type {
-          margin-right: 10px;
-        }
-      }
-    }
-
-    @include media-sm {
-      margin: 0;
-      flex-wrap: wrap;
-
-      &__actions {
-        margin: 15px 0 25px;
-        flex: 0 0 100%;
-        display: inline-flex;
-
-        ui-button {
-          flex: 1;
-
-          ::ng-deep .button {
-            width: 100%;
-          }
-        }
-      }
-    }
-  }
-
-  ::ng-deep .pending-status-card {
+  ::ng-deep .two-actions {
     margin: 0 0 50px;
   }
 }

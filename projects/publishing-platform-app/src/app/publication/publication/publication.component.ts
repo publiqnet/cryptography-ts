@@ -27,6 +27,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   public firstContentBlock = [];
   public followers = [];
+  public requests = [];
   public listType = 'grid';
 
   public masonryOptions: NgxMasonryOptions = {
@@ -36,6 +37,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   };
 
   public activeTab = 'stories';
+  public membersActiveTab = 'requests';
 
   constructor() {
     for (let i = 0; i < 20; ++i) {
@@ -73,15 +75,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
         'isFollowing': false,
         'slug': 'user_data'
       });
+
+      this.requests.push({
+        'user': {
+          'image': 'http://via.placeholder.com/120x120',
+          'first_name': 'John',
+          'last_name': 'Doe',
+          'fullName': 'John Doe'
+        },
+        'isFollowing': false,
+        'slug': 'user_data'
+      });
     }
   }
 
   ngOnInit() {
 
-  }
-
-  tabChanged(tab) {
-    this.activeTab = tab;
   }
 
   ngOnDestroy() {

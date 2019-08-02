@@ -71,7 +71,7 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container">
-            <ui-tab type="buttons" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="tabChanged($event)" [currentValue]="activeTab"></ui-tab>
+            <ui-tab type="buttons" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
         </div>
     </div>
     <!-- <div class="row">
@@ -122,24 +122,15 @@
 <div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
-            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: 2}, {value: 'pending', text: 'Pending'}]" currentValue="requests"></ui-tab>
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending'}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2 requests">
-            <div class="requests__item" *ngFor="let d of [1,2,3,4,5,6,7,8,9];">
-                <div class="requests__item__avatar">
-                    <ui-avatar [avatarData]="{image: 'http://via.placeholder.com/90', fullName: 'Amolika Shaikh'}"></ui-avatar>
-                </div>
-                <div class="requests__item__name">
-                    <h3>Amolika Shaikh</h3>
-                </div>
-                <div class="requests__item__actions">
-                    <ui-button type="primary" text="Confirm"></ui-button>
-                    <ui-button text="Delete"></ui-button>
-                </div>
-            </div>
-            <!-- <ui-user-single type="pending" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" *ngFor="let d of [1,2,3,4,5,6,7,8,9];"></ui-user-single> -->
+        <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
+            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+        </div>
+        <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
+            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>
