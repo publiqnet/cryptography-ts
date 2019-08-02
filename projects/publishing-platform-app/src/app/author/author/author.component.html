@@ -35,6 +35,63 @@
       </div>
     </div>
 
+</ng-container>
+
+<div class="content">
+  <div class="container">
+    <div class="row profile-metadata">
+      <div class="col-2 profile-metadata__avatar profile-metadata__avatar--editable">
+        <div class="profile-metadata__hover">
+          <ui-avatar [size]="'large'" [avatarData]="{'image': author.image, 'fullName': author.fullName}"></ui-avatar>
+          <i class="icon-close"></i>
+            <label class="profile-metadata__hover__upload" for="profilePic">
+              <input type="file" accept="image/jpeg,image/png" id="profilePic">
+              <i class="icon-camera"></i>
+              <small>Upload</small>
+            </label>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-7 col-sm-7 col-10">
+        <h1 class="profile-metadata__fullname"><span contenteditable="">Daniel Borowski</span><i class="icon-edit editable-icon"></i></h1>
+        <h3 class="profile-metadata__bio"><span contenteditable="">Daniel Borowski</span><i class="icon-edit editable-icon"></i></h3>
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-3 col-12">
+        <div class="edit-menu">
+          <ui-button [type]="'primary'" [size]="'medium'" [text]="'Save'"></ui-button>
+          <div class="button button--icon">
+            <i class="icon-settings"></i>
+          </div>
+          <div class="button button--icon" *ngIf="false">
+            <i class="icon-close close-edit"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row profile-statistics editable-disabled">
+      <div class="col-lg-2 offset-lg-2 col-3 offset-0">
+        <div class="datum">
+          <span class="datum__value">0</span>
+          <span class="datum__descriptor">Views</span>
+          <span class="datum__rating"><img src="assets/images/rating.svg" alt="rating"></span>
+        </div>
+      </div>
+      <div class="col-lg-6 col-9">
+        <div class="datum">
+          <span class="datum__value">0</span>
+          <span class="datum__descriptor">Views</span>
+        </div>
+        <div class="datum">
+          <span class="datum__value">0</span>
+          <span class="datum__descriptor">Stories</span>
+        </div>
+        <div class="datum">
+          <span class="datum__value">0</span>
+          <span class="datum__descriptor">Followers</span>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-12 col-lg-8 offset-lg-2">
         <div class="grid-style grid-style--custom">
@@ -60,13 +117,14 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <div class="container">
     <div class="row">
         <div class="col-lg-8 offset-lg-2 col-xl-9 stories">
-            <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
+            <ui-tab *ngIf="isCurrentUser && editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
             <div *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center editable-disabled">
                 <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
                     <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
