@@ -12,7 +12,6 @@
         </div>
         <div style="z-index: 1;position: relative;">
             <h1 id="a-title">{{ author?.firstName }} {{ author?.lastName }}</h1>
-
             <h3>
                 {{'author.rating' | translate}} <span>{{author && author.rating ? author.rating.toFixed(1) : 0}}</span> {{'author.followers' | translate}} <span id="followers-count">{{author && author.subscribersCount ? author.subscribersCount : 0}}</span>                {{'author.stories' | translate}} <span>{{author && author.articlesCount ? author.articlesCount : 0}}</span> {{'author.views' | translate}} <span>{{author && author.views ? author.views : 0}}</span>
             </h3>
