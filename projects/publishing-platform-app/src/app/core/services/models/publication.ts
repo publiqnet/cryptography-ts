@@ -20,6 +20,7 @@ export class Publication {
   color: string;
   memberStatus: number;
   subscribed: boolean;
+  following: boolean;
 
   constructor(options?: PublicationOptions) {
     for (const i in options) {
@@ -29,6 +30,7 @@ export class Publication {
         } else if (i === 'color') {
           this[i] = options[i] ? '#' + options[i] : '';
         } else if (['memberStatus', 'subscribed'].includes(i)) {
+          this['following'] = options[i];
           this[i] = options[i];
         } else {
           this[i] = options[i] ? options[i] : '';
