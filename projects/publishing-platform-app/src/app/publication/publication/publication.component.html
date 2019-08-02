@@ -24,16 +24,16 @@
         </div>
     </div>
     <div class="row publication-metadata">
-        <div class="col-lg-2 col-md-2 publication-metadata__avatar"><!-- publication-metadata__avatar--editable -->
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [class.publication-metadata__avatar--editable]="editMode">
             <ui-avatar size="large" [isSquaric]="true" [avatarData]="{image:'http://via.placeholder.com/130x130', fullName: 'Cats'}"></ui-avatar>
-            <!-- <i class="icon-close"></i> -->
+            <i class="icon-close" *ngIf="editMode"></i>
         </div>
         <div class="col-lg-6 col-md-7 col">
-            <h1 class="publication-metadata__title"><span>FRESCO</span><!-- <i class="icon-edit editable-icon"></i> --></h1>
-            <h3 class="publication-metadata__description"><span>Daniel Borowski</span><!-- <i class="icon-edit editable-icon"></i> --></h3>
+            <h1 class="publication-metadata__title"><span [attr.contenteditable]="editMode">FRESCO</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
+            <h3 class="publication-metadata__description"><span [attr.contenteditable]="editMode">Daniel Borowski</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h3>
         </div>
         <div class="col-lg-2 col-md-3 col-12">
-            <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings"></ui-button>
+            <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="isMyPublication && !editMode" (btnClicked)="setEditMode(true)"></ui-button>
             <!-- <div class="button button--primary">
                 <i class="icon-follow"></i>
                 <span>Follow</span>
@@ -42,14 +42,13 @@
                 <i class="icon-settings"></i>
                 <span>Edit Profile</span>
             </div> -->
-            <!-- <div class="button button--primary">Save</div> -->
-            <!-- <div class="button">Cancel</div> -->
-            <!-- <div class="button button--icon button--icon--small">
-                <i class="icon-close"></i>
-            </div> -->
+            <ng-container *ngIf="isMyPublication && editMode">
+                <ui-button type="primary" text="Save"></ui-button>
+                <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
+            </ng-container>
         </div>
     </div>
-    <div class="row publication-statistics">
+    <div class="row publication-statistics" [class.editable-disabled]="editMode">
         <div class="col-lg-8 offset-lg-2 col-12 offset-0">
             <div class="datum">
                 <span class="datum__value">0</span>
@@ -70,7 +69,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2 tabber-container">
+        <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode">
             <ui-tab type="buttons" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
         </div>
     </div>
@@ -88,7 +87,7 @@
                 </div>
             </div>
     </div> -->
-    <div class="row" *ngIf="activeTab === 'stories'">
+    <div class="row" *ngIf="activeTab === 'stories'" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                     ngxMasonryItem [type]="listType" *ngFor="let content of firstContentBlock;" [contentData]="content"></ui-content-single>

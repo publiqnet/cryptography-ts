@@ -151,11 +151,10 @@
       padding-top: 5px;
       text-align: right;
 
-      .button {
-        vertical-align: middle;
-
-        &--primary {
+      ui-button {
+        ::ng-deep .button {
           text-transform: uppercase;
+          vertical-align: middle;
         }
 
         &:not(:last-child) {
@@ -198,6 +197,7 @@
     &--editable {
       ::ng-deep .avatar {
         position: relative;
+        box-shadow: none;
 
         &:after {
           content: '\e918';

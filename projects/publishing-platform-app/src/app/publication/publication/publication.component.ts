@@ -26,6 +26,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
     },
   ];
 
+
+  public isMyPublication = true;
+  public editMode = false;
+
   public firstContentBlock = [];
   public followers = [];
   public requests = [];
@@ -88,6 +92,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
         'slug': 'user_data'
       });
     }
+  }
+
+  setEditMode(mode = true) {
+    this.activeTab = 'stories';
+    this.editMode = mode;
   }
 
   ngOnInit() {
