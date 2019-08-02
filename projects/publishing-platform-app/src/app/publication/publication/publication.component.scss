@@ -545,6 +545,12 @@
   }
 }
 
+.followers {
+  ::ng-deep .followers-card {
+    margin: 0 0 40px;
+  }
+}
+
 :host {
   ::ng-deep .button-tabber {
     margin: 0 0 20px;

@@ -9,6 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ManagePublicationComponent } from './manage/manage-publication.component';
 import { MyPublicationsComponent } from './my-publications/my-publications.component';
 import { NewPublicationComponent } from './new/new-publication.component';
+import { NgxMasonryModule } from 'ngx-masonry';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { NewPublicationComponent } from './new/new-publication.component';
     CommonModule,
     SharedModule,
     PublicationRoutingModule,
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    NgxMasonryModule
   ],
   declarations: [
     PublicationComponent,
