@@ -153,6 +153,10 @@
 
       ui-button {
         ::ng-deep .button {
+          vertical-align: middle;
+        }
+
+        ::ng-deep .save-button {
           text-transform: uppercase;
           vertical-align: middle;
         }
