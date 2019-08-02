@@ -140,7 +140,7 @@
 
 .publication-metadata {
 
-  .button.button--icon {
+  ::ng-deep .button.button--icon {
     @include media-md { width: 30px; height: 30px; }
   }
 
