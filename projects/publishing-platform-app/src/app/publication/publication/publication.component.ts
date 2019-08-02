@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 
+
 @Component({
   selector: 'app-publication',
   templateUrl: './publication.component.html',
