@@ -611,8 +611,8 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId});
   }
 
-  getMyContents(fromUri = null, count: number = 10): Observable<any> {
-    const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
+  getMyContents(fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
+    const url = `${environment.backend}/api/contents/${count}/${boostedCount}/${fromUri}`;
     return this.httpHelperService.call(HttpMethodTypes.get, url)
     .pipe(map(contentData => {
       contentData.data = contentData.data.map(nextContent => new Content(nextContent));
@@ -628,8 +628,8 @@ export class ContentService {
     }));
   }
 
-  getHomePageContents(fromUri = null, count: number = 10): Observable<any> {
-    const url = `${environment.backend}/api/contents/${count}/${fromUri}`;
+  getHomePageContents(fromUri = null, count: number = 10, boostedCount: number = 3): Observable<any> {
+    const url = `${environment.backend}/api/contents/${count}/${boostedCount}/${fromUri}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
     .pipe(map(contentData => {
       contentData.data = contentData.data.map(nextContent => new Content(nextContent));
