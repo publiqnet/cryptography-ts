@@ -51,11 +51,12 @@
             </label>
         </div>
       </div>
-      <div class="col-lg-6 col-md-7 col-sm-7 col-10">
-        <h1 class="profile-metadata__fullname"><span [attr.contenteditable]="isCurrentUser">Daniel Borowski</span>
+      <div class="col-lg-7 col-md-7 col-sm-7 col-10">
+        <h1 class="profile-metadata__fullname"><span [attr.contenteditable]="isCurrentUser">{{getAuthorName()}}</span>
           <i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
-        <h3 class="profile-metadata__bio">
-          <span [attr.contenteditable]="isCurrentUser">Daniel Borowski</span>
+        <h3 class="profile-metadata__bio" *ngIf="author.bio">
+          <!--todo: short bio placeholder-->
+          <span [attr.contenteditable]="isCurrentUser">{{(author.bio && isCurrentUser) ? author.bio : 'Write a short bio'}}</span>
           <i *ngIf="editMode" class="icon-edit editable-icon"></i></h3>
       </div>
       <div class="col-lg-2 col-md-3 col-sm-3 col-12">
@@ -84,7 +85,7 @@
           <span class="datum__rating"><img src="assets/images/rating.svg" alt="rating"></span>
         </div>
       </div>
-      <div class="col-lg-6 col-9">
+      <div class="col-lg-7 col-9">
         <div class="datum">
           <span class="datum__value">{{author && author.views ? author.views : 0}}</span>
           <span class="datum__descriptor">Views</span>
@@ -134,7 +135,7 @@
         <div class="col-lg-8 offset-lg-2 col-xl-9 stories">
             <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
             <div  [ngClass]="{'editable-disabled' : editMode && publishedContent.length && (selectedTab == '1' || !isCurrentUser)}"
-                  *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center editable-disabled">
+                  *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center">
                 <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
                     <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
                         (tagClick)="utilService.routerChangeHelper('tag',$event)" ngxMasonryItem [type]="listType" [contentData]="data"></ui-content-single>
@@ -152,6 +153,10 @@
                     <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
                 </ng-container>
             </div>
+          <div class="no-stories" *ngIf="!(publishedContent.length && (selectedTab == '1' || !isCurrentUser))">
+            <img src="assets/images/no_story.svg" alt="no story">
+            <span>No Stories Yet</span>
+          </div>
             <div *ngIf="selectedTab == '2'">
                 <ui-button (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
                 <div *ngIf="drafts && drafts.length > 0;else no_content">

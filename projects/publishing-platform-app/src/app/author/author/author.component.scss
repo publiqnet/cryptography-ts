@@ -473,5 +473,20 @@
 .button-tabber--profile {
   margin: 0 0 20px;
 }
-
+.no-stories{
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  img{
+    display: block;
+    margin-bottom: 20px;
+  }
+  span{
+    font-size: 17px;
+    color: #565A60;
+    text-align: center;
+  }
+}
 
