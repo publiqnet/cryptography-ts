@@ -215,17 +215,17 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         subscriber.subscriber.following = 'unfollow';
       }
     } else if (mode === 'follower') {
-      const editor = this.publication.editors.find(e => e.publicKey === member.publicKey);
-      const contributor = this.publication.contributors.find(e => e.publicKey === member.publicKey);
-      if (editor) {
-        editor['following'] = 'unfollow';
-      }
-      if (contributor) {
-        contributor['following'] = 'unfollow';
-      }
-      if (this.member.publicKey === member.publicKey) {
-        this.member['following'] = 'unfollow';
-      }
+      // const editor = this.publication.editors.find(e => e.publicKey === member.publicKey);
+      // const contributor = this.publication.contributors.find(e => e.publicKey === member.publicKey);
+      // if (editor) {
+      //   editor['following'] = 'unfollow';
+      // }
+      // if (contributor) {
+      //   contributor['following'] = 'unfollow';
+      // }
+      // if (this.member.publicKey === member.publicKey) {
+      //   this.member['following'] = 'unfollow';
+      // }
     }
   }
 
@@ -240,17 +240,17 @@ export class ManagePublicationComponent implements OnInit, OnDestroy, OnChanges 
         subscriber.subscriber.following = 'follow';
       }
     } else if (mode === 'follower') {
-      const editor = this.publication.editors.find(e => e.publicKey === member.username);
-      const contributor = this.publication.contributors.find(e => e.publicKey === member.username);
-      if (editor) {
-        editor['following'] = 'follow';
-      }
-      if (contributor) {
-        contributor['following'] = 'follow';
-      }
-      if (this.member.publicKey === member.username) {
-        this.member['following'] = 'follow';
-      }
+      // const editor = this.publication.editors.find(e => e.publicKey === member.username);
+      // const contributor = this.publication.contributors.find(e => e.publicKey === member.username);
+      // if (editor) {
+      //   editor['following'] = 'follow';
+      // }
+      // if (contributor) {
+      //   contributor['following'] = 'follow';
+      // }
+      // if (this.member.publicKey === member.username) {
+      //   this.member['following'] = 'follow';
+      // }
     }
   }
 

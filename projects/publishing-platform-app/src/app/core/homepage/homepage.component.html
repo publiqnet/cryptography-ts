@@ -20,8 +20,8 @@
             </div>
         </ng-container>
         <div class="col-lg-4 col-xl-3">
-            <div class="welcome-to-media">
-                <i class="icon-close"></i>
+            <div class="welcome-to-media" *ngIf="welcomeBlockVisible">
+                <i class="icon-close pointer" (click)="welcomeBlockVisible = false"></i>
                 <div class="welcome-to-media__heading">
                     <div></div>
                     <h4>Welcome to Media</h4>
@@ -30,8 +30,8 @@
                 <ui-input type="email" placeholder="Your email"></ui-input>
                 <ui-button className="button button--large" size="large" text="Sign up"></ui-button>
             </div>
-            <div class="publications">
-                <ui-publication-list [countByPage]="3" [data]="publicationData"></ui-publication-list>
+            <div class="publications" *ngIf="publicationsList.length">
+                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()"></ui-publication-list>
             </div>
             <div class="copyright-space">
                 <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
