@@ -10,6 +10,7 @@ import { ManagePublicationComponent } from './manage/manage-publication.componen
 import { MyPublicationsComponent } from './my-publications/my-publications.component';
 import { NewPublicationComponent } from './new/new-publication.component';
 import { NgxMasonryModule } from 'ngx-masonry';
+import { PublicationOldComponent } from './publication-old/publication-old.component';
 
 
 @NgModule({
@@ -22,9 +23,11 @@ import { NgxMasonryModule } from 'ngx-masonry';
   ],
   declarations: [
     PublicationComponent,
+    PublicationOldComponent,
     ManagePublicationComponent,
     MyPublicationsComponent,
     NewPublicationComponent
   ]
 })
-export class PublicationModule {}
+export class PublicationModule {
+}
