@@ -40,7 +40,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   listType = 'grid';
   public drafts: Array<any>;
   private unsubscribe$ = new ReplaySubject<void>(1);
-  selectedTab: string;
+  selectedTab: string = '1';
   public blockInfiniteScroll = false;
   public seeMoreChecker = false;
   seeMoreLoading = false;
@@ -50,15 +50,21 @@ export class AuthorComponent implements OnInit, OnDestroy {
     {
       'value': '1',
       'text': 'Stories',
-      'active': false
+      'active': true
     },
     {
       'value': '2',
       'text': 'Drafts',
-      'active': true
+      'active': false
+    },
+    {
+      'value': '3',
+      'text': 'Settings',
+      'active': false
     }
   ];
   author: Account;
+  editMode: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -70,7 +76,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private draftService: DraftService,
     public utilService: UtilService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
 
@@ -91,6 +97,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         }),
         switchMap((author: Account) => {
           this.author = author;
+          this.listType = this.author.listView ? 'single' : 'grid';
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -109,9 +116,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
       )
       .subscribe((contents: any) => {
         this.publishedContent = contents.data;
-        this.calculateLastStoriUri();
         this.seeMoreChecker = contents.more;
         this.seeMoreLoading = false;
+        this.calculateLastStoriUri();
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
@@ -145,6 +152,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.getDrafts();
     }
+  }
+
+  onEditMode(flag: boolean) {
+    this.listType = this.author.listView ? 'single' : 'grid';
+    this.editMode = flag;
   }
 
   getDrafts() {
@@ -197,9 +209,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   calculateLastStoriUri() {
-    const lastIndex = this.publishedContent.length - 1;
-    if (this.publishedContent[lastIndex].uri !== this.startFromUri) {
-      this.startFromUri = this.publishedContent[lastIndex].uri;
+    if (this.publishedContent.length) {
+      const lastIndex = this.publishedContent.length - 1;
+      if (this.publishedContent[lastIndex].uri !== this.startFromUri) {
+        this.startFromUri = this.publishedContent[lastIndex].uri;
+      }
     }
   }
 
@@ -219,6 +233,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
             this.blockInfiniteScroll = false;
           }
         );
+  }
+
+  getAuthorName() {
+    return (this.author.fullName == '') ? ((this.isCurrentUser) ? 'Add your name' : '') : this.author.fullName;
   }
 
   ngOnDestroy() {

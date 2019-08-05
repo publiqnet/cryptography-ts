@@ -620,8 +620,8 @@ export class ContentService {
     }));
   }
 
-  getContents(publickey, fromUri = null, count: number = 10): Observable<any> {
-    const url = `${environment.backend}/api/contents/${publickey}/${count}/${fromUri}`;
+  getContents(publickey, fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
+    const url = `${environment.backend}/api/contents/${publickey}/${count}/${boostedCount}/${fromUri}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url).pipe(map(contentData => {
       contentData.data = contentData.data.map(nextContent => new Content(nextContent));
       return contentData;
