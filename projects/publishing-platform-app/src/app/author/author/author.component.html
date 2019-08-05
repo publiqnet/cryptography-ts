@@ -54,10 +54,10 @@
       <div class="col-lg-7 col-md-7 col-sm-7 col-10">
         <h1 class="profile-metadata__fullname"><span [attr.contenteditable]="isCurrentUser">{{getAuthorName()}}</span>
           <i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
-        <h3 class="profile-metadata__bio" *ngIf="author.bio">
-          <!--todo: short bio placeholder-->
-          <span [attr.contenteditable]="isCurrentUser">{{(author.bio && isCurrentUser) ? author.bio : 'Write a short bio'}}</span>
-          <i *ngIf="editMode" class="icon-edit editable-icon"></i></h3>
+        <h3 class="profile-metadata__bio">
+          <span [attr.contenteditable]="isCurrentUser">{{(!author.bio && isCurrentUser) ? 'Write a short bio' : author.bio}}</span>
+          <i *ngIf="editMode" class="icon-edit editable-icon"></i>
+        </h3>
       </div>
       <div class="col-lg-2 col-md-3 col-sm-3 col-12">
         <div class="edit-menu">
@@ -114,11 +114,11 @@
             </div>
             <div class="grid-style__choose__item">
               <span>
-                <i class="grid-icon grid-icon--selected icon-multi-grid"></i>
+                <i (click)="listType = 'grid'" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                 <small>Grid</small>
               </span>
               <span>
-                <i class="grid-icon icon-single-grid"></i>
+                <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 <small>List</small>
               </span>
             </div>
@@ -137,11 +137,11 @@
             <div  [ngClass]="{'editable-disabled' : editMode && publishedContent.length && (selectedTab == '1' || !isCurrentUser)}"
                   *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center">
                 <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="myOptions">
-                    <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
-                        (tagClick)="utilService.routerChangeHelper('tag',$event)" ngxMasonryItem [type]="listType" [contentData]="data"></ui-content-single>
+                    <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account', $event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
+                        (tagClick)="utilService.routerChangeHelper('tag',$event)" ngxMasonryItem [type]="'grid'" [contentData]="data"></ui-content-single>
                 </div>
                 <div *ngIf="listType == 'single'">
-                    <ui-content-single *ngFor="let data of publishedContent" [type]="listType" (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
+                    <ui-content-single *ngFor="let data of publishedContent" [type]="'single'" (accountClick)="utilService.routerChangeHelper('account', $event.slug)" (contentClick)="utilService.routerChangeHelper('content', $event)" (publicationClick)="utilService.routerChangeHelper('publication', $event.slug)"
                         (tagClick)="utilService.routerChangeHelper('tag',$event)" [contentData]="data"></ui-content-single>
                 </div>
                 <div class="empty" *ngIf="seeMoreLoading">
@@ -153,7 +153,7 @@
                     <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
                 </ng-container>
             </div>
-          <div class="no-stories" *ngIf="!(publishedContent.length && (selectedTab == '1' || !isCurrentUser))">
+          <div class="no-stories" *ngIf="selectedTab && selectedTab == '1' && !loadingAuthor && articlesLoaded && !publishedContent.length">
             <img src="assets/images/no_story.svg" alt="no story">
             <span>No Stories Yet</span>
           </div>
