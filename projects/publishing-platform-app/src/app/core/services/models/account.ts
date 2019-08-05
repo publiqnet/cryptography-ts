@@ -26,6 +26,8 @@ export interface AccountOptions {
   views?: number;
   articlesCount?: number;
   isSubscribed?;
+  listView?: boolean;
+  bio?: string;
 }
 export class Account {
   options;
@@ -52,6 +54,8 @@ export class Account {
   views?: number;
   articlesCount?: number;
   isSubscribed?;
+  listView?: boolean;
+  bio?: string;
 
   constructor(options?: AccountOptions) {
     for (const i in options) {
@@ -60,6 +64,8 @@ export class Account {
           this[i] = options[i];
         } else if (i === 'image') {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
+        } else if (i === 'listView') {
+          this[i] = !!options[i];
         } else {
           this[i] = options[i];
         }
