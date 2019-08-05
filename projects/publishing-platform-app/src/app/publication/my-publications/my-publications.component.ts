@@ -1,148 +1,83 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { ReplaySubject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
-
-import { DialogService } from '../../core/services/dialog.service';
 import { PublicationService } from '../../core/services/publication.service';
-import { Publication } from '../../core/services/models/publication';
-import { Publications } from '../../core/services/models/publications';
-import { PublicationMemberStatusType } from '../../core/models/enumes';
 import { AccountService } from '../../core/services/account.service';
 
 @Component({
   selector: 'app-my-publications',
   templateUrl: './my-publications.component.html',
-  styleUrls: [
-    './my-publications.component.scss',
-    '../../../assets/css/screen.scss'
-  ]
+  styleUrls: ['./my-publications.component.scss']
 })
 export class MyPublicationsComponent implements OnInit, OnDestroy {
-  publications: Publication[];
-  membership: Publication[];
-  invitations: Publication[];
-  requests: Publication[];
-  selectedIndex = this.publicationService.tabIndexInv;
-  private unsubscribe$ = new ReplaySubject<void>(1);
+  public publications = [];
 
   constructor(
     public router: Router,
-    public dialogService: DialogService,
     public publicationService: PublicationService,
     private accountService: AccountService
   ) {
+    for (let i = 0; i < 4; ++i) {
+      this.publications.push({
+        'title': 'UX Topics',
+        'description': 'Tips & News on Social Media Marketing, Online Advertising, Search Engine Optimization, Content Marketing, Growth Hacking, Branding, Start-Ups and more.',
+        'logo': 'http://via.placeholder.com/120x120',
+        'cover': 'https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        'slug': 'ux_topics',
+        'subscribers': 1234,
+        'following': false,
+        'inviter': {
+          'name': 'Anechka'
+        },
+        'status': 0,
+        'storiesCount': 0,
+        'membersList': [
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 1',
+            'last_name': 'A',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          },
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 2',
+            'last_name': 'B',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          },
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 3',
+            'last_name': 'C',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          },
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 4',
+            'last_name': 'D',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          },
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 5',
+            'last_name': 'E',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          },
+          {
+            'slug': '1.0.2',
+            'first_name': 'test 6',
+            'last_name': 'G',
+            'image': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzlDPRr1xSW0lukY2EmVpAx5Ye1S8H5luUVOK2IqFdcsjCDQxK'
+          }
+        ]
+      });
+    }
   }
 
   ngOnInit() {
-    this.publicationService.getMyPublications()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Publications) => this.PublicationsData = data);
 
-
-    /*this.publicationService.myPublications
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Array<Publication>) => {
-        if (data) {
-          data.forEach((pub: any) => {
-              if (pub.logo && !pub.cover) {
-                this.publicationService.getAverageRGB(pub);
-              }
-              pub.members = pub.members.filter(m => m.status !== 1);
-            }
-          );
-          this.publications = data;
-        }
-      });
-    */
-  }
-
-  set PublicationsData(data: Publications) {
-    this.publications = data.owned;
-    this.membership = data.membership;
-    this.invitations = data.invitations;
-    this.requests = data.requests;
-  }
-
-  get MemberStatus() {
-    return PublicationMemberStatusType;
-  }
-
-  deletePublication(slug, index, e) {
-    e.stopPropagation();
-
-    this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        switchMap(() => this.publicationService.deletePublication(slug)),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => this.publications.splice(index, 1));
-  }
-
-  deleteMembership(slug, index) {
-    this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        switchMap(() => this.publicationService.deleteMembership(slug)),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => this.publications.splice(index, 1));
-  }
-
-  // invitationResponse(id, accepted) {
-  //   const body = {membershipId: id, accepted: accepted};
-  //   this.publicationService.acceptInvitation(body)
-  //     .pipe(
-  //       switchMap(() => this.publicationService.getMyPublications()),
-  //       takeUntil(this.unsubscribe$)
-  //     )
-  //     .subscribe((data: Publications) =>  this.PublicationsData = data);
-  // }
-
-  acceptInvitationBecomeMember(slug: string) {
-    if (!this.accountService.loggedIn()) {
-      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
-      return false;
-    }
-    this.publicationService.acceptInvitationBecomeMember(slug)
-      .pipe(
-        switchMap(() => this.publicationService.getMyPublications()),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Publications) =>  this.PublicationsData = data);
-  }
-
-  rejectInvitationBecomeMember(slug: string) {
-    if (!this.accountService.loggedIn()) {
-      this.dialogService.openLoginDialog().pipe(takeUntil(this.unsubscribe$)).subscribe();
-      return false;
-    }
-    this.publicationService.rejectInvitationBecomeMember(slug)
-      .pipe(
-        switchMap(() => this.publicationService.getMyPublications()),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Publications) =>  this.PublicationsData = data);
-  }
-
-  cancelRequestBecomeMember(publication: Publication) {
-    this.publicationService.cancelBecomeMember(publication.slug)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => publication.memberStatus = this.MemberStatus.no_info);
   }
 
   ngOnDestroy() {
-    this.publicationService.tabIndexInv = 0;
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+
   }
 
 }
