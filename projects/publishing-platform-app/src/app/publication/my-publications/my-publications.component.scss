@@ -35,8 +35,16 @@
   }
 }
 
+.section-heading {
+  font: 700 20px/27px $open-sans;
+  letter-spacing: 1px;
+  margin: 36px 0;
+  text-transform: uppercase;
+  color: pbq-color($lightgrey, 700);
+}
+
 .publications-heading {
-  margin: 60px 0;
+  margin: 60px 0 24px;
 
   > div {
     padding-bottom: 50px;
@@ -60,13 +68,41 @@
 
 .publications-staff {
   ui-publication-single {
-    @include media-lg-only {
+    @include media-sm {
+      ::ng-deep .staff-publication {
+        display: inline-block;
+        width: 100% !important;
+        max-width: unset;
+        margin-bottom: 10px;
+      }
+    }
+
+    @include media-sm-up {
+      ::ng-deep .staff-publication {
+        display: inline-block;
+        width: calc(50% - 20px / 2) !important;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        max-width: unset;
+      }
+
+      &:nth-of-type(2n) {
+        ::ng-deep .staff-publication {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @include media-xl-up {
       ::ng-deep .staff-publication {
         display: inline-block;
         width: calc(33.333% - 20px / 3) !important;
         margin-right: 10px;
         margin-bottom: 10px;
+        max-width: unset;
       }
+
+      &:nth-of-type(2n):not(:nth-of-type(3n)) { margin-right: 10px; }
 
       &:nth-of-type(3n) {
         ::ng-deep .staff-publication {
@@ -75,4 +111,8 @@
       }
     }
   }
+}
+
+.publications-following {
+  margin: 30px 0 0;
 }

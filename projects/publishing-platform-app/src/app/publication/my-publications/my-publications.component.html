@@ -11,9 +11,16 @@
             <ui-button text="Settings"></ui-button>
         </div>
     </div>
-    <div class="row publications-staff">
+    <div class="row publications-staff" *ngIf="publications && publications.length">
         <div class="col-lg-8 offset-lg-2">
-            <ui-publication-single className="staff-publication" type="staff" [publicationData]="publication" *ngFor="let publication of publications;"></ui-publication-single>
+            <h2 class="section-heading">Staff</h2>
+            <ui-publication-single className="staff-publication" type="staff" [publicationData]="publication" *ngFor="let publication of publications;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
+        </div>
+    </div>
+    <div class="row publications-following" *ngIf="membership && membership.length">
+        <div class="col-lg-8 offset-lg-2">
+            <h2 class="section-heading">Following</h2>
+            <ui-publication-single className="staff-publication" type="follow" [publicationData]="publication" *ngFor="let publication of membership;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
         </div>
     </div>
 </div>
