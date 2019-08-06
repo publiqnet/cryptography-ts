@@ -41,7 +41,11 @@ export class PublicationService {
 
   editPublication = (data: object | FormData, slug: string): Observable<any> => {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug, data)
-      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+    .pipe(
+      tap(() => this.RefreshObserver = 'getMyPublications'),
+      filter(data => data != null),
+      map(data => new Publication(data))
+    );
   }
 
   getMyPublications: () => Observable<any> = () => {
@@ -80,7 +84,7 @@ export class PublicationService {
     return this.httpHelperService.call(HttpMethodTypes.get, this.url + `/${slug}/` + 'members');
   }
 
-  getPublicationArticles = (slug: string): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + '/articles');
+  getPublicationArticles = (slug: string): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + 'articles');
 
   removeArticle: (dsId: string, slug: string) => Observable<any> = (dsId: string, slug: string): Observable<any> => {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', {dsId: dsId});

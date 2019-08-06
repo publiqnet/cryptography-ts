@@ -1,4 +1,5 @@
 import { environment } from '../../../../environments/environment';
+import { Author } from './author';
 
 export interface PublicationOptions {
   slug: string;
@@ -8,7 +9,12 @@ export interface PublicationOptions {
   logo: string;
   color: string;
   memberStatus: number;
-  subscribed: boolean;
+  subscribers: any;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
 }
 
 export class Publication {
@@ -19,17 +25,17 @@ export class Publication {
   logo: string;
   color: string;
   memberStatus: number;
-  subscribed: boolean;
-
+  subscribers: any;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (['logo', 'cover'].includes(i)) {
-          this[i] = options[i] ? environment.backend + '/' + options[i] : '';
-        } else if (i === 'color') {
-          this[i] = options[i] ? '#' + options[i] : '';
-        } else if (['memberStatus', 'subscribed'].includes(i)) {
-          this[i] = options[i];
+        if (['cover', 'logo'].includes(i)) {
+          this[i] = (options[i] && options[i].indexOf('https://') !== 0) ? environment.backend + '/' + options[i] : options[i];
         } else {
           this[i] = options[i] ? options[i] : '';
         }

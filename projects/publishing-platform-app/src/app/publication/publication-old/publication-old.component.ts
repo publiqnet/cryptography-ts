@@ -47,7 +47,6 @@ export class PublicationOldComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.articlesLoaded = true;
-
     this.route.params
       .pipe(
         debounceTime(500),

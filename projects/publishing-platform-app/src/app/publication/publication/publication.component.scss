@@ -1,327 +1,303 @@
 @import "../../../assets/css/variables.scss";
-
 %line-after {
-  content: '';
-  display: inline-block;
-  position: absolute;
-  bottom: -1px;
-  width: 5px; height: 1px;
-  background-color: #fff;
+    content: '';
+    display: inline-block;
+    position: absolute;
+    bottom: -1px;
+    width: 5px;
+    height: 1px;
+    background-color: #fff;
 }
 
 .editable-icon {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  font-size: 19px;
-  border-radius: 50%;
-  border: 1px solid pbq-color($grey, 300);
-  color: pbq-color($grey, 500);
-  padding: 1px 2px;
-  margin-left: 10px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    font-size: 19px;
+    border-radius: 50%;
+    border: 1px solid pbq-color($grey, 300);
+    color: pbq-color($grey, 500);
+    padding: 1px 2px;
+    margin-left: 10px;
 }
 
 .editable-disabled {
-  opacity: .5;
-  pointer-events: none;
-  cursor: default;
+    opacity: .5;
+    pointer-events: none;
+    cursor: default;
+}
+
+.cover__upload {
+    position: relative;
+    display: inline;
+    input {
+        position: absolute;
+        opacity: 0;
+        width: 100px;
+        height: 35px;
+        cursor: pointer;
+        z-index: 10;
+    }
 }
 
 .publication-cover {
-  width: 100%;
-  height: 340px;
-  margin: 35px 0;
-  border-radius: 30px;
-  background-color: pbq-color($blue, 300);
-  background-size: contain;
-  background-position: center;
-
-  &--editable {
-    &:not([style^="background-image"]) {
-      border: 3px solid rgba($blue, 0.1);
-    }
-
-    > div {
-      position: relative;
-      display: inline-flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    h4 {
-      font: 700 20px/27px $open-sans;
-      margin: 0 0 7px;
-    }
-
-    p {
-      font: 400 13px/18px $open-sans;
-      color: pbq-color($grey, 500);
-      margin: 0;
-    }
-
-    .publication-cover__actions {
-      font-size: 0;
-      position: absolute;
-      bottom: 25px; right: 5px;
-
-      ::ng-deep .button {
-        font-size: 13px;
-        font-weight: 600;
-        color: #fff;
-        opacity: .8;
-        background-color: pbq-color($grey, 700);
-        transition: 300ms opacity;
-        vertical-align: middle;
-
-        &:hover {
-          opacity: 1;
-          background-color: pbq-color($grey, 700);
+    width: 100%;
+    height: 340px;
+    margin: 35px 0;
+    border-radius: 30px;
+    background-color: pbq-color($blue, 300);
+    background-size: contain;
+    background-position: center;
+    &--editable {
+        &:not([style^="background-image"]) {
+            border: 3px solid rgba($blue, 0.1);
         }
-      }
-
-      ::ng-deep .dropdown-item__opener {
-        margin-left: 10px;
-        width: 33px; height: 33px;
-        vertical-align: middle;
+        >div {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h4 {
+            font: 700 20px/27px $open-sans;
+            margin: 0 0 7px;
+        }
+        p {
+            font: 400 13px/18px $open-sans;
+            color: pbq-color($grey, 500);
+            margin: 0;
+        }
+        .publication-cover__actions {
+            font-size: 0;
+            position: absolute;
+            bottom: 25px;
+            right: 5px;
+             ::ng-deep .button {
+                font-size: 13px;
+                font-weight: 600;
+                color: #fff;
+                opacity: .8;
+                background-color: pbq-color($grey, 700);
+                transition: 300ms opacity;
+                vertical-align: middle;
+                &:hover {
+                    opacity: 1;
+                    background-color: pbq-color($grey, 700);
+                }
+            }
+             ::ng-deep .dropdown-item__opener {
+                margin-left: 10px;
+                width: 33px;
+                height: 33px;
+                vertical-align: middle;
+                text-align: center;
+                background-color: pbq-color($grey, 700);
+                opacity: .8;
+                color: #ffffff;
+                border-radius: 50%;
+            }
+            @include media-lg {
+                right: 10px;
+            }
+            @include media-md {
+                bottom: 15px;
+            }
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: $blue;
+        }
+    }
+    &__guide {
         text-align: center;
-        background-color: pbq-color($grey, 700);
-        opacity: .8; color: #ffffff;
-        border-radius: 50%;
-      }
-
-      @include media-lg {
-        right: 10px;
-      }
-
-      @include media-md {
-        bottom: 15px;
-      }
+        &__texts {
+            margin: 25px 0 0;
+        }
+        @include media-lg {
+            text-align: left;
+            display: flex;
+            &__texts {
+                margin: 0 0 0 20px;
+            }
+            h4 {
+                font-weight: 600;
+            }
+        }
+        @include media-sm {
+            display: none;
+        }
     }
-
-    .upload-icon {
-      font-size: 48px;
-      color: $blue;
-    }
-  }
-
-  &__guide {
-    text-align: center;
-
-    &__texts {
-      margin: 25px 0 0;
-    }
-
     @include media-lg {
-      text-align: left;
-      display: flex;
-
-      &__texts { margin: 0 0 0 20px; }
-
-      h4 {
-        font-weight: 600;
-      }
+        margin: 25px 0;
+        height: 249px;
     }
-
     @include media-sm {
-      display: none;
+        height: 185px;
     }
-  }
-
-  @include media-lg {
-    margin: 25px 0;
-    height: 249px;
-  }
-
-  @include media-sm {
-    height: 185px;
-  }
 }
 
 .publication-metadata {
-
-  ::ng-deep .button.button--icon {
-    @include media-md { width: 30px; height: 30px; }
-  }
-
-  > div {
-    border-bottom: 1px solid pbq-color($grey, 200);
-
-    &:last-child {
-      padding-top: 5px;
-      text-align: right;
-
-      ui-button {
-        ::ng-deep .button {
-          vertical-align: middle;
+     ::ng-deep .button.button--icon {
+        @include media-md {
+            width: 30px;
+            height: 30px;
         }
-
-        ::ng-deep .save-button {
-          text-transform: uppercase;
-          vertical-align: middle;
+    }
+    >div {
+        border-bottom: 1px solid pbq-color($grey, 200);
+        &:last-child {
+            padding-top: 5px;
+            text-align: right;
+            ui-button {
+                 ::ng-deep .button {
+                    vertical-align: middle;
+                }
+                 ::ng-deep .save-button {
+                    text-transform: uppercase;
+                    vertical-align: middle;
+                }
+                &:not(:last-child) {
+                    margin-right: 10px;
+                }
+            }
+            &:after {
+                @extend %line-after;
+                right: 0;
+            }
+            @include media-sm-only {
+                flex: 0 0 150px;
+            }
+            @include media-sm {
+                border-bottom: none;
+                text-align: center;
+                margin: (-45px / 2) 0 0;
+            }
         }
-
-        &:not(:last-child) {
-          margin-right: 10px;
-        }
-      }
-
-      &:after {
-        @extend %line-after;
-        right: 0;
-      }
-
-      @include media-sm-only {
-        flex: 0 0 150px;
-      }
-
-      @include media-sm {
-        border-bottom: none;
-        text-align: center;
-        margin: (-45px / 2) 0 0;
-      }
     }
-  }
-
-  &__avatar {
-    position: relative;
-    text-align: right;
-    border-bottom: none!important;
-
-    ::ng-deep .avatar {
-      margin-right: 15px;
-      box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.07);
-    }
-
-    &:after {
-      @extend %line-after;
-      left: 0;
-    }
-
-    &--editable {
-      ::ng-deep .avatar {
+    &__avatar {
         position: relative;
-        box-shadow: none;
-
-        &:after {
-          content: '\e918';
-          font-family: 'icomoon';
-          font-size: 20px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          position: absolute;
-          top: -8px; left: -8px;
-          bottom: -8px; right: -8px;
-          background-color: rgba(#fff, 0.9);
+        text-align: right;
+        border-bottom: none!important;
+         ::ng-deep .avatar {
+            margin-right: 15px;
+            box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.07);
         }
-      }
-
-      .icon-close {
-        position: absolute;
-        top: 0; right: 14px;
-        cursor: pointer;
-      }
+        &:after {
+            @extend %line-after;
+            left: 0;
+        }
+        &--editable {
+             ::ng-deep .avatar {
+                position: relative;
+                box-shadow: none;
+                &:after {
+                    content: '\e918';
+                    font-family: 'icomoon';
+                    font-size: 20px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    top: -8px;
+                    left: -8px;
+                    bottom: -8px;
+                    right: -8px;
+                    background-color: rgba(#fff, 0.9);
+                }
+            }
+            .icon-close {
+                position: absolute;
+                top: 0;
+                right: 14px;
+                cursor: pointer;
+            }
+        }
+        @include media-lg {
+            text-align: left;
+            border-bottom: 1px solid pbq-color($grey, 200)!important;
+            padding-bottom: 25px;
+        }
+        @include media-md {
+            flex: 0 0 90px;
+        }
+        @include media-sm {
+            padding-bottom: 35px;
+            .avatar {
+                margin-right: 5px;
+            }
+        }
     }
-
-    @include media-lg {
-      text-align: left;
-      border-bottom: 1px solid pbq-color($grey, 200)!important;
-      padding-bottom: 25px;
+    &__title,
+    &__description {
+        span,
+        .editable-icon {
+            outline: none;
+            vertical-align: middle;
+        }
     }
-
-    @include media-md {
-      flex: 0 0 90px;
+    &__title {
+        margin: 5px 0 0;
+        font: 700 50px/0.8 $vollkorn;
+        color: pbq-color($grey, 700);
+        @include media-lg {
+            font: 700 40px/1 $vollkorn;
+        }
+        @include media-md {
+            margin: 10px 0 0;
+            font: 700 25px/30px $vollkorn;
+        }
     }
-
-    @include media-sm {
-      padding-bottom: 35px;
-      .avatar {
-        margin-right: 5px;
-      }
+    &__description {
+        color: $grey;
+        font: 400 17px/24px $open-sans;
+        margin: 0 0 32px;
+        @include media-md {
+            font: 400 13px/24px $open-sans;
+        }
+        @include media-md {
+            margin: 0 0 32px;
+        }
     }
-  }
-
-  &__title, &__description {
-    span, .editable-icon { outline: none; vertical-align: middle; }
-  }
-
-  &__title {
-    margin: 5px 0 0;
-    font: 700 50px/1 $vollkorn;
-    color: pbq-color($grey, 700);
-
-    @include media-lg {
-      font: 700 40px/1 $vollkorn;
-    }
-
-    @include media-md {
-      margin: 10px 0 0;
-      font: 700 25px/30px $vollkorn;
-    }
-  }
-
-  &__description {
-    color: $grey;
-    font: 400 17px/24px $open-sans;
-    margin: 0 0 32px;
-
-    @include media-md {
-      font: 400 13px/24px $open-sans;
-    }
-
-    @include media-md {
-      margin: 0 0 32px;
-    }
-  }
 }
 
 .publication-statistics {
-  > div {
-    font-size: 0;
-    margin-bottom: 35px;
-  }
-
-  .datum {
-    margin: 14px 0;
-
-    &:not(:first-child) {
-      margin-left: 25px;
-
-      @include media-sm {
-        margin-left: 15px;
-      }
+    >div {
+        font-size: 0;
+        margin-bottom: 35px;
     }
-  }
+    .datum {
+        margin: 14px 0;
+        &:not(:first-child) {
+            margin-left: 25px;
+            @include media-sm {
+                margin-left: 15px;
+            }
+        }
+    }
 }
 
 .followers {
-  padding: 30px 0;
-  overflow: scroll;
-
-  > div {
-    display: inline-block;
-    white-space: nowrap;
-    margin: 0 calc((100% - 870px) / 2);
-
-    @include media-xl {
-      margin: 0 calc((100% - 640px) / 2);
+    padding: 30px 0;
+    overflow: scroll;
+    >div {
+        display: inline-block;
+        white-space: nowrap;
+        margin: 0 calc((100% - 870px) / 2);
+        @include media-xl {
+            margin: 0 calc((100% - 640px) / 2);
+        }
+        @include media-lg {
+            margin: 0 calc((100% - 710px) / 2);
+        }
+        @include media-md {
+            margin: 0 calc((100% - 530px) / 2);
+        }
+        @include media-sm {
+            margin: 0 15px;
+        }
     }
-
-    @include media-lg {
-      margin: 0 calc((100% - 710px) / 2);
-    }
-
-    @include media-md {
-      margin: 0 calc((100% - 530px) / 2);
-    }
-
-    @include media-sm {
-      margin: 0 15px;
-    }
-  }
-
-  /*.user-card {
+    /*.user-card {
     margin: 0 10px 10px 0;
     &__image {
       position: relative;
@@ -339,166 +315,146 @@
       }
     }
   }*/
-
-  ::ng-deep .role-card {
-    width: 210px;
-    display: inline-flex;
-    margin: 0 10px 10px 0;
-  }
-
-  ui-user-single:last-child {
-    ::ng-deep .role-card {
-      margin-right: 0;
+     ::ng-deep .role-card {
+        width: 210px;
+        display: inline-flex;
+        margin: 0 10px 10px 0;
     }
-  }
+    ui-user-single:last-child {
+         ::ng-deep .role-card {
+            margin-right: 0;
+        }
+    }
 }
 
 .grid-style {
-  display: flex;
-  width: 100%;
-  padding: 20px 30px 20px;
-  background-color: pbq-color($grey, 100);
-  border: 3px solid rgba($blue, 0.1);
-  border-radius: 15px;
-  margin: 0 0 20px;
-
-  > div {
-    flex-grow: 1;
-
-    &:last-child {
-      flex-grow: 0;
-      flex-shrink: 0;
-      flex-basis: 50px;
-      display: inline-flex;
-      justify-content: flex-end;
-      align-items: center;
+    display: flex;
+    width: 100%;
+    padding: 20px 30px 20px;
+    background-color: pbq-color($grey, 100);
+    border: 3px solid rgba($blue, 0.1);
+    border-radius: 15px;
+    margin: 0 0 20px;
+    >div {
+        flex-grow: 1;
+        &:last-child {
+            flex-grow: 0;
+            flex-shrink: 0;
+            flex-basis: 50px;
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .grid-icon {
+            font-size: 24px;
+            color: pbq-color($grey, 400);
+            margin-left: 20px;
+            cursor: pointer;
+            &--selected {
+                color: pbq-color($lightgrey, 700);
+                cursor: default;
+            }
+        }
     }
-
-    .grid-icon {
-      font-size: 24px;
-      color: pbq-color($grey, 400);
-      margin-left: 20px;
-      cursor: pointer;
-
-      &--selected {
-        color: pbq-color($lightgrey, 700);
-        cursor: default;
-      }
+    h4 {
+        font: 700 20px/27px $open-sans;
+        margin: 0 0 3px;
     }
-  }
-
-  h4 {
-    font: 700 20px/27px $open-sans;
-    margin: 0 0 3px;
-  }
-
-  p {
-    font: 400 13px/18px $open-sans;
-    color: pbq-color($grey, 500);
-    margin: 0;
-  }
-
-  @include media-sm {
-    display: none;
-  }
+    p {
+        font: 400 13px/18px $open-sans;
+        color: pbq-color($grey, 500);
+        margin: 0;
+    }
+    @include media-sm {
+        display: none;
+    }
 }
 
 .tab-heading {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  h2 {
-    font: 700 20px/27px $open-sans;
-    color: pbq-color($lightgrey, 700);
-    text-transform: uppercase;
-    margin: 16px 12px 16px 0;
-  }
-
-  &__inner {
-    flex: 1;
-  }
-
-  ui-button {
-    font-weight: 600;
-
-    @include media-sm {
-      flex: 0 0 100%;
-
-      ::ng-deep .button { width: 100%; }
-    }
-  }
-
-  &--members {
-    .tab-heading__inner {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      text-align: right;
-
-      input {
-        background: transparent;
-        border-radius: 0;
-        font-size: 15px;
-        line-height: 20px;
-        max-width: 0;
-        padding: 0;
-        min-width: 20px;
-        transition: 300ms max-width;
-        visibility: hidden;
-
-        &.mw-200 {
-          padding: 0 8px;
-          visibility: visible;
-          max-width: 200px;
-        }
-
-        @include media-sm {
-          overflow: hidden;
-          min-width: 0;
-        }
-      }
-
-      i {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    h2 {
+        font: 700 20px/27px $open-sans;
         color: pbq-color($lightgrey, 700);
-        font-size: 24px;
-        cursor: pointer;
-      }
+        text-transform: uppercase;
+        margin: 16px 12px 16px 0;
     }
-  }
+    &__inner {
+        flex: 1;
+    }
+    ui-button {
+        font-weight: 600;
+        @include media-sm {
+            flex: 0 0 100%;
+             ::ng-deep .button {
+                width: 100%;
+            }
+        }
+    }
+    &--members {
+        .tab-heading__inner {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            text-align: right;
+            input {
+                background: transparent;
+                border-radius: 0;
+                font-size: 15px;
+                line-height: 20px;
+                max-width: 0;
+                padding: 0;
+                min-width: 20px;
+                transition: 300ms max-width;
+                visibility: hidden;
+                &.mw-200 {
+                    padding: 0 8px;
+                    visibility: visible;
+                    max-width: 200px;
+                }
+                @include media-sm {
+                    overflow: hidden;
+                    min-width: 0;
+                }
+            }
+            i {
+                color: pbq-color($lightgrey, 700);
+                font-size: 24px;
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .requests-tabber {
-  padding: 50px 5px;
-
-  .tabber {
-    text-transform: uppercase;
-    
-    &__item small {
-      font-size: inherit;
-      color: $blue;
+    padding: 50px 5px;
+    .tabber {
+        text-transform: uppercase;
+        &__item small {
+            font-size: inherit;
+            color: $blue;
+        }
+        &__underline {
+            background-color: $yellow;
+        }
     }
-
-    &__underline {
-      background-color: $yellow;
-    }
-  }
 }
 
 .requests {
-  ::ng-deep .two-actions {
-    margin: 0 0 50px;
-  }
+     ::ng-deep .two-actions {
+        margin: 0 0 50px;
+    }
 }
 
 .followers {
-  ::ng-deep .followers-card {
-    margin: 0 0 40px;
-  }
+     ::ng-deep .followers-card {
+        margin: 0 0 40px;
+    }
 }
 
 :host {
-  ::ng-deep .button-tabber {
-    margin: 0 0 20px;
-  }
+     ::ng-deep .button-tabber {
+        margin: 0 0 20px;
+    }
 }
