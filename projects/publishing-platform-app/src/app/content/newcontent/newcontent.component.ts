@@ -545,7 +545,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId))
+        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, '8736a1fb571f2748ef3a2798177debff'))
       );
   }
 

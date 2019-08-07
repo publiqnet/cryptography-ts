@@ -25,6 +25,8 @@ export class Publication {
   logo: string;
   color: string;
   memberStatus: number;
+  subscribed: boolean;
+  following: boolean;
   subscribers: any;
   owner: Author;
   editors: Author[];
@@ -34,8 +36,13 @@ export class Publication {
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
-        if (['cover', 'logo'].includes(i)) {
-          this[i] = (options[i] && options[i].indexOf('https://') !== 0) ? environment.backend + '/' + options[i] : options[i];
+        if (['logo', 'cover'].includes(i)) {
+          this[i] = options[i] ? environment.backend + '/' + options[i] : '';
+        } else if (i === 'color') {
+          this[i] = options[i] ? '#' + options[i] : '';
+        } else if (['memberStatus', 'subscribed'].includes(i)) {
+          this['following'] = options[i];
+          this[i] = options[i];
         } else {
           this[i] = options[i] ? options[i] : '';
         }

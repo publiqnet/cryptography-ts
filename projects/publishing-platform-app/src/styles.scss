@@ -1434,130 +1434,7 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent);
   @include mat-chips-theme($dark-theme);
 }
 
-.content strong,
-b {
-  font-weight: 700;
-}
-.content i {
-  font-style: italic;
-  font-size: 20px;
-}
-.content u {
-  text-decoration: underline;
-}
-.content {
-  strong,
-  b {
-    font-weight: 700;
-  }
-  i,
-  cite,
-  em,
-  var,
-  address,
-  dfn {
-    font-style: italic;
-  }
-  u,
-  ins {
-    text-decoration: underline;
-  }
-  s,
-  strike,
-  del {
-    text-decoration: line-through;
-  }
-  h1 {
-    display: block;
-    font-size: 2em!important;
-    margin-top: 0.67em;
-    margin-bottom: 0.67em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  h2 {
-    display: block;
-    font-size: 1.5em!important;
-    margin-top: 0.83em;
-    margin-bottom: 0.83em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  h3 {
-    display: block;
-    font-size: 1.17em!important;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  h4 {
-    display: block;
-    font-size: 1em!important;
-    margin-top: 1.33em;
-    margin-bottom: 1.33em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  h5 {
-    display: block;
-    font-size: 0.83em!important;
-    margin-top: 1.67em;
-    margin-bottom: 1.67em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  h6 {
-    display: block;
-    font-size: 0.67em!important;
-    margin-top: 2.33em;
-    margin-bottom: 2.33em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-  }
-  ul,
-  menu,
-  dir {
-    list-style-type: disc;
-    list-style-position: inside;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0;
-    -webkit-margin-end: 0;
-    -webkit-padding-start: 40px;
-  }
-  ol {
-    list-style-type: decimal;
-    list-style-position: inside;
-    display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0;
-    -webkit-margin-end: 0;
-    -webkit-padding-start: 40px;
-  }
-  ul ul,
-  ol ul {
-    list-style-type: circle;
-    list-style-position: inside;
-    margin-left: 15px;
-  }
-  ol ol,
-  ul ol {
-    list-style-type: lower-latin;
-    list-style-position: inside;
-    margin-left: 15px;
-  }
-  /*img {
-    max-width: 614px;
-  }*/
-}
+
 .pointer {
   cursor: pointer;
 }
@@ -1908,4 +1785,12 @@ p.sponsored{
       padding: 0 5px;
     }
   }
+}
+#coverPic, #coverPic1, #profilePic{
+  width: 0;
+  height: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  position: absolute;
 }

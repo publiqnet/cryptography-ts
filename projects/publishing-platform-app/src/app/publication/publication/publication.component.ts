@@ -58,7 +58,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   currentUser;
   private unsubscribe$ = new ReplaySubject<void>(1);
   slug: string;
-  userPublications: Array<Publication>;
   stories: Content[];
   textChanging: boolean;
   coverFile: File;
@@ -181,7 +180,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  uploadLogo(event, container) {
+  uploadLogo(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
       const myReader: FileReader = new FileReader();
@@ -229,7 +228,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
-        console.log(result);
         this.editMode = false;
         this.textChanging = false;
         this.publication = result;
