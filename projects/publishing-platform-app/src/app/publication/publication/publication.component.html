@@ -9,7 +9,7 @@
                     <p>JPG, PNG up to 5mb, 1400x364px recommended.</p>
                 </div>
             </div>
-            <div class="publication-cover__actions" *ngIf="!imageLoaded">
+            <div class="publication-cover__actions" *ngIf="isMyPublication && !imageLoaded">
                 <label for="addCover">
                     <div class="cover__upload">
                             <input type="file" (change)="uploadCover($event, coverContainer)">
@@ -61,7 +61,7 @@
                 <span class="datum__descriptor">Views</span>
             </div>
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{stories.length}}</span>
                 <span class="datum__descriptor">Stories</span>
             </div>
             <div class="datum">
@@ -76,7 +76,29 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode">
-            <ui-tab type="buttons" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+            <ui-tab type="buttons" *ngIf="isMyPublication" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2" *ngIf="editMode">
+            <div class="grid-style grid-style--custom">
+                <div class="grid-style__choose">
+                    <div>
+                        <h4>Grid style</h4>
+                        <p>Choose the way your readers will see your stories.</p>
+                    </div>
+                    <div class="grid-style__choose__item">
+                        <span>
+                <i (click)="listType = 'grid'" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                <small>Grid</small>
+              </span>
+                        <span>
+                <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                <small>List</small>
+              </span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- <div class="row">
@@ -93,7 +115,7 @@
                 </div>
             </div>
     </div> -->
-    <div class="row" *ngIf="activeTab === 'stories'" [class.editable-disabled]="editMode">
+    <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of firstContentBlock;" [contentData]="content"></ui-content-single>

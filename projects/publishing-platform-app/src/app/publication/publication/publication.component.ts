@@ -35,7 +35,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     },
   ];
 
-
   public isMyPublication = false;
   public editMode = false;
   public imageLoaded = false;
@@ -58,7 +57,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   currentUser;
   private unsubscribe$ = new ReplaySubject<void>(1);
   slug: string;
-  stories: Content[];
+  stories: Content[] = [];
   textChanging: boolean;
   coverFile: File;
   logoFile: File;
@@ -155,14 +154,14 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
-        this.isMyPublication = this.publication.owner.memberStatus == 1;
+        console.log(this.publication);
+        this.isMyPublication = this.publication.memberStatus == 1;
         this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
             image: this.publication.logo
           };
         }
-        console.log(this.publication);
       });
   }
 
@@ -198,13 +197,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   getPublicationStories() {
     this.publicationService
-      .getPublicationArticles(this.publication.slug)
+      .getPublicationStories(this.publication.slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((stories: Content[]) => {
-        console.log(stories);
-        this.stories = stories;
+      .subscribe((data: { data: Content[], more: boolean }) => {
+        console.log(data);
+        this.stories = data.data;
       });
   }
 
@@ -240,7 +239,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   dropdownSelect($event) {
-    console.log($event);
     if ($event == 'delete') {
       this.deleteCover = '1';
       this.coverFile = null;

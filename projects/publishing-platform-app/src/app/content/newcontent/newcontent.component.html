@@ -1,20 +1,20 @@
 <div class="container">
-  <div class="row">
-    <div class=" offset-lg-2 col-lg-8 col-xl-9">
-      <form class="form" [formGroup]="contentForm">
-        <div class="post-field">
-          <!--title-->
-          <div class="post-field__areas">
-              <textarea [froalaEditor]="titleOptions" rows="10" formControlName="title" (froalaInit)="initTitleFroala($event)"></textarea>
-          </div>
-          <!--content-->
-          <div id="editor-froala">
-            <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
-          </div>
-        </div>
+    <div class="row">
+        <div class=" offset-lg-2 col-lg-8 col-xl-9">
+            <form class="form" [formGroup]="contentForm">
+                <div class="post-field">
+                    <!--title-->
+                    <div class="post-field__areas">
+                        <textarea [froalaEditor]="titleOptions" rows="10" formControlName="title" (froalaInit)="initTitleFroala($event)"></textarea>
+                    </div>
+                    <!--content-->
+                    <div id="editor-froala">
+                        <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
+                    </div>
+                </div>
 
-        <div class="post-field-fixed">
-          <button class="button--publish" (click)="onShowStepForm(true)" [ngClass]="{'animate' : showStoryForm === true, 'with-submit' : boostField}">
+                <div class="post-field-fixed">
+                    <button class="button--publish" (click)="onShowStepForm(true)" [ngClass]="{'animate' : showStoryForm === true, 'with-submit' : boostField}">
             <span class="visible--span">{{(submitStep == 1) ? 'Next' : 'Publish'}}</span>
             <i class="icon-arrow-link"></i>
             <!--TODO: tooltip-->
@@ -22,107 +22,102 @@
               You need to write something before publish!
             </span>
           </button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <div class="publishing-space">
-  <div id="publishMain" [ngClass]="{'visible' : showStoryForm === true}" class="publish__main">
-    <span class="close-icon" (click)="onShowStepForm(false)"><i class="icon-close"></i></span>
-    <div class="publish__main--white-space publish__main--white-space--descktop">
-      <div>
-        <h3 *ngIf="!boostField">Preview</h3>
-        <ui-dropdown className="preview-tab" *ngIf="boostField" [type]="'role'" [roleData]='stepperData' (onRoleChange)="changeBoostView($event)"></ui-dropdown>
-      </div>
+    <div id="publishMain" [ngClass]="{'visible' : showStoryForm === true}" class="publish__main">
+        <span class="close-icon" (click)="onShowStepForm(false)"><i class="icon-close"></i></span>
+        <div class="publish__main--white-space publish__main--white-space--descktop">
+            <div>
+                <h3 *ngIf="!boostField">Preview</h3>
+                <ui-dropdown className="preview-tab" *ngIf="boostField" [type]="'role'" [roleData]='stepperData' (onRoleChange)="changeBoostView($event)"></ui-dropdown>
+            </div>
 
-      <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
-        <!--FOR ADDING OR CHANGING COVER PIC -->
-        <div class="add__cover" *ngIf="!mainCoverImageUrl">
-          <p>Add cover image for your story to attract more readers</p>
-          <label class="cover__img" for="coverPic">
+            <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
+                <!--FOR ADDING OR CHANGING COVER PIC -->
+                <div class="add__cover" *ngIf="!mainCoverImageUrl">
+                    <p>Add cover image for your story to attract more readers</p>
+                    <label class="cover__img" for="coverPic">
             <input type="file" accept="image/jpeg,image/png" id="coverPic">
             <i class="icon-picture"></i>
             <span>Add cover</span>
           </label>
+                </div>
+                <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
+            </ng-container>
+            <ng-template #isBoosted>
+                <!--for boosting-->
+                <div class="boost-progress">
+                    <div class="boost-progress__item">
+                        <span>Total budget</span>
+                        <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice" [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
+                    </div>
+                    <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="tabChange($event)"></ui-tab>
+                    <div class="boost-progress__balance">
+                        <span>Your Balance: <b>{{accountService.accountInfo.balance | number:'0.0-8'}} PBQ</b></span>
+                        <div class="boost-progress__balance__amount">
+                            You will spend <b>{{(boostPrice/boostDays) | number : '1.2-2'}} PBQ</b> per 1 day.
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
         </div>
-        <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
-      </ng-container>
-
-      <ng-template #isBoosted>
-        <!--for boosting-->
-        <div class="boost-progress">
-          <div class="boost-progress__item">
-            <span>Total budget</span>
-            <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice" [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
-          </div>
-
-          <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="tabChange($event)"></ui-tab>
-
-          <div class="boost-progress__balance">
-            <span>Your Balance: <b>{{accountService.accountInfo.balance | number:'0.0-8'}} PBQ</b></span>
-            <div class="boost-progress__balance__amount">
-              You will spend <b>{{(boostPrice/boostDays) | number : '1.2-2'}} PBQ</b> per 1 day.
+        <div class="publish__main--blue-space">
+            <div>
+                <h3 *ngIf="submitStep == 1">Prepare your story readers</h3>
+                <h3 *ngIf="boostField || submitStep == 2">New story submission requires 0.005 PBQ.</h3>
+                <p *ngIf="boostField || submitStep == 2">Are you sure you want to proceed?</p>
             </div>
-          </div>
-        </div>
-      </ng-template>
-    </div>
-    <div class="publish__main--blue-space">
-      <div>
-        <h3 *ngIf="submitStep == 1">Prepare your story readers</h3>
-        <h3 *ngIf="boostField || submitStep == 2">New story submission requires 0.005 PBQ.</h3>
-        <p *ngIf="boostField || submitStep == 2">Are you sure you want to proceed?</p>
-      </div>
 
-      <div class="add-tag">
-        <!--step 1 (choose cover + story view)-->
-        <ng-container *ngIf="submitStep == 1">
-          <span class="add-tag__label">Add Tags</span>
-          <ui-input className="add-tag-input"></ui-input>
+            <div class="add-tag">
+                <!--step 1 (choose cover + story view)-->
+                <ng-container *ngIf="submitStep == 1">
+                    <span class="add-tag__label">Add Tags</span>
+                    <ui-input className="add-tag-input"></ui-input>
 
-          <span class="add-tag__label">Add to Publication</span>
-          <ui-dropdown *ngIf="boostDropdownData" [optionsData]="boostDropdownData" [type]="'withIcon'"></ui-dropdown>
+                    <span class="add-tag__label">Add to Publication</span>
+                    <ui-dropdown *ngIf="boostDropdownData" [optionsData]="boostDropdownData" [type]="'withIcon'"></ui-dropdown>
 
-          <!--for mobile-->
-          <!--FOR ADDING OR CHANGING COVER PIC -->
-          <ng-container *ngIf="(!boostField || boostView == 'preview')">
-            <div class="add__cover add__cover--mobile" *ngIf="!mainCoverImageUrl">
-              <label class="cover__img" for="coverPic1">
+                    <!--for mobile-->
+                    <!--FOR ADDING OR CHANGING COVER PIC -->
+                    <ng-container *ngIf="(!boostField || boostView == 'preview')">
+                        <div class="add__cover add__cover--mobile" *ngIf="!mainCoverImageUrl">
+                            <label class="cover__img" for="coverPic1">
                 <input type="file" accept="image/jpeg,image/png" id="coverPic1">
                 <i class="icon-picture"></i>
                 <span>Add cover</span>
               </label>
-            </div>
-          </ng-container>
-          <!--end-->
-        </ng-container>
+                        </div>
+                    </ng-container>
+                    <!--end-->
+                </ng-container>
 
-        <!--boost step-->
-        <ng-container *ngIf="submitStep == 2">
-          <span class="add-tag__label">Enter your password to submit story</span>
-          <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'" [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
+                <!--boost step-->
+                <ng-container *ngIf="submitStep == 2">
+                    <span class="add-tag__label">Enter your password to submit story</span>
+                    <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'" [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
 
-          <div class="boost-story">
-            <div class="boost-story__field">
-              <span class="boost-story__field__icon">
+                    <div class="boost-story">
+                        <div class="boost-story__field">
+                            <span class="boost-story__field__icon">
                 <img src="assets/images/boost-icon.svg" alt="boost">
               </span>
-              <div class="boost-story__field__text">
-                <h4>Boost Story</h4>
-                <span>Let more people see your story</span>
-              </div>
+                            <div class="boost-story__field__text">
+                                <h4>Boost Story</h4>
+                                <span>Let more people see your story</span>
+                            </div>
+                        </div>
+                        <ui-toggle (onToggle)="onBoostToggle()"></ui-toggle>
+                    </div>
+                </ng-container>
+
             </div>
-            <ui-toggle (onToggle)="onBoostToggle()"></ui-toggle>
-          </div>
-        </ng-container>
-
-      </div>
-      <span class="continue-later" [hidden]="!boostField">Continue Later</span>
+            <span class="continue-later" [hidden]="!boostField">Continue Later</span>
+        </div>
+        <span class="white-overlay" (click)="onShowStepForm(false)"></span>
     </div>
-    <span class="white-overlay" (click)="onShowStepForm(false)"></span>
-  </div>
 </div>
-
-
