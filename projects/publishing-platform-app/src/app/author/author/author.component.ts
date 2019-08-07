@@ -33,6 +33,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
+  showEditIcon = false;
+  showEditIcon1 = false;
+  showEditModeIcons = false;
   private authorId: string;
   shortName;
   loadingAuthor = true;
@@ -191,6 +194,18 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.authorForm.controls['lastName'].setValue(this.lastName);
   }
 
+  onEditTitle(data: string) {
+    if (data == 'h1') {
+      this.showEditIcon = true;
+    } else if (data == 'h3') {
+      this.showEditIcon1 = true;
+    } else {
+      this.showEditIcon = false;
+      this.showEditIcon1 = false;
+    }
+    this.showEditModeIcons = true;
+  }
+
   changeBio(event) {
     this.bio = event.target.textContent;
     this.authorForm.controls['bio'].setValue(this.bio);
@@ -207,6 +222,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
   onEditMode(flag: boolean) {
     this.listType = this.author.listView ? 'single' : 'grid';
     this.editMode = flag;
+    this.showEditModeIcons = false;
+    this.showEditIcon = false;
+    this.showEditIcon1 = false;
   }
 
   getDrafts() {
@@ -335,6 +353,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.accountService.updateAccount(formData)
     .subscribe(data => {
       this.editMode = false;
+      this.showEditModeIcons = false;
       // this.disableSaveBtn = true;
       // const message = this.translationService.instant('success');
       // this.notification.success(message['account_updated']);

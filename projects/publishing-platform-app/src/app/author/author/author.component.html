@@ -42,34 +42,35 @@
     <form class="form" *ngIf="authorForm" novalidate (ngSubmit)="onSubmit()" [formGroup]="authorForm">
       <div class="row profile-metadata">
         <div class="col-2 profile-metadata__avatar profile-metadata__avatar--editable">
-          <div class="profile-metadata__hover">
+          <div class="profile-metadata__hover" [ngClass]="{'hover-avatar' : isCurrentUser && editMode}">
             <ui-avatar [size]="'large'" [avatarData]="{'image': getCurrentImage(), 'fullName': author.fullName}"></ui-avatar>
-            <i class="icon-close" *ngIf="editMode"></i>
-              <label class="profile-metadata__hover__upload" for="profilePic" *ngIf="editMode">
-                <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic">
-                <i class="icon-camera"></i>
-                <small>Upload</small>
-              </label>
+            <i class="icon-close" [ngClass]="{'icon-close--hover' : currentImage && isCurrentUser && editMode}" *ngIf="editMode"></i>
+            <label class="profile-metadata__hover__upload" for="profilePic" *ngIf="editMode">
+              <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic">
+              <i class="icon-camera"></i>
+              <small>Upload</small>
+            </label>
           </div>
         </div>
-        <div class="col-lg-7 col-md-7 col-sm-7 col-10">
+        <div class="col-lg-6 col-md-6 col-sm-7 col-10">
           <h1 class="profile-metadata__fullname">
-            <span [attr.contenteditable]="isCurrentUser" [textContent]="getAuthorName()" (input)="fullNameChange($event)"></span>
-            <i class="icon-edit editable-icon" *ngIf="editMode"></i>
+            <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h1')" [textContent]="getAuthorName()" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon && isCurrentUser}"></span>
+            <i class="icon-edit editable-icon" *ngIf="editMode || showEditIcon && isCurrentUser"></i>
           </h1>
           <h3 class="profile-metadata__bio">
-            <span [attr.contenteditable]="isCurrentUser" (input)="changeBio($event)">{{(!author.bio && isCurrentUser) ? 'Write a short bio' : author.bio}}</span>
-            <i *ngIf="editMode" class="icon-edit editable-icon"></i>
+            <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h3')" (input)="changeBio($event)"
+            [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}">{{(!author.bio && isCurrentUser) ? 'Write a short bio' : author.bio}}</span>
+            <i *ngIf="editMode || showEditIcon1 && isCurrentUser" class="icon-edit editable-icon"></i>
           </h3>
         </div>
         <div class="col-lg-2 col-md-3 col-sm-3 col-12">
           <div class="edit-menu">
             <ng-container *ngIf="isCurrentUser">
-              <ui-button *ngIf="editMode" [type]="'primary'" [size]="'medium'" [text]="'Save'"></ui-button>
-              <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode">
+              <ui-button *ngIf="editMode || showEditModeIcons" [type]="'primary'" [size]="'medium'" [text]="'Save'"></ui-button>
+              <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode && !showEditModeIcons">
                 <i class="icon-settings"></i>
               </div>
-              <div class="button button--icon" *ngIf="editMode" (click)="onEditMode(false)">
+              <div class="button button--icon" *ngIf="editMode || showEditModeIcons" (click)="onEditMode(false)">
                 <i class="icon-close close-edit"></i>
               </div>
             </ng-container>
@@ -89,7 +90,7 @@
           <span class="datum__rating"><img src="assets/images/rating.svg" alt="rating"></span>
         </div>
       </div>
-      <div class="col-lg-7 col-9">
+      <div class="col-lg-6 col-9">
         <div class="datum">
           <span class="datum__value">{{author && author.views ? author.views : 0}}</span>
           <span class="datum__descriptor">Views</span>
@@ -117,12 +118,12 @@
               <p>Choose the way your readers will see your stories.</p>
             </div>
             <div class="grid-style__choose__item">
-              <span>
-                <i (click)="listType = 'grid'" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+              <span (click)="listType = 'grid'">
+                <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                 <small>Grid</small>
               </span>
-              <span>
-                <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+              <span (click)="listType = 'single'">
+                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 <small>List</small>
               </span>
             </div>
@@ -137,8 +138,13 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 offset-lg-2 col-xl-9 stories">
+          <div style="display: flex; justify-content: space-between">
             <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
-            <div  [ngClass]="{'editable-disabled' : editMode && publishedContent.length && (selectedTab == '1' || !isCurrentUser)}"
+            <ng-container *ngIf="selectedTab == '2' && drafts">
+              <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
+            </ng-container>
+          </div>
+          <div  [ngClass]="{'editable-disabled' : editMode && publishedContent.length && (selectedTab == '1' || !isCurrentUser)}"
                   *ngIf="publishedContent.length && (selectedTab == '1' || !isCurrentUser)" class="text-center">
                 <div *ngIf="listType == 'grid'" [class.masonry]="isMasonryLoaded" [useImagesLoaded]="true" (layoutComplete)="onLayoutComplete($event)" ngx-masonry [options]="masonryOptions">
                     <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account', $event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
@@ -162,7 +168,6 @@
             <span>No Stories Yet</span>
           </div>
             <div *ngIf="selectedTab == '2' && drafts">
-                <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
                 <div *ngIf="drafts && drafts.length > 0;else no_content">
                     <ui-draft *ngFor="let oDraft of drafts; let index = index" [type]="'single'" (deleteClick)="deleteDraft(oDraft.id, index)" (editClick)="editDraft(oDraft.id)" (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
                 </div>
