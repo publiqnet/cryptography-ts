@@ -216,7 +216,7 @@
 }
 
 .publication-metadata {
-     ::ng-deep .button.button--icon {
+    ::ng-deep .button.button--icon {
         @include media-md {
             width: 30px;
             height: 30px;
@@ -335,6 +335,22 @@
         }
         @include media-md {
             margin: 0 0 32px;
+        }
+    }
+}
+
+.publication-show-cover {
+    > div {
+        text-align: right;
+        padding: 10px 0 20px;
+
+        ::ng-deep {
+            .button {
+                background-color: pbq-color($blue, 300);
+                border: none;
+                color: $blue;
+                width: 150px;
+            }
         }
     }
 }
