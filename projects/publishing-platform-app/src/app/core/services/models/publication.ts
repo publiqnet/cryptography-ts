@@ -18,9 +18,15 @@ export class Publication {
   cover: string;
   logo: string;
   color: string;
+  subscribers: number;
   memberStatus: number;
   subscribed: boolean;
   following: boolean;
+  inviter: object;
+  // TODO: Add `status` parameter to backend response
+  status: number = 0;
+  storiesCount: number;
+  membersList: Array<object>;
 
   constructor(options?: PublicationOptions) {
     for (const i in options) {

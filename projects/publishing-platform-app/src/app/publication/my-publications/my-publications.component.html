@@ -1,216 +1,26 @@
-<main class="materials">
-
-    <div class="container-fluid">
-
-        <div class="header_create">
-            <h1>{{'content.publications' | translate}}</h1>
-            <button color="primary" mat-raised-button routerLink="/p/new">{{'content.create' | translate}}</button>
+<div class="container">
+    <div class="row publications-heading">
+        <div class="col-lg-6 offset-lg-2 col-9">
+            <h1>Publications</h1>
+            <div class="arrowed-action">
+                <span>Invitations<small>(10)</small></span>
+                <i class="icon-arrow-right"></i>
+            </div>
         </div>
-        <mat-tab-group selectedIndex='{{selectedIndex}}'>
-            <mat-tab label="{{'content.my_pubs' | translate}}">
-                <ng-container *ngIf="publications; else loader">
-                    <div style="padding: 50px 5px;" class="main-container clearfix"
-                         *ngIf="publications.length > 0;else noPublications">
-                        <div class="row">
-                            <div class="cols col-lg-4 col-md-6 col-sm-12"
-                                 *ngFor="let publication of publications; let index = index">
-                                <div class="card-info" routerLink="/p/{{publication.slug}}">
-                                    <div class="cover-space"
-                                         [ngClass]="{'cover-overlay': !publication.color}"
-                                         [ngStyle]="{'background-color': publication.cover ? 'white' : publication.color ? publication.color : 'transparent'}">
-                                        <img class="if-cover" *ngIf="publication.cover" [src]="publication.cover"
-                                             alt="cover">
-                                        <img class="if-no-cover" *ngIf="!publication.cover && !publication.logo"
-                                             src="https://www.publiq.site/media/images/products/626_cover.jpg"
-                                             alt="cover">
-                                    </div>
-                                    <div class="profile-pic"
-                                         [ngStyle]="{'background-color': publication.logo ? 'white': '#3365ff' }">
-                                        <img *ngIf="publication.logo" [src]="publication.logo" alt="img">
-                                        <span *ngIf="!publication.logo"
-                                              class="pub-first-letter">{{publication.title | pubTitle}}</span>
-                                    </div>
-                                    <div class="title-space">
-                                        <h4> {{publication.title}} </h4>
-
-                                        <ng-container *ngIf="publication['articles'] && publication['articles'].length">
-                                            <span class="number">
-                                                <b>{{publication.articles.length || 0}}</b> {{'content.stories' | translate}}
-                                            </span>
-                                        </ng-container>
-                                        <ng-container *ngIf="publication['members'] && publication['members'].length">
-                                            <div class="seen-by">
-
-                                                <div *ngFor="let member of publication.members | slice: 0: 5"
-                                                     [title]="member.firstName + ' ' +  member.lastName"
-                                                     [routerLink]="['/a', member.publicKey]"
-                                                     [ngStyle]="{ 'background-image': member.image ?
-                                                                  'url('+ member.image + ')' :
-                                                                  'url( \' ../../../assets/no-image-article.jpg\')'}  "
-                                                >
-
-                                                </div>
-                                                <div *ngIf="publication.members.length > 5 " class="whole-number">
-                                                    <span>+{{publication.members.length - 5}}</span>
-                                                </div>
-
-                                            </div>
-                                            <span class="number"><b>{{publication.members.length || 0}}</b> {{'content.members' | translate}}</span>
-                                        </ng-container>
-
-                                    </div>
-                                    <div class="edit">
-                                        <a (click)="deletePublication(publication.slug, index, $event)"
-                                           class="delete-item">
-                                            <img class="icon-delete" src="../../../assets/delete.svg"
-                                                 alt="delete publication">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-            </mat-tab>
-            <mat-tab label="{{'content.membership' | translate}}">
-                <ng-container *ngIf="membership; else loader">
-                    <div *ngIf="membership?.length > 0; else noMembership" class="main-container clearfix"
-                         style="padding: 50px 0px;">
-
-                        <div class="cols col-md-12" *ngFor="let membership of membership; let index = index">
-                            <div class="card-info-row membership">
-                                <div [ngStyle]="{'background-color': membership.logo? 'transparent': '#3365ff' }"
-                                     class="profile-pic">
-                                    <img *ngIf="membership.logo" [src]="membership.logo" alt="img">
-                                    <span *ngIf="!membership.logo" class="pub-first-letter">
-                                        {{membership.title | pubTitle}}
-                                    </span>
-                                </div>
-                                <div class="title-space">
-                                    <div class="info ">
-                                        <h4 routerLink="/p/{{membership.slug}}">
-                                            {{membership.title}}
-                                        </h4>
-                                        <span class="number"><b>{{membership?.articles?.length || 0}}</b> {{'content.stories' | translate}}</span>
-                                    </div>
-                                    <div class="leave-membership leave-item"
-                                         (click)="deleteMembership(membership.slug, index)">
-                                        {{'content.leave_pub' | translate}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--</mat-card>-->
-                    </div>
-                </ng-container>
-            </mat-tab>
-            <mat-tab label="{{'content.invitations' | translate}}">
-                <span class="reminder"></span>
-                <ng-container *ngIf="invitations; else loader">
-                    <div style="padding: 50px 5px;" class="main-container clearfix"
-                         *ngIf="invitations?.length > 0;else noInvitations">
-
-                        <div class="cols col-md-12" *ngFor="let invitation of invitations; let index = index">
-                            <div class="card-info-row invitation-row">
-                                <div class="profile-pic"
-                                     [ngStyle]="{'background-color': invitation.logo? 'transparent': '#3365ff' }">
-                                    <img *ngIf="invitation.logo" [src]="invitation.logo" alt="img">
-                                    <span *ngIf="!invitation.logo" class="pub-first-letter">
-                                        {{invitation.title | pubTitle}}
-                                    </span>
-                                </div>
-                                <div class="title-space">
-                                    <div class="info">
-                                        <h4 routerLink="/p/{{invitation.slug}}">{{invitation.title}}</h4>
-                                        <span class="number"><b>{{invitation?.articles?.length || 0}}</b> {{'content.stories' | translate}}</span>
-                                    </div>
-                                    <div class="choose">
-                                        <span *ngIf="invitation.inviter" [routerLink]="['/a', invitation.inviter.publicKey]">
-                                            <b>{{invitation.inviter.fullName ? invitation.inviter.fullName : invitation.inviter.publicKey}}</b>
-                                            {{'publication.invite' | translate}}
-                                        </span>
-                                        <span class="acc-span">
-                                            <button mat-raised-button color="primary" (click)="acceptInvitationBecomeMember(invitation.slug, true)">
-                                                {{'content.accept' | translate}}
-                                            </button>
-                                            <a (click)="rejectInvitationBecomeMember(invitation.slug,false)">
-                                                <img src="../../../assets/delete_pub.svg" alt="img">
-                                            </a>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-            </mat-tab>
-            <mat-tab label="{{'content.requests' | translate}}">
-                <ng-container *ngIf="requests; else loader">
-                    <div *ngIf="requests?.length > 0; else noRequests">
-                        <ng-container *ngFor='let request of requests'>
-                            <mat-card *ngIf="request.memberStatus === MemberStatus.requested_to_be_a_contributor">
-                                <div class="card-info-row request-row">
-                                    <div class="d-flex align-items-center h4-title" routerLink="/p/{{request.slug}}">
-                                        <div class="profile-pic" [ngStyle]="{ 'background-image': request.logo ?
-                                                'url('+  request.logo + ')' :
-                                                'url( \' ../../../assets/no-image-article.jpg\')'}  ">
-                                        </div>
-                                        <div class="d-flex flex-column click">
-                                            <span *ngIf="request.title || request.description">
-                                                {{request.title}} {{request.description}}
-                                            </span>
-                                            <span *ngIf="!request.title && !request.description">
-                                                {{request.slug}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <button mat-raised-button color="primary" (click)="cancelRequestBecomeMember(request)">
-                                            {{'core.cancel' | translate}}
-                                        </button>
-                                    </div>
-                                </div>
-                            </mat-card>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </mat-tab>
-        </mat-tab-group>
-    </div>
-</main>
-
-<ng-template #noPublications>
-    <div class="empty">
-        <img src="/assets//no-materials.svg" alt="">
-        <p>{{'content.no_publications' | translate}}</p>
-    </div>
-</ng-template>
-
-<ng-template #noInvitations>
-    <div class="empty">
-        <img src="/assets//no-materials.svg" alt="">
-        <p>{{'content.no_invitations' | translate}}</p>
-    </div>
-</ng-template>
-
-<ng-template #noRequests>
-    <div class="empty">
-        <img src="/assets//no-materials.svg" alt="">
-        <p>{{'content.no_requests' | translate}}</p>
-    </div>
-</ng-template>
-
-<ng-template #noMembership>
-    <div class="empty">
-        <img src="/assets//no-materials.svg" alt="">
-        <p>{{'content.no_membership' | translate}}</p>
-    </div>
-</ng-template>
-<ng-template #loader>
-    <div class="empty">
-        <div style="display: inline-block">
-            <mat-spinner></mat-spinner>
+        <div class="col-lg-2 col-3">
+            <ui-button text="Settings"></ui-button>
         </div>
     </div>
-</ng-template>
+    <div class="row publications-staff" *ngIf="publications && publications.length">
+        <div class="col-lg-8 offset-lg-2">
+            <h2 class="section-heading">Staff</h2>
+            <ui-publication-single className="staff-publication" type="staff" [publicationData]="publication" *ngFor="let publication of publications;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
+        </div>
+    </div>
+    <div class="row publications-following" *ngIf="membership && membership.length">
+        <div class="col-lg-8 offset-lg-2">
+            <h2 class="section-heading">Following</h2>
+            <ui-publication-single className="staff-publication" type="follow" [publicationData]="publication" *ngFor="let publication of membership;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
+        </div>
+    </div>
+</div>
