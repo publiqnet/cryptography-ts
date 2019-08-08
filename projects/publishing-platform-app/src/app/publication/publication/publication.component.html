@@ -29,6 +29,11 @@
             </div>
         </div>
     </div>
+    <div class="row publication-show-cover" *ngIf="isMyPublication && publication.hideCover">
+        <div class="col-lg-8 offset-lg-2">
+            <ui-button text="Show Cover" iconClassName="preview"></ui-button>
+        </div>
+    </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
         <div class="col-lg-2 col-md-2 publication-metadata__avatar" [class.publication-metadata__avatar--editable]="editMode">
             <input *ngIf="editMode" type="file" (change)="uploadLogo($event)">
