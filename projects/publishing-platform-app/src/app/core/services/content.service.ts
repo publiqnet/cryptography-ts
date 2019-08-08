@@ -606,7 +606,7 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
 
-  publish(uri, contentId, publicationSlug): Observable<any> {
+  publish(uri: string, contentId, publicationSlug: string): Observable<any> {
     const url = environment.backend + '/api/content/publish';
     return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId, publicationSlug});
   }

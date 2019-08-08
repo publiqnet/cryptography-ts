@@ -9,6 +9,8 @@ import { PublicationService } from '../../core/services/publication.service';
 import { Title } from '@angular/platform-browser';
 import { UtilService } from '../../core/services/util.service';
 import { Content } from '../../core/services/models/content';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { ValidationService } from '../../core/validator/validator.service';
 
 
 @Component({
@@ -34,7 +36,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       value: 'hide-cover',
     },
   ];
-
+  public publicationForm: FormGroup;
   public isMyPublication = false;
   public editMode = false;
   public imageLoaded = false;
@@ -69,7 +71,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private publicationService: PublicationService,
-    public utilService: UtilService
+    public utilService: UtilService,
+    private formBuilder: FormBuilder
   ) {
     this.b();
   }
@@ -124,19 +127,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  setEditMode(mode = true, title, description) {
-    this.activeTab = 'stories';
-    this.editMode = mode;
-    this.textChanging = false;
-    if (!mode) {
-      title.innerHTML = this.publication.title;
-      description.innerHTML = this.publication.description;
-      this.logoData = {
-        image: this.publication.logo
-      };
-    }
-  }
-
   ngOnInit() {
     this.route.params
       .pipe(
@@ -154,6 +144,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
+        this.buildForm();
         console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
         this.getPublicationStories();
@@ -163,6 +154,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+  }
+
+  setEditMode(mode = true, title, description) {
+    this.activeTab = 'stories';
+    this.editMode = mode;
+    this.textChanging = false;
+    if (!mode) {
+      title.innerHTML = this.publication.title;
+      description.innerHTML = this.publication.description;
+      this.publicationForm.controls['title'].setValue(this.publication.title);
+      this.publicationForm.controls['description'].setValue(this.publication.description);
+      this.logoData = {
+        image: this.publication.logo
+      };
+    }
   }
 
   uploadCover(event, container) {
@@ -207,16 +213,16 @@ export class PublicationComponent implements OnInit, OnDestroy {
       });
   }
 
-  saveEdition(title, description) {
-    this.publication.title = title;
-    this.publication.description = description;
-    this.edit();
-  }
+  // saveEdition(title, description) {
+  //   this.publication.title = title;
+  //   this.publication.description = description;
+  //   this.edit();
+  // }
 
   edit() {
     const formData = new FormData();
-    formData.append('title', this.publication.title);
-    formData.append('description', this.publication.description);
+    formData.append('title', this.publicationForm.value.title);
+    formData.append('description', this.publicationForm.value.description);
     if (this.coverFile) {
       formData.append('cover', this.coverFile);
     }
@@ -234,11 +240,18 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTextChange($event) {
+  onTitleChange(e) {
     this.textChanging = true;
+    this.publicationForm.controls['title'].setValue(e.target.textContent);
+  }
+
+  onDescriptionChange(e) {
+    this.textChanging = true;
+    this.publicationForm.controls['description'].setValue(e.target.textContent);
   }
 
   dropdownSelect($event) {
+    console.log($event);
     if ($event == 'delete') {
       this.deleteCover = '1';
       this.coverFile = null;
@@ -250,6 +263,18 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.deleteLogo = '1';
     this.logoFile = null;
     this.logoData = {};
+  }
+
+  private buildForm() {
+    // this.firstName = this.author.firstName;
+    // this.lastName = this.author.lastName;
+    // this.bio = this.author.bio;
+    this.publicationForm = this.formBuilder.group({
+      title: new FormControl(this.publication.title, []),
+      description: new FormControl(this.publication.description, []),
+    },
+      { validator: ValidationService.noSpaceValidator }
+    );
   }
 
   ngOnDestroy() {

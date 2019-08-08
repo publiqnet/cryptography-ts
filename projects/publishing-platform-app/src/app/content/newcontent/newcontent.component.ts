@@ -9,6 +9,8 @@ import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
 import { DraftService } from '../../core/services/draft.service';
+import { PublicationService } from '../../core/services/publication.service';
+import { IPublications, Publications } from '../../core/services/models/publications';
 
 declare const $: any;
 
@@ -33,10 +35,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
   contentUris = {};
   title: string;
   content: string;
-  publication: string;
   titleOptions: object;
   contentOptions: object;
-  public boostDropdownData = [];
+  public publicationsList = [];
   public currentContentData = {};
   public boostTab = [];
   public mainCoverImageUri: string;
@@ -61,7 +62,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public translateService: TranslateService,
     private contentService: ContentService,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private publicationService: PublicationService
   ) {
   }
 
@@ -93,7 +95,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       password: new FormControl('', [
         ValidationService.passwordValidator
       ]),
-      publication: new FormControl(this.publication || 'none')
+      publication: new FormControl( 'none')
     });
   }
 
@@ -122,18 +124,32 @@ export class NewContentComponent implements OnInit, OnDestroy {
       {'value': 'Boost', 'slug': 'boost', 'status': true},
     ];
 
-    this.boostDropdownData = [
-      {
-        'value': 'Test value',
-        'text': 'Test text',
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'Test',
-          'last_name': 'News',
-          'fullName': 'Test News'
+    this.publicationService.getMyPublications()
+      .pipe(
+        map((publicationsData: Publications) => {
+          const publicationsList = [ ...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          return publicationsList;
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(publicationsList => {
+        if (publicationsList.length) {
+          publicationsList.forEach(publication => {
+            const text = publication.title ? publication.title : publication.description;
+            const nextPublication = {
+              'value': publication.slug,
+              'text': text,
+              'metaData': {
+                'image': publication.logo ? publication.logo : publication.cover,
+                'first_name': text,
+                'last_name': '',
+                'fullName': text
+              }
+            };
+            this.publicationsList.push(nextPublication);
+          });
         }
-      }
-    ];
+      });
 
     this.titleOptions = {
       key: environment.froala_editor_key,
@@ -454,6 +470,10 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.contentForm.controls['password'].setValue(event.value);
   }
 
+  publicationChange(event) {
+    this.contentForm.controls['publication'].setValue(event.value);
+  }
+
   submit() {
     if (!this.contentForm.value.content) {
       this.submitError = true;
@@ -539,13 +559,14 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   private submitContent(contentData, password) {
     this.uploadedContentUri = '';
+    const publicationSlug = this.contentForm.value.publication;
     return this.contentService.unitUpload(contentData)
       .pipe(
         switchMap((data: any) => {
           this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, '8736a1fb571f2748ef3a2798177debff'))
+        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
       );
   }
 

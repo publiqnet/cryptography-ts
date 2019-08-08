@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row publication-cover publication-cover--editable" [ngStyle]="{'background-image': publication && publication.cover ? 'url('+publication.cover+')' : 'none'}" #coverContainer>
+    <div class="row publication-cover publication-cover--editable" *ngIf="publication && !publication.hideCover" [ngStyle]="{'background-image': publication && publication.cover ? 'url('+publication.cover+')' : 'none'}" #coverContainer>
         <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
         <div class="col-lg-8 offset-lg-2">
             <div class="publication-cover__guide" *ngIf="publication && !publication.cover && isMyPublication">
@@ -29,21 +29,21 @@
             </div>
         </div>
     </div>
-    <div class="row publication-metadata">
+    <div class="row publication-metadata" *ngIf="publicationForm">
         <div class="col-lg-2 col-md-2 publication-metadata__avatar" [class.publication-metadata__avatar--editable]="editMode">
             <input *ngIf="editMode" type="file" (change)="uploadLogo($event)">
             <ui-avatar size="large" [isSquaric]="true" [avatarData]="logoData"></ui-avatar>
             <i class="icon-close" *ngIf="editMode && publication?.logo" (click)="removeLogo()"></i>
         </div>
         <div class="col-lg-6 col-md-7 col">
-            <h1 class="publication-metadata__title"><span [attr.contenteditable]="isMyPublication" (input)="onTextChange($event)" #publicationTitle>{{publication?.title}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
-            <h3 class="publication-metadata__description"><span [attr.contenteditable]="isMyPublication" (input)="onTextChange($event)" #publicationDescription>{{publication?.description}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h3>
+            <h1 class="publication-metadata__title"><span [attr.contenteditable]="isMyPublication" (input)="onTitleChange($event)" #publicationTitle>{{publication?.title}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
+            <h3 class="publication-metadata__description"><span [attr.contenteditable]="isMyPublication" (input)="onDescriptionChange($event)" #publicationDescription>{{publication?.description}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h3>
         </div>
         <div class="col-lg-2 col-md-3 col-12">
             <ng-container *ngIf="isMyPublication">
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
-                    <ui-button type="primary" text="Save" className="save-button" (click)="saveEdition(publicationTitle.innerHTML , publicationDescription.innerHTML)"></ui-button>
+                    <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
                 </ng-container>
             </ng-container>

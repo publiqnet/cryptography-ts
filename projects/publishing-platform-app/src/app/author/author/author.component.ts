@@ -115,6 +115,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
           this.listType = this.author.listView ? 'single' : 'grid';
+          this.setAuthorName();
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -285,7 +286,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         );
   }
 
-  getAuthorName() {
+  setAuthorName() {
     this.fullName = (this.author.fullName == '') ? ((this.isCurrentUser) ? 'Add your name' : '') : this.author.fullName;
     return this.fullName;
   }

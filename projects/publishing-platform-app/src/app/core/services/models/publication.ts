@@ -15,6 +15,8 @@ export interface PublicationOptions {
   contributors: Author[];
   requests: Author[];
   invitations: Author[];
+  hideCover: any;
+  listView: string;
 }
 
 export class Publication {
@@ -33,6 +35,8 @@ export class Publication {
   contributors: Author[];
   requests: Author[];
   invitations: Author[];
+  hideCover: any;
+  listView: string;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {

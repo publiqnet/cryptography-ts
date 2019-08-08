@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-lg-7 col-md-7 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
-                        <span [attr.contenteditable]="isCurrentUser" [textContent]="getAuthorName()" (input)="fullNameChange($event)"></span>
+                        <span [attr.contenteditable]="isCurrentUser" [textContent]="fullName" (input)="fullNameChange($event)"></span>
                         <i class="icon-edit editable-icon" *ngIf="editMode"></i>
                     </h1>
                     <h3 class="profile-metadata__bio">
