@@ -231,6 +231,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
     formData.append('deleteLogo', this.deleteLogo);
     formData.append('deleteCover', this.deleteCover);
+    formData.append('hideCover', this.publication.hideCover);
+    formData.append('listView', this.publication.listView);
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
         this.editMode = false;
@@ -255,6 +257,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
     if ($event == 'delete') {
       this.deleteCover = '1';
       this.coverFile = null;
+      this.edit();
+    }
+    if ($event == 'hide-cover') {
+      this.publication.hideCover = true;
       this.edit();
     }
   }
