@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -26,7 +26,7 @@ export class PublicationService {
 
   private readonly url = environment.backend + '/api/publication';
 
-  constructor(private httpHelperService: HttpHelperService, private httpObserverService: HttpObserverService) {}
+  constructor(private httpHelperService: HttpHelperService, private httpObserverService: HttpObserverService) { }
 
   public set RefreshObserver(name: any) {
     if (this.observers.hasOwnProperty(name)) {
@@ -41,7 +41,11 @@ export class PublicationService {
 
   editPublication = (data: object | FormData, slug: string): Observable<any> => {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug, data)
-      .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
+      .pipe(
+        tap(() => this.RefreshObserver = 'getMyPublications'),
+        filter(data => data != null),
+        map(data => new Publication(data))
+      );
   }
 
   getMyPublications: () => Observable<any> = () => {
@@ -69,21 +73,26 @@ export class PublicationService {
   }
 
   addMember = (body: any, slug: string): Observable<any> => {
-    return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/invite-a-member', {invitations: body});
+    return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/invite-a-member', { invitations: body });
   }
 
   inviteBecomeMember = (body: object[], slug: string): Observable<any> => {
-    return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation', {invitations: body}, [], true);
+    return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/invitation', { invitations: body }, [], true);
   }
 
   getMembers: (slug: string) => Observable<any> = (slug: string): Observable<any> => {
     return this.httpHelperService.call(HttpMethodTypes.get, this.url + `/${slug}/` + 'members');
   }
 
-  getPublicationArticles = (slug: string): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + '/articles');
+  getPublicationArticles = (slug: string): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + 'articles');
+
+  getPublicationStories(slug: string, count = 20,  boostedCount = 0 , fromUri = null) {
+    // /api/publication/{slug}/contents/{count}/{boostedCount}/{fromUri}
+    return this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/contents/${count}/${boostedCount}/${fromUri}`);
+  }
 
   removeArticle: (dsId: string, slug: string) => Observable<any> = (dsId: string, slug: string): Observable<any> => {
-    return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', {dsId: dsId});
+    return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', { dsId: dsId });
   }
 
   deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug);
@@ -119,11 +128,11 @@ export class PublicationService {
   }
 
   addPublicationToStory(dsId: string, slug: string): Observable<any> {
-    const body = {dsId: dsId, publication_slug: slug == 'none' ? '' : slug};
+    const body = { dsId: dsId, publication_slug: slug == 'none' ? '' : slug };
     return this.httpHelperService.call(HttpMethodTypes.post, environment.backend + '/api/v1/content/change-article-publication', body);
   }
 
-  cancelInvitation = (body: any): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`, );
+  cancelInvitation = (body: any): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`);
 
   getPublications(fromSlug = null, count: number = 10): Observable<any> {
     const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
@@ -137,7 +146,7 @@ export class PublicationService {
       );
   }
 
-  getArticlePublication = (dsArray: any[]): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.post, this.url + 's-related', {articles: dsArray});
+  getArticlePublication = (dsArray: any[]): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.post, this.url + 's-related', { articles: dsArray });
 
   loadStoriesPublicationByDsId(dsArray: string[], forPage: PageOptions = PageOptions.default): void {
     // const url = environment.backend + '/api/v1/content/publications';

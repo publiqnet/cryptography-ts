@@ -1,350 +1,325 @@
-<form class="form" novalidate (ngSubmit)="openDialogSubmission()" [formGroup]="contentForm"
-      *ngIf="!isContentUpLoading && contentForm">
-  <div class="create-content">
-    <div class="post-cover no-gutters row" [ngClass]="{'has-photo': (mainCoverImageChecker && coverImages.length)}">
-      <swiper *ngIf="isBrowser" [hidden]="!mainCoverImageChecker || !coverImages.length" [config]="coverSwiperConfig"
-              class="thumbnail-swiper" #coverGallery>
-        <div class="swiper-wrapper">
-          <div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of coverImages"
-               [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
-        </div>
-      </swiper>
-      <div class="post-cover-wrapper">
-        <div class="author-avatar hidden-xs-down">
-          {{checkImageHashExist() | json}}
-          <div class="avatar mt-5"
-               [ngStyle]="{'background-image' : (checkImageHashExist() && account && account.image) ? 'url(' + account.image + ')' : 'url(/assets/no-image-article.jpg)'}">
-            <span *ngIf="!checkImageHashExist()" class="vh-centered">{{account && account.shortName ? account.shortName
+<form class="form" novalidate (ngSubmit)="openDialogSubmission()" [formGroup]="contentForm" *ngIf="!isContentUpLoading && contentForm">
+    <div class="create-content">
+        <div class="post-cover no-gutters row" [ngClass]="{'has-photo': (mainCoverImageChecker && coverImages.length)}">
+            <swiper *ngIf="isBrowser" [hidden]="!mainCoverImageChecker || !coverImages.length" [config]="coverSwiperConfig" class="thumbnail-swiper" #coverGallery>
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of coverImages" [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
+                </div>
+            </swiper>
+            <div class="post-cover-wrapper">
+                <div class="author-avatar hidden-xs-down">
+                    {{checkImageHashExist() | json}}
+                    <div class="avatar mt-5" [ngStyle]="{'background-image' : (checkImageHashExist() && account && account.image) ? 'url(' + account.image + ')' : 'url(/assets/no-image-article.jpg)'}">
+                        <span *ngIf="!checkImageHashExist()" class="vh-centered">{{account && account.shortName ? account.shortName
                 : ''}}</span>
-          </div>
-        </div>
-        <div class="post-metadata px-3 px-sm-0">
-          <div class="account-name mt-5 row">
-            <div class="col-12 col-md-8">
-              <h4>{{(account && account.firstName) ? account.firstName : ''}} {{(account && account.lastName) ? account.lastName : ''}}
-                <span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">
+                    </div>
+                </div>
+                <div class="post-metadata px-3 px-sm-0">
+                    <div class="account-name mt-5 row">
+                        <div class="col-12 col-md-8">
+                            <h4>{{(account && account.firstName) ? account.firstName : ''}} {{(account && account.lastName) ? account.lastName : ''}}
+                                <span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">
               {{'shared.in' | translate}}
                   <a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">
                 {{currentPublicationName()}}
               </a>
               </span>
-              </h4>
-            </div>
+                            </h4>
+                        </div>
 
-            <div
-              class="post-image-actions col-12 col-md-4 flex-row flex-sm-column justify-content-between align-items-sm-end">
-              <!--<div class="hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}</div>-->
-              <div>
-                <i class="icon-angle-left cover-photo-prev pointer"
-                   [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
-                <i class="icon-angle-right cover-photo-next pointer"
-                   [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
-                <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.cover" step="3"
-                         [positionConfig]="{'nux-bottom': true, 'nux-right':true, right: true, 'nux-cover-mob': true}"></app-nux>
-                <span attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}"
-                  class="camera-span">
+                        <div class="post-image-actions col-12 col-md-4 flex-row flex-sm-column justify-content-between align-items-sm-end">
+                            <!--<div class="hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}</div>-->
+                            <div>
+                                <i class="icon-angle-left cover-photo-prev pointer" [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
+                                <i class="icon-angle-right cover-photo-next pointer" [hidden]="!mainCoverImageChecker || coverImages.length <= 1"></i>
+                                <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.cover" step="3" [positionConfig]="{'nux-bottom': true, 'nux-right':true, right: true, 'nux-cover-mob': true}"></app-nux>
+                                <span attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 1600x600px {{'content.recommended' | translate}}" class="camera-span">
             <i class="icon-camera pointer" [ngClass]="{'tag-photo': (mainCoverImageChecker && coverImages.length)}"
                (click)="clickUploadCover()"></i>
             </span>
-                <!--<mat-icon *ngIf="isValidMainCoverImage()" class="edit-cover" (click)="editCoverPhoto()">edit</mat-icon>-->
-                <input id="mainCoverImage" type="file" style="display:none;" (change)="mainImageUpload($event)"
-                       #mainCoverImage>
-                <!--<mat-slide-toggle (change)="onCoverCkeckerChange($event)" [checked]="mainCoverImageChecker"></mat-slide-toggle>-->
-              </div>
+                                <!--<mat-icon *ngIf="isValidMainCoverImage()" class="edit-cover" (click)="editCoverPhoto()">edit</mat-icon>-->
+                                <input id="mainCoverImage" type="file" style="display:none;" (change)="mainImageUpload($event)" #mainCoverImage>
+                                <!--<mat-slide-toggle (change)="onCoverCkeckerChange($event)" [checked]="mainCoverImageChecker"></mat-slide-toggle>-->
+                            </div>
+                        </div>
+                    </div>
+                    <mat-form-field class="full-width post-title mt-4" [ngClass]="{'hasError': (showErrors && contentForm.controls['title']?.invalid)}">
+                        <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.title" step="0"></app-nux>
+
+                        <textarea matInput matTextareaAutosize #title (keydown.enter)="$event.preventDefault()" formControlName="title" placeholder="{{'content.title' | translate}}" [maxlength]="titleMaxLenght" style="color: currentColor; font: inherit;" (input)="characterCounter()"></textarea>
+                        <mat-hint *ngIf="currentTitleLenght > 0" align="start" class="post-title-hint">
+                            <span [ngClass]="{'exceeded':currentTitleLenght > titleMaxLenght}">{{currentTitleLenght}}</span> / {{titleMaxLenght}}
+                        </mat-hint>
+
+                    </mat-form-field>
+
+                    <!--<div class="col-12 date-n-views mt-4 mb-3">-->
+                    <!--<span class="mr-4">-->
+                    <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
+                    <!--<span class="uppe">-->
+                    <!--{{now | date:'dd '}}-->
+                    <!--{{('months.' + (now | date:'MMM') | translate)}}-->
+                    <!--{{(now) | date: ', y'}}-->
+                    <!--</span>-->
+                    <!--</span>-->
+                    <!--<span><i class="icon-views"></i>0</span>-->
+                    <!--</div>-->
+                    <!--<i [ngClass]="{'tag-photo': (mainCoverImageChecker && coverImages.length)}" class="icon-ic_tag tag-icon"></i>-->
+                    <!--<mat-form-field class="demo-chip-list post-tags col-10 col-md-8 no-gutters"-->
+                    <!--[ngClass]="{'hasError': (showErrors && contentForm.controls['tags']?.invalid)}">-->
+                    <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.tags" step="4"></app-nux>-->
+                    <!--<mat-chip-list #chipList>-->
+                    <!--<mat-chip *ngFor="let tagInput of tags" [selectable]="selectable" [removable]="removable"-->
+                    <!--(removed)="remove(tagInput)">-->
+                    <!--{{tagInput}}-->
+                    <!--<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>-->
+                    <!--</mat-chip>-->
+                    <!--&lt;!&ndash;<input matInput class="no-float" formControlName="tags" #tag_list&ndash;&gt;-->
+                    <!--&lt;!&ndash;placeholder="{{'content.add_tags' | translate}}"&ndash;&gt;-->
+                    <!--&lt;!&ndash;required [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"&ndash;&gt;-->
+                    <!--&lt;!&ndash;[matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" value="">&ndash;&gt;-->
+                    <!--</mat-chip-list>-->
+                    <!--</mat-form-field>-->
+                </div>
             </div>
-          </div>
-          <mat-form-field class="full-width post-title mt-4"
-                          [ngClass]="{'hasError': (showErrors && contentForm.controls['title']?.invalid)}">
-            <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.title" step="0"></app-nux>
-
-            <textarea matInput matTextareaAutosize #title (keydown.enter)="$event.preventDefault()"
-                      formControlName="title"
-                      placeholder="{{'content.title' | translate}}" [maxlength]="titleMaxLenght"
-                      style="color: currentColor; font: inherit;"
-                      (input)="characterCounter()"></textarea>
-            <mat-hint *ngIf="currentTitleLenght > 0" align="start" class="post-title-hint">
-              <span [ngClass]="{'exceeded':currentTitleLenght > titleMaxLenght}">{{currentTitleLenght}}</span>
-              / {{titleMaxLenght}}
-            </mat-hint>
-
-          </mat-form-field>
-
-          <!--<div class="col-12 date-n-views mt-4 mb-3">-->
-          <!--<span class="mr-4">-->
-          <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
-          <!--<span class="uppe">-->
-          <!--{{now | date:'dd '}}-->
-          <!--{{('months.' + (now | date:'MMM') | translate)}}-->
-          <!--{{(now) | date: ', y'}}-->
-          <!--</span>-->
-          <!--</span>-->
-          <!--<span><i class="icon-views"></i>0</span>-->
-          <!--</div>-->
-          <!--<i [ngClass]="{'tag-photo': (mainCoverImageChecker && coverImages.length)}" class="icon-ic_tag tag-icon"></i>-->
-          <!--<mat-form-field class="demo-chip-list post-tags col-10 col-md-8 no-gutters"-->
-          <!--[ngClass]="{'hasError': (showErrors && contentForm.controls['tags']?.invalid)}">-->
-          <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.tags" step="4"></app-nux>-->
-          <!--<mat-chip-list #chipList>-->
-          <!--<mat-chip *ngFor="let tagInput of tags" [selectable]="selectable" [removable]="removable"-->
-          <!--(removed)="remove(tagInput)">-->
-          <!--{{tagInput}}-->
-          <!--<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>-->
-          <!--</mat-chip>-->
-          <!--&lt;!&ndash;<input matInput class="no-float" formControlName="tags" #tag_list&ndash;&gt;-->
-          <!--&lt;!&ndash;placeholder="{{'content.add_tags' | translate}}"&ndash;&gt;-->
-          <!--&lt;!&ndash;required [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"&ndash;&gt;-->
-          <!--&lt;!&ndash;[matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" value="">&ndash;&gt;-->
-          <!--</mat-chip-list>-->
-          <!--</mat-form-field>-->
         </div>
-      </div>
-    </div>
-    <div class="post-main-content mt-4 row">
-      <div class="col-12 col-lg-8 mt-3 post-field">
-        <!--<mat-form-field class="full-width post-headline">-->
-        <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.headline" step="1"></app-nux>-->
-        <!--<textarea matInput matTextareaAutosize [maxlength]="headlineMaxLenght" formControlName="headline"-->
-        <!--placeholder="{{'content.headline' | translate}}"-->
-        <!--#headline (input)="characterCounter()"></textarea>-->
-        <!--<mat-hint *ngIf="currentHeadlineLenght > 0" align="end" class="post-headline-hint">-->
-        <!--<span [ngClass]="{'exceeded':currentHeadlineLenght > headlineMaxLenght}">{{ currentHeadlineLenght }}</span>-->
-        <!--/ {{ headlineMaxLenght }}-->
-        <!--</mat-hint>-->
-        <!--</mat-form-field>-->
-        <div style="position: relative;" #content
-             [ngClass]="{'editor-froala': true, 'hasError': (showErrors && contentForm.controls['content']?.invalid)}"
-             id="editor-froala">
-          <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.content" step="2"></app-nux>
-          <textarea *ngIf="isBrowser" [froalaEditor]="contentOptions" rows="10" formControlName="content" required
-                    (froalaInit)="initFroala($event)"></textarea>
-        </div>
+        <div class="post-main-content mt-4 row">
+            <div class="col-12 col-lg-8 mt-3 post-field">
+                <!--<mat-form-field class="full-width post-headline">-->
+                <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.headline" step="1"></app-nux>-->
+                <!--<textarea matInput matTextareaAutosize [maxlength]="headlineMaxLenght" formControlName="headline"-->
+                <!--placeholder="{{'content.headline' | translate}}"-->
+                <!--#headline (input)="characterCounter()"></textarea>-->
+                <!--<mat-hint *ngIf="currentHeadlineLenght > 0" align="end" class="post-headline-hint">-->
+                <!--<span [ngClass]="{'exceeded':currentHeadlineLenght > headlineMaxLenght}">{{ currentHeadlineLenght }}</span>-->
+                <!--/ {{ headlineMaxLenght }}-->
+                <!--</mat-hint>-->
+                <!--</mat-form-field>-->
+                <div style="position: relative;" #content [ngClass]="{'editor-froala': true, 'hasError': (showErrors && contentForm.controls['content']?.invalid)}" id="editor-froala">
+                    <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.content" step="2"></app-nux>
+                    <textarea *ngIf="isBrowser" [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
+                </div>
 
-        <mat-hint *ngIf="isBrowser && currentEditorLenght > 0" align="end" class="post-editor-hint">
-          <span
-            [ngClass]="{'exceeded': currentEditorLenght > contentOptions.charCounterMax}">{{currentEditorLenght}}</span>
-          / {{contentOptions.charCounterMax}}
-        </mat-hint>
+                <mat-hint *ngIf="isBrowser && currentEditorLenght > 0" align="end" class="post-editor-hint">
+                    <span [ngClass]="{'exceeded': currentEditorLenght > contentOptions.charCounterMax}">{{currentEditorLenght}}</span> / {{contentOptions.charCounterMax}}
+                </mat-hint>
 
-      </div>
+            </div>
 
-      <!--<div class="col-sm-8 col-xs-12 col-lg-4 flex-first flex-lg-unordered">-->
-      <!--<ng-container>-->
+            <!--<div class="col-sm-8 col-xs-12 col-lg-4 flex-first flex-lg-unordered">-->
+            <!--<ng-container>-->
 
-      <!--<div class="masonry-brick mb-5 md-lg-0">-->
-      <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.thumbnail" step="5"-->
-      <!--[positionConfig]="{'nux-top': true, 'nux-right': true, 'right': true, 'nux-pub-view': true}"></app-nux>-->
-      <!--<div class=list-item>-->
-      <!--<div class="post-sidebar-actions mb-3">-->
-      <!--<div>-->
-      <!--{{'content.story_preview' | translate}}-->
-      <!--</div>-->
-      <!--<div>-->
-      <!--<i class="icon-angle-left list-photo-prev pointer"-->
-      <!--[hidden]="!listImageChecker || listImages.length<=1"></i>-->
-      <!--<i class="icon-angle-right list-photo-next pointer"-->
-      <!--[hidden]="!listImageChecker || listImages.length<=1"></i>-->
+            <!--<div class="masonry-brick mb-5 md-lg-0">-->
+            <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.thumbnail" step="5"-->
+            <!--[positionConfig]="{'nux-top': true, 'nux-right': true, 'right': true, 'nux-pub-view': true}"></app-nux>-->
+            <!--<div class=list-item>-->
+            <!--<div class="post-sidebar-actions mb-3">-->
+            <!--<div>-->
+            <!--{{'content.story_preview' | translate}}-->
+            <!--</div>-->
+            <!--<div>-->
+            <!--<i class="icon-angle-left list-photo-prev pointer"-->
+            <!--[hidden]="!listImageChecker || listImages.length<=1"></i>-->
+            <!--<i class="icon-angle-right list-photo-next pointer"-->
+            <!--[hidden]="!listImageChecker || listImages.length<=1"></i>-->
 
-      <!--<span-->
-      <!--attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 600x600px {{'content.recommended' | translate}}"-->
-      <!--class="camera-span">-->
-      <!--<i class="icon-camera pointer" (click)="clickUploadListImage()"></i>-->
-      <!--</span>-->
+            <!--<span-->
+            <!--attr.data-hint="JPG, PNG, GIF, {{'content.up_to' | translate}} 5MB, 600x600px {{'content.recommended' | translate}}"-->
+            <!--class="camera-span">-->
+            <!--<i class="icon-camera pointer" (click)="clickUploadListImage()"></i>-->
+            <!--</span>-->
 
-      <!--<input id="listImage" type="file" style="display:none;" (change)="listImageUpload($event)" #listImage>-->
+            <!--<input id="listImage" type="file" style="display:none;" (change)="listImageUpload($event)" #listImage>-->
 
-      <!--<mat-slide-toggle (change)="listImageCheckerChange($event)"-->
-      <!--[checked]="listImageChecker"></mat-slide-toggle>-->
-      <!--</div>-->
-      <!--</div>-->
+            <!--<mat-slide-toggle (change)="listImageCheckerChange($event)"-->
+            <!--[checked]="listImageChecker"></mat-slide-toggle>-->
+            <!--</div>-->
+            <!--</div>-->
 
-      <!--&lt;!&ndash;<div class="post-sidebar-hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 600x600px {{'content.recommended' | translate}}</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="post-sidebar-hint">JPG, PNG, {{'content.up_to' | translate}} 5MB, 600x600px {{'content.recommended' | translate}}</div>&ndash;&gt;-->
 
-      <!--&lt;!&ndash;has image&ndash;&gt;-->
-      <!--<div class="list-item" [hidden]="!listImageChecker || !listImages.length">-->
-      <!--&lt;!&ndash;<div class="thumb-wrap" [ngClass]="{'has-photo': (listImageChecker && listImages.length)}">&ndash;&gt;-->
-      <!--<div class="thumb-wrap">-->
-      <!--<div class="thumb-overlay"></div>-->
+            <!--&lt;!&ndash;has image&ndash;&gt;-->
+            <!--<div class="list-item" [hidden]="!listImageChecker || !listImages.length">-->
+            <!--&lt;!&ndash;<div class="thumb-wrap" [ngClass]="{'has-photo': (listImageChecker && listImages.length)}">&ndash;&gt;-->
+            <!--<div class="thumb-wrap">-->
+            <!--<div class="thumb-overlay"></div>-->
 
-      <!--&lt;!&ndash;{{article.meta.image_hash | json}}&ndash;&gt;-->
-      <!--<swiper *ngIf="isBrowser" [config]="listSwiperConfig" #listGallery class="thumbnail-swiper"-->
-      <!--[style.height.px]="swiperHeight">-->
-      <!--<div class="swiper-wrapper">-->
-      <!--<div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of listImages">-->
-      <!--<img [src]="image" alt="">-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</swiper>-->
+            <!--&lt;!&ndash;{{article.meta.image_hash | json}}&ndash;&gt;-->
+            <!--<swiper *ngIf="isBrowser" [config]="listSwiperConfig" #listGallery class="thumbnail-swiper"-->
+            <!--[style.height.px]="swiperHeight">-->
+            <!--<div class="swiper-wrapper">-->
+            <!--<div class="swiper-slide" attr.data-image="{{image}}" *ngFor="let image of listImages">-->
+            <!--<img [src]="image" alt="">-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</swiper>-->
 
-      <!--<div class="time-views">-->
-      <!--<span>-->
-      <!--<span>-->
-      <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
-      <!--{{now | date:'dd '}}-->
-      <!--{{('months.' + (now | date:'MMM') | translate)}}-->
-      <!--{{(now) | date: ', y'}}-->
-      <!--</span>-->
-      <!--</span>-->
-      <!--<span>-->
-      <!--<i class="icon-views"></i>0-->
-      <!--</span>-->
-      <!--</div>-->
-      <!--</div>-->
+            <!--<div class="time-views">-->
+            <!--<span>-->
+            <!--<span>-->
+            <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
+            <!--{{now | date:'dd '}}-->
+            <!--{{('months.' + (now | date:'MMM') | translate)}}-->
+            <!--{{(now) | date: ', y'}}-->
+            <!--</span>-->
+            <!--</span>-->
+            <!--<span>-->
+            <!--<i class="icon-views"></i>0-->
+            <!--</span>-->
+            <!--</div>-->
+            <!--</div>-->
 
-      <!--<h3 *ngIf="tags">-->
-      <!--<a *ngFor="let tag of tags ; let lastTag = last;" routerLink="/t/{{tag}}">-->
-      <!--{{tag}}{{lastTag ? '' : ', '}}-->
-      <!--</a>-->
-      <!--</h3>-->
-      <!--<h2>{{title.value}}</h2>-->
-      <!--<div class="author">-->
-      <!--<div class="avatar"-->
-      <!--[ngStyle]="{'background-image' : (checkImageHashExist() && account && account.meta && account.meta.image_hash) ? 'url('+ account.meta.image_hash +')' : 'url(/assets/no-image-article.jpg)'}">-->
-      <!--<span *ngIf="!checkImageHashExist()" class="vh-centered">{{ account && account.shortName ?-->
-      <!--account.shortName : ''}}</span>-->
-      <!--</div>-->
-      <!--<a *ngIf="account && account.name" routerLink="/a/{{account.name}}">{{ (account && account.meta &&-->
-      <!--account.meta.first_name) ? account.meta.first_name : ''}} {{(account-->
-      <!--&& account.meta && account.meta.last_name) ? account.meta.last_name : ''}}</a>-->
-      <!--&lt;!&ndash;<span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">&ndash;&gt;-->
-      <!--&lt;!&ndash;{{'shared.in' | translate}}&ndash;&gt;-->
-      <!--&lt;!&ndash;<a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">&ndash;&gt;-->
-      <!--&lt;!&ndash;{{currentPublicationName()}}</a>&ndash;&gt;-->
-      <!--&lt;!&ndash;</span>&ndash;&gt;-->
-      <!--</div>-->
+            <!--<h3 *ngIf="tags">-->
+            <!--<a *ngFor="let tag of tags ; let lastTag = last;" routerLink="/t/{{tag}}">-->
+            <!--{{tag}}{{lastTag ? '' : ', '}}-->
+            <!--</a>-->
+            <!--</h3>-->
+            <!--<h2>{{title.value}}</h2>-->
+            <!--<div class="author">-->
+            <!--<div class="avatar"-->
+            <!--[ngStyle]="{'background-image' : (checkImageHashExist() && account && account.meta && account.meta.image_hash) ? 'url('+ account.meta.image_hash +')' : 'url(/assets/no-image-article.jpg)'}">-->
+            <!--<span *ngIf="!checkImageHashExist()" class="vh-centered">{{ account && account.shortName ?-->
+            <!--account.shortName : ''}}</span>-->
+            <!--</div>-->
+            <!--<a *ngIf="account && account.name" routerLink="/a/{{account.name}}">{{ (account && account.meta &&-->
+            <!--account.meta.first_name) ? account.meta.first_name : ''}} {{(account-->
+            <!--&& account.meta && account.meta.last_name) ? account.meta.last_name : ''}}</a>-->
+            <!--&lt;!&ndash;<span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{'shared.in' | translate}}&ndash;&gt;-->
+            <!--&lt;!&ndash;<a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{currentPublicationName()}}</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+            <!--</div>-->
 
-      <!--</div>-->
+            <!--</div>-->
 
-      <!--&lt;!&ndash;doesn't have image&ndash;&gt;-->
-      <!--<div class="no-image list-item" *ngIf="!listImageChecker || !listImages.length">-->
-      <!--<h3 *ngIf="tags" class="mb-3">-->
-      <!--<a *ngFor="let tag of tags ; let lastTag = last;" routerLink="/t/{{tag}}">-->
-      <!--{{tag}}{{lastTag ? '' : ', '}}-->
-      <!--</a>-->
-      <!--</h3>-->
+            <!--&lt;!&ndash;doesn't have image&ndash;&gt;-->
+            <!--<div class="no-image list-item" *ngIf="!listImageChecker || !listImages.length">-->
+            <!--<h3 *ngIf="tags" class="mb-3">-->
+            <!--<a *ngFor="let tag of tags ; let lastTag = last;" routerLink="/t/{{tag}}">-->
+            <!--{{tag}}{{lastTag ? '' : ', '}}-->
+            <!--</a>-->
+            <!--</h3>-->
 
-      <!--<div class="thumb">-->
-      <!--<img src="/assets/no-image-article.jpg" alt="img">-->
-      <!--<span *ngIf="contentForm && contentForm.controls['title'].value" class="vh-centered">{{-->
-      <!--contentForm.controls['title'].value.substr(0, 1).toLowerCase() }}</span>-->
-      <!--</div>-->
+            <!--<div class="thumb">-->
+            <!--<img src="/assets/no-image-article.jpg" alt="img">-->
+            <!--<span *ngIf="contentForm && contentForm.controls['title'].value" class="vh-centered">{{-->
+            <!--contentForm.controls['title'].value.substr(0, 1).toLowerCase() }}</span>-->
+            <!--</div>-->
 
-      <!--<h2>{{title.value}}</h2>-->
-      <!--<div class="author">-->
-      <!--<div class="avatar"-->
-      <!--[ngStyle]="{'background-image' : (checkImageHashExist() && account && account.meta && account.meta.image_hash) ? 'url('+ account.meta.image_hash +')' : 'url(/assets/no-image-article.jpg)'}">-->
-      <!--<span *ngIf="!checkImageHashExist()" class="vh-centered">{{ account && account.shortName ?-->
-      <!--account.shortName : ''}}</span>-->
-      <!--</div>-->
-      <!--<a *ngIf="account && account.name" routerLink="/a/{{account.name}}">{{ (account && account.meta &&-->
-      <!--account.meta.first_name) ? account.meta.first_name : ''}} {{(account-->
-      <!--&& account.meta && account.meta.last_name) ? account.meta.last_name : ''}}</a>-->
+            <!--<h2>{{title.value}}</h2>-->
+            <!--<div class="author">-->
+            <!--<div class="avatar"-->
+            <!--[ngStyle]="{'background-image' : (checkImageHashExist() && account && account.meta && account.meta.image_hash) ? 'url('+ account.meta.image_hash +')' : 'url(/assets/no-image-article.jpg)'}">-->
+            <!--<span *ngIf="!checkImageHashExist()" class="vh-centered">{{ account && account.shortName ?-->
+            <!--account.shortName : ''}}</span>-->
+            <!--</div>-->
+            <!--<a *ngIf="account && account.name" routerLink="/a/{{account.name}}">{{ (account && account.meta &&-->
+            <!--account.meta.first_name) ? account.meta.first_name : ''}} {{(account-->
+            <!--&& account.meta && account.meta.last_name) ? account.meta.last_name : ''}}</a>-->
 
-      <!--&lt;!&ndash;<span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">&ndash;&gt;-->
-      <!--&lt;!&ndash;{{'shared.in' | translate}}&ndash;&gt;-->
-      <!--&lt;!&ndash;<a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">&ndash;&gt;-->
-      <!--&lt;!&ndash;{{currentPublicationName()}}</a>&ndash;&gt;-->
-      <!--&lt;!&ndash;</span>&ndash;&gt;-->
-      <!--</div>-->
-      <!--<a>-->
-      <!--<div class="thumb-wrap">-->
-      <!--<div class="time-views">-->
-      <!--<span>-->
-      <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
-      <!--{{now | date:'dd '}}-->
-      <!--{{('months.' + (now | date:'MMM') | translate)}}-->
-      <!--{{(now) | date: ', y'}}-->
-      <!--</span>-->
-      <!--<span>-->
-      <!--<i class="icon-views"></i>0-->
-      <!--</span>-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</a>-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</div>-->
-      <!--</ng-container>-->
+            <!--&lt;!&ndash;<span *ngIf="publications && contentForm.controls['publicationSlug'].value !== 'none'">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{'shared.in' | translate}}&ndash;&gt;-->
+            <!--&lt;!&ndash;<a (click)="goToPublicationPage(contentForm.controls['publicationSlug'].value)">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{currentPublicationName()}}</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+            <!--</div>-->
+            <!--<a>-->
+            <!--<div class="thumb-wrap">-->
+            <!--<div class="time-views">-->
+            <!--<span>-->
+            <!--&lt;!&ndash;<i class="icon-uploaded"></i>&ndash;&gt;-->
+            <!--{{now | date:'dd '}}-->
+            <!--{{('months.' + (now | date:'MMM') | translate)}}-->
+            <!--{{(now) | date: ', y'}}-->
+            <!--</span>-->
+            <!--<span>-->
+            <!--<i class="icon-views"></i>0-->
+            <!--</span>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</a>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</ng-container>-->
 
-      <!--&lt;!&ndash;inputs&ndash;&gt;-->
-      <!--<hr>-->
-      <!--<div class="input-space">-->
-      <!--<b (click)="openInputSpace = !openInputSpace" class="mt-3 pointer for-adults" style="position: relative;">-->
-      <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.source" step="6"-->
-      <!--[positionConfig]="{'nux-top': true, 'nux-right': true, right: true, scroll: 'center', 'nux-for-adults': true}"></app-nux>-->
-      <!--<mat-icon [ngStyle]="{'transform' : openInputSpace ? 'rotate(45deg)' : ''}" class="mat-18 add-source">add-->
-      <!--</mat-icon>-->
-      <!--<span class="source-span">{{'content.add_source' | translate }}</span>-->
-      <!--</b>-->
-      <!--<div *ngIf="openInputSpace" class="open-fields">-->
-      <!--&lt;!&ndash;<input type="text" formControlName="sourceOfMaterial" class="sidebar-input mt-2"&ndash;&gt;-->
-      <!--&lt;!&ndash;placeholder="{{'content.URL' | translate }}">&ndash;&gt;-->
-      <!--&lt;!&ndash;<input type="text" formControlName="reference" class="sidebar-input margin-12"&ndash;&gt;-->
-      <!--&lt;!&ndash;placeholder="{{'content.text' | translate}}">&ndash;&gt;-->
-      <!--</div>-->
+            <!--&lt;!&ndash;inputs&ndash;&gt;-->
+            <!--<hr>-->
+            <!--<div class="input-space">-->
+            <!--<b (click)="openInputSpace = !openInputSpace" class="mt-3 pointer for-adults" style="position: relative;">-->
+            <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.source" step="6"-->
+            <!--[positionConfig]="{'nux-top': true, 'nux-right': true, right: true, scroll: 'center', 'nux-for-adults': true}"></app-nux>-->
+            <!--<mat-icon [ngStyle]="{'transform' : openInputSpace ? 'rotate(45deg)' : ''}" class="mat-18 add-source">add-->
+            <!--</mat-icon>-->
+            <!--<span class="source-span">{{'content.add_source' | translate }}</span>-->
+            <!--</b>-->
+            <!--<div *ngIf="openInputSpace" class="open-fields">-->
+            <!--&lt;!&ndash;<input type="text" formControlName="sourceOfMaterial" class="sidebar-input mt-2"&ndash;&gt;-->
+            <!--&lt;!&ndash;placeholder="{{'content.URL' | translate }}">&ndash;&gt;-->
+            <!--&lt;!&ndash;<input type="text" formControlName="reference" class="sidebar-input margin-12"&ndash;&gt;-->
+            <!--&lt;!&ndash;placeholder="{{'content.text' | translate}}">&ndash;&gt;-->
+            <!--</div>-->
 
-      <!--<div style="position: relative" class="for-adults">-->
-      <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.adults" step="8"-->
-      <!--[positionConfig]="{'nux-top': true, 'nux-right': true, right: true, scroll: 'center', 'nux-for-adults': true }"></app-nux>-->
-      <!--&lt;!&ndash;<label class="checked-for-adl">&ndash;&gt;-->
-      <!--&lt;!&ndash;<input type="checkbox" class="mt-3" formControlName="forAdults">&ndash;&gt;-->
-      <!--&lt;!&ndash;<span class="d-inline">{{'content.material_for_adults' | translate}}</span>&ndash;&gt;-->
-      <!--&lt;!&ndash;</label>&ndash;&gt;-->
-      <!--</div>-->
-      <!--</div>-->
+            <!--<div style="position: relative" class="for-adults">-->
+            <!--<app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.adults" step="8"-->
+            <!--[positionConfig]="{'nux-top': true, 'nux-right': true, right: true, scroll: 'center', 'nux-for-adults': true }"></app-nux>-->
+            <!--&lt;!&ndash;<label class="checked-for-adl">&ndash;&gt;-->
+            <!--&lt;!&ndash;<input type="checkbox" class="mt-3" formControlName="forAdults">&ndash;&gt;-->
+            <!--&lt;!&ndash;<span class="d-inline">{{'content.material_for_adults' | translate}}</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</label>&ndash;&gt;-->
+            <!--</div>-->
+            <!--</div>-->
 
-      <!--</div>-->
+            <!--</div>-->
 
-      <div class="fixed-positioned">
-        <div class="publish-buttons">
-          <div class="publish">
-            <div style="position: relative;">
-              <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.publish" step="9"
-                       [positionConfig]="{'nux-top': true, 'left': true, 'nux-publish': true}"></app-nux>
-              <button type="submit" mat-raised-button color="primary">
+            <div class="fixed-positioned">
+                <div class="publish-buttons">
+                    <div class="publish">
+                        <div style="position: relative;">
+                            <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.publish" step="9" [positionConfig]="{'nux-top': true, 'left': true, 'nux-publish': true}"></app-nux>
+                            <button type="submit" mat-raised-button color="primary">
                 {{ (hasEditableContent ? 'content.update' : 'content.publish') | translate }}
               </button>
-            </div>
+                        </div>
 
-            <!--<button mat-raised-button [disabled]="!saveDraftCheck" (click)="submitDraft($event, draftId)">SAVE-->
-            <div class="choose-publication" *ngIf="publications?.length">
-              <mat-form-field>
-                <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.publication" step="7"
-                         [positionConfig]="{'nux-top': true, 'nux-left': true, left: true, 'nux-add-pub': true}"></app-nux>
-                <mat-select formControlName="publicationSlug">
-                  <mat-option [value]="'none'" class="selected-option">
-                    <!----{{'content.none' | translate}}---->
-                    {{'content.select_pub' | translate}}
-                  </mat-option>
-                  <mat-option *ngFor="let publication of publications" [value]="publication.slug">
-                    {{publication?.title}}
-                  </mat-option>
+                        <!--<button mat-raised-button [disabled]="!saveDraftCheck" (click)="submitDraft($event, draftId)">SAVE-->
+                        <div class="choose-publication" *ngIf="publications?.length">
+                            <mat-form-field>
+                                <app-nux *ngIf="!nuxSeen" page="editor" key="nux.editor.publication" step="7" [positionConfig]="{'nux-top': true, 'nux-left': true, left: true, 'nux-add-pub': true}"></app-nux>
+                                <mat-select formControlName="publicationSlug">
+                                    <mat-option [value]="'none'" class="selected-option">
+                                        <!----{{'content.none' | translate}}---->
+                                        {{'content.select_pub' | translate}}
+                                    </mat-option>
+                                    <mat-option *ngFor="let publication of publications" [value]="publication.slug">
+                                        {{publication?.title}}
+                                    </mat-option>
 
-                </mat-select>
-              </mat-form-field>
-            </div>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-          </div>
-          <div class="publish-2">
-            <span class="draft_saved" *ngIf="draftId && draftUpdateDate">Saved as draft &nbsp; {{draftUpdateDate *
-            1000 | date:'HH:mm:ss'}}</span>
-            <div class="publish-supporter">
-              <i (click)="enableNux()" class="icon-info"></i>
-              <!--DRAFT-->
-              <!--</button>-->
-              <button class="continue-btn" mat-raised-button type="button"
-                      (click)="onCancel()">{{'content.continue' |translate}}</button>
+                    </div>
+                    <div class="publish-2">
+                        <!-- <span class="draft_saved" *ngIf="draftId && draftUpdateDate">Saved as draft &nbsp; {{draftUpdateDate *
+            1000 | date:'HH:mm:ss'}}</span> -->
+                        <div class="publish-supporter">
+                            <i (click)="enableNux()" class="icon-info"></i>
+                            <!--DRAFT-->
+                            <!--</button>-->
+                            <button class="continue-btn" mat-raised-button type="button" (click)="onCancel()">{{'content.continue' |translate}}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </form>
 
 <mat-card class="centered" style="height: calc(100vh - 200px);
   display: flex;
   align-items: center;
-  justify-content: center;"
-          *ngIf="isContentUpLoading">
-  <mat-spinner style="margin: 50px auto;"></mat-spinner>
+  justify-content: center;" *ngIf="isContentUpLoading">
+    <mat-spinner style="margin: 50px auto;"></mat-spinner>
 </mat-card>

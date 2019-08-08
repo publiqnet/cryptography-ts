@@ -1,4 +1,5 @@
 import { environment } from '../../../../environments/environment';
+import { Author } from './author';
 
 export interface PublicationOptions {
   slug: string;
@@ -8,7 +9,14 @@ export interface PublicationOptions {
   logo: string;
   color: string;
   memberStatus: number;
-  subscribed: boolean;
+  subscribers: any;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
+  hideCover: any;
+  listView: string;
 }
 
 export class Publication {
@@ -21,7 +29,14 @@ export class Publication {
   memberStatus: number;
   subscribed: boolean;
   following: boolean;
-
+  subscribers: any;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
+  hideCover: any;
+  listView: string;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
