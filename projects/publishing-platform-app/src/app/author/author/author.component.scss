@@ -167,8 +167,10 @@
       bottom: 0px;
       right: 0px;
       display: flex;
+      opacity: 0;
       flex-direction: column;
       background-color: rgba(255, 255, 255, 0.9);
+      transition: .2s ease-out;
       i{
         margin: 0 0 3px;
         font-size: 20px;
@@ -183,11 +185,23 @@
         height: 70px;
       }
     }
+    &.hover-avatar:hover{
+      .profile-metadata__hover__upload{
+        opacity: 1;
+        transition: .2s ease-out;
+      }
+      .icon-close--hover{
+        opacity: 1;
+        transition: .2s ease-out;
+      }
+    }
   }
   .icon-close:not(.close-edit){
     position: absolute;
     top: -5px;
     right: -7px;
+    opacity: 0;
+    transition: .2s ease-out;
     @include media-lg{
       top: -2px;
       right: 0px;
@@ -276,7 +290,23 @@
   }
 
   &__fullname, &__bio {
-    span, .editable-icon { outline: none; vertical-align: middle; }
+    //cursor: default;
+    span,
+    .editable-icon {
+      outline: none;
+      vertical-align: middle;
+    }
+    .editable-icon{
+      opacity: 0;
+    }
+  }
+  .bio-hover{
+    cursor: text;
+  }
+  .bio-hover:hover{
+    + .editable-icon {
+      opacity: 1;
+    }
   }
 
   &__fullname {
@@ -413,6 +443,7 @@
     span{
       display: inline-flex;
       align-items: center;
+      cursor: pointer;
 
       small{
         font-size: 15px;

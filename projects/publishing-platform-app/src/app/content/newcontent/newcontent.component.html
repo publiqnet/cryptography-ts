@@ -83,7 +83,7 @@
           <ui-input className="add-tag-input"></ui-input>
 
           <span class="add-tag__label">Add to Publication</span>
-          <ui-dropdown *ngIf="boostDropdownData" [optionsData]="boostDropdownData" [type]="'withIcon'"></ui-dropdown>
+          <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList" [optionsData]="publicationsList" [type]="'withIcon'"></ui-dropdown>
 
           <!--for mobile-->
           <!--FOR ADDING OR CHANGING COVER PIC -->
