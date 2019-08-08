@@ -241,6 +241,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  showCover() {
+    this.publication.hideCover = '';
+    this.edit();
+  }
+
   removeLogo() {
     this.deleteLogo = '1';
     this.logoFile = null;

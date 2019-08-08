@@ -31,7 +31,7 @@
     </div>
     <div class="row publication-show-cover" *ngIf="isMyPublication && publication.hideCover">
         <div class="col-lg-8 offset-lg-2">
-            <ui-button text="Show Cover" iconClassName="preview"></ui-button>
+            <ui-button text="Show Cover" iconClassName="preview" (btnClicked)="showCover()"></ui-button>
         </div>
     </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
