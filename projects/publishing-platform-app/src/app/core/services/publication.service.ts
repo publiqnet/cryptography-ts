@@ -5,7 +5,7 @@ import { filter, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { Publication } from './models/publication';
-import { PageOptions } from './models/content';
+import { PageOptions, Content } from './models/content';
 import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { IPublications, Publications } from './models/publications';
 
@@ -86,9 +86,12 @@ export class PublicationService {
 
   getPublicationArticles = (slug: string): Observable<any> => this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/` + 'articles');
 
-  getPublicationStories(slug: string, count = 20,  boostedCount = 0 , fromUri = null) {
+  getPublicationStories(slug: string, count = 20, boostedCount = 0, fromUri = null) {
     // /api/publication/{slug}/contents/{count}/{boostedCount}/{fromUri}
-    return this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/contents/${count}/${boostedCount}/${fromUri}`);
+    return this.httpHelperService.customCall(HttpMethodTypes.get, this.url + `/${slug}/contents/${count}/${boostedCount}/${fromUri}`).pipe(map(contentData => {
+      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+      return contentData;
+    }));
   }
 
   removeArticle: (dsId: string, slug: string) => Observable<any> = (dsId: string, slug: string): Observable<any> => {

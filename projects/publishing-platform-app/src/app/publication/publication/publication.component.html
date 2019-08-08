@@ -118,7 +118,7 @@
     <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
-                ngxMasonryItem [type]="listType" *ngFor="let content of firstContentBlock;" [contentData]="content"></ui-content-single>
+                ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
         </div>
     </div>
 </div>
