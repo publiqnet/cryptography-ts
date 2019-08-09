@@ -19,6 +19,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public seeMoreChecker = false;
   seeMoreLoading = false;
   public blockInfiniteScroll = false;
+  requestMade = false;
+  public activeLanguage = 'en';
   public welcomeBlockVisible = true;
   public startFromUri = null;
   public storiesDefaultCount = 20;
@@ -47,6 +49,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.activeLanguage = localStorage.getItem('lang') || 'en';
     this.contentService.getHomePageContents(this.startFromUri, this.storiesDefaultCount)
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -114,6 +117,11 @@ export class HomepageComponent implements OnInit, OnDestroy {
           this.blockInfiniteScroll = false;
         }
       );
+  }
+
+  useLang(lang) {
+    this.activeLanguage = lang;
+    localStorage.setItem('lang', lang);
   }
 
   ngOnDestroy() {
