@@ -11,6 +11,7 @@ import { MyPublicationsComponent } from './my-publications/my-publications.compo
 import { NewPublicationComponent } from './new/new-publication.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { PublicationOldComponent } from './publication-old/publication-old.component';
+import { MyPublicationsOldComponent } from './my-publications-old/my-publications-old.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { PublicationOldComponent } from './publication-old/publication-old.compo
     PublicationComponent,
     PublicationOldComponent,
     ManagePublicationComponent,
+    MyPublicationsOldComponent,
     MyPublicationsComponent,
     NewPublicationComponent
   ]

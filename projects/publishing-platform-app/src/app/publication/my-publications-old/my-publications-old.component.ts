@@ -12,14 +12,14 @@ import { PublicationMemberStatusType } from '../../core/models/enumes';
 import { AccountService } from '../../core/services/account.service';
 
 @Component({
-  selector: 'app-my-publications',
-  templateUrl: './my-publications.component.html',
+  selector: 'app-my-publications-old',
+  templateUrl: './my-publications-old.component.html',
   styleUrls: [
-    './my-publications.component.scss',
+    './my-publications-old.component.scss',
     '../../../assets/css/screen.scss'
   ]
 })
-export class MyPublicationsComponent implements OnInit, OnDestroy {
+export class MyPublicationsOldComponent implements OnInit, OnDestroy {
   publications: Publication[];
   membership: Publication[];
   invitations: Publication[];
