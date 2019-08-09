@@ -1,4 +1,5 @@
 import { environment } from '../../../../environments/environment';
+import { Author } from './author';
 
 export interface PublicationOptions {
   slug: string;
@@ -8,7 +9,14 @@ export interface PublicationOptions {
   logo: string;
   color: string;
   memberStatus: number;
-  subscribed: boolean;
+  subscribers: any;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
+  hideCover: any;
+  listView: string;
 }
 
 export class Publication {
@@ -22,6 +30,13 @@ export class Publication {
   memberStatus: number;
   subscribed: boolean;
   following: boolean;
+  owner: Author;
+  editors: Author[];
+  contributors: Author[];
+  requests: Author[];
+  invitations: Author[];
+  hideCover: any;
+  listView: any;
   inviter: object;
   // TODO: Add `status` parameter to backend response
   status: number = 0;
