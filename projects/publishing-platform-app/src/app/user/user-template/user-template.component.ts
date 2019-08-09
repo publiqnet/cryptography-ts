@@ -3,6 +3,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { SwiperOptions } from 'swiper';
+import { AccountService } from '../../core/services/account.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-template',
@@ -14,9 +16,11 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
   public tabberData = [];
   public activeRoute = 'login';
   public swiperConfig: SwiperOptions;
-
+  public activeLanguage = 'en';
   constructor(
-    private router: Router
+    private router: Router,
+    private accountService: AccountService,
+    private translateService: TranslateService
   ) {
     this.router.events
       .pipe(
@@ -44,6 +48,7 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
       { 'value': 'login', 'text': 'Sign In'},
       { 'value': 'register', 'text': 'Register'}
     ];
+    this.activeLanguage = localStorage.getItem('lang') || 'en';
   }
 
   changeTab(event) {
@@ -55,6 +60,11 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
   changeRoute(event, route) {
     event.preventDefault();
     this.router.navigate([route]);
+  }
+
+  useLang(lang) {
+   this.activeLanguage = lang;
+    localStorage.setItem('lang', lang);
   }
 
   ngOnDestroy() {

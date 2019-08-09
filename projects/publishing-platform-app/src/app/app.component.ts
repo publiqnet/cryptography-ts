@@ -1,9 +1,8 @@
-import { Component, Inject, NgZone, OnDestroy, OnInit, Optional, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Optional, PLATFORM_ID } from '@angular/core';
 import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { APP_BASE_HREF, isPlatformBrowser, isPlatformServer, PlatformLocation } from '@angular/common';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
-
 import { catchError, filter, take, takeUntil } from 'rxjs/operators';
 import { of, ReplaySubject } from 'rxjs';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
@@ -11,13 +10,9 @@ import * as memoryCache from 'memory-cache';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-
 import { AccountService } from './core/services/account.service';
 import { ChannelService } from './core/services/channel.service';
-import { NotificationService } from './core/services/notification.service';
-import { ErrorService } from './core/services/error.service';
 import { environment } from '../environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { SeoService } from './core/services/seo.service';
 import { LinkService } from './core/services/link.service';
 import { ContentService } from './core/services/content.service';
@@ -34,9 +29,9 @@ const CHANNEL_AUTHORS = makeStateKey('channel_authors');
   templateUrl: 'app.component.html',
   styles: [],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'ja-JP'},
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    { provide: MAT_DATE_LOCALE, useValue: 'ja-JP' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -45,20 +40,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private http: HttpClient,
     private adapter: DateAdapter<any>,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics, // TODO - do not remove this row
     private accountService: AccountService,
     private channelService: ChannelService,
     private platformLocation: PlatformLocation,
-    private errorService: ErrorService,
     private walletService: WalletService,
     private seoService: SeoService,
     private state: TransferState,
     private contentService: ContentService,
     private linkService: LinkService,
-    private ngZone: NgZone,
-    private notificationService: NotificationService,
     @Optional() @Inject(APP_BASE_HREF) private baseHref: string,
     @Inject(PLATFORM_ID) private platformId,
     @Optional() @Inject(REQUEST) private request: any,
@@ -90,10 +81,10 @@ export class AppComponent implements OnInit, OnDestroy {
   static generateTags(metaTags) {
     let result;
     if (typeof metaTags === 'string') {
-      result = [{display: metaTags, value: metaTags}];
+      result = [{ display: metaTags, value: metaTags }];
     } else if (Array.isArray(metaTags)) {
       result = metaTags.map(tag => {
-        return {display: tag, value: tag};
+        return { display: tag, value: tag };
       });
     } else if (typeof metaTags === 'undefined') {
       result = [];
@@ -104,9 +95,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformServer(this.platformId)) {
-      this.translate.use('en');
+      localStorage.getItem('lang') ? this.translate.use(localStorage.getItem('lang')) : this.translate.use('en');
       const host = this.request.get('host');
-
       if (host) {
         const splitHost = host.split('.');
         const channel = splitHost.length === 3 ? splitHost[0] : '';
