@@ -14,20 +14,28 @@ import { ContentService } from '../../core/services/content.service';
 import { DraftService } from '../../core/services/draft.service';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { UtilService } from '../../core/services/util.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ValidationService } from '../../core/validator/validator.service';
+import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-author',
   templateUrl: './author.component.html',
-  styleUrls: ['./author.component.scss']
+  styleUrls: ['./author.component.scss'],
+  providers: [ SafeStylePipe ]
 })
 export class AuthorComponent implements OnInit, OnDestroy {
 
   public isMasonryLoaded = false;
-  public myOptions: NgxMasonryOptions = {
+  public masonryOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
     gutter: 10
   };
+  showEditIcon = false;
+  showEditIcon1 = false;
+  showEditModeIcons = false;
   private authorId: string;
   shortName;
   loadingAuthor = true;
@@ -40,25 +48,38 @@ export class AuthorComponent implements OnInit, OnDestroy {
   listType = 'grid';
   public drafts: Array<any>;
   private unsubscribe$ = new ReplaySubject<void>(1);
-  selectedTab: string;
+  selectedTab: string = '1';
   public blockInfiniteScroll = false;
   public seeMoreChecker = false;
   seeMoreLoading = false;
   public startFromUri = null;
   public storiesDefaultCount = 4;
+  authorForm: FormGroup;
   tabs = [
     {
       'value': '1',
       'text': 'Stories',
-      'active': false
+      'active': true
     },
     {
       'value': '2',
       'text': 'Drafts',
-      'active': true
+      'active': false
+    },
+    {
+      'value': '3',
+      'text': 'Settings',
+      'active': false
     }
   ];
   author: Account;
+  currentImage: string;
+  fullName: String;
+  firstName: String;
+  lastName: String;
+  bio: String;
+  photo: File;
+  editMode: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -70,7 +91,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
     private contentService: ContentService,
     private draftService: DraftService,
     public utilService: UtilService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    private formBuilder: FormBuilder,
+    private safeStylePipe: SafeStylePipe,
+    protected sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
 
@@ -91,6 +115,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
         }),
         switchMap((author: Account) => {
           this.author = author;
+          this.firstName = this.author.firstName;
+          this.lastName = this.author.lastName;
+          this.listType = this.author.listView ? 'single' : 'grid';
+          this.setAuthorName();
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -108,10 +136,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((contents: any) => {
-        this.publishedContent = contents.data;
-        this.calculateLastStoriUri();
+        this.publishedContent = this.publishedContent.concat(contents.data);
         this.seeMoreChecker = contents.more;
         this.seeMoreLoading = false;
+        this.calculateLastStoriUri();
+        this.buildForm();
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
@@ -121,8 +150,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.accountService.getAuthorByPublicKey(this.author.publicKey);
         this.canFollow = false;
-      }
-      );
+      });
+
     this.errorService.errorEventEmiter
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -139,12 +168,64 @@ export class AuthorComponent implements OnInit, OnDestroy {
       );
   }
 
+  private buildForm() {
+    this.firstName = this.author.firstName;
+    this.lastName = this.author.lastName;
+    this.bio = this.author.bio;
+
+    if (this.author.image) {
+      this.currentImage = this.author.image;
+    }
+
+    this.authorForm = this.formBuilder.group({
+        firstName: new FormControl(this.firstName, []),
+        lastName: new FormControl(this.lastName, []),
+        bio: new FormControl(this.bio, [])
+      },
+      {validator: ValidationService.noSpaceValidator}
+    );
+  }
+
+  fullNameChange(event) {
+    this.fullName = event.target.textContent;
+    const splittedFullName = this.fullName.split(' ');
+    this.firstName = splittedFullName.slice(0, -1).join(' ');
+    this.lastName = splittedFullName.slice(-1).join(' ');
+    this.authorForm.controls['firstName'].setValue(this.firstName);
+    this.authorForm.controls['lastName'].setValue(this.lastName);
+  }
+
+  onEditTitle(data: string) {
+    if (data == 'h1') {
+      this.showEditIcon = true;
+    } else if (data == 'h3') {
+      this.showEditIcon1 = true;
+    } else {
+      this.showEditIcon = false;
+      this.showEditIcon1 = false;
+    }
+    this.showEditModeIcons = true;
+  }
+
+  changeBio(event) {
+    this.bio = event.target.textContent;
+    this.authorForm.controls['bio'].setValue(this.bio);
+  }
+
   tabChange(e) {
     this.selectedTab = e;
     if (e == 2 && !this.drafts) {
       this.loading = true;
       this.getDrafts();
     }
+  }
+
+  onEditMode(flag: boolean) {
+    this.listType = this.author.listView ? 'single' : 'grid';
+    this.editMode = flag;
+    this.showEditModeIcons = false;
+    this.showEditIcon = false;
+    this.showEditIcon1 = false;
   }
 
   getDrafts() {
@@ -197,9 +278,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   calculateLastStoriUri() {
-    const lastIndex = this.publishedContent.length - 1;
-    if (this.publishedContent[lastIndex].uri !== this.startFromUri) {
-      this.startFromUri = this.publishedContent[lastIndex].uri;
+    if (this.publishedContent.length) {
+      const lastIndex = this.publishedContent.length - 1;
+      if (this.publishedContent[lastIndex].uri !== this.startFromUri) {
+        this.startFromUri = this.publishedContent[lastIndex].uri;
+      }
     }
   }
 
@@ -219,6 +302,63 @@ export class AuthorComponent implements OnInit, OnDestroy {
             this.blockInfiniteScroll = false;
           }
         );
+  }
+
+  setAuthorName() {
+    this.fullName = (this.author.fullName == '') ? ((this.isCurrentUser) ? 'Add your name' : '') : this.author.fullName;
+    return this.fullName;
+  }
+
+  showUploadedImage(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        if (e && e.target) {
+          this.currentImage = e.target.result;
+          this.photo = input.files[0];
+          // if (this.photo) {
+            // this.reseting = false;
+            // if (this.accountService.accountInfo.firstName === '' ||
+            //   this.authorForm.controls['firstName'].value &&
+            //   this.authorForm.controls['firstName'].value.trim() !== '') {
+              // this.disableSaveBtn = false;
+            // }
+          // }
+        }
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  getCurrentImage() {
+    const profileImage = this.currentImage ? this.currentImage : '/assets/no-image-article.jpg';
+    return this.sanitizer.bypassSecurityTrustUrl(profileImage);
+  }
+
+  onSubmit() {
+    if (this.authorForm.invalid) {
+      return;
+    }
+
+    const formData = new FormData();
+    if (this.photo) {
+      formData.append('image', this.photo, this.photo.name);
+    }
+    formData.append('firstName', this.authorForm.controls['firstName'].value);
+    formData.append('lastName', this.authorForm.controls['lastName'].value);
+
+    formData.append('bio', this.authorForm.controls['bio'].value);
+    formData.append('listView', (this.listType == 'single') ? 'true' : '');
+
+    this.accountService.updateAccount(formData)
+    .subscribe(data => {
+      this.editMode = false;
+      this.showEditModeIcons = false;
+      // this.disableSaveBtn = true;
+      // const message = this.translationService.instant('success');
+      // this.notification.success(message['account_updated']);
+    });
   }
 
   ngOnDestroy() {

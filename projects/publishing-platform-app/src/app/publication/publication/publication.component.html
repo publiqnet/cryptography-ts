@@ -1,111 +1,177 @@
-<ng-container *ngIf="loading; else noLoading">
-    <div class="vh-centered">
-        <mat-spinner></mat-spinner>
-    </div>
-</ng-container>
-<ng-template #noLoading>
-    <div class="author-header-wrap transparent-wrap">
-        <div class="d-flex " [ngClass]="{'for-overlay':!publication.color}">
-            <div class="background vh-centered  "
-                 [class.cover-opacity]="publication && !publication.cover && !publication.logo"
-                 [class.cover-filter]="publication && !publication.cover && !publication.logo"
-                 [style.background-image]="publication && publication.cover ? 'url(' + publication.cover + ')' : null"
-                 [style.background-color]="publication && !publication.cover ? publication.color : null">
-            </div>
-
-            <div class="inner-wrap title-wrap">
-                <div class="avatar-wrap">
-                    <div class="avatar"
-                         [ngStyle]="{'background-image': publication && publication.logo ?
-                     'url(' + publication.logo + ')' : 'url(/assets/no-image-article.jpg)',
-                     'background-color':  publication?.logo ? 'white' : '#36f' }">
-                        <span *ngIf="!publication?.logo">{{publication.title | pubTitle}}</span>
-                    </div>
+<div class="container">
+    <div class="row publication-cover publication-cover--editable" *ngIf="publication && !publication.hideCover" [ngStyle]="{'background-image': publication && publication.cover ? 'url('+publication.cover+')' : 'none'}" #coverContainer>
+        <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
+        <div class="col-lg-8 offset-lg-2">
+            <div class="publication-cover__guide" *ngIf="publication && !publication.cover && isMyPublication">
+                <div class="icon-profile upload-icon"></div>
+                <div class="publication-cover__guide__texts">
+                    <h4>Drop or upload a cover photo here!</h4>
+                    <p>JPG, PNG up to 5mb, 1400x364px recommended.</p>
                 </div>
-                <div class="pub-info-container">
-                    <h1 id="a-title">{{publication?.title}}</h1>
-                    <p class="pub-description">{{publication?.description}}</p>
-                    <h3>
-                        {{'publication.followers' | translate}}
-                        <span id="followers-count">{{subscribers ? subscribers : 0}}</span>
-                        {{'publication.articles' | translate}}
-                        <span>{{articles ? articles : 0}}</span>
-                        {{'publication.views' | translate}}
-                        <span>{{publication?.views ? publication?.views : 0}}</span>
-                        {{'publication.members' | translate}}
-                        <span>{{publication?.membersCount ? publication?.membersCount : 0}}</span>
-                    </h3>
-                    <div class="text-center text-md-left mt-3 align-middle">
-                        <ng-container *ngIf="publication.memberStatus === MemberStatus.owner">
-                            <div class="follow-button mr-5 d-inline-block align-middle" tabindex="0"
-                                 [routerLink]="['/p/edit', publication.slug]">
-                                <i class="icon-settings"></i>
-                                <span>{{'header.settings' | translate}}</span>
-                            </div>
-                        </ng-container>
-
-                        <ng-container
-                                *ngIf="![MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else iAmMember">
-                            <div class="d-inline-block follow-button align-middle ">
-                                <ng-container *ngIf="publication.memberStatus === MemberStatus.no_info">
-                                <span class="mr-5">
-                                    <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                    <span (click)="requestBecomeMember(publication?.slug)">{{'publication.become_member' | translate}}</span>
-                                </span>
-                                </ng-container>
-
-                                <ng-container  *ngIf="publication.memberStatus === MemberStatus.requested_to_be_a_contributor">
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span class="align-middle core-cancel" (click)="cancelBecomeMember(publication?.slug)">
-                                            {{'core.cancel' | translate}}
-                                        </span>
-                                    </span>
-                                </ng-container>
-
-                                <ng-container *ngIf="[MemberStatus.invited_to_be_a_contributor, MemberStatus.invited_to_be_an_editor].includes(publication.memberStatus)">
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span (click)="acceptInvitationBecomeMember(publication?.slug)">
-                                            {{'publication.become_member' | translate}}
-                                        </span>
-                                    </span>
-                                    <span class="mr-5">
-                                        <!--<i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>-->
-                                        <span class="align-middle core-cancel" (click)="rejectInvitationBecomeMember(publication?.slug)">
-                                            {{'core.cancel' | translate}}
-                                        </span>
-                                    </span>
-                                </ng-container>
-                            </div>
-                        </ng-container>
-
-                        <ng-template #iAmMember>
-                            <div class="d-inline-block follow-button align-middle noHover">
-                                <span class="mr-5 ">{{'content.you_are_member' | translate}}</span>
-                            </div>
-                        </ng-template>
-
-                        <div *ngIf="publication"
-                             class="text-center text-md-left mr-5 d-inline-block align-middle follow-button">
-                            <div [ngClass]="{'follow-button': true}" (click)="(canFollow ? follow() : unfollow())">
-                                <i [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
-                                <span>{{(canFollow ? 'publication.follow' : 'publication.unfollow') | translate}}</span>
-                            </div>
-                        </div>
+            </div>
+            <div class="publication-cover__actions" *ngIf="isMyPublication && !imageLoaded">
+                <label for="addCover">
+                    <div class="cover__upload">
+                            <input type="file" (change)="uploadCover($event, coverContainer)">
+                            <ui-button iconClassName="picture" text="Upload">
+                                </ui-button>
+                    </div>
+                </label>
+                <ui-dropdown-list [isDark]="true" (onItemSelect)="dropdownSelect($event)" delta="0" position="top" icon="menu" [items]="coverMenuItems"></ui-dropdown-list>
+                <!-- <ui-button [iconButton]="true" size="small" iconClassName="menu"></ui-button> -->
+                <!-- <div class="button">
+                    <i class="icon-picture"></i>
+                    <span>Upload</span>
+                </div> -->
+                <!-- <div class="button button--icon button--icon--small">
+                    <i class="icon-menu"></i>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="row publication-show-cover" *ngIf="isMyPublication && publication.hideCover">
+        <div class="col-lg-8 offset-lg-2">
+            <ui-button text="Show Cover" iconClassName="preview" (btnClicked)="showCover()"></ui-button>
+        </div>
+    </div>
+    <div class="row publication-metadata" *ngIf="publicationForm">
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [class.publication-metadata__avatar--editable]="editMode">
+            <input *ngIf="editMode" type="file" (change)="uploadLogo($event)">
+            <ui-avatar size="large" [isSquaric]="true" [avatarData]="logoData"></ui-avatar>
+            <i class="icon-close" *ngIf="editMode && publication?.logo" (click)="removeLogo()"></i>
+        </div>
+        <div class="col-lg-6 col-md-7 col">
+            <h1 class="publication-metadata__title"><span [attr.contenteditable]="isMyPublication" (input)="onTitleChange($event)" #publicationTitle>{{publication?.title}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
+            <h3 class="publication-metadata__description"><span [attr.contenteditable]="isMyPublication" (input)="onDescriptionChange($event)" #publicationDescription>{{publication?.description}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h3>
+        </div>
+        <div class="col-lg-2 col-md-3 col-12">
+            <ng-container *ngIf="isMyPublication">
+                <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
+                <ng-container *ngIf="editMode || textChanging">
+                    <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
+                    <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
+                </ng-container>
+            </ng-container>
+            <ui-button type="primary" iconClassName="follow" text="Follow" [isFollowing]="false" *ngIf="!isMyPublication"></ui-button>
+            <!-- <div class="button button--primary">
+                <i class="icon-follow"></i>
+                <span>Follow</span>
+            </div> -->
+        </div>
+    </div>
+    <div class="row publication-statistics" [class.editable-disabled]="editMode">
+        <div class="col-lg-8 offset-lg-2 col-12 offset-0">
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Views</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">{{stories.length}}</span>
+                <span class="datum__descriptor">Stories</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Followers</span>
+            </div>
+            <div class="datum">
+                <span class="datum__value">0</span>
+                <span class="datum__descriptor">Members</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode">
+            <ui-tab type="buttons" *ngIf="isMyPublication" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2" *ngIf="editMode">
+            <div class="grid-style grid-style--custom">
+                <div class="grid-style__choose">
+                    <div>
+                        <h4>Grid style</h4>
+                        <p>Choose the way your readers will see your stories.</p>
+                    </div>
+                    <div class="grid-style__choose__item">
+                        <span>
+                <i (click)="changeListType('grid')" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                <small>Grid</small>
+              </span>
+                        <span>
+                <i (click)="changeListType('single')" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                <small>List</small>
+              </span>
                     </div>
                 </div>
             </div>
         </div>
-
-        <ng-container *ngIf="[MemberStatus.owner, MemberStatus.editor, MemberStatus.contributor].includes(publication.memberStatus); else notMember">
-            <app-manage-publication [publication]="publication"></app-manage-publication>
-        </ng-container>
-
-        <ng-template #notMember>
-            <p>List of articles when you are not a member of the publication</p>
-        </ng-template>
-
     </div>
-</ng-template>
-
+    <!-- <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="grid-style">
+                    <div>
+                        <h4>Grid style</h4>
+                        <p>Choose the way your readers will see your stories.</p>
+                    </div>
+                    <div>
+                        <i class="grid-icon grid-icon--selected icon-multi-grid"></i>
+                        <i class="grid-icon icon-single-grid"></i>
+                    </div>
+                </div>
+            </div>
+    </div> -->
+    <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
+        <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
+            <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
+                ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
+        </div>
+    </div>
+</div>
+<div class="container" *ngIf="activeTab === 'members'">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 tab-heading tab-heading--members">
+            <h2>Members</h2>
+            <div class="tab-heading__inner">
+                <i class="icon-search"></i>
+                <input type="text">
+            </div>
+            <ui-button text="Invite Member"></ui-button>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" *ngIf="activeTab === 'members'">
+    <div class="row">
+        <div class="followers col-12">
+            <div>
+                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
+                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+            </div>
+            <div>
+                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
+                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" *ngIf="activeTab === 'members'">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending'}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
+            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+        </div>
+        <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
+            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
+        </div>
+    </div>
+</div>
+<div class="container" *ngIf="activeTab === 'followers'">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2 followers">
+            <ui-user-single type="followers" [userData]="follower" *ngFor="let follower of followers;"></ui-user-single>
+        </div>
+    </div>
+</div>

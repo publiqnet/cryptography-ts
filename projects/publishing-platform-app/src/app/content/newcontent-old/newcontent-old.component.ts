@@ -727,8 +727,6 @@ export class NewcontentOldComponent implements OnInit, OnDestroy {
         contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
       }
 
-      console.log(this.contentUris, this.mainCoverImageUri, this.mainCoverImageUrl);
-
       this.isContentUpLoading = true;
       this.isSubmited = true;
       this.formSubmitted = true;
@@ -844,7 +842,7 @@ export class NewcontentOldComponent implements OnInit, OnDestroy {
           uploadedContentURI = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(uploadedContentURI, this.contentId))
+        switchMap((data: any) => this.contentService.publish(uploadedContentURI, this.contentId, 'test_publication'))
       );
   }
 
@@ -981,7 +979,6 @@ export class NewcontentOldComponent implements OnInit, OnDestroy {
   }
 
   onCoverCkeckerChange(e) {
-    // console.log('onCoverCkeckerChange --');
     this.saveDraftCheck = true;
     if (e.checked == true) {
       this.mainCoverImageChecker = true;
