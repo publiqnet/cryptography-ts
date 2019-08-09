@@ -94,11 +94,11 @@
                     </div>
                     <div class="grid-style__choose__item">
                         <span>
-                <i (click)="listType = 'grid'" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                <i (click)="changeListType('grid')" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                 <small>Grid</small>
               </span>
                         <span>
-                <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                <i (click)="changeListType('single')" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 <small>List</small>
               </span>
                     </div>

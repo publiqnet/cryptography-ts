@@ -120,6 +120,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
+        this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
@@ -141,6 +142,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       description.innerHTML = this.publication.description;
       this.publicationForm.controls['title'].setValue(this.publication.title);
       this.publicationForm.controls['description'].setValue(this.publication.description);
+      this.listType = this.publication.listView ? 'single' : 'grid';
       this.logoData = {
         image: this.publication.logo
       };
@@ -189,6 +191,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
       });
   }
 
+  changeListType(type) {
+    this.listType = type;
+  }
+
   // saveEdition(title, description) {
   //   this.publication.title = title;
   //   this.publication.description = description;
@@ -208,7 +214,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteLogo', this.deleteLogo);
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
-    formData.append('listView', this.publication.listView);
+    formData.append('listView', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
         this.editMode = false;

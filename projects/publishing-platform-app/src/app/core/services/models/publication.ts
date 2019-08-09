@@ -36,7 +36,7 @@ export class Publication {
   requests: Author[];
   invitations: Author[];
   hideCover: any;
-  listView: string;
+  listView: any;
   inviter: object;
   // TODO: Add `status` parameter to backend response
   status: number = 0;
