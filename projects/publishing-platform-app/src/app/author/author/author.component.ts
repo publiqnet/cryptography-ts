@@ -23,7 +23,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   selector: 'app-author',
   templateUrl: './author.component.html',
   styleUrls: ['./author.component.scss'],
-  providers: [ SafeStylePipe ]
+  providers: [SafeStylePipe]
 })
 export class AuthorComponent implements OnInit, OnDestroy {
 
@@ -118,7 +118,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
           this.listType = this.author.listView ? 'single' : 'grid';
-          this.setAuthorName();
+          this.bio = this.author.bio || 'Write a short bio';
+          this.fullName = this.author.fullName;
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -128,10 +129,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
+            this.setAuthorName();
             return this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount);
           } else {
             return this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
           }
+
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -178,11 +181,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
 
     this.authorForm = this.formBuilder.group({
-        firstName: new FormControl(this.firstName, []),
-        lastName: new FormControl(this.lastName, []),
-        bio: new FormControl(this.bio, [])
-      },
-      {validator: ValidationService.noSpaceValidator}
+      firstName: new FormControl(this.firstName, []),
+      lastName: new FormControl(this.lastName, []),
+      bio: new FormControl(this.bio, [])
+    },
+      { validator: ValidationService.noSpaceValidator }
     );
   }
 
@@ -193,23 +196,25 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.lastName = splittedFullName.slice(-1).join(' ');
     this.authorForm.controls['firstName'].setValue(this.firstName);
     this.authorForm.controls['lastName'].setValue(this.lastName);
-  }
-
-  onEditTitle(data: string) {
-    if (data == 'h1') {
-      this.showEditIcon = true;
-    } else if (data == 'h3') {
-      this.showEditIcon1 = true;
-    } else {
-      this.showEditIcon = false;
-      this.showEditIcon1 = false;
-    }
     this.showEditModeIcons = true;
   }
+
+  // onEditTitle(data: string) {
+  //   if (data == 'h1') {
+  //     this.showEditIcon = true;
+  //   } else if (data == 'h3') {
+  //     this.showEditIcon1 = true;
+  //   } else {
+  //     this.showEditIcon = false;
+  //     this.showEditIcon1 = false;
+  //   }
+  //   this.showEditModeIcons = true;
+  // }
 
   changeBio(event) {
     this.bio = event.target.textContent;
     this.authorForm.controls['bio'].setValue(this.bio);
+    this.showEditModeIcons = true;
   }
 
   tabChange(e) {
@@ -220,12 +225,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditMode(flag: boolean) {
+  onEditMode(flag: boolean, fullName?, bio? ) {
     this.listType = this.author.listView ? 'single' : 'grid';
     this.editMode = flag;
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
+    console.log(flag);
+    if (!flag) {
+      fullName.textContent = this.setAuthorName();
+      bio.textContent = this.author.bio || 'Write a short bio';
+    }
   }
 
   getDrafts() {
@@ -289,19 +299,19 @@ export class AuthorComponent implements OnInit, OnDestroy {
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;
-    const contentObservable =  this.isCurrentUser ?  this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount) : this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
+    const contentObservable = this.isCurrentUser ? this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount) : this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
     contentObservable.pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(
-          (data: any) => {
-            this.seeMoreChecker = data.more;
-            this.seeMoreLoading = false;
-            this.publishedContent = this.publishedContent.concat(data.data);
-            this.calculateLastStoriUri();
-            this.blockInfiniteScroll = false;
-          }
-        );
+      takeUntil(this.unsubscribe$)
+    )
+      .subscribe(
+        (data: any) => {
+          this.seeMoreChecker = data.more;
+          this.seeMoreLoading = false;
+          this.publishedContent = this.publishedContent.concat(data.data);
+          this.calculateLastStoriUri();
+          this.blockInfiniteScroll = false;
+        }
+      );
   }
 
   setAuthorName() {
@@ -318,12 +328,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.currentImage = e.target.result;
           this.photo = input.files[0];
           // if (this.photo) {
-            // this.reseting = false;
-            // if (this.accountService.accountInfo.firstName === '' ||
-            //   this.authorForm.controls['firstName'].value &&
-            //   this.authorForm.controls['firstName'].value.trim() !== '') {
-              // this.disableSaveBtn = false;
-            // }
+          // this.reseting = false;
+          // if (this.accountService.accountInfo.firstName === '' ||
+          //   this.authorForm.controls['firstName'].value &&
+          //   this.authorForm.controls['firstName'].value.trim() !== '') {
+          // this.disableSaveBtn = false;
+          // }
           // }
         }
       };
@@ -352,13 +362,13 @@ export class AuthorComponent implements OnInit, OnDestroy {
     formData.append('listView', (this.listType == 'single') ? 'true' : '');
 
     this.accountService.updateAccount(formData)
-    .subscribe(data => {
-      this.editMode = false;
-      this.showEditModeIcons = false;
-      // this.disableSaveBtn = true;
-      // const message = this.translationService.instant('success');
-      // this.notification.success(message['account_updated']);
-    });
+      .subscribe(data => {
+        this.editMode = false;
+        this.showEditModeIcons = false;
+        // this.disableSaveBtn = true;
+        // const message = this.translationService.instant('success');
+        // this.notification.success(message['account_updated']);
+      });
   }
 
   ngOnDestroy() {

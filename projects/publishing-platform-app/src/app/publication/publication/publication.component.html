@@ -143,12 +143,12 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single type="role" (onRoleClick)="roleClick($event)" (onUserClick)="userClick($event)" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }"
+                    [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]" *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
             </div>
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single type="role" (onRoleClick)="roleClick($event)" (onUserClick)="userClick($event)" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }"
+                    [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]" *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
             </div>
         </div>
     </div>

@@ -247,6 +247,14 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  roleClick(e) {
+    console.log(e);
+  }
+
+  userClick(e) {
+    console.log(e);
+  }
+
   showCover() {
     this.publication.hideCover = '';
     this.edit();

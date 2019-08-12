@@ -54,11 +54,11 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
-                        <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h1')" [textContent]="fullName" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon && isCurrentUser}"></span>
+                        <span [attr.contenteditable]="isCurrentUser" [textContent]="fullName" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon && isCurrentUser}" #fullNameText></span>
                         <i class="icon-edit editable-icon" *ngIf="editMode || showEditIcon && isCurrentUser"></i>
                     </h1>
                     <h3 class="profile-metadata__bio">
-                        <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h3')" (input)="changeBio($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}">{{(!author.bio && isCurrentUser) ? 'Write a short bio' : author.bio}}</span>
+                        <span [attr.contenteditable]="isCurrentUser" (input)="changeBio($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #bioText>{{(!author.bio && isCurrentUser) ? 'Write a short bio' : author.bio}}</span>
                         <i *ngIf="editMode || showEditIcon1 && isCurrentUser" class="icon-edit editable-icon"></i>
                     </h3>
                 </div>
@@ -69,7 +69,7 @@
                             <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode && !showEditModeIcons">
                                 <i class="icon-settings"></i>
                             </div>
-                            <div class="button button--icon" *ngIf="editMode || showEditModeIcons" (click)="onEditMode(false)">
+                            <div class="button button--icon" *ngIf="editMode || showEditModeIcons" (click)="onEditMode(false, fullNameText, bioText)">
                                 <i class="icon-close close-edit"></i>
                             </div>
                         </ng-container>
