@@ -36,6 +36,15 @@ export class PublicationComponent implements OnInit, OnDestroy {
       value: 'hide-cover',
     },
   ];
+  public pubSelectData = [
+    { 'value': '2',
+      'text': 'Editor',
+    },
+    { 'value': '3',
+      'text': 'Contributor',
+    }
+
+  ];
   public publicationForm: FormGroup;
   public isMyPublication = false;
   public editMode = false;
@@ -65,6 +74,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   logoFile: File;
   deleteLogo = '0';
   deleteCover = '0';
+  showInviteModal: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -131,6 +141,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+  }
+
+  onFollow(flag: boolean) {
+    this.showInviteModal = flag;
   }
 
   setEditMode(mode = true, title, description) {
