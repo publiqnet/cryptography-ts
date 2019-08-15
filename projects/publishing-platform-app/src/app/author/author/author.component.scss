@@ -345,6 +345,11 @@
   .button--icon{
     margin: 0 0 0 10px;
   }
+  ::ng-deep {
+    .button.author-close-icon.button--icon {
+      margin-left: 10px;
+    }
+  }
 }
 .datum {
   display: inline-flex;
