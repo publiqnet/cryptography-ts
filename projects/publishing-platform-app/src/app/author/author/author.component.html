@@ -55,7 +55,6 @@
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
                       <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h1')" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #authorName>{{(!author.fullName && isCurrentUser) ? 'Add your name' : author.fullName}}</span>
-
                       <i class="icon-edit editable-icon" *ngIf="editMode || showEditIcon && isCurrentUser"></i>
                     </h1>
                     <h3 class="profile-metadata__bio">
@@ -101,6 +100,7 @@
                     <span class="datum__value">{{author && author.subscribersCount ? author.subscribersCount : 0}}</span>
                     <span class="datum__descriptor">Followers</span>
                 </div>
+            </div>
 
             </div>
         </div>
@@ -117,14 +117,14 @@
                 <p>Choose the way your readers will see your stories.</p>
               </div>
               <div class="grid-style__choose__item">
-                                    <span (click)="listType = 'grid'">
-                <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
-                <small>Grid</small>
-              </span>
+                <span (click)="listType = 'grid'">
+                  <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                  <small>Grid</small>
+                </span>
                 <span (click)="listType = 'single'">
-                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
-                <small>List</small>
-              </span>
+                  <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                  <small>List</small>
+                </span>
               </div>
             </div>
           </div>

@@ -11,21 +11,22 @@
             </div>
             <div class="publication-cover__actions" *ngIf="isMyPublication && !imageLoaded">
                 <label for="addCover">
-                    <div class="cover__upload">
-                            <input type="file" (change)="uploadCover($event, coverContainer)">
-                            <ui-button iconClassName="picture" text="Upload">
-                                </ui-button>
-                    </div>
-                </label>
+          <div class="cover__upload">
+            <input type="file" (change)="uploadCover($event, coverContainer)">
+            <ui-button iconClassName="picture" text="Upload">
+            </ui-button>
+          </div>
+        </label>
                 <ui-dropdown-list [isDark]="true" (onItemSelect)="dropdownSelect($event)" delta="0" position="top" icon="menu" [items]="coverMenuItems"></ui-dropdown-list>
                 <!-- <ui-button [iconButton]="true" size="small" iconClassName="menu"></ui-button> -->
                 <!-- <div class="button">
-                    <i class="icon-picture"></i>
-                    <span>Upload</span>
-                </div> -->
+            <i class="icon-picture"></i>
+            <span>Upload</span>
+        </div> -->
                 <!-- <div class="button button--icon button--icon--small">
-                    <i class="icon-menu"></i>
-                </div> -->
+            <i class="icon-me
+          nu"></i>
+        </div> -->
             </div>
         </div>
     </div>
@@ -35,7 +36,8 @@
         </div>
     </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
-        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [class.publication-metadata__avatar--editable]="editMode">
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [ngClass]="{'publication-metadata__avatar--editable' : editMode,
+                      'publication-metadata__avatar--editable-no-img' : editMode && publication?.logo}">
             <input *ngIf="editMode" type="file" (change)="uploadLogo($event)">
             <ui-avatar size="large" [isSquaric]="true" [avatarData]="logoData"></ui-avatar>
             <i class="icon-close" *ngIf="editMode && publication?.logo" (click)="removeLogo()"></i>
@@ -52,11 +54,11 @@
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
                 </ng-container>
             </ng-container>
-            <ui-button type="primary" iconClassName="follow" text="Follow" [isFollowing]="false" *ngIf="!isMyPublication"></ui-button>
+            <ui-button type="primary" iconClassName="follow" text="Follow" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
             <!-- <div class="button button--primary">
-                <i class="icon-follow"></i>
-                <span>Follow</span>
-            </div> -->
+          <i class="icon-follow"></i>
+          <span>Follow</span>
+      </div> -->
         </div>
     </div>
     <div class="row publication-statistics" [class.editable-disabled]="editMode">
@@ -80,8 +82,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode">
+        <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode" *ngIf="searchForm">
             <ui-tab type="buttons" *ngIf="isMyPublication" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+            <form class="form" novalidate [formGroup]="searchForm">
+                <div class="invite-member-space" *ngIf="activeTab === 'members'">
+                    <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
+                    <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
+                        <p>To add members search by name or type email to invite.</p>
+                        <ui-input [type]="'text'" formControlName="members"></ui-input>
+                        <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData"></ui-dropdown>
+                        <div class="custom-modal__buttons">
+                            <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
+                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'"></ui-button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <div class="row">
@@ -94,11 +110,13 @@
                     </div>
                     <div class="grid-style__choose__item">
                         <span>
-                <i (click)="changeListType('grid')" class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                <i (click)="changeListType('grid')" class="grid-icon icon-multi-grid"
+                   [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                 <small>Grid</small>
               </span>
                         <span>
-                <i (click)="changeListType('single')" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                <i (click)="changeListType('single')" class="grid-icon icon-single-grid"
+                   [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 <small>List</small>
               </span>
                     </div>
@@ -107,19 +125,19 @@
         </div>
     </div>
     <!-- <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2">
-            <div class="grid-style">
-                    <div>
-                        <h4>Grid style</h4>
-                        <p>Choose the way your readers will see your stories.</p>
-                    </div>
-                    <div>
-                        <i class="grid-icon grid-icon--selected icon-multi-grid"></i>
-                        <i class="grid-icon icon-single-grid"></i>
-                    </div>
-                </div>
-            </div>
-    </div> -->
+      <div class="col-12 col-lg-8 offset-lg-2">
+          <div class="grid-style">
+                  <div>
+                      <h4>Grid style</h4>
+                      <p>Choose the way your readers will see your stories.</p>
+                  </div>
+                  <div>
+                      <i class="grid-icon grid-icon--selected icon-multi-grid"></i>
+                      <i class="grid-icon icon-single-grid"></i>
+                  </div>
+              </div>
+          </div>
+  </div> -->
     <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
@@ -135,7 +153,6 @@
                 <i class="icon-search"></i>
                 <input type="text">
             </div>
-            <ui-button text="Invite Member"></ui-button>
         </div>
     </div>
 </div>
