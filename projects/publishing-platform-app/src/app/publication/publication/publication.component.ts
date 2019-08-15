@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
 import { ReplaySubject } from 'rxjs';
@@ -36,7 +36,19 @@ export class PublicationComponent implements OnInit, OnDestroy {
       value: 'hide-cover',
     },
   ];
+  public pubSelectData = [
+    {
+      'value': '2',
+      'text': 'Editor',
+    },
+    {
+      'value': '3',
+      'text': 'Contributor',
+    }
+
+  ];
   public publicationForm: FormGroup;
+  public searchForm: FormGroup;
   public isMyPublication = false;
   public editMode = false;
   public imageLoaded = false;
@@ -50,7 +62,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
-
+  searchedMembers = [];
   public activeTab = 'stories';
   public membersActiveTab = 'requests';
   loading = true;
@@ -65,6 +77,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   logoFile: File;
   deleteLogo = '0';
   deleteCover = '0';
+  showInviteModal: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -104,6 +117,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.buildSearchForm();
+    this.searchForm.controls['members'].valueChanges
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        mergeMap(
+          res => this.accountService.searchAccountByTerm(res)
+        ))
+      .subscribe(
+        res => {
+          console.log(res);
+          this.searchedMembers = res;
+        }
+      );
+
     this.route.params
       .pipe(
         debounceTime(500),
@@ -131,6 +159,29 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+  }
+
+  inviteModal(flag: boolean) {
+    this.showInviteModal = flag;
+  }
+
+  invite() {
+    const body = [{
+      publicKey: this.searchedMembers[0].publicKey,
+      email: this.searchedMembers[0].email,
+      asEditor: this.searchForm.value.status == '2'
+    }];
+    this.publicationService.inviteBecomeMember(body, this.publication.slug).subscribe(
+      res => {
+        console.log(res);
+      }
+    );
+  }
+
+  follow() {
+    this.publicationService.follow(this.publication.slug).subscribe(
+      res => this.publication.following = !this.publication.following
+    );
   }
 
   setEditMode(mode = true, title, description) {
@@ -268,6 +319,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     },
       { validator: ValidationService.noSpaceValidator }
     );
+  }
+
+  private buildSearchForm() {
+    this.searchForm = this.formBuilder.group({
+      status: new FormControl('', []),
+      members: new FormControl('', []),
+    });
   }
 
   ngOnDestroy() {

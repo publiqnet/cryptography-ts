@@ -18,7 +18,7 @@
                 </h3>
                 <div *ngIf="author && !isCurrentUser; else settings" class="text-center text-md-left mt-3">
                     <!-- (click)="(canFollow ? follow() : unfollow())" -->
-                    <div [ngClass]="{'follow-button': true}">
+                    <div  >
                         <i class="mr-2" [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
                         <span>{{(canFollow ? 'author.follow' : 'author.unfollow') | translate}}</span>
                     </div>
@@ -102,35 +102,34 @@
                     <span class="datum__value">{{author && author.subscribersCount ? author.subscribersCount : 0}}</span>
                     <span class="datum__descriptor">Followers</span>
                 </div>
+            </div>
 
-                <div class="row" *ngIf="editMode">
-                    <div class="col-12 col-lg-8 offset-lg-2">
-                        <div class="grid-style grid-style--custom">
-                            <div class="grid-style__info">
-                                <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
-                            </div>
-                            <div class="grid-style__choose">
-                                <div>
-                                    <h4>Grid style</h4>
-                                    <p>Choose the way your readers will see your stories.</p>
-                                </div>
-                                <div class="grid-style__choose__item">
+        </div>
+      <div class="row" *ngIf="editMode">
+      <div class="col-12 col-lg-8 offset-lg-2">
+        <div class="grid-style grid-style--custom">
+          <div class="grid-style__info">
+            <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
+          </div>
+          <div class="grid-style__choose">
+            <div>
+              <h4>Grid style</h4>
+              <p>Choose the way your readers will see your stories.</p>
+            </div>
+            <div class="grid-style__choose__item">
                                     <span (click)="listType = 'grid'">
                 <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                 <small>Grid</small>
               </span>
-                                    <span (click)="listType = 'single'">
+              <span (click)="listType = 'single'">
                 <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 <small>List</small>
               </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+          </div>
         </div>
+      </div>
+    </div>
 
         <div class="container">
             <div class="row">
