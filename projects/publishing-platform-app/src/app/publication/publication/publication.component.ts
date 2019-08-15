@@ -11,6 +11,7 @@ import { UtilService } from '../../core/services/util.service';
 import { Content } from '../../core/services/models/content';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 
 @Component({
@@ -85,7 +86,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private publicationService: PublicationService,
     public utilService: UtilService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public uiNotificationService: UiNotificationService
   ) {
     this.b();
   }
@@ -270,7 +272,16 @@ export class PublicationComponent implements OnInit, OnDestroy {
       (result: Publication) => {
         this.editMode = false;
         this.textChanging = false;
+        this.imageLoaded = false;
         this.publication = result;
+        this.uiNotificationService.success('Success', 'Your publication successfully updated');
+      },
+      err => {
+        this.editMode = false;
+        this.textChanging = false;
+        this.imageLoaded = false;
+        this.uiNotificationService.error('Error', err.error.content);
+
       }
     );
   }
