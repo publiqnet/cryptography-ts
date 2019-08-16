@@ -45,6 +45,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   canFollow = true;
   isCurrentUser = false;
   articlesLoaded = false;
+  editTitleIcon: boolean = false;
+  editBioIcon: boolean = false;
   public publishedContent: Content[] = [];
   public loading = true;
   listType = 'grid';
@@ -76,10 +78,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
   ];
   author: Account;
   currentImage: string;
-  fullName: String;
-  firstName: String;
-  lastName: String;
-  bio: String;
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  bio: string;
   photo: File;
   editMode: boolean = false;
 
@@ -119,6 +121,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.author = author;
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
+          this.bio = this.author.bio;
           this.listType = this.author.listView ? 'single' : 'grid';
           this.setAuthorName();
           if (this.author.image) {
@@ -189,6 +192,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   fullNameChange(event) {
+    this.showEditModeIcons = true;
+    this.editTitleIcon = true;
     this.fullName = event.target.textContent;
     const splittedFullName = this.fullName.split(' ');
     this.firstName = splittedFullName.slice(0, -1).join(' ');
@@ -200,6 +205,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   changeBio(event) {
+    this.showEditModeIcons = true;
+    this.editBioIcon = true;
     this.bio = event.target.textContent;
     if (this.bio !== this.author.bio) {
       this.authorForm.controls['bio'].setValue(this.bio);
@@ -209,6 +216,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   resetValues() {
     this.bioText.nativeElement.textContent = this.author.bio;
     this.authorName.nativeElement.textContent = this.author.fullName;
+    this.currentImage = this.author.image;
     this.authorForm.controls['firstName'].setValue(this.author.firstName);
     this.authorForm.controls['lastName'].setValue(this.author.lastName);
     this.authorForm.controls['bio'].setValue(this.author.bio);
@@ -217,18 +225,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
-  }
-
-  onEditTitle(data: string) {
-    if (data == 'h1') {
-      this.showEditIcon = true;
-    } else if (data == 'h3') {
-      this.showEditIcon1 = true;
-    } else {
-      this.showEditIcon = false;
-      this.showEditIcon1 = false;
-    }
-    this.showEditModeIcons = true;
+    this.editTitleIcon = false;
+    this.editBioIcon = false;
   }
 
   tabChange(e) {
@@ -330,6 +328,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   showUploadedImage(event) {
+    this.showEditModeIcons = true;
     const input = event.target;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
@@ -364,6 +363,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.accountService.updateAccount(formData)
     .subscribe(data => {
       this.editMode = false;
+      this.editTitleIcon = false;
+      this.editBioIcon = false;
       this.showEditModeIcons = false;
     });
   }
