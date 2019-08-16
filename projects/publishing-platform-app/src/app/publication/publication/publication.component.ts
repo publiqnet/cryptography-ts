@@ -129,7 +129,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         ))
       .subscribe(
         res => {
-          console.log(res);
           this.searchedMembers = res;
         }
       );
@@ -152,7 +151,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.publication = pub;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
-        console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
         this.getPublicationStories();
         if (this.publication.logo) {
@@ -182,7 +180,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   follow() {
     this.publicationService.follow(this.publication.slug).subscribe(
-      res => this.publication.following = !this.publication.following
+      () => this.publication.following = !this.publication.following
     );
   }
 
@@ -202,7 +200,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  uploadCover(event, container) {
+  uploadCover(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
       const myReader: FileReader = new FileReader();
@@ -239,7 +237,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: { data: Content[], more: boolean }) => {
-        console.log(data);
         this.stories = data.data;
       });
   }
@@ -247,12 +244,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   changeListType(type) {
     this.listType = type;
   }
-
-  // saveEdition(title, description) {
-  //   this.publication.title = title;
-  //   this.publication.description = description;
-  //   this.edit();
-  // }
 
   edit() {
     const formData = new FormData();
@@ -281,7 +272,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.textChanging = false;
         this.imageLoaded = false;
         this.uiNotificationService.error('Error', err.error.content);
-
       }
     );
   }
@@ -297,7 +287,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   dropdownSelect($event) {
-    console.log($event);
     if ($event == 'delete') {
       this.deleteCover = '1';
       this.coverFile = null;
@@ -317,6 +306,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   removeLogo() {
     this.deleteLogo = '1';
     this.logoFile = null;
+    this.publication.logo = '';
     this.logoData = {};
   }
 
