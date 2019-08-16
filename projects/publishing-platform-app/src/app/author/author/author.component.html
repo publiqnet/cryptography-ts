@@ -50,8 +50,8 @@
           <div class="profile-metadata__hover" [ngClass]="{'hover-avatar' : isCurrentUser}">
             <ui-avatar [size]="'large'"
                        [avatarData]="{'image': getCurrentImage(), 'fullName': author.fullName}"></ui-avatar>
-            <i class="icon-close" [ngClass]="{'icon-close--hover' : currentImage && isCurrentUser && editMode}"
-               *ngIf="editMode"></i>
+            <i class="icon-close" [ngClass]="{'icon-close--hover' : (currentImage !== author.image) && isCurrentUser}"
+               (click)="resetCurrentImage()"></i>
             <label class="profile-metadata__hover__upload" for="profilePic">
               <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic">
               <i class="icon-camera"></i>
@@ -110,27 +110,28 @@
       </div>
     </div>
   </div>
-
-  <div class="row" *ngIf="editMode">
-    <div class="col-12 col-lg-8 offset-lg-2">
-      <div class="grid-style grid-style--custom">
-        <div class="grid-style__info">
-          <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
-        </div>
-        <div class="grid-style__choose">
-          <div>
-            <h4>Grid style</h4>
-            <p>Choose the way your readers will see your stories.</p>
+  <div class="container" *ngIf="isCurrentUser">
+    <div class="row" *ngIf="editMode">
+      <div class="col-12 col-lg-8 offset-lg-2">
+        <div class="grid-style grid-style--custom">
+          <div class="grid-style__info">
+            <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
           </div>
-          <div class="grid-style__choose__item">
+          <div class="grid-style__choose">
+            <div>
+              <h4>{{listType | titlecase}} style</h4>
+              <p>Choose the way your readers will see your stories.</p>
+            </div>
+            <div class="grid-style__choose__item">
             <span (click)="listType = 'grid'">
               <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
               <small>Grid</small>
             </span>
-            <span (click)="listType = 'single'">
-                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+              <span (click)="listType = 'list'">
+                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'list')}"></i>
                 <small>List</small>
             </span>
+            </div>
           </div>
         </div>
       </div>

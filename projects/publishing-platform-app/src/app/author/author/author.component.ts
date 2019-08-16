@@ -82,6 +82,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   firstName: string;
   lastName: string;
   bio: string;
+  email: string;
   photo: File;
   editMode: boolean = false;
 
@@ -122,7 +123,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
           this.bio = this.author.bio;
-          this.listType = this.author.listView ? 'single' : 'grid';
+          this.email = this.author.email;
+          this.listType = this.author.listView ? 'list' : 'grid';
           this.setAuthorName();
           if (this.author.image) {
             this.avatarUrl = this.author.image;
@@ -220,13 +222,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.authorForm.controls['firstName'].setValue(this.author.firstName);
     this.authorForm.controls['lastName'].setValue(this.author.lastName);
     this.authorForm.controls['bio'].setValue(this.author.bio);
-    this.listType = this.author.listView ? 'single' : 'grid';
+    this.listType = this.author.listView ? 'list' : 'grid';
     this.editMode = false;
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
     this.editTitleIcon = false;
     this.editBioIcon = false;
+  }
+
+  resetCurrentImage() {
+    this.currentImage = this.author.image;
   }
 
   tabChange(e) {
@@ -238,7 +244,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   onEditMode(flag: boolean) {
-    this.listType = this.author.listView ? 'single' : 'grid';
+    this.listType = this.author.listView ? 'list' : 'grid';
     this.editMode = flag;
     this.showEditModeIcons = false;
     this.showEditIcon = false;
@@ -358,7 +364,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     formData.append('firstName', this.authorForm.controls['firstName'].value);
     formData.append('lastName', this.authorForm.controls['lastName'].value);
     formData.append('bio', this.authorForm.controls['bio'].value);
-    formData.append('listView', (this.listType == 'single') ? 'true' : '');
+    formData.append('listView', (this.listType == 'sinlistgle') ? 'true' : '');
 
     this.accountService.updateAccount(formData)
     .subscribe(data => {
