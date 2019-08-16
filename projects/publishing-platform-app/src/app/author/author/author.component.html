@@ -2,7 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 <ng-container *ngIf="false">
-  <div class="author-header-wrap profile-bg" *ngIf="!loadingAuthor" style="    background: white;">
+  <div class="author-header-wrap profile-bg" *ngIf="!loadingAuthor" style="background: #fff;">
     <div class="inner-wrap title-wrap">
       <div class="background vh-centered"></div>
 
@@ -23,7 +23,6 @@
           <span>{{author && author.views ? author.views : 0}}</span>
         </h3>
         <div *ngIf="author && !isCurrentUser; else settings" class="text-center text-md-left mt-3">
-          <!-- (click)="(canFollow ? follow() : unfollow())" -->
           <div [ngClass]="{'follow-button': true}">
             <i class="mr-2" [ngClass]="canFollow ? 'icon-follow' : 'icon-unfollow'"></i>
             <span>{{(canFollow ? 'author.follow' : 'author.unfollow') | translate}}</span>
@@ -48,51 +47,44 @@
     <form class="form" *ngIf="authorForm" novalidate (ngSubmit)="onSubmit()" [formGroup]="authorForm">
       <div class="row profile-metadata">
         <div class="col-2 profile-metadata__avatar profile-metadata__avatar--editable">
-          <div class="profile-metadata__hover" [ngClass]="{'hover-avatar' : isCurrentUser && editMode}">
+          <div class="profile-metadata__hover" [ngClass]="{'hover-avatar' : isCurrentUser}">
             <ui-avatar [size]="'large'"
                        [avatarData]="{'image': getCurrentImage(), 'fullName': author.fullName}"></ui-avatar>
-            <i class="icon-close" [ngClass]="{'icon-close--hover' : currentImage && isCurrentUser && editMode}"
-               *ngIf="editMode"></i>
-            <label class="profile-metadata__hover__upload" for="profilePic" *ngIf="editMode">
+            <i class="icon-close" [ngClass]="{'icon-close--hover' : (currentImage !== author.image) && isCurrentUser}"
+               (click)="resetCurrentImage()"></i>
+            <label class="profile-metadata__hover__upload" for="profilePic">
               <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic">
               <i class="icon-camera"></i>
               <small>Upload</small>
             </label>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-7 col-10">
-          <h1 class="profile-metadata__fullname">
-            <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h1')" (input)="fullNameChange($event)"
-                  [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}"
-                  #authorName>{{(!author.fullName && isCurrentUser) ? 'Add your name' : author.fullName}}</span>
-
-            <i class="icon-edit editable-icon" *ngIf="editMode || showEditIcon && isCurrentUser"></i>
-          </h1>
-          <h3 class="profile-metadata__bio">
-            <span [attr.contenteditable]="isCurrentUser" (click)="onEditTitle('h3')" (input)="changeBio($event)"
-                  [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}"
-                  #bioText>{{(!author.bio && isCurrentUser) ? 'Writing a short bio' : author.bio}}</span>
-            <i *ngIf="editMode || showEditIcon1 && isCurrentUser" class="icon-edit editable-icon"></i>
-          </h3>
-        </div>
-        <div class="col-lg-2 col-md-3 col-sm-3 col-12">
-          <div class="edit-menu">
-            <ng-container *ngIf="isCurrentUser">
-              <ui-button *ngIf="editMode || showEditModeIcons" [type]="'primary'" [size]="'medium'"
-                         [text]="'Save'"></ui-button>
-              <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode && !showEditModeIcons">
-                <i class="icon-settings"></i>
-              </div>
-              <ui-button [iconButton]="true" [iconClassName]="'close'" (btnClicked)="resetValues()"
-                         *ngIf="editMode || showEditModeIcons" [className]="'author-close-icon'"></ui-button>
-            </ng-container>
-            <div *ngIf="!isCurrentUser">
-              <ui-button [type]="'primary'" [iconClassName]="'follow'" [size]="'medium'" [text]="'Follow'"></ui-button>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-7 col-10">
+                    <h1 class="profile-metadata__fullname">
+                      <span [attr.contenteditable]="isCurrentUser" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #authorName>{{(!author.fullName && isCurrentUser || author.fullName == '') ? 'Add your name' : author.fullName}}</span>
+                      <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
+                    </h1>
+                    <h3 class="profile-metadata__bio">
+                      <span [attr.contenteditable]="isCurrentUser" (input)="changeBio($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #bioText>{{(!author.bio && isCurrentUser) ? 'Writing a short bio' : author.bio}}</span>
+                      <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
+                    </h3>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-3 col-12">
+                    <div class="edit-menu">
+                        <ng-container *ngIf="isCurrentUser">
+                            <ui-button *ngIf="editMode || showEditModeIcons" [type]="'primary'" [size]="'medium'" [text]="'Save'"></ui-button>
+                            <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode && !showEditModeIcons">
+                                <i class="icon-settings"></i>
+                            </div>
+                          <ui-button [iconButton]="true" [iconClassName]="'close'" (btnClicked)="resetValues()" *ngIf="editMode || showEditModeIcons" [className]="'author-close-icon'"></ui-button>
+                        </ng-container>
+                        <div *ngIf="!isCurrentUser">
+                            <ui-button [type]="'primary'" [iconClassName]="'follow'" [size]="'medium'" [text]="'Follow'"></ui-button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </form>
+        </form>
 
     <div class="row profile-statistics" [ngClass]="{'editable-disabled' : editMode}">
       <div class="col-lg-2 offset-lg-2 col-3 offset-0">
@@ -118,27 +110,28 @@
       </div>
     </div>
   </div>
-
-  <div class="row" *ngIf="editMode">
-    <div class="col-12 col-lg-8 offset-lg-2">
-      <div class="grid-style grid-style--custom">
-        <div class="grid-style__info">
-          <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
-        </div>
-        <div class="grid-style__choose">
-          <div>
-            <h4>Grid style</h4>
-            <p>Choose the way your readers will see your stories.</p>
+  <div class="container" *ngIf="isCurrentUser">
+    <div class="row" *ngIf="editMode">
+      <div class="col-12 col-lg-8 offset-lg-2">
+        <div class="grid-style grid-style--custom">
+          <div class="grid-style__info">
+            <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
           </div>
-          <div class="grid-style__choose__item">
+          <div class="grid-style__choose">
+            <div>
+              <h4>{{listType | titlecase}} style</h4>
+              <p>Choose the way your readers will see your stories.</p>
+            </div>
+            <div class="grid-style__choose__item">
             <span (click)="listType = 'grid'">
               <i class="grid-icon icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
               <small>Grid</small>
             </span>
-            <span (click)="listType = 'single'">
-                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+              <span (click)="listType = 'list'">
+                <i class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'list')}"></i>
                 <small>List</small>
-              </span>
+            </span>
+            </div>
           </div>
         </div>
       </div>
@@ -149,8 +142,7 @@
     <div class="row">
       <div class="col-lg-8 offset-lg-2 col-xl-9 stories">
         <div style="display: flex; justify-content: space-between">
-          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)"
-                  [tabs]="tabs"></ui-tab>
+          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
           <ng-container *ngIf="selectedTab == '2' && drafts">
             <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'"
                        [className]="'delete-draft'"></ui-button>
@@ -166,7 +158,8 @@
                                (contentClick)="utilService.routerChangeHelper('content',$event)"
                                (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
                                (tagClick)="utilService.routerChangeHelper('tag',$event)" ngxMasonryItem [type]="'grid'"
-                               [contentData]="data"></ui-content-single>
+                               [contentData]="data">
+            </ui-content-single>
           </div>
           <div *ngIf="listType == 'single'">
             <ui-content-single *ngFor="let data of publishedContent" [type]="'single'"
@@ -188,7 +181,7 @@
         </div>
         <div class="no-stories"
              *ngIf="selectedTab && selectedTab == '1' && !loadingAuthor && articlesLoaded && !publishedContent.length">
-          <img src="assets/images/no_story.svg" alt="no story">
+          <img src="assets/images/no_story.svg" alt="no story" />
           <span>No Stories Yet</span>
         </div>
         <div *ngIf="selectedTab == '2' && drafts">
@@ -202,3 +195,4 @@
       </div>
     </div>
   </div>
+</div>
