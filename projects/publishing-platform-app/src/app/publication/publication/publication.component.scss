@@ -21,6 +21,10 @@
     margin-left: 10px;
 }
 
+.searched-members {
+    background: white;
+}
+
 .grid-style {
     display: flex;
     width: 100%;
@@ -216,7 +220,7 @@
 }
 
 .publication-metadata {
-    ::ng-deep .button.button--icon {
+     ::ng-deep .button.button--icon {
         @include media-md {
             width: 30px;
             height: 30px;
@@ -265,41 +269,41 @@
             @extend %line-after;
             left: 0;
         }
-        &--editable-no-img{
-          ::ng-deep .avatar {
-            position: relative;
-            box-shadow: none;
-            &:after {
-              content: '\e918';
-              font-family: 'icomoon';
-              font-size: 20px;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              position: absolute;
-              top: -8px;
-              left: -8px;
-              bottom: -8px;
-              right: -8px;
-              transition: .2s ease-out;
-              opacity: 0;
-              background-color: rgba(#fff, 0.9);
+        &--editable-no-img {
+             ::ng-deep .avatar {
+                position: relative;
+                box-shadow: none;
+                &:after {
+                    content: '\e918';
+                    font-family: 'icomoon';
+                    font-size: 20px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    top: -8px;
+                    left: -8px;
+                    bottom: -8px;
+                    right: -8px;
+                    transition: .2s ease-out;
+                    opacity: 0;
+                    background-color: rgba(#fff, 0.9);
+                }
             }
-          }
-          &:hover{
-            ::ng-deep .avatar {
-              position: relative;
-              box-shadow: none;
-              &:after {
-                opacity: 1;
-                transition: .2s ease-out;
-              }
+            &:hover {
+                 ::ng-deep .avatar {
+                    position: relative;
+                    box-shadow: none;
+                    &:after {
+                        opacity: 1;
+                        transition: .2s ease-out;
+                    }
+                }
+                .icon-close {
+                    opacity: 1;
+                    transition: .2s ease-out;
+                }
             }
-            .icon-close{
-              opacity: 1;
-              transition: .2s ease-out;
-            }
-          }
         }
         &--editable {
              ::ng-deep .avatar {
@@ -321,16 +325,18 @@
                 }
             }
             input {
-                width: 90px; height: 90px;
+                width: 90px;
+                height: 90px;
                 position: absolute;
-                top: 0; right: 20px;
-                z-index: 1; opacity: 0;
+                top: 0;
+                right: 20px;
+                z-index: 1;
+                opacity: 0;
                 cursor: pointer;
-
                 @include media-md {
-                    width: 70px; height: 70px;
+                    width: 70px;
+                    height: 70px;
                 }
-
                 @include media-md-only {
                     right: 25px;
                 }
@@ -344,12 +350,12 @@
                 opacity: 0;
                 transition: .2s ease-out;
             }
-          &:hover{
-            .icon-close{
-              opacity: 1;
-              transition: .2s ease-out;
+            &:hover {
+                .icon-close {
+                    opacity: 1;
+                    transition: .2s ease-out;
+                }
             }
-          }
         }
         @include media-lg {
             text-align: left;
@@ -400,11 +406,10 @@
 }
 
 .publication-show-cover {
-    > div {
+    >div {
         text-align: right;
         padding: 10px 0 20px;
-
-        ::ng-deep {
+         ::ng-deep {
             .button {
                 background-color: pbq-color($blue, 300);
                 border: none;
@@ -612,76 +617,80 @@
         margin: 0 0 20px;
     }
 }
-.invite-member-space{
-  display: inline;
-  width: auto;
-  ::ng-deep &__dropdown{
-    max-width: 100%!important;
-    margin-top: 10px;
-  }
-}
-::ng-deep .invite-member-space__dropdown{
-  width: 100%;
-  background-color: #f7f8f9!important;
-  max-height: 50px;
-  font: 16px/20px "Open Sans",sans-serif;
-  border-radius: 10px;
-  transition: background-color .3s;
-  .dropdown__select{
-    padding: 15px 16px!important;
-  }
-}
-.tabber-container{
-  display: flex;
-  justify-content: space-between;
-}
-.custom-modal{
-  background: #FFFFFF;
-  border: 1px solid #DEE2E6;
-  box-sizing: border-box;
-  box-shadow: -1px 20px 40px rgba(0, 0, 0, 0.0528573);
-  border-radius: 10px;
-  padding: 18px 25px;
-  visibility: hidden;
-  user-select: none;
-  pointer-events: none;
-  opacity: 0;
-  transition: .3s ease-out;
-  position: absolute;
-  right: 0;
-  z-index: 3;
-  max-width: 360px;
-  width: 100%;
-  bottom: 70px;
-  &--visible{
-    visibility: visible;
-    user-select: auto;
-    pointer-events: auto;
-    opacity: 1;
-    transition: .3s ease-out;
-  }
-  p{
-    font-style: normal;
-    font-weight: bold;
-    font-size: 13px;
-    line-height: 17px;
-    color: #2B2B2B;
-    margin: 0 0 33px;
-  }
-  &__buttons{
-    display: flex;
-    margin-top: 20px;
 
-    > ui-button{
-      flex: 1!important;
-      &:first-child{
-        margin-right: 10px;
-      }
+.invite-member-space {
+    display: inline;
+    width: auto;
+     ::ng-deep &__dropdown {
+        max-width: 100%!important;
+        margin-top: 10px;
     }
-  }
 }
-::ng-deep .cancel-modal{
-  width: 100%;
-  max-width: 100%;
-  border: none;
+
+::ng-deep .invite-member-space__dropdown {
+    width: 100%;
+    background-color: #f7f8f9!important;
+    max-height: 50px;
+    font: 16px/20px "Open Sans", sans-serif;
+    border-radius: 10px;
+    transition: background-color .3s;
+    .dropdown__select {
+        padding: 15px 16px!important;
+    }
+}
+
+.tabber-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.custom-modal {
+    background: #FFFFFF;
+    border: 1px solid #DEE2E6;
+    box-sizing: border-box;
+    box-shadow: -1px 20px 40px rgba(0, 0, 0, 0.0528573);
+    border-radius: 10px;
+    padding: 18px 25px;
+    visibility: hidden;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0;
+    transition: .3s ease-out;
+    position: absolute;
+    right: 0;
+    z-index: 3;
+    max-width: 360px;
+    width: 100%;
+    bottom: 70px;
+    &--visible {
+        visibility: visible;
+        user-select: auto;
+        pointer-events: auto;
+        opacity: 1;
+        transition: .3s ease-out;
+    }
+    p {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 13px;
+        line-height: 17px;
+        color: #2B2B2B;
+        margin: 0 0 33px;
+    }
+    &__buttons {
+        display: flex;
+        margin-top: 20px;
+        >ui-button {
+            flex: 1!important;
+            &:first-child {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+::ng-deep .cancel-modal {
+    width: 100%;
+    max-width: 100%;
+    border: none;
 }

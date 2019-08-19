@@ -63,6 +63,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
+  haveResult: boolean;
   searchedMembers = [];
   public activeTab = 'stories';
   public membersActiveTab = 'requests';
@@ -130,6 +131,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.searchedMembers = res;
+          this.haveResult = true;
+          console.log(this.searchedMembers);
         }
       );
 
