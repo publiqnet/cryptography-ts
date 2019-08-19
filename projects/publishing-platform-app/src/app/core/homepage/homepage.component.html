@@ -4,8 +4,8 @@
             <div class="grid-style">
                 <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
                 <div class="grid-style__items">
-                    <i (click)="listType = 'grid'" class="grid-icon grid-icon--selected icon-multi-grid"></i>
-                    <i (click)="listType = 'single'" class="grid-icon icon-single-grid"></i>
+                    <i (click)="listType = 'grid'" class="grid-icon grid-icon--selected icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
+                    <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
                 </div>
             </div>
         </div>
