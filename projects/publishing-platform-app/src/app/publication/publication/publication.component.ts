@@ -155,6 +155,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
+        console.log(this.publication);
         this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
@@ -185,6 +186,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.publicationService.follow(this.publication.slug).subscribe(
       () => this.publication.following = !this.publication.following
     );
+  }
+
+  becomeMember() {
+
   }
 
   setEditMode(mode = true, title, description) {
