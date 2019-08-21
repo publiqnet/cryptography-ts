@@ -51,6 +51,8 @@ import { ArticleOldComponent } from './article-old/article-old.component';
 import { HomepageOldComponent } from './homepage-old/homepage-old.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { UtilService } from './services/util.service';
+import { UiNotificationService } from './services/ui-notification.service';
+import { NotificationCardComponent } from 'ui-lib';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -122,18 +124,20 @@ export function createTranslateLoader(http: HttpClient) {
         ChannelService,
         LinkService,
         DraftService,
-        UtilService
+        UtilService,
+        UiNotificationService
     ],
     exports: [SharedModule],
     entryComponents: [
       NewstorySubmissionComponent,
       NewstorySubmission2Component,
-        InputPasswordDialogComponent,
-        ConfirmDialogComponent,
-        InfoDialogComponent,
-        AdaptiveDialogComponent,
-        SecurityDialogComponent,
-        CoverEditDialogComponent
+      InputPasswordDialogComponent,
+      ConfirmDialogComponent,
+      InfoDialogComponent,
+      AdaptiveDialogComponent,
+      SecurityDialogComponent,
+      CoverEditDialogComponent,
+      NotificationCardComponent
     ]
 })
 export class CoreModule {

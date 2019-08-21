@@ -44,7 +44,7 @@
 
   > div {
     display: inline-block;
-    
+
     &:not(:last-child) {
       margin-right: 20px;
     }
@@ -169,8 +169,8 @@
         transition: .2s ease-out;
       }
     }
-    i.selected{
-      color: #2B2B2B;
+    i.grid-icon--selected{
+      color: #3366FF;
     }
   }
 }
