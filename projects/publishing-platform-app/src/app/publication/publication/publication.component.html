@@ -93,13 +93,13 @@
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
                         <ui-input [type]="'text'" formControlName="members"></ui-input>
-                        <div class="searched-members" *ngIf="searchedMembers && haveResult">
+                        <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
                             <ul>
                                 <li *ngFor="let member of searchedMembers">
                                     {{member.fullName}}
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData"></ui-dropdown>
                         <div class="custom-modal__buttons">
                             <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
