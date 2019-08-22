@@ -13,19 +13,15 @@ import { ValidationService } from '../../core/validator/validator.service';
 export class PublicationModalComponent implements OnInit, OnDestroy {
   @Output() onCloseModal = new EventEmitter<boolean>();
   @Input() modalType: string;
+  @Input() invitations = [];
   public publicationForm: FormGroup;
   public titleMaxLenght = 120;
-  title = '';
-  description = '';
   coverImage: any;
   logoImage: any;
   coverFile: File;
   logoFile: File;
   loading = false;
   slug: string;
-  deleteLogo = '0';
-  deleteCover = '0';
-  isEditing: boolean;
   fileUploadError: string;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -88,7 +84,8 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     this.buildForm();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   closePopup(close: boolean) {
     this.publicationForm.reset();
@@ -103,28 +100,14 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     const formData = new FormData();
-    if (this.isEditing) {
-      formData.append('title', this.publicationForm.value.title);
-      formData.append('description', this.publicationForm.value.description);
-      if (this.coverFile) {
-        formData.append('cover', this.coverFile);
-      }
-      if (this.logoFile) {
-        formData.append('logo', this.logoFile);
-      }
-      formData.append('deleteLogo', this.deleteLogo);
-      formData.append('deleteCover', this.deleteCover);
-    } else {
-      formData.append('title', this.publicationForm.value.title);
-      formData.append('description', this.publicationForm.value.description);
-      if (this.coverFile) {
-        formData.append('cover', this.coverFile, this.coverFile.name);
-      }
-      if (this.logoFile) {
-        formData.append('logo', this.logoFile, this.logoFile.name);
-      }
+    formData.append('title', this.publicationForm.value.title);
+    formData.append('description', this.publicationForm.value.description);
+    if (this.coverFile) {
+      formData.append('cover', this.coverFile, this.coverFile.name);
     }
-
+    if (this.logoFile) {
+      formData.append('logo', this.logoFile, this.logoFile.name);
+    }
     this.publicationService.createPublication(formData)
       .pipe(
         takeUntil(this.unsubscribe$)
@@ -201,10 +184,26 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     this.publicationForm.controls['logo'].reset();
   }
 
+  answer(e) {
+    if (e.answer) {
+      this.publicationService.acceptInvitationBecomeMember(e.publicationSlug).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    } else {
+      this.publicationService.rejectInvitationBecomeMember(e.publicationSlug).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    }
+  }
+
   private buildForm(): void {
     this.publicationForm = this.FormBuilder.group({
-      description: new FormControl(this.description, [ValidationService.required, Validators.maxLength(160)]),
-      title: new FormControl(this.title, [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
+      description: new FormControl('', [ValidationService.required, Validators.maxLength(160)]),
+      title: new FormControl('', [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
       logo: new FormControl()
     });
