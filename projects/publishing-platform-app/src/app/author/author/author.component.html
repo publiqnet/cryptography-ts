@@ -115,7 +115,7 @@
       <div class="col-12 col-lg-8 offset-lg-2">
         <div class="grid-style grid-style--custom">
           <div class="grid-style__info">
-            <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
+            <h4>Your email: <span class="lighten">{{email}}</span></h4>
           </div>
           <div class="grid-style__choose">
             <div>
@@ -191,6 +191,9 @@
                       (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
           </div>
           <ng-template #no_content></ng-template>
+        </div>
+        <div *ngIf="selectedTab == '3'">
+          <p>Settings tab worked!</p>
         </div>
       </div>
     </div>

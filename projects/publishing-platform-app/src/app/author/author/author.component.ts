@@ -104,6 +104,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.accountService.getAccountData().subscribe(
+      data => {
+        this.email = data.email;
+      }
+    );
     this.activatedRoute.params
       .pipe(
         debounceTime(500),
@@ -123,7 +128,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
           this.bio = this.author.bio;
-          this.email = this.author.email;
           this.listType = this.author.listView ? 'single' : 'grid';
           this.setAuthorName();
           if (this.author.image) {
