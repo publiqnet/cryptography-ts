@@ -21,7 +21,7 @@
             <div class="create-form__upload">
                 <label class="create-form__upload__pic" for="publicationAvatar">
           <input type="file" accept="image/jpeg,image/png" id="publicationAvatar" formControlName="logo" (change)="selectLogo($event)">
-          <span class="create-form__upload__pic__icon">
+          <span class="create-form__upload__pic__icon" *ngIf="!logoImage">
             <i class="icon icon-plus"></i>
           </span>
           <img class="uploaded-pic" *ngIf="logoImage" src="{{logoImage}}" alt="">
@@ -36,7 +36,7 @@
             <div class="create-form__upload">
                 <label class="create-form__upload__pic" for="publicationCover">
           <input type="file" accept="image/jpeg,image/png" id="publicationCover" formControlName="cover" (change)="selectCover($event)">
-          <span class="create-form__upload__pic__icon">
+          <span class="create-form__upload__pic__icon" *ngIf="!coverImage">
             <i class="icon icon-plus"></i>
           </span>
           <img *ngIf="coverImage" class="uploaded-pic" src="{{coverImage}}" alt="">
