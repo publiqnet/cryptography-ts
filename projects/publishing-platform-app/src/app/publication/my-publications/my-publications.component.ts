@@ -47,7 +47,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .subscribe((data: Publications) => this.PublicationsData = data);
   }
 
-  showCreatePublication(flag: boolean, type: string) {
+  showCreatePublication(flag: boolean, type: string = null) {
     this.showCustomModal = flag;
     this.showModalType = type;
   }
