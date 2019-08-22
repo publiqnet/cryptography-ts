@@ -49,7 +49,7 @@
             </div>
 
             <div class="create-form__button-space">
-                <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'"></ui-button>
+                <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'" (click)="closePopup(false)"></ui-button>
                 <ui-button [size]="'large'" [className]="'modal-button'" [type]="'primary'" [text]="'Create'" (click)="onSubmit()" [disabled]="loading"></ui-button>
 
             </div>
