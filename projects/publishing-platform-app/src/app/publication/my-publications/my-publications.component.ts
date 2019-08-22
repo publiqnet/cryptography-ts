@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { PublicationService } from '../../core/services/publication.service';
 import { AccountService } from '../../core/services/account.service';
@@ -19,7 +19,8 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   public membership: Publication[];
   public invitations: Publication[];
   public requests: Publication[];
-  showCreatePublicationModal: boolean = false;
+  @Input() showCustomModal: boolean = false;
+  showModalType = 'invitation';
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
@@ -46,12 +47,9 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .subscribe((data: Publications) => this.PublicationsData = data);
   }
 
-  showCreatePublication(flag: boolean) {
-    this.showCreatePublicationModal = flag;
-  }
-
-  onCloseModal() {
-    this.showCreatePublicationModal = false;
+  showCreatePublication(flag: boolean, type: string) {
+    this.showCustomModal = flag;
+    this.showModalType = type;
   }
 
   changeRoute(url) {

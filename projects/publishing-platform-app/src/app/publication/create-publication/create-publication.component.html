@@ -4,8 +4,10 @@
       <i class="icon icon-close"></i>
     </span>
 
-    <h3>Create New Publication</h3>
-    <form class="create-form">
+    <!--create publication form-->
+    <form class="create-form" *ngIf="modalType == 'invitation'">
+      <h3>Create New Publication</h3>
+
       <span class="create-form__label">Name</span>
       <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type your publication name'"></ui-input>
 
@@ -52,5 +54,15 @@
 
       </div>
     </form>
+
+    <!--see invitations-->
+    <div class="invitation-form" *ngIf="modalType !== 'invitation'">
+      <h3>Invitations <b>(10)</b></h3>
+
+      <ui-user-single type="two-actions" [className]="" [userData]="invitationData"
+                      primaryButtonText="Accept" secondaryButtonText="Reject"></ui-user-single>
+      <ui-user-single type="two-actions" [className]="" [userData]="invitationData"
+                      primaryButtonText="Accept" secondaryButtonText="Reject"></ui-user-single>
+    </div>
   </div>
 </div>

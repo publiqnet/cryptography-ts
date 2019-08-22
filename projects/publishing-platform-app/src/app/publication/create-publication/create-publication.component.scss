@@ -20,6 +20,7 @@
   box-shadow: 1px 3px 7px rgba(43, 43, 43, 0.2);
   border-radius: 15px;
   max-width: 520px;
+  min-height: 553px;
   width: 100%;
   padding: 23px 30px;
   position: relative;
@@ -36,6 +37,9 @@
     color: #2B2B2B;
     margin:0 0 30px;
     padding-right: 40px;
+    b{
+      color: #3365ff;
+    }
     @include media-sm{
       font-size: 20px;
     }
@@ -133,5 +137,8 @@
         margin-left: 10px;
       }
     }
+  }
+  .invitation-form{
+
   }
 }
