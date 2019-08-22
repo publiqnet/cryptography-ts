@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="col-lg-2 col-3">
-            <ui-button text="Settings"></ui-button>
+            <ui-button text="Settings" (click)="showCreatePublication(true)"></ui-button>
         </div>
     </div>
     <div class="row publications-staff" *ngIf="publications && publications.length">
@@ -24,3 +24,7 @@
         </div>
     </div>
 </div>
+
+<ng-container *ngIf="showCreatePublicationModal">
+  <app-create-publication (onCloseModal)="showCreatePublication(false)"></app-create-publication>
+</ng-container>
