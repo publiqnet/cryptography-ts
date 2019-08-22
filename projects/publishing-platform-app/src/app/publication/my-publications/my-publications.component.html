@@ -2,13 +2,13 @@
     <div class="row publications-heading">
         <div class="col-lg-6 offset-lg-2 col-9">
             <h1>Publications</h1>
-            <div class="arrowed-action" (click)="showCreatePublication(true, 'create-page')">
-                <span>Invitations<small>(10)</small></span>
+            <div class="arrowed-action" (click)="openPublicationModal(true, 'invitation')">
+                <span>Invitations<small>({{invitations?.length}})</small></span>
                 <i class="icon-arrow-right"></i>
             </div>
         </div>
         <div class="col-lg-2 col-3">
-            <ui-button text="Settings" (click)="showCreatePublication(true, 'invitation')"></ui-button>
+            <ui-button text="Settings" (click)="openPublicationModal(true, 'create')"></ui-button>
         </div>
     </div>
     <div class="row publications-staff" *ngIf="publications && publications.length">
@@ -26,5 +26,5 @@
 </div>
 
 <ng-container *ngIf="showCustomModal">
-  <app-create-publication (onCloseModal)="showCreatePublication(false)" [modalType]="showModalType"></app-create-publication>
+    <app-publication-modal (onCloseModal)="openPublicationModal(false)" [modalType]="showModalType"></app-publication-modal>
 </ng-container>

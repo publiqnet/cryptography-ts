@@ -175,7 +175,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
       email: this.searchedMembers[0].email,
       asEditor: this.searchForm.value.status == '2'
     }];
-    this.publicationService.inviteBecomeMember(body, this.publication.slug).subscribe(
+    this.publicationService.inviteBecomeMember(body, this.publication.slug)
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
       res => {
         console.log(res);
       }
@@ -183,20 +187,32 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   follow() {
-    this.publicationService.follow(this.publication.slug).subscribe(
+    this.publicationService.follow(this.publication.slug)
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
       () => this.publication.following = !this.publication.following
     );
   }
 
   becomeMember() {
-    this.publicationService.requestBecomeMember(this.publication.slug).subscribe(
+    this.publicationService.requestBecomeMember(this.publication.slug)
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
       res => {
         this.publication.memberStatus = 203;
       }
     );
   }
   cancelBecomeMember() {
-    this.publicationService.cancelBecomeMember(this.publication.slug).subscribe(
+    this.publicationService.cancelBecomeMember(this.publication.slug)
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
       res => {
         console.log(res);
         this.publication.memberStatus = 0;

@@ -44,12 +44,23 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((data: Publications) => this.PublicationsData = data);
+      .subscribe((data: Publications) => {
+        this.PublicationsData = data;
+      });
   }
 
-  showCreatePublication(flag: boolean, type: string = null) {
+  openPublicationModal(flag: boolean, type: string = null) {
     this.showCustomModal = flag;
     this.showModalType = type;
+    if (!flag) {
+      this.publicationService.getMyPublications()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: Publications) => {
+        this.PublicationsData = data;
+      });
+    }
   }
 
   changeRoute(url) {

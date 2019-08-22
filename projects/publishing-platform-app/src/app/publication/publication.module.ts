@@ -12,7 +12,7 @@ import { NewPublicationComponent } from './new-old/new-publication.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { PublicationOldComponent } from './publication-old/publication-old.component';
 import { MyPublicationsOldComponent } from './my-publications-old/my-publications-old.component';
-import { CreatePublicationComponent } from './create-publication/create-publication.component';
+import { PublicationModalComponent } from './publication-modal/publication-modal.component';
 
 
 @NgModule({
@@ -30,7 +30,7 @@ import { CreatePublicationComponent } from './create-publication/create-publicat
     MyPublicationsOldComponent,
     MyPublicationsComponent,
     NewPublicationComponent,
-    CreatePublicationComponent
+    PublicationModalComponent
   ]
 })
 export class PublicationModule {
