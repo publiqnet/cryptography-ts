@@ -189,7 +189,19 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   becomeMember() {
-
+    this.publicationService.requestBecomeMember(this.publication.slug).subscribe(
+      res => {
+        this.publication.memberStatus = 203;
+      }
+    );
+  }
+  cancelBecomeMember() {
+    this.publicationService.cancelBecomeMember(this.publication.slug).subscribe(
+      res => {
+        console.log(res);
+        this.publication.memberStatus = 0;
+      }
+    );
   }
 
   setEditMode(mode = true, title, description) {
