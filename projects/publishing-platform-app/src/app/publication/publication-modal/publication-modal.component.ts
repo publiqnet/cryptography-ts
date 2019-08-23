@@ -184,17 +184,17 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     this.publicationForm.controls['logo'].reset();
   }
 
-  answer(e) {
+  answer(e, i) {
     if (e.answer) {
       this.publicationService.acceptInvitationBecomeMember(e.publicationSlug).subscribe(
-        res => {
-          console.log(res);
+        () => {
+          this.invitations.splice(i, 1);
         }
       );
     } else {
       this.publicationService.rejectInvitationBecomeMember(e.publicationSlug).subscribe(
-        res => {
-          console.log(res);
+        () => {
+          this.invitations.splice(i, 1);
         }
       );
     }

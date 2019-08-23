@@ -58,7 +58,7 @@
         <!--see invitations-->
         <div class="invitation-form" *ngIf="modalType == 'invitation'">
             <h3>Invitations <b>({{invitations.length}})</b></h3>
-            <ui-publication-single *ngFor="let invitationData of invitations" [type]="['invitation']" [className]="'inviters'" [publicationData]="invitationData" (invitationAnswer)="answer($event)"></ui-publication-single>
+            <ui-publication-single *ngFor="let invitationData of invitations, let i=index" [type]="['invitation']" [className]="'inviters'" [publicationData]="invitationData" (invitationAnswer)="answer($event, i)"></ui-publication-single>
         </div>
     </div>
 </div>
