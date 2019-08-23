@@ -1,0 +1,63 @@
+<div class="search">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 mb-3">
+        <i class="icon icon-close" (click)="closeSearch(true)"></i>
+      </div>
+      <div class="col-md-8 offset-md-2">
+        <div class="search__tabber">
+          <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="searchTabber"></ui-tab>
+          <span class="search__tabber__results">
+            139 results
+          </span>
+        </div>
+
+        <div class="publication-widget">
+          <h3>Resent Searches</h3>
+          <div class="publication-widget__buttons">
+            <span class="blue">Clear</span>
+          </div>
+        </div>
+
+        <div class="recent-searches">
+          <span>#STARTUPS</span>
+          <span>#HEALTH</span>
+          <span>#COMPUTER SCIENCE</span>
+          <span>#TECHNOLOGY</span>
+          <span>#SCIENCE</span>
+          <span>#SPORT</span>
+          <span>#DESIGN</span>
+          <span>#WEATHER</span>
+        </div>
+
+        <div class="popular">
+          <div class="publication-widget">
+            <h3>Popular Publications</h3>
+            <div class="publication-widget__buttons">
+              <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+              <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+            </div>
+          </div>
+
+          <ui-publication-single [className]="'popular__item'" [type]="'follow'" [publicationData]="popPublicationData"></ui-publication-single>
+          <ui-publication-single [className]="'popular__item'" [type]="'follow'" [publicationData]="popPublicationData"></ui-publication-single>
+        </div>
+
+        <div class="popular">
+          <div class="publication-widget">
+            <h3>Authors you may interest</h3>
+            <div class="publication-widget__buttons">
+              <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+              <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+            </div>
+          </div>
+          <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+          <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+          <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

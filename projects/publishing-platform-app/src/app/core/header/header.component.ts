@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  @Input() showSearch: boolean = false;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
@@ -36,6 +37,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(result => {
         this.updateHeaderData();
       });
+  }
+
+  searchEvent(flag: boolean) {
+    this.showSearch = flag;
   }
 
   updateHeaderData() {
