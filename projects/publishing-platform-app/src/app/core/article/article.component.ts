@@ -3,6 +3,10 @@ import { ContentService } from '../services/content.service';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { DomSanitizer } from '@angular/platform-browser';
+import { AccountService } from '../services/account.service';
+import { Account } from '../services/models/account';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-article',
@@ -11,15 +15,27 @@ import { switchMap, takeUntil, tap } from 'rxjs/operators';
 })
 export class ArticleComponent implements OnInit, OnDestroy {
   public article;
+  author: any;
+  public authorFirstName: string;
+  public authorLastName: string;
+  public authorFullName: string;
+  public published: number;
+  public authorImage: any;
   public loading = true;
   public coverImageUrl = '';
+  isCurrentUser = false;
+
+  public env = environment;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
     private contentService: ContentService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    protected sanitizer: DomSanitizer,
+    private accountService: AccountService,
   ) {
+
   }
 
   ngOnInit() {
@@ -49,6 +65,23 @@ export class ArticleComponent implements OnInit, OnDestroy {
               this.coverImageUrl = data.cover.url;
             }
             this.article = data;
+            this.authorImage = data.author.image;
+            this.author = data.author;
+            this.published = data.published;
+            if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
+              this.isCurrentUser = true;
+            }
+            if (data.author.firstName) {
+              this.authorFirstName = data.author.firstName;
+            } else {
+              this.authorFirstName = '';
+            }
+            if (data.author.lastName) {
+              this.authorLastName = data.author.lastName;
+            } else {
+              this.authorLastName = '';
+            }
+            this.authorFullName = this.authorFirstName + this.authorLastName;
           });
         } else {
           this.article = data;
@@ -56,8 +89,14 @@ export class ArticleComponent implements OnInit, OnDestroy {
       });
   }
 
+  getCurrentImage() {
+    const profileImage = this.authorImage ? this.authorImage : '/assets/no-image-article.jpg';
+    return this.sanitizer.bypassSecurityTrustUrl(profileImage);
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+    this.isCurrentUser = false;
   }
 }
