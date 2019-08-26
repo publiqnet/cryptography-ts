@@ -1,0 +1,64 @@
+<div class="modal-overlay">
+    <div class="custom-modal" [ngClass]="{'invitors-modal': modalType !== 'invitation'}">
+        <span class="custom-modal__close" (click)="closePopup(false)">
+      <i class="icon icon-close"></i>
+    </span>
+
+        <!--create publication form-->
+        <form class="create-form" *ngIf="modalType == 'create'" novalidate [formGroup]="publicationForm">
+            <h3>Create New Publication</h3>
+
+            <span class="create-form__label">Name</span>
+            <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type your publication name'" formControlName="title"></ui-input>
+
+            <span class="create-form__label">Description</span>
+            <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a short description'" formControlName="description"></ui-input>
+
+            <span class="create-form__label">Tags</span>
+            <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a tag…'" formControlName="tags"></ui-input>
+
+            <!--upload avatar-->
+            <div class="create-form__upload">
+                <label class="create-form__upload__pic" for="publicationAvatar">
+          <input type="file" accept="image/jpeg,image/png" id="publicationAvatar" formControlName="logo" (change)="selectLogo($event)">
+          <span class="create-form__upload__pic__icon" *ngIf="!logoImage">
+            <i class="icon icon-plus"></i>
+          </span>
+          <img class="uploaded-pic" *ngIf="logoImage" src="{{logoImage}}" alt="">
+        </label>
+                <span class="create-form__upload__text">
+          <b *ngIf="!logoImage">Upload logo</b>
+          <b class="blue" *ngIf="logoImage" (click)="removeLogo()">Remove logo</b>
+          <span>(Up to 1MB, 288px by 288px recommended)</span>
+                </span>
+            </div>
+            <!--upload cover-->
+            <div class="create-form__upload">
+                <label class="create-form__upload__pic" for="publicationCover">
+          <input type="file" accept="image/jpeg,image/png" id="publicationCover" formControlName="cover" (change)="selectCover($event)">
+          <span class="create-form__upload__pic__icon" *ngIf="!coverImage">
+            <i class="icon icon-plus"></i>
+          </span>
+          <img *ngIf="coverImage" class="uploaded-pic" src="{{coverImage}}" alt="">
+        </label>
+                <span class="create-form__upload__text">
+          <b *ngIf="!coverImage">Upload cover</b>
+          <b *ngIf="coverImage" class="blue" (click)="removeCover()">Remove cover</b>
+          <span>(Up to 1MB, 288px by 288px recommended)</span>
+                </span>
+            </div>
+
+            <div class="create-form__button-space">
+                <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'" (click)="closePopup(false)"></ui-button>
+                <ui-button [size]="'large'" [className]="'modal-button'" [type]="'primary'" [text]="'Create'" (click)="onSubmit()" [disabled]="loading"></ui-button>
+
+            </div>
+        </form>
+
+        <!--see invitations-->
+        <div class="invitation-form" *ngIf="modalType == 'invitation'">
+            <h3>Invitations <b>({{invitations.length}})</b></h3>
+            <ui-publication-single *ngFor="let invitationData of invitations, let i=index" [type]="['invitation']" [className]="'inviters'" [publicationData]="invitationData" (invitationAnswer)="answer($event, i)"></ui-publication-single>
+        </div>
+    </div>
+</div>

@@ -54,7 +54,10 @@
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
                 </ng-container>
             </ng-container>
-            <ui-button type="primary" iconClassName="follow" text="Follow" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
+            <ui-button size="small" text="Become a member" (click)="becomeMember()" *ngIf="publication.memberStatus == 0"></ui-button>
+            <ui-button size="small" text="Cancel" (click)="cancelBecomeMember()" *ngIf="publication.memberStatus == 203"></ui-button>
+
+            <ui-button type="primary" iconClassName="follow" size="small" text="Follow" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -91,6 +94,13 @@
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
                         <ui-input [type]="'text'" formControlName="members"></ui-input>
+                        <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
+                            <ul>
+                                <li *ngFor="let member of searchedMembers">
+                                    {{member.fullName}}
+                                </li>
+                            </ul>
+                        </div> -->
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData"></ui-dropdown>
                         <div class="custom-modal__buttons">
                             <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>

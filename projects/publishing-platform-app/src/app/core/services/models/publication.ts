@@ -53,6 +53,11 @@ export class Publication {
         } else if (['memberStatus', 'subscribed'].includes(i)) {
           this['following'] = options[i];
           this[i] = options[i];
+        } else if (i == 'editors') {
+          options[i] = options[i].map(
+            el => new Author(el)
+          );
+          this[i] = options[i];
         } else {
           this[i] = options[i] ? options[i] : '';
         }
