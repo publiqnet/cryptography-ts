@@ -60,7 +60,6 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
-<!--                      <div id="input" contenteditable="true" data-text="Add your name" [attr.contenteditable]="isCurrentUser" (keyup)="onNameEdit($event)" #authorName class="author-fullname">{{(!author.fullName && isCurrentUser || author.fullName == '') ? 'Add your name' : author.fullName}}</div>-->
                       <label>
                         <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" placeholder="Add your name" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1">{{author.fullName}}</textarea>
                          <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
@@ -68,7 +67,6 @@
                     </h1>
                     <h3 class="profile-metadata__bio">
                       <label>
-<!--                        <input [attr.contenteditable]="isCurrentUser" type="text" value="{{author.bio}}" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio">-->
                         <textarea [attr.contenteditable]="isCurrentUser" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1">{{author.bio}}</textarea>
                         <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
                       </label>
