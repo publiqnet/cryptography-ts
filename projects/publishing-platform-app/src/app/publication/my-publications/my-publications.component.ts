@@ -37,31 +37,28 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.membership = data.membership;
     this.invitations = data.invitations;
     this.requests = data.requests;
-    console.log(this.invitations);
   }
 
   ngOnInit() {
-    this.publicationService.getMyPublications()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Publications) => {
-        this.PublicationsData = data;
-      });
+    this.getMyPublications();
   }
 
   openPublicationModal(flag: boolean, type: string = null) {
     this.showCustomModal = flag;
     this.showModalType = type;
     if (!flag) {
-      this.publicationService.getMyPublications()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((data: Publications) => {
-        this.PublicationsData = data;
-      });
+      this.getMyPublications();
     }
+  }
+
+  getMyPublications () {
+    this.publicationService.getMyPublications()
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe((data: Publications) => {
+      this.PublicationsData = data;
+    });
   }
 
   changeRoute(url) {

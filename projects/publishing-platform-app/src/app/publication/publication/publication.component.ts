@@ -295,6 +295,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
         this.editMode = false;
