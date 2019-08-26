@@ -108,14 +108,19 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     if (this.logoFile) {
       formData.append('logo', this.logoFile, this.logoFile.name);
     }
-    this.publicationService.createPublication(formData)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        this.loading = false;
-        this.closePopup(false);
-      }, () => this.loading = false);
+    // tagsy poxel
+    console.log(this.publicationForm.value, this.publicationForm.value.tags.split([',']));
+    if (this.publicationForm.value.tags.length) {
+      formData.append('tags', this.publicationForm.value.tags.split([',']));
+    }
+      this.publicationService.createPublication(formData)
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(() => {
+          this.loading = false;
+          this.closePopup(false);
+        }, () => this.loading = false);
   }
 
   validateFile(file, size) {
@@ -205,7 +210,8 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
       description: new FormControl('', [ValidationService.required, Validators.maxLength(160)]),
       title: new FormControl('', [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
-      logo: new FormControl()
+      logo: new FormControl(),
+      tags: new FormControl('')
     });
   }
 

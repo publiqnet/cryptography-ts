@@ -152,6 +152,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
+        console.log(this.publication);
+        // this.requests = this.publication.requests;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
@@ -175,47 +177,47 @@ export class PublicationComponent implements OnInit, OnDestroy {
       asEditor: this.searchForm.value.status == '2'
     }];
     this.publicationService.inviteBecomeMember(body, this.publication.slug)
-    .pipe(
-      takeUntil(this.unsubscribe$)
-    )
-    .subscribe(
-      res => {
-        this.showInviteModal = false;
-      }
-    );
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        res => {
+          this.showInviteModal = false;
+        }
+      );
   }
 
   follow() {
     this.publicationService.follow(this.publication.slug)
-    .pipe(
-      takeUntil(this.unsubscribe$)
-    )
-    .subscribe(
-      () => this.publication.following = !this.publication.following
-    );
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        () => this.publication.following = !this.publication.following
+      );
   }
 
   becomeMember() {
     this.publicationService.requestBecomeMember(this.publication.slug)
-    .pipe(
-      takeUntil(this.unsubscribe$)
-    )
-    .subscribe(
-      res => {
-        this.publication.memberStatus = 203;
-      }
-    );
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        res => {
+          this.publication.memberStatus = 203;
+        }
+      );
   }
   cancelBecomeMember() {
     this.publicationService.cancelBecomeMember(this.publication.slug)
-    .pipe(
-      takeUntil(this.unsubscribe$)
-    )
-    .subscribe(
-      res => {
-        this.publication.memberStatus = 0;
-      }
-    );
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        res => {
+          this.publication.memberStatus = 0;
+        }
+      );
   }
 
   setEditMode(mode = true, title, description) {

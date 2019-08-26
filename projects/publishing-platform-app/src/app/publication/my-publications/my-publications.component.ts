@@ -37,6 +37,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.membership = data.membership;
     this.invitations = data.invitations;
     this.requests = data.requests;
+    console.log(this.invitations);
   }
 
   ngOnInit() {
