@@ -18,6 +18,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-author',
@@ -30,6 +31,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   public isMasonryLoaded = false;
   @ViewChild('bioText', {static: false}) bioText: ElementRef;
   @ViewChild('authorName', {static: false}) authorName: ElementRef;
+  @Input('autoresize') maxHeight: number;
   public masonryOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -82,7 +84,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   firstName: string;
   lastName: string;
   bio: string;
-  email: string;
   photo: File;
   editMode: boolean = false;
 
@@ -123,7 +124,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.firstName = this.author.firstName;
           this.lastName = this.author.lastName;
           this.bio = this.author.bio;
-          this.email = this.author.email;
           this.listType = this.author.listView ? 'single' : 'grid';
           this.setAuthorName();
           if (this.author.image) {
@@ -193,10 +193,22 @@ export class AuthorComponent implements OnInit, OnDestroy {
     );
   }
 
-  fullNameChange(event) {
+
+  onNameEdit(event) {
+    let newHeight;
+    if (event.target) {
+      event.target.style.overflow = 'hidden';
+      event.target.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(event.target.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = event.target.scrollHeight;
+      }
+      event.target.style.height = newHeight + 'px';
+    }
     this.showEditModeIcons = true;
     this.editTitleIcon = true;
-    this.fullName = event.target.textContent;
+    this.fullName = event.target.value;
     const splittedFullName = this.fullName.split(' ');
     this.firstName = splittedFullName.slice(0, -1).join(' ');
     this.lastName = splittedFullName.slice(-1).join(' ');
@@ -215,9 +227,29 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
+  onBioEdit(event) {
+    this.showEditModeIcons = true;
+    this.editBioIcon = true;
+    let newHeight;
+    if (event.target) {
+      event.target.style.overflow = 'hidden';
+      event.target.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(event.target.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = event.target.scrollHeight;
+      }
+      event.target.style.height = newHeight + 'px';
+    }
+    this.bio = event.target.value;
+    if (this.bio !== this.author.bio) {
+      this.authorForm.controls['bio'].setValue(this.bio);
+    }
+  }
+
   resetValues() {
-    this.bioText.nativeElement.textContent = this.author.bio;
-    this.authorName.nativeElement.textContent = this.author.fullName;
+    this.bioText.nativeElement.value = this.author.bio;
+    this.authorName.nativeElement.value = this.author.fullName;
     this.currentImage = this.author.image;
     this.authorForm.controls['firstName'].setValue(this.author.firstName);
     this.authorForm.controls['lastName'].setValue(this.author.lastName);
@@ -345,6 +377,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         }
       };
       reader.readAsDataURL(input.files[0]);
+      console.log(input.files[0]);
     }
   }
 
