@@ -54,6 +54,7 @@ import { UtilService } from './services/util.service';
 import { UiNotificationService } from './services/ui-notification.service';
 import { NotificationCardComponent } from 'ui-lib';
 import { SearchComponent } from '../search/search/search.component';
+import { SearchModule } from '../search/search.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true
@@ -68,6 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
         CommonModule,
         RouterModule,
         SharedModule,
+        SearchModule,
         ImageCropperModule,
         PerfectScrollbarModule,
         TranslateModule.forChild({
@@ -100,8 +102,7 @@ export function createTranslateLoader(http: HttpClient) {
         CoverEditDialogComponent,
         InputPasswordDialogComponent,
         NewstorySubmissionComponent,
-        NewstorySubmission2Component,
-        SearchComponent
+        NewstorySubmission2Component
     ],
     providers: [
         AuthguardService,

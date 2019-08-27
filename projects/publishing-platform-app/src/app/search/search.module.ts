@@ -24,6 +24,9 @@ import { SearchComponent } from './search/search.component';
     SearchPublicationComponent,
     SearchComponent
   ],
-  providers: []
+  providers: [],
+  exports: [
+    SearchComponent
+  ]
 })
 export class SearchModule {}
