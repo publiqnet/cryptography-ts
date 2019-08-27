@@ -49,6 +49,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   articlesLoaded = false;
   editTitleIcon: boolean = false;
   editBioIcon: boolean = false;
+  disableSave: boolean = false;
   public publishedContent: Content[] = [];
   public loading = true;
   listType = 'grid';
@@ -218,13 +219,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeBio(event) {
-    this.showEditModeIcons = true;
-    this.editBioIcon = true;
-    this.bio = event.target.textContent;
-    if (this.bio !== this.author.bio) {
-      this.authorForm.controls['bio'].setValue(this.bio);
-    }
+  onFollowClick(event) {
+    event.preventDefault();
+    console.log('Follow Clicked');
   }
 
   onBioEdit(event) {
@@ -242,8 +239,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       event.target.style.height = newHeight + 'px';
     }
     this.bio = event.target.value;
-    if (this.bio !== this.author.bio) {
+    if (this.bio.trim().length && (this.bio !== this.author.bio)) {
       this.authorForm.controls['bio'].setValue(this.bio);
+    } else if (!this.bio.trim().length) {
+      this.authorForm.controls['bio'].setValue('');
     }
   }
 
@@ -377,7 +376,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
         }
       };
       reader.readAsDataURL(input.files[0]);
-      console.log(input.files[0]);
     }
   }
 
@@ -394,7 +392,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (this.photo) {
       formData.append('image', this.photo, this.photo.name);
     }
-    formData.append('firstName', this.authorForm.controls['firstName'].value);
+    formData.append('firstName', this.authorForm.controls['firstName'].value.trim());
     formData.append('lastName', this.authorForm.controls['lastName'].value);
     formData.append('bio', this.authorForm.controls['bio'].value);
     formData.append('listView', (this.listType == 'single') ? 'true' : '');
