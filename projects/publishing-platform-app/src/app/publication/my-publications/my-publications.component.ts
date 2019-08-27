@@ -46,9 +46,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   openPublicationModal(flag: boolean, type: string = null) {
     this.showCustomModal = flag;
     this.showModalType = type;
-    if (!flag) {
-      this.getMyPublications();
-    }
   }
 
   getMyPublications () {

@@ -12,6 +12,7 @@ import { ValidationService } from '../../core/validator/validator.service';
 })
 export class PublicationModalComponent implements OnInit, OnDestroy {
   @Output() onCloseModal = new EventEmitter<boolean>();
+  @Output() updatePublicationData = new EventEmitter<boolean>();
   @Input() modalType: string;
   @Input() invitations = [];
   public publicationForm: FormGroup;
@@ -33,11 +34,11 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  closePopup(close: boolean) {
+  closePopup() {
     this.publicationForm.reset();
     this.logoImage = null;
     this.coverImage = null;
-    this.onCloseModal.emit(close);
+    this.onCloseModal.emit();
   }
 
   onSubmit() {
@@ -64,7 +65,8 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
         )
         .subscribe(() => {
           this.loading = false;
-          this.closePopup(false);
+          this.updatePublicationData.emit();
+          this.closePopup();
         }, () => this.loading = false);
   }
 
@@ -139,12 +141,15 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
       this.publicationService.acceptInvitationBecomeMember(e.publicationSlug).subscribe(
         () => {
           this.invitations.splice(i, 1);
+          this.updatePublicationData.emit();
+          this.closePopup();
         }
       );
     } else {
       this.publicationService.rejectInvitationBecomeMember(e.publicationSlug).subscribe(
         () => {
           this.invitations.splice(i, 1);
+          this.closePopup();
         }
       );
     }
