@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onInputChange(searchValue: string): void {
     console.log(searchValue);
-    (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
+    // (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
   }
 
   updateHeaderData() {
