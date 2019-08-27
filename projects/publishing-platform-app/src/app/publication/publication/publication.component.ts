@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
@@ -48,6 +48,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
 
   ];
+  @Input('autoresize') maxHeight: number;
+  @ViewChild('publicationTitle', {static: false}) set publicationTitle(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
+  @ViewChild('publicationDescription', {static: false}) set publicationDescription(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
   public publicationForm: FormGroup;
   public searchForm: FormGroup;
   public isMyPublication = false;
@@ -63,6 +78,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
+  public members = [];
+  public membersOdd = [];
+  public membersEven = [];
+  public subscribers = [];
+  public pendings = [];
   haveResult: boolean;
   searchedMembers = [];
   public activeTab = 'stories';
@@ -80,43 +100,16 @@ export class PublicationComponent implements OnInit, OnDestroy {
   deleteLogo = '0';
   deleteCover = '0';
   showInviteModal: boolean = false;
+  publicationDesc: string;
 
   constructor(
     private accountService: AccountService,
-    private router: Router,
     private route: ActivatedRoute,
     private publicationService: PublicationService,
     public utilService: UtilService,
     private formBuilder: FormBuilder,
-    public uiNotificationService: UiNotificationService
+    public uiNotificationService: UiNotificationService,
   ) {
-    this.b();
-  }
-
-  b() {
-    for (let i = 0; i < 20; ++i) {
-      this.followers.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-
-      this.requests.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-    }
   }
 
   ngOnInit() {
@@ -131,8 +124,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.searchedMembers = res;
+          console.log(res);
           this.haveResult = true;
-          console.log(this.searchedMembers);
         }
       );
 
@@ -152,11 +145,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
-        console.log(this.publication);
-        // this.requests = this.publication.requests;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
+        console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
+        if (this.isMyPublication) {
+          this.requests = this.publication.requests;
+          this.pendings = this.publication.invitations;
+          this.subscribers = this.publication.subscribers;
+          this.members = this.publication.editors.concat(this.publication.contributors);
+          this.members.unshift(this.publication.owner);
+          this.members.forEach(
+            (el, i) => {
+              if (i == 0 || i % 2 == 0) {
+                this.membersOdd.push(el);
+              } else {
+                this.membersEven.push(el);
+              }
+            }
+          );
+        }
         this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
@@ -164,6 +172,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+
+  }
+
+  resizeTextareaElement(el) {
+    let newHeight;
+    if (el) {
+      el.style.overflow = 'hidden';
+      el.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(el.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = el.scrollHeight;
+      }
+      el.style.height = newHeight + 'px';
+    }
   }
 
   inviteModal(flag: boolean) {
@@ -203,7 +226,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.publication.memberStatus = 203;
         }
       );
@@ -214,7 +237,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.publication.memberStatus = 0;
         }
       );
@@ -295,6 +318,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    console.log(this.publication.hideCover);
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
@@ -302,6 +326,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.textChanging = false;
         this.imageLoaded = false;
         this.publication = result;
+        console.log(this.publication);
         this.uiNotificationService.success('Success', 'Your publication successfully updated');
       },
       err => {
@@ -313,14 +338,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTitleChange(e) {
+  onTitleChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['title'].setValue(e.target.textContent);
+    this.publicationForm.controls['title'].setValue(event.target.value);
   }
 
-  onDescriptionChange(e) {
+  onDescriptionChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['description'].setValue(e.target.textContent);
+    this.publicationDesc = event.target.value;
+    if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
+      this.publicationForm.controls['description'].setValue(this.publicationDesc);
+    } else if (!this.publicationDesc.trim().length) {
+      this.publicationForm.controls['description'].setValue('');
+    }
+    this.publicationForm.controls['description'].setValue(event.target.value);
   }
 
   dropdownSelect($event) {
@@ -330,9 +367,17 @@ export class PublicationComponent implements OnInit, OnDestroy {
       this.edit();
     }
     if ($event == 'hide-cover') {
-      this.publication.hideCover = true;
+      this.publication.hideCover = 'true';
       this.edit();
     }
+  }
+
+  roleClick(e) {
+    console.log(e);
+  }
+
+  userClick(e) {
+    console.log(e);
   }
 
   showCover() {
@@ -345,6 +390,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.logoFile = null;
     this.publication.logo = '';
     this.logoData = {};
+  }
+
+  onRoleClick(e, member) {
+    this.publicationService.changeMemberStatus(this.publication.slug, {
+      publicKey: member.publicKey,
+      status: e.slug
+    });
+  }
+
+  onUserClick(e) {
+    console.log(e);
+    this.utilService.routerChangeHelper('account', e.user.publicKey);
+  }
+
+  onFollowChange(e) {
+    console.log(e);
   }
 
   private buildForm() {

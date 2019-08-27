@@ -43,8 +43,18 @@
             <i class="icon-close" *ngIf="editMode && publication?.logo" (click)="removeLogo()"></i>
         </div>
         <div class="col-lg-6 col-md-7 col">
-            <h1 class="publication-metadata__title"><span [attr.contenteditable]="isMyPublication" (input)="onTitleChange($event)" #publicationTitle>{{publication?.title}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h1>
-            <h3 class="publication-metadata__description"><span [attr.contenteditable]="isMyPublication" (input)="onDescriptionChange($event)" #publicationDescription>{{publication?.description}}</span><i class="icon-edit editable-icon" *ngIf="editMode"></i></h3>
+            <h1 class="publication-metadata__title">
+              <label>
+                <textarea [attr.contenteditable]="isMyPublication" contenteditable="true" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
+                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" ></i>
+              </label>
+            </h1>
+            <h3 class="publication-metadata__description">
+              <label>
+                <textarea [attr.contenteditable]="isMyPublication" contenteditable="true" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
+                <i class="icon-edit editable-icon" *ngIf="editMode"></i>
+              </label>
+            </h3>
         </div>
         <div class="col-lg-2 col-md-3 col-12">
             <ng-container *ngIf="isMyPublication">
@@ -67,7 +77,7 @@
     <div class="row publication-statistics" [class.editable-disabled]="editMode">
         <div class="col-lg-8 offset-lg-2 col-12 offset-0">
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.views}}</span>
                 <span class="datum__descriptor">Views</span>
             </div>
             <div class="datum">
@@ -75,11 +85,11 @@
                 <span class="datum__descriptor">Stories</span>
             </div>
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.subscribersCount}}</span>
                 <span class="datum__descriptor">Followers</span>
             </div>
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.membersCount}}</span>
                 <span class="datum__descriptor">Members</span>
             </div>
         </div>
@@ -171,12 +181,12 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                    [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
     </div>
@@ -184,22 +194,22 @@
 <div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
-            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending'}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending', count: pendings.length}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
         </div>
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
-            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
-            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onNotificationClick)="onFollowChange($event)" *ngFor="let user of pendings;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers">
-            <ui-user-single type="followers" [userData]="follower" *ngFor="let follower of followers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
     </div>
 </div>
