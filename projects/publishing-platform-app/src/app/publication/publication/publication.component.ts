@@ -128,7 +128,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
-        console.log(this.publication);
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
@@ -342,11 +341,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.publicationService.changeMemberStatus(this.publication.slug, {
       publicKey: member.publicKey,
       status: e.slug
-    }).subscribe(
-      res => {
-        console.log(res);
-      }
-    );
+    });
   }
 
   onUserClick(e, member) {
