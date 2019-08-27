@@ -5,7 +5,6 @@
   <div class="author-header-wrap profile-bg" *ngIf="!loadingAuthor" style="background: #fff;">
     <div class="inner-wrap title-wrap">
       <div class="background vh-centered"></div>
-
       <div class="avatar-wrap">
         <div class="avatar"
              [ngStyle]="{'background-image': avatarUrl ? 'url(' + avatarUrl + ')' : 'url(/assets/no-image-article.jpg)'}">
@@ -61,25 +60,29 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
-                      <span [attr.contenteditable]="isCurrentUser" (input)="fullNameChange($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #authorName>{{(!author.fullName && isCurrentUser || author.fullName == '') ? 'Add your name' : author.fullName}}</span>
-                      <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
+                      <label>
+                        <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" placeholder="Add your name" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1">{{author.fullName}}</textarea>
+                         <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
+                      </label>
                     </h1>
                     <h3 class="profile-metadata__bio">
-                      <span [attr.contenteditable]="isCurrentUser" (input)="changeBio($event)" [ngClass]="{'bio-hover' : showEditIcon1 && isCurrentUser}" #bioText>{{(!author.bio && isCurrentUser) ? 'Writing a short bio' : author.bio}}</span>
-                      <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
+                      <label>
+                        <textarea [attr.contenteditable]="isCurrentUser" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1">{{author.bio}}</textarea>
+                        <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
+                      </label>
                     </h3>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-3 col-12">
                     <div class="edit-menu">
                         <ng-container *ngIf="isCurrentUser">
-                            <ui-button *ngIf="editMode || showEditModeIcons" [type]="'primary'" [size]="'medium'" [text]="'Save'"></ui-button>
+                            <ui-button *ngIf="editMode || showEditModeIcons" [type]="'primary'" [size]="'medium'" [text]="'Save'" [disabled]="disableSave"></ui-button>
                             <div class="button button--icon" (click)="onEditMode(true)" *ngIf="!editMode && !showEditModeIcons">
                                 <i class="icon-settings"></i>
                             </div>
                           <ui-button [iconButton]="true" [iconClassName]="'close'" (btnClicked)="resetValues()" *ngIf="editMode || showEditModeIcons" [className]="'author-close-icon'"></ui-button>
                         </ng-container>
                         <div *ngIf="!isCurrentUser">
-                            <ui-button [type]="'primary'" [iconClassName]="'follow'" [size]="'medium'" [text]="'Follow'"></ui-button>
+                            <ui-button [type]="'primary'" [iconClassName]="'follow'" [size]="'medium'" [text]="'Follow'" (click)="onFollowClick($event)"></ui-button>
                         </div>
                     </div>
                 </div>
@@ -115,7 +118,7 @@
       <div class="col-12 col-lg-8 offset-lg-2">
         <div class="grid-style grid-style--custom">
           <div class="grid-style__info">
-            <h4>Your email: <span class="lighten">alexandria@arattauna.com</span></h4>
+            <h4>Your email: <span class="lighten">{{accountService.accountInfo.email}}</span></h4>
           </div>
           <div class="grid-style__choose">
             <div>
@@ -191,6 +194,9 @@
                       (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
           </div>
           <ng-template #no_content></ng-template>
+        </div>
+        <div *ngIf="selectedTab == '3'">
+          <p>Settings tab worked!</p>
         </div>
       </div>
     </div>

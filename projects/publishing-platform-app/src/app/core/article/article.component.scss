@@ -1,3 +1,42 @@
+.inner-content-wrap.article-full-content {
+  .content {
+    max-width: 100%;
+    margin-top: 50px;
+    .article-title {
+      font-family: "Vollkorn", sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 40px;
+      line-height: 56px;
+      color: #191B1E;
+    }
+    .article-author {
+      display: flex;
+      align-items: center;
+      margin-bottom: 50px;
+      .author-info {
+        margin-left: 20px;
+        &__name {
+          font-family: "Open Sans", sans-serif;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 17px;
+          line-height: 20px;
+          color: #2B2B2B;
+          vertical-align: top;
+        }
+        &__published {
+          display: block;
+          margin-top: -10px;
+        }
+      }
+    }
+    .follow-button {
+      margin-left: 10px;
+      margin-top: -15px;
+    }
+  }
+}
 .article-main-content {
   margin-top: 20px;
 }

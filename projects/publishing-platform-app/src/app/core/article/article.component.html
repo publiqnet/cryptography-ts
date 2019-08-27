@@ -1,16 +1,30 @@
 <div class="main-wrap" *ngIf="article">
   <div class="inner-wrap-main">
     <div class="main-wrap">
-      <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
-        <div class="inner-wrap">
-          <h1 class="eff03s">{{article.title}}</h1>
+      <div *ngIf="coverImageUrl">
+        <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
+          <div class="inner-wrap">
+          </div>
+          <div class="overlay"></div>
         </div>
-        <div class="overlay"></div>
       </div>
-      <div class="inner-content-wrap">
+      <div class="inner-content-wrap article-full-content">
         <div class="inner-wrap" *ngIf="article.text">
           <div class="content">
             <div class="content-inner">
+              <div class="article-author" *ngIf="!isCurrentUser">
+                <div class="author-image">
+                  <ui-avatar [avatarData]="{'image': env.backend + '/' + authorImage, 'fullName': authorFullName}"></ui-avatar>
+                </div>
+                <div class="author-info">
+                  <span class="author-info__name">{{authorFullName}}</span>
+                  <span class="author-info__published">{{published * 1000 | date:'dd MMM, HH:mm'}}</span>
+                </div>
+                <div class="follow-button">
+                  <ui-button [type]="'primary'" [size]="'medium'" [text]="'Follow'"></ui-button>
+                </div>
+              </div>
+              <h1 class="article-title">{{article.title}}</h1>
               <div [innerHTML]="article.text" class="article-main-content"></div>
             </div>
           </div>
