@@ -137,6 +137,9 @@
   color: pbq-color($grey, 500);
   padding: 1px 2px;
   margin-left: 10px;
+  &.active-icon {
+    opacity: 1;
+  }
 }
 
 .editable-disabled {
@@ -154,6 +157,13 @@
     border-radius: 50%;
     position: relative;
     //cursor: pointer;
+    ::ng-deep {
+      div.avatar.avatar--large {
+        img {
+          object-fit: cover;
+        }
+      }
+    }
     &__upload{
       cursor: pointer;
       width: 90px;
@@ -193,6 +203,7 @@
       .icon-close--hover{
         opacity: 1;
         transition: .2s ease-out;
+        cursor: pointer;
       }
     }
   }
@@ -288,6 +299,69 @@
       }
     }
   }
+  &__fullname {
+    label {
+      display: flex;
+    }
+    .author-fullname {
+      border: none;
+      font-family: $vollkorn;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 50px;
+      line-height: 50px;
+      color: #191B1E;
+      box-sizing: border-box;
+      width: 100%;
+      resize: none;
+      height: inherit;
+      overflow: hidden;
+      padding-top: 5px;
+      &:focus {
+        border: none;
+        outline: none;
+      }
+      &::placeholder {
+        font-family: $vollkorn;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 50px;
+        line-height: 50px;
+        color: #191B1E;
+      }
+    }
+  }
+  &__bio {
+    label {
+      display: flex;
+    }
+    .author-bio {
+      border: none;
+      font-family: $open-sans;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 17px;
+      line-height: 24px;
+      color: #565A60;
+      resize: none;
+      height: inherit;
+      overflow: hidden;
+      padding-top: 5px;
+      width: 100%;
+      &:focus {
+        border: none;
+        outline: none;
+      }
+      &::placeholder {
+        font-family: $open-sans;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 17px;
+        line-height: 24px;
+        color: #565A60;
+      }
+    }
+  }
 
   &__fullname, &__bio {
     //cursor: default;
@@ -298,15 +372,13 @@
     }
     .editable-icon{
       opacity: 0;
+      &.active-icon {
+        opacity: 1;
+      }
     }
   }
   .bio-hover{
     cursor: text;
-  }
-  .bio-hover:hover{
-    + .editable-icon {
-      opacity: 1;
-    }
   }
 
   &__fullname {
@@ -344,6 +416,11 @@
   justify-content: flex-end;
   .button--icon{
     margin: 0 0 0 10px;
+  }
+  ::ng-deep {
+    .button.author-close-icon.button--icon {
+      margin-left: 10px;
+    }
   }
 }
 .datum {

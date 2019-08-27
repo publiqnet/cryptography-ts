@@ -12,7 +12,7 @@ export interface AccountOptions {
   statistics?;
   publicKey?: string;
   token?: string;
-  email?: string;
+  email: string;
   language?: string;
   loggedIn?: boolean;
   nuxEditor?: boolean;
@@ -41,7 +41,7 @@ export class Account {
   fullName: string;
   publicKey?: string;
   token?: string;
-  email?: string;
+  email: string;
   loggedIn?: boolean;
   nuxEditor?: boolean;
   balance?: number;
@@ -66,6 +66,8 @@ export class Account {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else if (i === 'listView') {
           this[i] = !!options[i];
+        } else if (i === 'email') {
+          this[i] = options[i];
         } else {
           this[i] = options[i];
         }

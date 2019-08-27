@@ -9,7 +9,7 @@ export interface PublicationOptions {
   logo: string;
   color: string;
   memberStatus: number;
-  subscribers: any;
+  subscribers: Author[];
   owner: Author;
   editors: Author[];
   contributors: Author[];
@@ -17,6 +17,9 @@ export interface PublicationOptions {
   invitations: Author[];
   hideCover: any;
   listView: string;
+  views: number;
+  membersCount: number;
+  subscribersCount: number;
 }
 
 export class Publication {
@@ -26,7 +29,7 @@ export class Publication {
   cover: string;
   logo: string;
   color: string;
-  subscribers: number;
+  subscribers: Author[];
   memberStatus: number;
   subscribed: boolean;
   following: boolean;
@@ -42,7 +45,9 @@ export class Publication {
   status: number = 0;
   storiesCount: number;
   membersList: Array<object>;
-
+  views: number = 0;
+  membersCount: number = 0;
+  subscribersCount: number = 0;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
@@ -53,8 +58,15 @@ export class Publication {
         } else if (['memberStatus', 'subscribed'].includes(i)) {
           this['following'] = options[i];
           this[i] = options[i];
+        } else if (['editors', 'contributors', 'requests', 'invitations', 'subscirbers'].includes(i)) {
+          options[i] = options[i].map(
+            el => new Author(el)
+          );
+          this[i] = options[i];
+        } else if (['inviter', 'owner'].includes(i)) {
+          this[i] =  new Author(options[i]);
         } else {
-          this[i] = options[i] ? options[i] : '';
+          this[i] = options[i];
         }
       }
     }

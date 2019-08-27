@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
 import { ReplaySubject } from 'rxjs';
@@ -11,6 +11,7 @@ import { UtilService } from '../../core/services/util.service';
 import { Content } from '../../core/services/models/content';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 
 @Component({
@@ -36,7 +37,19 @@ export class PublicationComponent implements OnInit, OnDestroy {
       value: 'hide-cover',
     },
   ];
+  public pubSelectData = [
+    {
+      'value': '2',
+      'text': 'Editor',
+    },
+    {
+      'value': '3',
+      'text': 'Contributor',
+    }
+
+  ];
   public publicationForm: FormGroup;
+  public searchForm: FormGroup;
   public isMyPublication = false;
   public editMode = false;
   public imageLoaded = false;
@@ -50,7 +63,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
-
+  public members = [];
+  public membersOdd = [];
+  public membersEven = [];
+  public subscribers = [];
+  public pendings = [];
+  haveResult: boolean;
+  searchedMembers = [];
   public activeTab = 'stories';
   public membersActiveTab = 'requests';
   loading = true;
@@ -65,45 +84,34 @@ export class PublicationComponent implements OnInit, OnDestroy {
   logoFile: File;
   deleteLogo = '0';
   deleteCover = '0';
+  showInviteModal: boolean = false;
 
   constructor(
     private accountService: AccountService,
-    private router: Router,
     private route: ActivatedRoute,
     private publicationService: PublicationService,
     public utilService: UtilService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public uiNotificationService: UiNotificationService,
   ) {
-    this.b();
-  }
-
-  b() {
-    for (let i = 0; i < 20; ++i) {
-      this.followers.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-
-      this.requests.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-    }
   }
 
   ngOnInit() {
+    this.buildSearchForm();
+    this.searchForm.controls['members'].valueChanges
+      .pipe(
+        debounceTime(750),
+        distinctUntilChanged(),
+        mergeMap(
+          res => this.accountService.searchAccountByTerm(res)
+        ))
+      .subscribe(
+        res => {
+          this.searchedMembers = res;
+          this.haveResult = true;
+        }
+      );
+
     this.route.params
       .pipe(
         debounceTime(500),
@@ -124,6 +132,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.buildForm();
         console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
+        if (this.isMyPublication) {
+          this.requests = this.publication.requests;
+          this.pendings = this.publication.invitations;
+          this.subscribers = this.publication.subscribers;
+          this.members = this.publication.editors.concat(this.publication.contributors);
+          this.members.unshift(this.publication.owner);
+          this.members.forEach(
+            (el, i) => {
+              if (i == 0 || i % 2 == 0) {
+                this.membersOdd.push(el);
+              } else {
+                this.membersEven.push(el);
+              }
+            }
+          );
+        }
         this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
@@ -131,6 +155,60 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+  }
+
+  inviteModal(flag: boolean) {
+    this.showInviteModal = flag;
+  }
+
+  invite() {
+    const body = [{
+      publicKey: this.searchedMembers[0].publicKey,
+      email: this.searchedMembers[0].email,
+      asEditor: this.searchForm.value.status == '2'
+    }];
+    this.publicationService.inviteBecomeMember(body, this.publication.slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        res => {
+          this.showInviteModal = false;
+        }
+      );
+  }
+
+  follow() {
+    this.publicationService.follow(this.publication.slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        () => this.publication.following = !this.publication.following
+      );
+  }
+
+  becomeMember() {
+    this.publicationService.requestBecomeMember(this.publication.slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        () => {
+          this.publication.memberStatus = 203;
+        }
+      );
+  }
+  cancelBecomeMember() {
+    this.publicationService.cancelBecomeMember(this.publication.slug)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(
+        () => {
+          this.publication.memberStatus = 0;
+        }
+      );
   }
 
   setEditMode(mode = true, title, description) {
@@ -149,7 +227,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  uploadCover(event, container) {
+  uploadCover(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
       const myReader: FileReader = new FileReader();
@@ -186,7 +264,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: { data: Content[], more: boolean }) => {
-        console.log(data);
         this.stories = data.data;
       });
   }
@@ -194,12 +271,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   changeListType(type) {
     this.listType = type;
   }
-
-  // saveEdition(title, description) {
-  //   this.publication.title = title;
-  //   this.publication.description = description;
-  //   this.edit();
-  // }
 
   edit() {
     const formData = new FormData();
@@ -215,11 +286,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    console.log(this.publication.hideCover);
+    // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
         this.editMode = false;
         this.textChanging = false;
+        this.imageLoaded = false;
         this.publication = result;
+        console.log(this.publication);
+        this.uiNotificationService.success('Success', 'Your publication successfully updated');
+      },
+      err => {
+        this.editMode = false;
+        this.textChanging = false;
+        this.imageLoaded = false;
+        this.uiNotificationService.error('Error', err.error.content);
       }
     );
   }
@@ -235,14 +317,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   dropdownSelect($event) {
-    console.log($event);
     if ($event == 'delete') {
       this.deleteCover = '1';
       this.coverFile = null;
       this.edit();
     }
     if ($event == 'hide-cover') {
-      this.publication.hideCover = true;
+      this.publication.hideCover = 'true';
       this.edit();
     }
   }
@@ -263,7 +344,24 @@ export class PublicationComponent implements OnInit, OnDestroy {
   removeLogo() {
     this.deleteLogo = '1';
     this.logoFile = null;
+    this.publication.logo = '';
     this.logoData = {};
+  }
+
+  onRoleClick(e, member) {
+    this.publicationService.changeMemberStatus(this.publication.slug, {
+      publicKey: member.publicKey,
+      status: e.slug
+    });
+  }
+
+  onUserClick(e) {
+    console.log(e);
+    this.utilService.routerChangeHelper('account', e.user.publicKey);
+  }
+
+  onFollowChange(e) {
+    console.log(e);
   }
 
   private buildForm() {
@@ -276,6 +374,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     },
       { validator: ValidationService.noSpaceValidator }
     );
+  }
+
+  private buildSearchForm() {
+    this.searchForm = this.formBuilder.group({
+      status: new FormControl('', []),
+      members: new FormControl('', []),
+    });
   }
 
   ngOnDestroy() {

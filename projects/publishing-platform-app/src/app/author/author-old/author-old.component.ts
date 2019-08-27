@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Optional } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Optional, Input } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
@@ -30,7 +30,6 @@ export class AuthorOldComponent implements OnInit, OnDestroy {
   canFollow = true;
   yourAccount = false;
   articlesLoaded = false;
-
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   author: Account;
