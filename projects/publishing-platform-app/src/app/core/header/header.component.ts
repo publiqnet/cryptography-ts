@@ -3,6 +3,10 @@ import { ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs-compat/operator/debounceTime';
+import { mergeMap } from 'rxjs-compat/operator/mergeMap';
+import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
   isInputValueChanged: boolean = false;
-
+  public searchForm: FormGroup;
   headerRoutesList = {
     '' : '/',
     'wallet' : '/wallet',
@@ -40,11 +44,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchEvent(flag: boolean) {
-    this.showSearch = flag;
+  searchEvent(e) {
+    console.log(e);
+    this.showSearch = e;
   }
 
   onInputChange(searchValue: string): void {
+    console.log(searchValue);
     (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
   }
 

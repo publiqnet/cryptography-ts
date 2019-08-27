@@ -8,7 +8,7 @@
   right: 0;
   bottom: 0;
   background: #F2F2F2;
-  animation: showSearchComponent .3s ease-in-out forwards;
+  animation: showSearchComponent .4s ease-in-out .2s forwards;
   z-index: 8;
   padding: 100px 0;
   overflow-y: auto;
@@ -49,11 +49,11 @@
 
 @keyframes showSearchComponent {
   0% {
-    transform: translateY(-100%);
+    opacity: 0;
     transition: .3s ease-out;
   }
   100% {
-    transform: translateY(0);
+    opacity: 1;
     transition: .3s ease-out;
   }
 }
