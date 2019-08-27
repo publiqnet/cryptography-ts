@@ -37,6 +37,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.membership = data.membership;
     this.invitations = data.invitations;
     this.requests = data.requests;
+    console.log(this.invitations);
   }
 
   ngOnInit() {
@@ -46,9 +47,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   openPublicationModal(flag: boolean, type: string = null) {
     this.showCustomModal = flag;
     this.showModalType = type;
-    if (!flag) {
-      this.getMyPublications();
-    }
   }
 
   getMyPublications () {
