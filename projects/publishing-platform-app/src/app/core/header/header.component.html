@@ -1,6 +1,6 @@
 <ui-header [headerData]="headerData" (userSignIn)="userAuth('login')" (userSignUp)="userAuth('register')" (navigationLink)="onRouteChange($event)" (searchEvent)="searchEvent(true)"></ui-header>
 
 <ng-container *ngIf="showSearch">
-  <app-search (closeSearchBar)="searchEvent(false)"></app-search>
+  <app-search (onInputChange)="onInputChange($event)" (closeSearchBar)="searchEvent(false)"></app-search>
 </ng-container>
-w
+

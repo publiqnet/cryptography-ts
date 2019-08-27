@@ -19,6 +19,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 50px 0;
     @include media-lg{
       flex-direction: column;
       align-items: flex-start;
@@ -30,6 +31,15 @@
       text-align: right;
     }
   }
+}
+::ng-deep .search-stories{
+  margin-bottom: 10px;
+}
+::ng-deep .search-publication{
+  margin-bottom: 25px;
+}
+::ng-deep .search-people{
+  margin-bottom: 25px;
 }
 .search-tabber{
   ::ng-deep .button-tabber__background{
@@ -135,4 +145,3 @@ h3{
     }
   }
 }
-

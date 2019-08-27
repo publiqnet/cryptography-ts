@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
+  isInputValueChanged: boolean = false;
 
   headerRoutesList = {
     '' : '/',
@@ -41,6 +42,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchEvent(flag: boolean) {
     this.showSearch = flag;
+  }
+
+  onInputChange(searchValue: string): void {
+    (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
   }
 
   updateHeaderData() {
