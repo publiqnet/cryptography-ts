@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PublicationComponent } from './publication/publication.component';
 import { MyPublicationsComponent } from './my-publications/my-publications.component';
 import { AuthguardService } from '../core/services/authguard.service';
-import { NewPublicationComponent } from './new/new-publication.component';
+import { NewPublicationComponent } from './new-old/new-publication.component';
 
 const routes: Routes = [
   {
