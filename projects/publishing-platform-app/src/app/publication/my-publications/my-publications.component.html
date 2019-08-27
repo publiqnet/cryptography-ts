@@ -26,5 +26,5 @@
 </div>
 
 <ng-container *ngIf="showCustomModal">
-    <app-publication-modal (onCloseModal)="openPublicationModal(false)" [modalType]="showModalType" [invitations]="invitations"></app-publication-modal>
+    <app-publication-modal (onCloseModal)="openPublicationModal(false)" (updatePublicationData)="getMyPublications()" [modalType]="showModalType" [invitations]="invitations"></app-publication-modal>
 </ng-container>

@@ -63,6 +63,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
     itemSelector: '.story--grid',
     gutter: 10
   };
+  public members = [];
+  public membersOdd = [];
+  public membersEven = [];
+  public subscribers = [];
+  public pendings = [];
   haveResult: boolean;
   searchedMembers = [];
   public activeTab = 'stories';
@@ -83,40 +88,12 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   constructor(
     private accountService: AccountService,
-    private router: Router,
     private route: ActivatedRoute,
     private publicationService: PublicationService,
     public utilService: UtilService,
     private formBuilder: FormBuilder,
-    public uiNotificationService: UiNotificationService
+    public uiNotificationService: UiNotificationService,
   ) {
-    this.b();
-  }
-
-  b() {
-    for (let i = 0; i < 20; ++i) {
-      this.followers.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-
-      this.requests.push({
-        'user': {
-          'image': 'http://via.placeholder.com/120x120',
-          'first_name': 'John',
-          'last_name': 'Doe',
-          'fullName': 'John Doe'
-        },
-        'isFollowing': false,
-        'slug': 'user_data'
-      });
-    }
   }
 
   ngOnInit() {
@@ -132,7 +109,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         res => {
           this.searchedMembers = res;
           this.haveResult = true;
-          console.log(this.searchedMembers);
         }
       );
 
@@ -152,11 +128,25 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe((pub: Publication) => {
         this.loading = false;
         this.publication = pub;
-        console.log(this.publication);
-        // this.requests = this.publication.requests;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
+        if (this.isMyPublication) {
+          this.requests = this.publication.requests;
+          this.pendings = this.publication.invitations;
+          this.subscribers = this.publication.subscribers;
+          this.members = this.publication.editors.concat(this.publication.contributors);
+          this.members.unshift(this.publication.owner);
+          this.members.forEach(
+            (el, i) => {
+              if (i == 0 || i % 2 == 0) {
+                this.membersOdd.push(el);
+              } else if (i !== 0 && i % 2 !== 0) {
+                this.membersEven.push(el);
+              }
+            }
+          );
+        }
         this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
@@ -203,7 +193,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.publication.memberStatus = 203;
         }
       );
@@ -214,7 +204,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.publication.memberStatus = 0;
         }
       );
@@ -345,6 +335,17 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.logoFile = null;
     this.publication.logo = '';
     this.logoData = {};
+  }
+
+  onRoleClick(e, member) {
+    this.publicationService.changeMemberStatus(this.publication.slug, {
+      publicKey: member.publicKey,
+      status: e.slug
+    });
+  }
+
+  onUserClick(e, member) {
+    this.utilService.routerChangeHelper('account', member.publicKey);
   }
 
   private buildForm() {
