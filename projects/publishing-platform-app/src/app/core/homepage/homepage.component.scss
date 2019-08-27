@@ -136,6 +136,11 @@
 
 .stories {
   visibility: hidden;
+  ::ng-deep {
+    .story__meta-info__author {
+
+    }
+  }
   &.masonry {
     visibility: visible;
   }
@@ -144,6 +149,17 @@
 .publications {
   width: 100%;
   padding: 25px 0 25px 25px;
+  ::ng-deep {
+    .publication-widget {
+      max-width: 100%;
+      &__list {
+        max-width: 100%;
+        .button {
+          border: none;
+        }
+      }
+    }
+  }
 }
 
 

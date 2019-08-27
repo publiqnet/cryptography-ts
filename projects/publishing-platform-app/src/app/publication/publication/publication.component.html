@@ -67,7 +67,7 @@
     <div class="row publication-statistics" [class.editable-disabled]="editMode">
         <div class="col-lg-8 offset-lg-2 col-12 offset-0">
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.views}}</span>
                 <span class="datum__descriptor">Views</span>
             </div>
             <div class="datum">
@@ -75,11 +75,11 @@
                 <span class="datum__descriptor">Stories</span>
             </div>
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.subscribersCount}}</span>
                 <span class="datum__descriptor">Followers</span>
             </div>
             <div class="datum">
-                <span class="datum__value">0</span>
+                <span class="datum__value">{{publication?.membersCount}}</span>
                 <span class="datum__descriptor">Members</span>
             </div>
         </div>
@@ -171,12 +171,12 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single [type]="'role'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event, member)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                    [isOwner]="true" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single type="role" [userData]="{ user: { image: 'http://via.placeholder.com/120x120', first_name: 'John', last_name: 'Doe' }, isFollowing: false, followMember: true, slug: 'user_data' }" [userRoleData]="[{ 'value': 'Editor', 'slug': 'editor', 'status': false }, { 'value': 'Contributor', 'slug': 'contributor', 'status': true }]"
-                    *ngFor="let d of [1,2,3,4,5,6];"></ui-user-single>
+                <ui-user-single type="role" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event, member)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
     </div>
@@ -189,17 +189,17 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
-            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
-            <ui-user-single type="two-actions" [userData]="user" *ngFor="let user of requests;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" *ngFor="let user of pendings;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers">
-            <ui-user-single type="followers" [userData]="follower" *ngFor="let follower of followers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower}" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
     </div>
 </div>
