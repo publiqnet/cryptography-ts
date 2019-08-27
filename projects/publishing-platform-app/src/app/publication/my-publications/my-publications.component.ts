@@ -66,5 +66,4 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
 
   }
-
 }
