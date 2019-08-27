@@ -181,11 +181,11 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single [type]="'role'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event, member)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
-                    [isOwner]="true" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                    [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single type="role" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event, member)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
                     [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
@@ -194,22 +194,22 @@
 <div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
-            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending'}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending', count: pendings.length}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
         </div>
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
-            <ui-user-single type="two-actions" [userData]="{user: user}" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
-            <ui-user-single type="two-actions" [userData]="{user: user}" *ngFor="let user of pendings;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onNotificationClick)="onFollowChange($event)" *ngFor="let user of pendings;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers">
-            <ui-user-single type="followers" [userData]="{user: follower}" *ngFor="let follower of subscribers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
     </div>
 </div>

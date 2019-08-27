@@ -147,6 +147,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.publication = pub;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
+        console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
         if (this.isMyPublication) {
           this.requests = this.publication.requests;
@@ -158,7 +159,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
             (el, i) => {
               if (i == 0 || i % 2 == 0) {
                 this.membersOdd.push(el);
-              } else if (i !== 0 && i % 2 !== 0) {
+              } else {
                 this.membersEven.push(el);
               }
             }
@@ -317,6 +318,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    console.log(this.publication.hideCover);
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
@@ -324,6 +326,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.textChanging = false;
         this.imageLoaded = false;
         this.publication = result;
+        console.log(this.publication);
         this.uiNotificationService.success('Success', 'Your publication successfully updated');
       },
       err => {
@@ -364,9 +367,17 @@ export class PublicationComponent implements OnInit, OnDestroy {
       this.edit();
     }
     if ($event == 'hide-cover') {
-      this.publication.hideCover = true;
+      this.publication.hideCover = 'true';
       this.edit();
     }
+  }
+
+  roleClick(e) {
+    console.log(e);
+  }
+
+  userClick(e) {
+    console.log(e);
   }
 
   showCover() {
@@ -388,8 +399,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUserClick(e, member) {
-    this.utilService.routerChangeHelper('account', member.publicKey);
+  onUserClick(e) {
+    console.log(e);
+    this.utilService.routerChangeHelper('account', e.user.publicKey);
+  }
+
+  onFollowChange(e) {
+    console.log(e);
   }
 
   private buildForm() {

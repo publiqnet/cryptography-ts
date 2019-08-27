@@ -141,7 +141,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.lastName = this.author.lastName;
           this.bio = this.author.bio;
           this.listType = this.author.listView ? 'single' : 'grid';
-          this.setAuthorName();
+          this.bio = this.author.bio || 'Write a short bio';
+          this.fullName = this.author.fullName;
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -151,10 +152,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
+            this.setAuthorName();
             return this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount);
           } else {
             return this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
           }
+
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -201,11 +204,11 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
 
     this.authorForm = this.formBuilder.group({
-        firstName: new FormControl(this.firstName, []),
-        lastName: new FormControl(this.lastName, []),
-        bio: new FormControl(this.bio, [])
-      },
-      {validator: ValidationService.noSpaceValidator}
+      firstName: new FormControl(this.firstName, []),
+      lastName: new FormControl(this.lastName, []),
+      bio: new FormControl(this.bio, [])
+    },
+      { validator: ValidationService.noSpaceValidator }
     );
   }
 
@@ -287,12 +290,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditMode(flag: boolean) {
+  onEditMode(flag: boolean, fullName?, bio? ) {
     this.listType = this.author.listView ? 'single' : 'grid';
     this.editMode = flag;
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
+    console.log(flag);
+    if (!flag) {
+      fullName.textContent = this.setAuthorName();
+      bio.textContent = this.author.bio || 'Write a short bio';
+    }
   }
 
 
