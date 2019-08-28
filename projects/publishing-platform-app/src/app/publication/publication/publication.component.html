@@ -181,12 +181,12 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
-                    [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event)" [userData]="{ user: member}"
+                    [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
-                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event)" [userData]="{ user: member }"
+                    [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
     </div>
@@ -209,7 +209,7 @@
 </div>
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2 followers">
+        <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
             <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
     </div>

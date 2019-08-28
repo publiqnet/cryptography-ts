@@ -384,36 +384,36 @@
         margin: 5px 0 0;
         font: 700 50px/0.8 $vollkorn;
         color: pbq-color($grey, 700);
-      label {
-        display: flex;
-        textarea {
-          border: none;
-          font-family: $vollkorn;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 50px;
-          line-height: 50px;
-          color: #191B1E;
-          box-sizing: border-box;
-          width: 100%;
-          resize: none;
-          height: inherit;
-          overflow: hidden;
-          padding-top: 5px;
-          &:focus {
-            border: none;
-            outline: none;
-          }
-          &::placeholder {
-            font-family: $vollkorn;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 50px;
-            line-height: 50px;
-            color: #191B1E;
-          }
+        label {
+            display: flex;
+            textarea {
+                border: none;
+                font-family: $vollkorn;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 50px;
+                line-height: 50px;
+                color: #191B1E;
+                box-sizing: border-box;
+                width: 100%;
+                resize: none;
+                height: inherit;
+                overflow: hidden;
+                padding-top: 5px;
+                &:focus {
+                    border: none;
+                    outline: none;
+                }
+                &::placeholder {
+                    font-family: $vollkorn;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 50px;
+                    line-height: 50px;
+                    color: #191B1E;
+                }
+            }
         }
-      }
         @include media-lg {
             font: 700 40px/1 $vollkorn;
         }
@@ -426,35 +426,35 @@
         color: $grey;
         font: 400 17px/24px $open-sans;
         margin: 0 0 32px;
-      label {
-        display: flex;
-        textarea {
-          border: none;
-          font-family: $open-sans;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 17px;
-          line-height: 24px;
-          color: #565A60;
-          resize: none;
-          height: inherit;
-          overflow: hidden;
-          padding-top: 5px;
-          width: 100%;
-          &:focus {
-            border: none;
-            outline: none;
-          }
-          &::placeholder {
-            font-family: $open-sans;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 17px;
-            line-height: 24px;
-            color: #565A60;
-          }
+        label {
+            display: flex;
+            textarea {
+                border: none;
+                font-family: $open-sans;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 17px;
+                line-height: 24px;
+                color: #565A60;
+                resize: none;
+                height: inherit;
+                overflow: hidden;
+                padding-top: 5px;
+                width: 100%;
+                &:focus {
+                    border: none;
+                    outline: none;
+                }
+                &::placeholder {
+                    font-family: $open-sans;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 17px;
+                    line-height: 24px;
+                    color: #565A60;
+                }
+            }
         }
-      }
         @include media-md {
             font: 400 13px/24px $open-sans;
         }
@@ -534,10 +534,11 @@
       }
     }
   }*/
-    ::ng-deep .notification-card {
+     ::ng-deep .notification-card {
         width: 210px;
         display: inline-flex;
         margin: 0 10px 10px 0;
+        vertical-align: middle;
     }
     ui-user-single:last-child {
          ::ng-deep .notification-card {

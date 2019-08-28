@@ -346,7 +346,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
     formData.append('deleteLogo', this.deleteLogo);
     formData.append('deleteCover', this.deleteCover);
-    formData.append('hideCover', this.publication.hideCover);
+    formData.append('hideCover', this.publication.hideCover ? 'true' : '');
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
     console.log(this.publication.hideCover);
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
@@ -460,6 +460,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.pendings.splice(i, 1);
       }
     );
+  }
+
+  removeFromPublication(e) {
+    console.log(e);
   }
 
   private buildForm() {
