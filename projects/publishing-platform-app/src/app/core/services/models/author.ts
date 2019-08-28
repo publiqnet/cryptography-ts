@@ -26,7 +26,7 @@ export class Author {
                     this['last_name'] = options[i] ? options[i] : '';
                 } else if (i == 'firstName') {
                     this['first_name'] = options[i] ? options[i] : '';
-                } else if (i == 'address') {
+                } else if (i == 'publicKey') {
                     this['slug'] = options[i] ? options[i] : '';
                     this[i] = options[i] ? options[i] : '';
                 } else if (['image'].includes(i)) {
