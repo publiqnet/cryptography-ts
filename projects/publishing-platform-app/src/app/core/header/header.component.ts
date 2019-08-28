@@ -1,12 +1,17 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { debounceTime } from 'rxjs-compat/operator/debounceTime';
 import { mergeMap } from 'rxjs-compat/operator/mergeMap';
 import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
 import { FormGroup } from '@angular/forms';
+import { ContentService } from '../services/content.service';
+// import { Search } from '../models/classes/search';
+import { ErrorService } from '../services/error.service';
+import { Search } from '../models/classes/search';
+import { Author } from '../services/models/author';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +20,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
+  public searchData = [];
+  public searchWord: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
@@ -30,7 +37,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private activatedRoute: ActivatedRoute,
+    private contentService: ContentService,
+    private errorService: ErrorService
   ) {
   }
 
@@ -44,14 +54,30 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
+  parseSearchResults(data) {
+    this.searchData  = [];
+    if (data && Object.keys(data)) {
+      for (const key of Object.keys(data)) {
+        this.searchData.push(...data[key]);
+      }
+    }
+  }
+
   searchEvent(e) {
-    console.log(e);
     this.showSearch = e;
   }
 
-  onInputChange(searchValue: string): void {
+  onInputChange(searchValue: any) {
+    this.searchWord = searchValue;
     console.log(searchValue);
-    // (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
+    this.contentService.searchByWord(searchValue)
+      .subscribe((data: Search) => {
+        // this.parseSearchResults(data);
+
+        this.searchData = data;
+        this.searchData['authors'] = this.searchData['authors'].map(author => new Author(author));
+      }, error => {this.errorService.handleError('search', 'error'); });
+
   }
 
   updateHeaderData() {

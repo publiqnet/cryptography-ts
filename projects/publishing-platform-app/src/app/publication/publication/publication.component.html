@@ -189,6 +189,7 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
+          {{requests | json}}
             <ui-user-single type="two-actions" [userData]="{user: user}" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">

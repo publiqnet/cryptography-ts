@@ -15,6 +15,10 @@ import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { Content } from './models/content';
+import { Search } from '../models/classes/search';
+import { TranslateService } from '@ngx-translate/core';
+import { Publication } from './models/publication';
+import { Author } from './models/author';
 
 export enum OrderOptions {
   author_desc = <any>'+author',
@@ -42,6 +46,7 @@ export class ContentService {
   contentUrl = environment.backend + '/api/content';
   feedbackUrl = environment.backend + '/api/feedback';
   fileUrl = environment.backend + '/api/file';
+  url = environment.backend + '/api';
 
   private feedback: Feedback;
   feedbackChanged = new Subject<Feedback>();
@@ -99,6 +104,7 @@ export class ContentService {
     private accountService: AccountService,
     private errorService: ErrorService,
     private http: HttpClient,
+    public t: TranslateService,
     private walletService: WalletService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private channelService: ChannelService
@@ -663,4 +669,29 @@ export class ContentService {
     };
     return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
+
+
+  searchByWord(word: string): Observable<any> {
+    const lang = this.t.currentLang;
+    const url = this.url + `/search/${word}`;
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {word, '_locale': lang}).pipe(
+      map(data => {
+        const res = {};
+        for (const key of Object.keys(data)) {
+          if (key === 'publication') {
+           res[key]  = data[key].map(pub => new Publication(pub));
+          }
+          if (key === 'article') {
+            res[key]  = data[key].map(article => new Content(article));
+          }
+          if (key === 'authors') {
+            res[key]  =   data[key].map(author => new Author(author));
+          }
+        }
+        return res;
+      })
+    );
+
+  }
+
 }
