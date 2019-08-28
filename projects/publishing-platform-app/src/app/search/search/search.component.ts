@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Search } from '../../core/models/classes/search';
+import { UtilService } from '../../core/services/util.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -22,7 +24,8 @@ export class SearchComponent implements OnInit, OnChanges {
     'slug': 'user_data'
   };
 
-  constructor() {}
+  constructor(private utilService: UtilService,
+              private router: Router) {}
 
   ngOnInit() {
 
@@ -33,5 +36,15 @@ export class SearchComponent implements OnInit, OnChanges {
       console.log(this.searchResult);
     }
   }
+
+  onUserClick(e) {
+    console.log(e);
+    this.utilService.routerChangeHelper('account', e.slug);
+  }
+
+  changeRoute(url) {
+    this.router.navigateByUrl(url);
+  }
+
 
 }
