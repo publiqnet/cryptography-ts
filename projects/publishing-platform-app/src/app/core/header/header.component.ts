@@ -3,15 +3,11 @@ import { ReplaySubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { debounceTime } from 'rxjs-compat/operator/debounceTime';
-import { mergeMap } from 'rxjs-compat/operator/mergeMap';
-import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
 import { FormGroup } from '@angular/forms';
 import { ContentService } from '../services/content.service';
 // import { Search } from '../models/classes/search';
 import { ErrorService } from '../services/error.service';
 import { Search } from '../models/classes/search';
-import { Author } from '../services/models/author';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +16,7 @@ import { Author } from '../services/models/author';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
-  public searchData = [];
+  public searchData = {};
   public searchWord: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
@@ -54,20 +50,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  parseSearchResults(data) {
-    this.searchData  = [];
-    if (data && Object.keys(data)) {
-      for (const key of Object.keys(data)) {
-        this.searchData.push(...data[key]);
-      }
-    }
-  }
-
   searchEvent(e) {
     this.showSearch = e;
   }
 
-  onInputChange(searchValue: any) {
+  onInputChange(searchValue: string) {
     this.searchWord = searchValue;
     console.log(searchValue);
     this.contentService.searchByWord(searchValue)
@@ -75,7 +62,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         // this.parseSearchResults(data);
 
         this.searchData = data;
-        this.searchData['authors'] = this.searchData['authors'].map(author => new Author(author));
       }, error => {this.errorService.handleError('search', 'error'); });
 
   }
