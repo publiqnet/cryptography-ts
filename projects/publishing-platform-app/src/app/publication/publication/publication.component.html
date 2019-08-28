@@ -36,13 +36,13 @@
         </div>
     </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
-        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [ngClass]="{'publication-metadata__avatar--editable' : editMode,
-                      'publication-metadata__avatar--editable-no-img' : editMode && publication?.logo}">
-            <input *ngIf="editMode" type="file" (change)="uploadLogo($event)">
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [ngClass]="{'publication-metadata__avatar--editable' : isMyPublication,
+                      'publication-metadata__avatar--editable-no-img' : isMyPublication && publication?.logo}">
+            <input *ngIf="isMyPublication" type="file" (change)="uploadLogo($event)">
             <ui-avatar size="large" [isSquaric]="true" [avatarData]="logoData"></ui-avatar>
-            <i class="icon-close" *ngIf="editMode && publication?.logo" (click)="removeLogo()"></i>
+            <i class="icon-close" *ngIf="isMyPublication && publication?.logo" (click)="removeLogo()"></i>
         </div>
-        <div class="col-lg-6 col-md-7 col">
+        <div class="col-lg-5 col-md-7 col">
             <h1 class="publication-metadata__title">
                 <label>
                 <textarea [disabled]="!isMyPublication"  placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
@@ -56,7 +56,7 @@
               </label>
             </h3>
         </div>
-        <div class="col-lg-2 col-md-3 col-12">
+        <div class="col-lg-3 col-md-3 col-12">
             <ng-container *ngIf="isMyPublication">
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
@@ -64,10 +64,8 @@
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
                 </ng-container>
             </ng-container>
-            <ui-button size="small" text="Become a member" (click)="becomeMember()" *ngIf="publication.memberStatus == 0"></ui-button>
-            <ui-button size="small" text="Cancel" (click)="cancelBecomeMember()" *ngIf="publication.memberStatus == 203"></ui-button>
-
-            <ui-button type="primary" iconClassName="follow" size="small" text="Follow" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
+            <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
+            <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -98,27 +96,6 @@
 
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode" *ngIf="searchForm">
             <ui-tab type="buttons" *ngIf="isMyPublication" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
-            <form class="form" novalidate [formGroup]="searchForm">
-                <div class="invite-member-space" *ngIf="activeTab === 'members'">
-                    <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
-                    <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
-                        <p>To add members search by name or type email to invite.</p>
-                        <ui-input [type]="'text'" formControlName="members"></ui-input>
-                        <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
-                            <ul>
-                                <li *ngFor="let member of searchedMembers">
-                                    {{member.fullName}}
-                                </li>
-                            </ul>
-                        </div> -->
-                        <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData"></ui-dropdown>
-                        <div class="custom-modal__buttons">
-                            <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
-                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'"></ui-button>
-                        </div>
-                    </div>
-                </div>
-            </form>
         </div>
     </div>
     <div class="row">
@@ -174,6 +151,27 @@
                 <i class="icon-search"></i>
                 <input type="text">
             </div>
+            <form class="form" novalidate [formGroup]="searchForm">
+                <div class="invite-member-space" *ngIf="activeTab === 'members'">
+                    <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
+                    <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
+                        <p>To add members search by name or type email to invite.</p>
+                        <ui-input [type]="'text'" formControlName="members"></ui-input>
+                        <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
+                            <ul>
+                                <li *ngFor="let member of searchedMembers">
+                                    {{member.fullName}}
+                                </li>
+                            </ul>
+                        </div> -->
+                        <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData" [isNone]="false"></ui-dropdown>
+                        <div class="custom-modal__buttons">
+                            <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
+                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'"></ui-button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -181,12 +179,12 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event)" [userData]="{ user: member}"
-                    [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
+                    [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event)" [userData]="{ user: member }"
-                    [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
+                    [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
     </div>
