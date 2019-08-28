@@ -44,14 +44,14 @@
         </div>
         <div class="col-lg-5 col-md-7 col">
             <h1 class="publication-metadata__title">
-                <label>
-                <textarea [disabled]="!isMyPublication"  placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
-                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" *ngIf="editMode && isMyPublication"></i>
+              <label>
+                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" contenteditable="true" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
+                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" ></i>
               </label>
             </h1>
             <h3 class="publication-metadata__description">
                 <label>
-                <textarea [disabled]="!isMyPublication"  placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
+                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
                 <i class="icon-edit editable-icon" *ngIf="editMode && isMyPublication"></i>
               </label>
             </h3>
