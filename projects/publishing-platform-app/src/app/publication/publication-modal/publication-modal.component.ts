@@ -157,7 +157,7 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     this.publicationForm = this.FormBuilder.group({
-      description: new FormControl('', [ValidationService.required, Validators.maxLength(160)]),
+      description: new FormControl('', [Validators.maxLength(160)]),
       title: new FormControl('', [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
       logo: new FormControl(),

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Optional, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, Optional, Input, ViewChild, ElementRef, AfterViewInit, ContentChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -24,13 +24,28 @@ import { style } from '@angular/animations';
   selector: 'app-author',
   templateUrl: './author.component.html',
   styleUrls: ['./author.component.scss'],
-  providers: [ SafeStylePipe ]
+  providers: [SafeStylePipe]
 })
 export class AuthorComponent implements OnInit, OnDestroy {
 
   public isMasonryLoaded = false;
-  @ViewChild('bioText', {static: false}) bioText: ElementRef;
-  @ViewChild('authorName', {static: false}) authorName: ElementRef;
+
+  @ViewChild('authorName', {static: false}) set authorName(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
+
+  @ViewChild('bioText', {static: false}) set bioText(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
+
   @Input('autoresize') maxHeight: number;
   public masonryOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
@@ -126,7 +141,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.lastName = this.author.lastName;
           this.bio = this.author.bio;
           this.listType = this.author.listView ? 'single' : 'grid';
-          this.setAuthorName();
+          this.bio = this.author.bio || 'Write a short bio';
+          this.fullName = this.author.fullName;
           if (this.author.image) {
             this.avatarUrl = this.author.image;
           }
@@ -136,10 +152,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
+            this.setAuthorName();
             return this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount);
           } else {
             return this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
           }
+
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -165,14 +183,14 @@ export class AuthorComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-        if (data.action === 'loadAuthorData') {
-          this.router.navigate(['/page-not-found']);
-        } else if (data.action == 'loadAuthorStories') {
-          console.log('--error--', data.message);
-        } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-          this.notification.error(data.message);
+          if (data.action === 'loadAuthorData') {
+            this.router.navigate(['/page-not-found']);
+          } else if (data.action == 'loadAuthorStories') {
+            console.log('--error--', data.message);
+          } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
+            this.notification.error(data.message);
+          }
         }
-      }
       );
   }
 
@@ -186,26 +204,32 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
 
     this.authorForm = this.formBuilder.group({
-        firstName: new FormControl(this.firstName, []),
-        lastName: new FormControl(this.lastName, []),
-        bio: new FormControl(this.bio, [])
-      },
-      {validator: ValidationService.noSpaceValidator}
+      firstName: new FormControl(this.firstName, []),
+      lastName: new FormControl(this.lastName, []),
+      bio: new FormControl(this.bio, [])
+    },
+      { validator: ValidationService.noSpaceValidator }
     );
+  }
+
+  resizeTextareaElement(el) {
+    let newHeight;
+    if (el) {
+      el.style.overflow = 'hidden';
+      el.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(el.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = el.scrollHeight;
+      }
+      el.style.height = newHeight + 'px';
+    }
   }
 
 
   onNameEdit(event) {
-    let newHeight;
     if (event.target) {
-      event.target.style.overflow = 'hidden';
-      event.target.style.height = 'auto';
-      if (this.maxHeight) {
-        newHeight = Math.min(event.target.scrollHeight, this.maxHeight);
-      } else {
-        newHeight = event.target.scrollHeight;
-      }
-      event.target.style.height = newHeight + 'px';
+      this.resizeTextareaElement(event.target);
     }
     this.showEditModeIcons = true;
     this.editTitleIcon = true;
@@ -227,16 +251,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   onBioEdit(event) {
     this.showEditModeIcons = true;
     this.editBioIcon = true;
-    let newHeight;
     if (event.target) {
-      event.target.style.overflow = 'hidden';
-      event.target.style.height = 'auto';
-      if (this.maxHeight) {
-        newHeight = Math.min(event.target.scrollHeight, this.maxHeight);
-      } else {
-        newHeight = event.target.scrollHeight;
-      }
-      event.target.style.height = newHeight + 'px';
+      this.resizeTextareaElement(event.target);
     }
     this.bio = event.target.value;
     if (this.bio.trim().length && (this.bio !== this.author.bio)) {
@@ -274,12 +290,17 @@ export class AuthorComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditMode(flag: boolean) {
+  onEditMode(flag: boolean, fullName?, bio? ) {
     this.listType = this.author.listView ? 'single' : 'grid';
     this.editMode = flag;
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
+    console.log(flag);
+    if (!flag) {
+      fullName.textContent = this.setAuthorName();
+      bio.textContent = this.author.bio || 'Write a short bio';
+    }
   }
 
 
@@ -344,19 +365,19 @@ export class AuthorComponent implements OnInit, OnDestroy {
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;
-    const contentObservable =  this.isCurrentUser ?  this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount) : this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
+    const contentObservable = this.isCurrentUser ? this.contentService.getMyContents(this.startFromUri, this.storiesDefaultCount) : this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
     contentObservable.pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(
-          (data: any) => {
-            this.seeMoreChecker = data.more;
-            this.seeMoreLoading = false;
-            this.publishedContent = this.publishedContent.concat(data.data);
-            this.calculateLastStoriUri();
-            this.blockInfiniteScroll = false;
-          }
-        );
+      takeUntil(this.unsubscribe$)
+    )
+      .subscribe(
+        (data: any) => {
+          this.seeMoreChecker = data.more;
+          this.seeMoreLoading = false;
+          this.publishedContent = this.publishedContent.concat(data.data);
+          this.calculateLastStoriUri();
+          this.blockInfiniteScroll = false;
+        }
+      );
   }
 
   setAuthorName() {
@@ -398,12 +419,12 @@ export class AuthorComponent implements OnInit, OnDestroy {
     formData.append('listView', (this.listType == 'single') ? 'true' : '');
 
     this.accountService.updateAccount(formData)
-    .subscribe(data => {
-      this.editMode = false;
-      this.editTitleIcon = false;
-      this.editBioIcon = false;
-      this.showEditModeIcons = false;
-    });
+      .subscribe(data => {
+        this.editMode = false;
+        this.editTitleIcon = false;
+        this.editBioIcon = false;
+        this.showEditModeIcons = false;
+      });
   }
 
   ngOnDestroy() {

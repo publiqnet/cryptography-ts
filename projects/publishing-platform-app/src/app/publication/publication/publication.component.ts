@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
@@ -48,6 +48,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
 
   ];
+  @Input('autoresize') maxHeight: number;
+  @ViewChild('publicationTitle', {static: false}) set publicationTitle(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
+  @ViewChild('publicationDescription', {static: false}) set publicationDescription(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
   public publicationForm: FormGroup;
   public searchForm: FormGroup;
   public isMyPublication = false;
@@ -85,6 +100,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   deleteLogo = '0';
   deleteCover = '0';
   showInviteModal: boolean = false;
+  publicationDesc: string;
 
   constructor(
     private accountService: AccountService,
@@ -108,6 +124,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.searchedMembers = res;
+          console.log(res);
           this.haveResult = true;
         }
       );
@@ -130,6 +147,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.publication = pub;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
+        console.log(this.publication);
         this.isMyPublication = this.publication.memberStatus == 1;
         if (this.isMyPublication) {
           this.requests = this.publication.requests;
@@ -141,7 +159,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
             (el, i) => {
               if (i == 0 || i % 2 == 0) {
                 this.membersOdd.push(el);
-              } else if (i !== 0 && i % 2 !== 0) {
+              } else {
                 this.membersEven.push(el);
               }
             }
@@ -154,6 +172,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
       });
+
+  }
+
+  resizeTextareaElement(el) {
+    let newHeight;
+    if (el) {
+      el.style.overflow = 'hidden';
+      el.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(el.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = el.scrollHeight;
+      }
+      el.style.height = newHeight + 'px';
+    }
   }
 
   inviteModal(flag: boolean) {
@@ -285,6 +318,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover);
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    console.log(this.publication.hideCover);
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
@@ -292,6 +326,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.textChanging = false;
         this.imageLoaded = false;
         this.publication = result;
+        console.log(this.publication);
         this.uiNotificationService.success('Success', 'Your publication successfully updated');
       },
       err => {
@@ -303,14 +338,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTitleChange(e) {
+  onTitleChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['title'].setValue(e.target.textContent);
+    this.publicationForm.controls['title'].setValue(event.target.value);
   }
 
-  onDescriptionChange(e) {
+  onDescriptionChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['description'].setValue(e.target.textContent);
+    this.publicationDesc = event.target.value;
+    if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
+      this.publicationForm.controls['description'].setValue(this.publicationDesc);
+    } else if (!this.publicationDesc.trim().length) {
+      this.publicationForm.controls['description'].setValue('');
+    }
+    this.publicationForm.controls['description'].setValue(event.target.value);
   }
 
   dropdownSelect($event) {
@@ -320,9 +367,17 @@ export class PublicationComponent implements OnInit, OnDestroy {
       this.edit();
     }
     if ($event == 'hide-cover') {
-      this.publication.hideCover = true;
+      this.publication.hideCover = 'true';
       this.edit();
     }
+  }
+
+  roleClick(e) {
+    console.log(e);
+  }
+
+  userClick(e) {
+    console.log(e);
   }
 
   showCover() {
@@ -344,8 +399,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUserClick(e, member) {
-    this.utilService.routerChangeHelper('account', member.publicKey);
+  onUserClick(e) {
+    console.log(e);
+    this.utilService.routerChangeHelper('account', e.user.publicKey);
+  }
+
+  onFollowChange(e) {
+    console.log(e);
   }
 
   private buildForm() {
