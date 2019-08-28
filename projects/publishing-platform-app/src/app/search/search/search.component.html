@@ -1,0 +1,89 @@
+<div class="search">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+
+        <!--when you begin typing in search bar-->
+        <ng-container *ngIf="isInputValueChanged">
+          <div class="search__tabber">
+            <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]"
+                    (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+            <span class="search__tabber__results">
+            139 results
+          </span>
+          </div>
+          <!--!!!!! not in default-->
+
+          <div *ngIf="activeTab === 'stories' || activeTab === 'all'">
+            <h3>Popular Stories</h3>
+            <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="searchStoriesData"></ui-content-single>
+            <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="searchStoriesData"></ui-content-single>
+            <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="searchStoriesData"></ui-content-single>
+          </div>
+
+          <div *ngIf="activeTab === 'publications' || activeTab === 'all'">
+            <h3>Popular Publications</h3>
+            <ui-publication-single [className]="'search-publication'" [type]="'follow'" [publicationData]="searchPublicationsData"></ui-publication-single>
+            <ui-publication-single [className]="'search-publication'" [type]="'follow'" [publicationData]="searchPublicationsData"></ui-publication-single>
+          </div>
+
+          <div *ngIf="activeTab === 'people' || activeTab === 'all'">
+            <h3>Authors you may interest</h3>
+            <ui-user-single [type]="'followers'" [className]="" [userData]="searchPeopleData"></ui-user-single>
+          </div>
+
+        </ng-container>
+
+        <!--when you just entered search component-->
+        <ng-container *ngIf="!isInputValueChanged">
+
+          <div class="publication-widget" *ngIf="!isInputValueChanged">
+            <h3>Resent Searches</h3>
+            <div class="publication-widget__buttons">
+              <span class="blue">Clear</span>
+            </div>
+          </div>
+
+          <div class="recent-searches" *ngIf="!isInputValueChanged">
+            <span>#STARTUPS</span>
+            <span>#HEALTH</span>
+            <span>#COMPUTER SCIENCE</span>
+            <span>#TECHNOLOGY</span>
+            <span>#SCIENCE</span>
+            <span>#SPORT</span>
+            <span>#DESIGN</span>
+            <span>#WEATHER</span>
+          </div>
+
+          <div class="popular">
+            <div class="publication-widget">
+              <h3>Popular Publications</h3>
+              <div class="publication-widget__buttons">
+                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+              </div>
+            </div>
+
+            <ui-publication-single [className]="'popular__item'" [type]="'follow'" [publicationData]="popPublicationData"></ui-publication-single>
+            <ui-publication-single [className]="'popular__item'" [type]="'follow'" [publicationData]="popPublicationData"></ui-publication-single>
+          </div>
+
+          <div class="popular">
+            <div class="publication-widget">
+              <h3>Authors you may interest</h3>
+              <div class="publication-widget__buttons">
+                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+              </div>
+            </div>
+            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+</div>

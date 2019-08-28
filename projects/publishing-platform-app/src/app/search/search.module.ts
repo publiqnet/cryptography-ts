@@ -9,6 +9,7 @@ import { SearchAccountComponent } from './search-account/search-account.componen
 import { SearchContentComponent } from './search-content/search-content.component';
 import { SearchPublicationComponent } from './search-publication/search-publication.component';
 import { searchRoutes } from './search-routhing.module';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,15 @@ import { searchRoutes } from './search-routhing.module';
     TranslateModule.forChild(),
     RouterModule.forChild(searchRoutes)
   ],
-  declarations: [SearchAccountComponent, SearchContentComponent, SearchPublicationComponent],
-  providers: []
+  declarations: [
+    SearchAccountComponent,
+    SearchContentComponent,
+    SearchPublicationComponent,
+    SearchComponent
+  ],
+  providers: [],
+  exports: [
+    SearchComponent
+  ]
 })
 export class SearchModule {}

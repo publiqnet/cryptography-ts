@@ -1,0 +1,147 @@
+@import "../../../assets/css/variables";
+.search{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  right: 0;
+  bottom: 0;
+  background: #F2F2F2;
+  //animation: showSearchComponent .4s ease-in-out .2s forwards;
+  z-index: 8;
+  padding: 100px 0;
+  overflow-y: auto;
+  &::-webkit-scrollbar{
+    opacity: 0;
+  }
+  &__tabber{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 50px 0;
+    @include media-lg{
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &__results{
+      font-size: 13px;
+      color: #8D929A;
+      flex: 1;
+      text-align: right;
+    }
+  }
+}
+::ng-deep .search-stories{
+  margin-bottom: 10px;
+}
+::ng-deep .search-publication{
+  margin-bottom: 25px;
+}
+::ng-deep .search-people{
+  margin-bottom: 25px;
+}
+.search-tabber{
+  ::ng-deep .button-tabber__background{
+    background-color: black;
+  }
+}
+
+@keyframes showSearchComponent {
+  0% {
+    opacity: 0;
+    transition: .3s ease-out;
+  }
+  100% {
+    opacity: 1;
+    transition: .3s ease-out;
+  }
+}
+i.icon-close{
+  position: absolute;
+  font-size: 20px;
+  cursor: pointer;
+  right: 0;
+  z-index: 8;
+}
+h3{
+  font-size: 20px;
+  color: #8D929A;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  @include media-sm{
+    font-size: 16px;
+  }
+}
+.recent-searches{
+  span{
+    background: #FFFFFF;
+    box-shadow: 0 3px 7px 0 rgba(0,0,0,0.07);
+    border-radius: 10px;
+    padding: 10px 20px;
+
+    opacity: 0.8;
+    font-size: 15px;
+    color: #565A60;
+    letter-spacing: 0;
+    font-weight: 700;
+    line-height: 21px;
+    display: inline-block;
+    margin:0 10px 10px 0;
+    cursor: pointer;
+    transition: .3s ease-out;
+    &:hover{
+      box-shadow: 0 8px 13px 2px rgba(0, 0, 0, 0.09);
+      transition: .3s ease-out;
+    }
+    @include media-sm{
+      padding: 8px 16px;
+      opacity: 0.8;
+      font-size: 13px;
+    }
+  }
+}
+::ng-deep .follow-part.popular__item{
+    margin-bottom: 25px;
+}
+.publication-widget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 75px 0px 34px 0px;
+  &__list {
+    max-width: 250px;
+    ::ng-deep {
+      .list-part {
+        margin: 0px 0px 30px 0px;
+      }
+    }
+  }
+  h3{
+    margin: 0;
+    flex: 1;
+  }
+  &__buttons {
+    ::ng-deep {
+      .button.button--icon {
+        background: transparent;
+        &.left-arrow {
+          i {
+            transform: rotate(180deg);
+          }
+        }
+        border: none;
+        &:disabled {
+          color: #C1C4CB;
+          background: transparent;
+        }
+      }
+    }
+    .blue{
+      color: #3365ff;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  }
+}

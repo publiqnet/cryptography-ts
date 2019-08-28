@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
@@ -50,6 +50,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
 
   ];
+  @Input('autoresize') maxHeight: number;
+  @ViewChild('publicationTitle', {static: false}) set publicationTitle(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
+  @ViewChild('publicationDescription', {static: false}) set publicationDescription(el: ElementRef | null) {
+    if (!el) {
+      return;
+    }
+
+    this.resizeTextareaElement(el.nativeElement);
+  }
   public publicationForm: FormGroup;
   public searchForm: FormGroup;
   public isMyPublication = false;
@@ -87,6 +102,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   deleteLogo = '0';
   deleteCover = '0';
   showInviteModal: boolean = false;
+  publicationDesc: string;
 
   constructor(
     private accountService: AccountService,
@@ -115,7 +131,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.searchedMembers = res;
-          console.log(this.searchedMembers);
+          console.log(res);
           this.haveResult = true;
         }
       );
@@ -166,6 +182,21 @@ export class PublicationComponent implements OnInit, OnDestroy {
         }
         this.getPublicationStories();
       });
+
+  }
+
+  resizeTextareaElement(el) {
+    let newHeight;
+    if (el) {
+      el.style.overflow = 'hidden';
+      el.style.height = 'auto';
+      if (this.maxHeight) {
+        newHeight = Math.min(el.scrollHeight, this.maxHeight);
+      } else {
+        newHeight = el.scrollHeight;
+      }
+      el.style.height = newHeight + 'px';
+    }
   }
 
   inviteModal(flag: boolean) {
@@ -337,14 +368,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  onTitleChange(e) {
+  onTitleChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['title'].setValue(e.target.textContent);
+    this.publicationForm.controls['title'].setValue(event.target.value);
   }
 
-  onDescriptionChange(e) {
+  onDescriptionChange(event) {
+    if (event.target) {
+      this.resizeTextareaElement(event.target);
+    }
     this.textChanging = true;
-    this.publicationForm.controls['description'].setValue(e.target.textContent);
+    this.publicationDesc = event.target.value;
+    if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
+      this.publicationForm.controls['description'].setValue(this.publicationDesc);
+    } else if (!this.publicationDesc.trim().length) {
+      this.publicationForm.controls['description'].setValue('');
+    }
+    this.publicationForm.controls['description'].setValue(event.target.value);
   }
 
   dropdownSelect($event) {
