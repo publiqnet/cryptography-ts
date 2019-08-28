@@ -6,6 +6,7 @@ export interface AuthorOptions {
     lastName: string;
     image: any;
     memberStatus?: number;
+    publicKey: string;
 }
 
 export class Author {
@@ -17,6 +18,7 @@ export class Author {
     firstName: string;
     lastName: string;
     memberStatus?: number;
+    publicKey: string;
     constructor(options?: AuthorOptions) {
         for (const i in options) {
             if (options.hasOwnProperty(i)) {

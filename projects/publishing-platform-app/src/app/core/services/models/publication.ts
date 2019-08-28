@@ -58,7 +58,7 @@ export class Publication {
         } else if (['memberStatus', 'subscribed'].includes(i)) {
           this['following'] = options[i];
           this[i] = options[i];
-        } else if (['editors', 'contributors', 'requests', 'invitations', 'subscirbers'].includes(i)) {
+        } else if (['editors', 'contributors', 'requests', 'invitations', 'subscribers'].includes(i)) {
           options[i] = options[i].map(
             el => new Author(el)
           );
