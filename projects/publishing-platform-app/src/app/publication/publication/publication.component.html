@@ -189,10 +189,10 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
-            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onPrimaryClicked)="answerRequest($event)" (onSecondaryClicked)="answerRequest($event)" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
-            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onNotificationClick)="onFollowChange($event)" *ngFor="let user of pendings;" primaryButtonText="Follow" secondaryButtonText="Cancel"></ui-user-single>
+            <ui-user-single [className]="'pending'" type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" *ngFor="let user of pendings;" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>

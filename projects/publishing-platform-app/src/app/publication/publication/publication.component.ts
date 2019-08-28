@@ -364,6 +364,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
     console.log(e);
   }
 
+  answerRequest(e) {
+    console.log(e);
+  }
+
   private buildForm() {
     // this.firstName = this.author.firstName;
     // this.lastName = this.author.lastName;

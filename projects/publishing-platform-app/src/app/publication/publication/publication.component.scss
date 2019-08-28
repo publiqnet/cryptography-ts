@@ -486,6 +486,10 @@
     }
 }
 
+::ng-deep .pending .button--primary {
+    display: none;
+}
+
 .grid-style {
     display: flex;
     width: 100%;
