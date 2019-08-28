@@ -15,7 +15,7 @@ import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { Content } from './models/content';
-import { Search } from '../models/classes/search';
+import { Search } from './models/search';
 import { TranslateService } from '@ngx-translate/core';
 import { Publication } from './models/publication';
 import { Author } from './models/author';

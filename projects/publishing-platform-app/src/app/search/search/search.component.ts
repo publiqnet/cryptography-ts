@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { Search } from '../../core/models/classes/search';
+import { Search } from '../../core/services/models/search';
 import { UtilService } from '../../core/services/util.service';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -45,6 +45,4 @@ export class SearchComponent implements OnInit, OnChanges {
   changeRoute(url) {
     this.router.navigateByUrl(url);
   }
-
-
 }

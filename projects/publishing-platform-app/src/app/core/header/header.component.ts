@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { ContentService } from '../services/content.service';
 // import { Search } from '../models/classes/search';
 import { ErrorService } from '../services/error.service';
-import { Search } from '../models/classes/search';
+import { Search } from '../services/models/search';
 
 @Component({
   selector: 'app-header',
