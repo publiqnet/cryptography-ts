@@ -57,13 +57,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onInputChange(searchValue: string) {
     this.searchWord = searchValue;
     console.log(searchValue);
-    this.contentService.searchByWord(searchValue)
-      .subscribe((data: Search) => {
-        // this.parseSearchResults(data);
-
-        this.searchData = data;
-      }, error => {this.errorService.handleError('search', 'error'); });
-
+    if ( this.searchWord != '') {
+      this.contentService.searchByWord(searchValue)
+        .subscribe((data: Search) => {
+          this.searchData = data;
+        }, error => {this.errorService.handleError('search', 'error'); });
+    } else {
+      this.searchData = [];
+    }
   }
 
   updateHeaderData() {

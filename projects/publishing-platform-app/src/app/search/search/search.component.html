@@ -5,38 +5,40 @@
 
         <!--when you begin typing in search bar-->
         <ng-container *ngIf="searchResult">
-          <div class="search__tabber">
+          <div class="search__tabber" *ngIf="searchResult.article || searchResult.publication || searchResult.authors">
             <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]"
                     (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
             <span class="search__tabber__results">
-            139 results
-          </span>
+              _ results
+            </span>
           </div>
-          <!--!!!!! not in default-->
 
-          <div *ngIf="activeTab === 'stories' || activeTab === 'all'">
-            <h3>Popular Stories</h3>
+          <!--!!!!! not in default-->
+          <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
+          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article">
             <div *ngFor="let articleItem of searchResult.article">
               <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem"></ui-content-single>
             </div>
           </div>
 
-          <div *ngIf="activeTab === 'publications' || activeTab === 'all'">
-            <h3>Popular Publications</h3>
+          <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
+          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication">
             <div  *ngFor="let publicationItem of searchResult.publication">
               <ui-publication-single [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem"></ui-publication-single>
             </div>
 
           </div>
 
-          <div *ngIf="activeTab === 'people' || activeTab === 'all'">
-            <h3>Authors you may interest</h3>
+          <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
+          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors">
             <div  *ngFor="let authorItem of searchResult.authors">
               <ui-user-single [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
             </div>
           </div>
 
         </ng-container>
+
+        <!--<div #noSearchResult> No Search Result</div>-->
 
         <!--when you just entered search component-->
         <ng-container *ngIf="false">
@@ -48,7 +50,7 @@
             </div>
           </div>
 
-          <div class="recent-searches" *ngIf="!isInputValueChanged && false">
+          <div class="recent-searches" *ngIf="false">
             <span>#STARTUPS</span>
             <span>#HEALTH</span>
             <span>#COMPUTER SCIENCE</span>
@@ -68,9 +70,9 @@
               </div>
             </div>
 
-            <div *ngFor="let publication of searchResult.publication">
+            <div *ngFor="let publicationItem of searchResult.publication">
               <ui-publication-single [className]="'popular__item'" [type]="'follow'"
-                                     [publicationData]="publication"></ui-publication-single>
+                                     [publicationData]="publicationItem"></ui-publication-single>
             </div>
           </div>
 
@@ -83,9 +85,6 @@
               </div>
             </div>
             <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
-            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
-            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
-
           </div>
         </ng-container>
       </div>
