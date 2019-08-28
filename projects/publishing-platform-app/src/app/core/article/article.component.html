@@ -14,7 +14,7 @@
             <div class="content-inner">
               <div class="article-author" *ngIf="!isCurrentUser">
                 <div class="author-image">
-                  <ui-avatar [avatarData]="{'image': env.backend + '/' + authorImage, 'fullName': authorFullName}"></ui-avatar>
+                  <ui-avatar [avatarData]="{'image': env.backend + '/' + authorImage, 'fullName': authorFirstName}"></ui-avatar>
                 </div>
                 <div class="author-info">
                   <span class="author-info__name">{{authorFullName}}</span>

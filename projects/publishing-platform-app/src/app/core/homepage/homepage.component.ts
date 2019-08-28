@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { UtilService } from '../services/util.service';
 import { PublicationService } from '../services/publication.service';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-homepage',
@@ -44,7 +45,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   constructor(
     private contentService: ContentService,
     private publicationService: PublicationService,
-    public utilService: UtilService
+    public utilService: UtilService,
+    public accountService: AccountService
   ) {
   }
 
