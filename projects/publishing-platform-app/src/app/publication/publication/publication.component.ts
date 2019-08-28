@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { Params, Router, ActivatedRoute } from '@angular/router';
@@ -12,6 +12,8 @@ import { Content } from '../../core/services/models/content';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { UiNotificationService } from '../../core/services/ui-notification.service';
+import { isPlatformBrowser } from '@angular/common';
+import { Account } from '../../core/services/models/account';
 
 
 @Component({
@@ -93,6 +95,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     public utilService: UtilService,
     private formBuilder: FormBuilder,
     public uiNotificationService: UiNotificationService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
 
@@ -103,15 +106,23 @@ export class PublicationComponent implements OnInit, OnDestroy {
         debounceTime(750),
         distinctUntilChanged(),
         mergeMap(
-          res => this.accountService.searchAccountByTerm(res)
+          res => {
+            if (res) {
+              return this.accountService.searchAccountByTerm(res);
+            }
+          }
         ))
       .subscribe(
         res => {
           this.searchedMembers = res;
+          console.log(this.searchedMembers);
           this.haveResult = true;
         }
       );
+    this.getPublication();
+  }
 
+  getPublication() {
     this.route.params
       .pipe(
         debounceTime(500),
@@ -148,12 +159,12 @@ export class PublicationComponent implements OnInit, OnDestroy {
             }
           );
         }
-        this.getPublicationStories();
         if (this.publication.logo) {
           this.logoData = {
             image: this.publication.logo
           };
         }
+        this.getPublicationStories();
       });
   }
 
@@ -174,6 +185,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.showInviteModal = false;
+          // chiperic heto poxel
+          this.getPublication();
         }
       );
   }
@@ -186,6 +199,24 @@ export class PublicationComponent implements OnInit, OnDestroy {
       .subscribe(
         () => this.publication.following = !this.publication.following
       );
+  }
+
+  followMember(e, user: Account) {
+    console.log(e);
+    if (e.follow) {
+      this.accountService.follow(user.publicKey).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    } else {
+      this.accountService.unfollow(user.publicKey).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    }
+
   }
 
   becomeMember() {
@@ -349,10 +380,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   onRoleClick(e, member) {
+    console.log(e, member);
     this.publicationService.changeMemberStatus(this.publication.slug, {
       publicKey: member.publicKey,
       status: e.slug
-    });
+    }).subscribe(
+      res => console.log(res)
+    );
   }
 
   onUserClick(e) {
@@ -364,8 +398,25 @@ export class PublicationComponent implements OnInit, OnDestroy {
     console.log(e);
   }
 
-  answerRequest(e) {
-    console.log(e);
+  answerRequest(e, action, index) {
+    this.publicationService.acceptRejectRequest(this.publication.slug, e.user.publicKey, action).subscribe(
+      res => {
+        if (action == 'accept') {
+          e.user.memberStatus = 3;
+          this.members.length % 2 == 0 ? this.membersOdd.push(e.user) : this.membersEven.push(e.user);
+        }
+        this.requests.splice(index, 1);
+      }
+    );
+  }
+
+  cancelInvitation(e, i) {
+    console.log(i);
+    this.publicationService.cancelInvitationBecomeMember(this.publication.slug, e.user.publicKey).subscribe(
+      res => {
+        this.pendings.splice(i, 1);
+      }
+    );
   }
 
   private buildForm() {
@@ -388,6 +439,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    if (isPlatformBrowser(this.platformId)) {
+      this.articlesLoaded = false;
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
   }
 }

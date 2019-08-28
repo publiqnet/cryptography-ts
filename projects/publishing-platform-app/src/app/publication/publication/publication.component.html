@@ -171,11 +171,11 @@
     <div class="row">
         <div class="followers col-12">
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
                     [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
-                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
+                <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]"
                     [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
@@ -189,10 +189,11 @@
     </div>
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
-            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onPrimaryClicked)="answerRequest($event)" (onSecondaryClicked)="answerRequest($event)" *ngFor="let user of requests;" primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onPrimaryClicked)="answerRequest($event, 'accept', i)" (onSecondaryClicked)="answerRequest($event, 'reject', i)" *ngFor="let user of requests; let i=index"
+                primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
-            <ui-user-single [className]="'pending'" type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" *ngFor="let user of pendings;" secondaryButtonText="Cancel"></ui-user-single>
+            <ui-user-single [className]="'pending'" type="two-actions" [userData]="{user: user}" *ngFor="let user of pendings; let i=index" (onUserClick)="onUserClick($event)" (onSecondaryClicked)="cancelInvitation($event,i)" secondaryButtonText="Cancel"></ui-user-single>
         </div>
     </div>
 </div>
