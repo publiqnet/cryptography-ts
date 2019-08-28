@@ -44,7 +44,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   constructor(
     private contentService: ContentService,
     private publicationService: PublicationService,
-    public utilService: UtilService
+    public utilService: UtilService,
   ) {
   }
 

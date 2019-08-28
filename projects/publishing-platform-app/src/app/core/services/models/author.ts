@@ -6,6 +6,7 @@ export interface AuthorOptions {
     lastName: string;
     image: any;
     memberStatus?: number;
+    publicKey: string;
 }
 
 export class Author {
@@ -17,6 +18,7 @@ export class Author {
     firstName: string;
     lastName: string;
     memberStatus?: number;
+    publicKey: string;
     constructor(options?: AuthorOptions) {
         for (const i in options) {
             if (options.hasOwnProperty(i)) {
@@ -24,7 +26,7 @@ export class Author {
                     this['last_name'] = options[i] ? options[i] : '';
                 } else if (i == 'firstName') {
                     this['first_name'] = options[i] ? options[i] : '';
-                } else if (i == 'address') {
+                } else if (i == 'publicKey') {
                     this['slug'] = options[i] ? options[i] : '';
                     this[i] = options[i] ? options[i] : '';
                 } else if (['image'].includes(i)) {

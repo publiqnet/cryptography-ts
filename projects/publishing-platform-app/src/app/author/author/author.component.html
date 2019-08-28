@@ -57,13 +57,13 @@
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
                         <label>
-                        <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" placeholder="Add your name" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1">{{author.fullName}}</textarea>
+                        <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" placeholder="Add your name" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1" [readonly]="!isCurrentUser">{{author.fullName}}</textarea>
                          <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
                       </label>
                     </h1>
                     <h3 class="profile-metadata__bio">
                         <label>
-                        <textarea [attr.contenteditable]="isCurrentUser" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1">{{author.bio}}</textarea>
+                        <textarea [attr.contenteditable]="isCurrentUser" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1" [readonly]="!isCurrentUser">{{author.bio}}</textarea>
                         <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
                       </label>
                     </h3>

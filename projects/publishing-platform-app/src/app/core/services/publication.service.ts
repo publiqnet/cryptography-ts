@@ -125,7 +125,7 @@ export class PublicationService {
   }
 
   cancelInvitationBecomeMember = (slug: string, identifier: string) => {
-    return this.httpHelperService.call(HttpMethodTypes.delete, this.url + `/${slug}/invitation/${identifier}`)
+    return this.httpHelperService.call(HttpMethodTypes.delete, this.url + `/${slug}/invitation/cancel/${identifier}`)
       .pipe(tap(() => this.RefreshObserver = 'getMyPublications'));
   }
 
