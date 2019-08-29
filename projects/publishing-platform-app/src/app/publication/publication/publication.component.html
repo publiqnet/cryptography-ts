@@ -43,25 +43,27 @@
             <i class="icon-close" *ngIf="isMyPublication && publication?.logo" (click)="removeLogo()"></i>
         </div>
         <div class="col-lg-5 col-md-7 col">
-            <h1 class="publication-metadata__title">
-              <label>
-                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" contenteditable="true" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
-                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" ></i>
+            <form novalidate [formGroup]="publicationForm">
+                <h1 class="publication-metadata__title">
+                    <label>
+                <textarea formControlName="title" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1">{{publication?.title}}</textarea>
+                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" *ngIf="editMode && isMyPublication"></i>
               </label>
-            </h1>
-            <h3 class="publication-metadata__description">
-                <label>
-                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
+                </h1>
+                <h3 class="publication-metadata__description">
+                    <label>
+                <textarea formControlName="description" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1">{{publication?.description}}</textarea>
                 <i class="icon-edit editable-icon" *ngIf="editMode && isMyPublication"></i>
               </label>
-            </h3>
+                </h3>
+            </form>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
             <ng-container *ngIf="isMyPublication">
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
                     <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
-                    <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false, publicationTitle , publicationDescription)"></ui-button>
+                    <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
                 </ng-container>
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
@@ -156,7 +158,7 @@
                     <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
-                        <ui-input [type]="'text'" formControlName="members"></ui-input>
+                        <ui-input [type]="'text'" formControlName="members" (keyup.enter)="enterTag($event)"></ui-input>
                         <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
                             <ul>
                                 <li *ngFor="let member of searchedMembers">
@@ -180,11 +182,12 @@
         <div class="followers col-12">
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
-                    [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1"
+                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
-                    [userData]="{ user: member }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
             </div>
         </div>
     </div>
