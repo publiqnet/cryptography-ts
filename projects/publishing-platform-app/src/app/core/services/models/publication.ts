@@ -55,8 +55,11 @@ export class Publication {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else if (i === 'color') {
           this[i] = options[i] ? '#' + options[i] : '';
-        } else if (['memberStatus', 'subscribed'].includes(i)) {
+        } else if (['subscribed'].includes(i)) {
           this['following'] = options[i];
+          this[i] = options[i];
+        } else if ( i == 'memberStatus') {
+          this['status'] = options[i];
           this[i] = options[i];
         } else if (['editors', 'contributors', 'requests', 'invitations', 'subscribers'].includes(i)) {
           options[i] = options[i].map(
@@ -64,7 +67,7 @@ export class Publication {
           );
           this[i] = options[i];
         } else if (['inviter', 'owner'].includes(i)) {
-          this[i] =  new Author(options[i]);
+          this[i] = new Author(options[i]);
         } else {
           this[i] = options[i];
         }

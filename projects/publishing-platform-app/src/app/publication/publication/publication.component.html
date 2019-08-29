@@ -97,7 +97,8 @@
     <div class="row">
 
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode" *ngIf="searchForm">
-            <ui-tab type="buttons" *ngIf="isMyPublication" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+            <ui-tab type="buttons" *ngIf="isMyPublication || publication && publication.memberStatus == 2" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event"
+                [currentValue]="activeTab"></ui-tab>
         </div>
     </div>
     <div class="row">
@@ -158,6 +159,7 @@
                     <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
+                        <!-- <ui-chip></ui-chip> -->
                         <ui-input [type]="'text'" formControlName="members" (keyup.enter)="enterTag($event)"></ui-input>
                         <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
                             <ul>
