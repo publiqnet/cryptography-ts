@@ -121,7 +121,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.buildSearchForm();
     this.searchForm.controls['members'].valueChanges
       .pipe(
-        debounceTime(750),
         distinctUntilChanged(),
         filter((res) => res.length),
         mergeMap(
@@ -133,11 +132,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
               return this.accountService.searchAccountByTerm(res);
             }
           }
-        ))
+        ),
+        debounceTime(750)
+        )
       .subscribe(
         res => {
-          console.log(res);
           this.searchedMembers = res;
+          console.log(this.searchedMembers);
           this.haveResult = true;
         }
       );
@@ -145,11 +146,15 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   enterTag(e) {
+    console.log(e);
     if (this.email) {
       this.chips.push(this.email);
       this.email = '';
     }
-    console.log(this.chips);
+  }
+
+  removeChip(index) {
+    this.chips.splice(index, 1);
   }
 
   getPublication() {
