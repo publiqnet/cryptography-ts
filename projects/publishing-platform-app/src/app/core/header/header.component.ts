@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
 import { ContentService } from '../services/content.service';
-// import { Search } from '../models/classes/search';
 import { ErrorService } from '../services/error.service';
 import { Search } from '../services/models/search';
+import { Publications } from '../services/models/publications';
 
 @Component({
   selector: 'app-header',
@@ -16,13 +16,11 @@ import { Search } from '../services/models/search';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
-  public searchData = {};
+  public searchData: Search;
   public searchWord: string;
-
+  public defaultSearchData = null;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
-  isInputValueChanged: boolean = false;
-  public searchForm: FormGroup;
   headerRoutesList = {
     '' : '/',
     'wallet' : '/wallet',
@@ -50,9 +48,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchEvent(e) {
-    this.showSearch = e;
-    this.searchData = [];
+  searchEvent(event) {
+    if (event) {
+      this.contentService.getDefaultSearchData()
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((data: any) => {
+          this.defaultSearchData = data;
+        });
+    }
+
+    this.showSearch = event;
+    this.searchData = null;
   }
 
   onInputChange(searchValue: string) {
@@ -61,13 +69,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.contentService.searchByWord(searchValue)
         .subscribe((data: Search) => {
           this.searchData = data;
-        }, error => {this.errorService.handleError('search', 'error'); });
+        }, error => {
+          console.log(error);
+        });
     } else {
-      this.searchData = [];
+      this.searchData = null;
     }
-    // this.searchBar.nativeElement.value = '';
-
-
   }
 
   updateHeaderData() {

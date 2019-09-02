@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { flatMap, map, switchMap } from 'rxjs/operators';
+import { filter, flatMap, map, switchMap, tap } from 'rxjs/operators';
 
 import { AccountService } from './account.service';
 import { environment } from '../../../environments/environment';
@@ -13,12 +13,13 @@ import { ChannelService } from './channel.service';
 import { Account } from './models/account';
 import { CryptService } from './crypt.service';
 import { WalletService } from './wallet.service';
-import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
+import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { Content } from './models/content';
 import { Search } from './models/search';
 import { TranslateService } from '@ngx-translate/core';
-import { Publication } from './models/publication';
+import { IPublications, Publications } from './models/publications';
 import { Author } from './models/author';
+import { Publication } from './models/publication';
 
 export enum OrderOptions {
   author_desc = <any>'+author',
@@ -47,6 +48,10 @@ export class ContentService {
   feedbackUrl = environment.backend + '/api/feedback';
   fileUrl = environment.backend + '/api/file';
   url = environment.backend + '/api';
+
+  private observers: object = {
+    'getDefaultSearchData': {name: '_getDefaultSearchData', refresh: false}
+  };
 
   private feedback: Feedback;
   feedbackChanged = new Subject<Feedback>();
@@ -107,7 +112,8 @@ export class ContentService {
     public t: TranslateService,
     private walletService: WalletService,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private httpObserverService: HttpObserverService
   ) {
   }
 
@@ -620,10 +626,10 @@ export class ContentService {
   getMyContents(fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
     const url = `${environment.backend}/api/contents/${count}/${boostedCount}/${fromUri}`;
     return this.httpHelperService.call(HttpMethodTypes.get, url)
-    .pipe(map(contentData => {
-      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
-      return contentData;
-    }));
+      .pipe(map(contentData => {
+        contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+        return contentData;
+      }));
   }
 
   getContents(publickey, fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
@@ -637,10 +643,10 @@ export class ContentService {
   getHomePageContents(fromUri = null, count: number = 10, boostedCount: number = 3): Observable<any> {
     const url = `${environment.backend}/api/contents/${count}/${boostedCount}/${fromUri}`;
     return this.httpHelperService.customCall(HttpMethodTypes.get, url)
-    .pipe(map(contentData => {
-      contentData.data = contentData.data.map(nextContent => new Content(nextContent));
-      return contentData;
-    }));
+      .pipe(map(contentData => {
+        contentData.data = contentData.data.map(nextContent => new Content(nextContent));
+        return contentData;
+      }));
   }
 
   getContentByUri(uri: string): Observable<any> {
@@ -670,28 +676,23 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
 
-
-  searchByWord(word: string): Observable<any> {
-    const lang = this.t.currentLang;
-    const url = this.url + `/search/${word}`;
-    return this.httpHelperService.call(HttpMethodTypes.post, url, {word, '_locale': lang}).pipe(
-      map(data => {
-        const res = {};
-        for (const key of Object.keys(data)) {
-          if (key === 'publication') {
-           res[key]  = data[key].map(pub => new Publication(pub));
-          }
-          if (key === 'article') {
-            res[key]  = data[key].map(article => new Content(article));
-          }
-          if (key === 'authors') {
-            res[key]  =   data[key].map(author => new Author(author));
-          }
-        }
-        return res;
-      })
-    );
-
+  getDefaultSearchData(): Observable<any> {
+    const searchData: any = this.observers['getDefaultSearchData'];
+    return this.httpObserverService.observerCall(
+      searchData.name,
+      this.httpHelperService.customCall(HttpMethodTypes.get, this.url + '/search')
+        .pipe(map(defaultSearchData => {
+            defaultSearchData.authors = (defaultSearchData.authors && defaultSearchData.authors.length) ? defaultSearchData.authors.map(nextAuthor => new Author(nextAuthor)) : [];
+            defaultSearchData.publication = (defaultSearchData.publication && defaultSearchData.publication.length) ? defaultSearchData.publication.map(nextPublication => new Publication(nextPublication)) : [];
+            return defaultSearchData;
+          })
+        )
+      , searchData.refresh);
   }
 
+  searchByWord(word: string): Observable<any> {
+    const url = this.url + `/search/${word}`;
+    return this.httpHelperService.customCall(HttpMethodTypes.post, url)
+      .pipe(map(searchData => new Search(searchData)));
+  }
 }

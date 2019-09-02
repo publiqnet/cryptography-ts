@@ -7,9 +7,9 @@
         <ng-container *ngIf="searchResult">
           <div class="search__tabber" *ngIf="searchResult.article || searchResult.publication || searchResult.authors">
             <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]"
-                    (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
+                    (onTabChange)="changeTab($event)" [currentValue]="activeTab"></ui-tab>
             <span class="search__tabber__results">
-              _ results
+              {{searchCount}} results
             </span>
           </div>
 
