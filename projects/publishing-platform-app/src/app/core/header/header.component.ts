@@ -65,7 +65,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onInputChange(searchValue: string) {
     this.searchWord = searchValue;
-    if ( this.searchWord != '') {
+    if (this.showSearch && this.searchWord != '') {
       this.contentService.searchByWord(searchValue)
         .subscribe((data: Search) => {
           this.searchData = data;
