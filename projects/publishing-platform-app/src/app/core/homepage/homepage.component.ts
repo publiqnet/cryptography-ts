@@ -87,6 +87,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
       );
   }
 
+
   calculateLastStoriUri() {
     const lastIndex = this.contentArray.length - 1;
     if (this.contentArray[lastIndex].uri !== this.startFromUri) {
