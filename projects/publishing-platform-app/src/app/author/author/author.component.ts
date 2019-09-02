@@ -30,11 +30,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   public isMasonryLoaded = false;
 
+  bioTextElement: ElementRef;
+  authorNameElement: ElementRef;
+
   @ViewChild('authorName', {static: false}) set authorName(el: ElementRef | null) {
     if (!el) {
       return;
     }
 
+    this.authorNameElement = el;
     this.resizeTextareaElement(el.nativeElement);
   }
 
@@ -43,6 +47,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.bioTextElement = el;
     this.resizeTextareaElement(el.nativeElement);
   }
 
@@ -231,8 +236,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (event.target) {
       this.resizeTextareaElement(event.target);
     }
-    this.showEditModeIcons = true;
     this.editTitleIcon = true;
+    this.showEditModeIcons = true;
     this.fullName = event.target.value;
     const splittedFullName = this.fullName.split(' ');
     this.firstName = splittedFullName.slice(0, -1).join(' ');
@@ -263,8 +268,14 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   resetValues() {
-    this.bioText.nativeElement.value = this.author.bio;
-    this.authorName.nativeElement.value = this.author.fullName;
+    if (this.bioTextElement) {
+      this.bioTextElement.nativeElement.value = this.author.bio;
+    }
+
+    if (this.authorNameElement) {
+      this.authorNameElement.nativeElement.value = this.author.fullName;
+    }
+
     this.currentImage = this.author.image;
     this.authorForm.controls['firstName'].setValue(this.author.firstName);
     this.authorForm.controls['lastName'].setValue(this.author.lastName);

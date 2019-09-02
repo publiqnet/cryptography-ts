@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { ContentService } from '../services/content.service';
 // import { Search } from '../models/classes/search';
 import { ErrorService } from '../services/error.service';
-import { Search } from '../models/classes/search';
+import { Search } from '../services/models/search';
 
 @Component({
   selector: 'app-header',
@@ -52,11 +52,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchEvent(e) {
     this.showSearch = e;
+    this.searchData = [];
   }
 
   onInputChange(searchValue: string) {
     this.searchWord = searchValue;
-    console.log(searchValue);
     if ( this.searchWord != '') {
       this.contentService.searchByWord(searchValue)
         .subscribe((data: Search) => {
@@ -65,6 +65,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this.searchData = [];
     }
+    // this.searchBar.nativeElement.value = '';
+
+
   }
 
   updateHeaderData() {

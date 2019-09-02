@@ -81,17 +81,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
             } else {
               this.authorLastName = '';
             }
-            this.authorFullName = this.authorFirstName + this.authorLastName;
+            this.authorFullName = this.authorFirstName + ' ' + this.authorLastName;
           });
         } else {
           this.article = data;
         }
       });
-  }
-
-  getCurrentImage() {
-    const profileImage = this.authorImage ? this.authorImage : '/assets/no-image-article.jpg';
-    return this.sanitizer.bypassSecurityTrustUrl(profileImage);
   }
 
   ngOnDestroy(): void {
