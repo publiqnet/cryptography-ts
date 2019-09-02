@@ -203,11 +203,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.firstName = this.author.firstName;
     this.lastName = this.author.lastName;
     this.bio = this.author.bio;
-
     if (this.author.image) {
       this.currentImage = this.author.image;
     }
-
     this.authorForm = this.formBuilder.group({
       firstName: new FormControl(this.firstName, []),
       lastName: new FormControl(this.lastName, []),
