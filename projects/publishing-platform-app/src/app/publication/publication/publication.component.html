@@ -51,7 +51,7 @@
             </h1>
             <h3 class="publication-metadata__description">
                 <label>
-                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
+                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" [placeholder]="isMyPublication ? 'Add publication description' : ''"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
                 <i class="icon-edit editable-icon" *ngIf="editDesc"></i>
               </label>
             </h3>
