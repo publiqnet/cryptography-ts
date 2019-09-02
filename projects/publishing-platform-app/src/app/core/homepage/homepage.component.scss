@@ -64,6 +64,7 @@
   border-radius: 15px;
   padding: 35px 25px 25px;
   position: relative;
+  margin: 0 0 25px;
 
   .icon-close {
     font-weight: bold;
@@ -148,7 +149,7 @@
 
 .publications {
   width: 100%;
-  padding: 25px 0 25px 25px;
+  padding: 0 0 25px 25px;
   ::ng-deep {
     .publication-widget {
       max-width: 100%;

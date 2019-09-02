@@ -48,7 +48,7 @@
                         <ui-avatar [size]="'large'" [avatarData]="{'image': getCurrentImage(), 'fullName': author.fullName}"></ui-avatar>
                         <i class="icon-close" [ngClass]="{'icon-close--hover' : (currentImage !== author.image) && isCurrentUser}" (click)="resetCurrentImage()"></i>
                         <label class="profile-metadata__hover__upload" for="profilePic">
-              <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic">
+              <input type="file" (change)="showUploadedImage($event)" accept="image/jpeg,image/png" id="profilePic" *ngIf="isCurrentUser">
               <i class="icon-camera"></i>
               <small>Upload</small>
             </label>
@@ -57,13 +57,13 @@
                 <div class="col-lg-6 col-md-6 col-sm-7 col-10">
                     <h1 class="profile-metadata__fullname">
                         <label>
-                        <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" placeholder="Add your name" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1">{{author.fullName}}</textarea>
+                        <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true" [placeholder]="isCurrentUser ? 'Add your name' : ''" #authorName (keyup)="onNameEdit($event)" class="author-fullname" rows="1" [readonly]="!isCurrentUser">{{author.fullName}}</textarea>
                          <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''" ></i>
                       </label>
                     </h1>
                     <h3 class="profile-metadata__bio">
                         <label>
-                        <textarea [attr.contenteditable]="isCurrentUser" placeholder="Write a short bio" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1">{{author.bio}}</textarea>
+                        <textarea [attr.contenteditable]="isCurrentUser" [placeholder]="isCurrentUser ? 'Write a short bio' : ''" #bioText (keyup)="onBioEdit($event)" class="author-bio" rows="1" [readonly]="!isCurrentUser">{{author.bio}}</textarea>
                         <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''" ></i>
                       </label>
                     </h3>
