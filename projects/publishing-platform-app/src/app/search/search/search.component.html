@@ -86,8 +86,8 @@
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
               </div>
             </div>
-            <div *ngFor="let authorsItem of defaultSearchData.authors">
-              <ui-user-single (onUserClick)="onUserClick(authorsItem)" [type]="'followers'" [className]="" [userData]="{user: authorsItem}"></ui-user-single>
+            <div *ngFor="let authorItem of defaultSearchData.authors">
+              <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
             </div>
           </div>
         </ng-container>

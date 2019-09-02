@@ -30,10 +30,6 @@ export class SearchComponent implements OnChanges {
               private router: Router) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.defaultSearchData) {
-      console.log(this.defaultSearchData);
-    }
-
     if (this.searchResult) {
       this.searchCount = this.searchResult.totalCount;
     }
