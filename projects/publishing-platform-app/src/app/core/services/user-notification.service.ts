@@ -97,7 +97,7 @@ export class UserNotificationService {
     this.unreadCount = 0;
     this.notificationsChanged$.next();
 
-    this.doRequest('POST', `/notification/read-all`).subscribe(null, error =>
+    this.doRequest('POST', `/notification/read-all`).subscribe(() => {}, error =>
       this.errorService.handleError('readAllNotifications', error)
     );
   }
@@ -116,7 +116,7 @@ export class UserNotificationService {
     this.doRequest(
       'DELETE',
       `/notification/delete/${uNotification.id}`
-    ).subscribe(null, error =>
+    ).subscribe(() => {}, error =>
       this.errorService.handleError('deleteNotification', error)
     );
   }
@@ -131,7 +131,7 @@ export class UserNotificationService {
     this.doRequest(
       'POST',
       `/notification/${readStatus ? 'read' : 'unread'}/${uNotification.id}`
-    ).subscribe(null, error =>
+    ).subscribe(() => null, error =>
       this.errorService.handleError('unreadSingle', error)
     );
   }
