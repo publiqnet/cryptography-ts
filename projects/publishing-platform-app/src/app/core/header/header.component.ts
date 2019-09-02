@@ -50,6 +50,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   searchEvent(event) {
     if (event) {
+      document.querySelector('html').classList.add('overflow-hidden');
       this.contentService.getDefaultSearchData()
         .pipe(
           takeUntil(this.unsubscribe$)
@@ -57,6 +58,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .subscribe((data: any) => {
           this.defaultSearchData = data;
         });
+    } else {
+      document.querySelector('html').classList.remove('overflow-hidden');
     }
 
     this.showSearch = event;

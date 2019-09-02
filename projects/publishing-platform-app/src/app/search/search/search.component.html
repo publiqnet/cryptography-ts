@@ -43,9 +43,9 @@
         <!--<div #noSearchResult> No Search Result</div>-->
 
         <!--when you just entered search component-->
-        <ng-container *ngIf="false">
+        <ng-container *ngIf="defaultSearchData && !searchResult">
 
-          <div class="publication-widget" *ngIf="!isInputValueChanged">
+          <div class="publication-widget" *ngIf="false">
             <h3>Resent Searches</h3>
             <div class="publication-widget__buttons">
               <span class="blue">Clear</span>
@@ -63,16 +63,16 @@
             <span>#WEATHER</span>
           </div>
 
-          <div class="popular">
+          <div class="popular" *ngIf="defaultSearchData">
             <div class="publication-widget">
               <h3>Popular Publications</h3>
-              <div class="publication-widget__buttons">
+              <div *ngIf="false" class="publication-widget__buttons">
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
               </div>
             </div>
 
-            <div *ngFor="let publicationItem of searchResult.publication">
+            <div *ngFor="let publicationItem of defaultSearchData.publication">
               <ui-publication-single [className]="'popular__item'" [type]="'follow'"
                                      [publicationData]="publicationItem"></ui-publication-single>
             </div>
@@ -81,12 +81,14 @@
           <div class="popular">
             <div class="publication-widget">
               <h3>Authors you may interest</h3>
-              <div class="publication-widget__buttons">
+              <div *ngIf="false" class="publication-widget__buttons">
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
               </div>
             </div>
-            <ui-user-single [type]="'followers'" [className]="" [userData]="interestedAuthors"></ui-user-single>
+            <div *ngFor="let authorsItem of defaultSearchData.authors">
+              <ui-user-single (onUserClick)="onUserClick(authorsItem)" [type]="'followers'" [className]="" [userData]="{user: authorsItem}"></ui-user-single>
+            </div>
           </div>
         </ng-container>
       </div>
