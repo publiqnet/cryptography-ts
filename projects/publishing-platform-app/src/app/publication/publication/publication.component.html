@@ -46,13 +46,13 @@
             <h1 class="publication-metadata__title">
               <label>
                 <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" contenteditable="true" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1" #publicationTitle>{{publication?.title}}</textarea>
-                <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" ></i>
+                <i class="icon-edit editable-icon" *ngIf="editTitle"></i>
               </label>
             </h1>
             <h3 class="publication-metadata__description">
                 <label>
-                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
-                <i class="icon-edit editable-icon" *ngIf="editMode && isMyPublication"></i>
+                <textarea [disabled]="!isMyPublication" [attr.contenteditable]="isMyPublication" [placeholder]="isMyPublication ? 'Add publication description' : ''"  (keyup)="onDescriptionChange($event)"  rows="1" #publicationDescription>{{publication?.description}}</textarea>
+                <i class="icon-edit editable-icon" *ngIf="editDesc"></i>
               </label>
             </h3>
         </div>
@@ -103,20 +103,19 @@
             <div class="grid-style grid-style--custom">
                 <div class="grid-style__choose">
                     <div>
-                        <h4>Grid style</h4>
+                        <h4>{{listType | titlecase}} style</h4>
                         <p>Choose the way your readers will see your stories.</p>
                     </div>
                     <div class="grid-style__choose__item">
-                        <span>
-                <i (click)="changeListType('grid')" class="grid-icon icon-multi-grid"
-                   [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
-                <small>Grid</small>
-              </span>
-                        <span>
-                <i (click)="changeListType('single')" class="grid-icon icon-single-grid"
-                   [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
-                <small>List</small>
-              </span>
+                        <span (click)="changeListType('grid')" [ngClass]="{'--selected': (listType == 'grid')}">
+                          <i  class="grid-icon icon-multi-grid"></i>
+                          <small>Grid</small>
+                        </span>
+                        <span (click)="changeListType('single')">
+                           <i  class="grid-icon icon-single-grid"
+                            [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                          <small>List</small>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -175,9 +174,9 @@
         </div>
     </div>
 </div>
-<div class="container-fluid" *ngIf="activeTab === 'members'">
+<div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
-        <div class="followers col-12">
+        <div class="followers col-12 col-lg-8 offset-lg-2">
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
                     [userData]="{ user: member}" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
