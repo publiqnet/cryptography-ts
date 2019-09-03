@@ -1,4 +1,4 @@
-<div>
+<div #chipdDiv>
     <ui-chip [avatarData]="chip.fullName? chip : null" [text]="chip.fullName || chip" (onRemove)="removeChip(i)" *ngFor="let chip of tagsArray,let i=index"></ui-chip>
     <input autofocus [formControl]="textControl" placeholder="Search people" (keyup.enter)="enterKeyup($event)" />
 </div>

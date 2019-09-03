@@ -1,18 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-chips-input',
   templateUrl: './chips-input.component.html',
-  styleUrls: ['./chips-input.component.scss']
+  styleUrls: ['./chips-input.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChipsInputComponent implements OnInit {
-  @Input() tagsArray = [1, 2, 3, 4, 5, 6, 7, 8];
+export class ChipsInputComponent implements OnInit, OnChanges {
+  @Input() tagsArray = [];
   @Output() change = new EventEmitter();
   @Output() remove = new EventEmitter();
   @Output() keyupEnter = new EventEmitter();
-
+  @ViewChild('chipdDiv', { static: false }) chipDiv: ElementRef;
   textControl: FormControl = new FormControl();
   constructor() { }
 
@@ -24,10 +25,17 @@ export class ChipsInputComponent implements OnInit {
         }
       );
   }
+  ngOnChanges(changes: SimpleChanges) {
+    if ('tagsArray' in changes) {
+      this.textControl.setValue('');
+      setTimeout(() => {
+        this.chipDiv.nativeElement.scrollTo(1200, 0);
+      }, 0);
+    }
+  }
 
   enterKeyup() {
     this.keyupEnter.emit();
-    this.textControl.setValue('');
   }
 
   removeChip(index) {

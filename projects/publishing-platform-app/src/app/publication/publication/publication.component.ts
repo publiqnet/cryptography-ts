@@ -124,7 +124,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.buildSearchForm();
     this.getPublication();
-
     this.temp.pipe(
       filter((res) => res.length >= 3),
       distinctUntilChanged(),
@@ -156,7 +155,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   enterTag(e) {
     if (this.email) {
-      this.chips.push(this.email);
+      this.chips = [...this.chips, this.email];
       this.email = '';
       this.searchedResult = false;
     }
@@ -167,8 +166,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   suggestionSelected(e) {
-    this.chips.push(e);
-    this.searchedResult = false;
+  this.chips = [...this.chips, e];
+  this.searchedResult = false;
   }
 
   textChange(e) {
@@ -191,7 +190,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
       )
       .subscribe((pub: Publication) => {
         this.publication = pub;
-        console.log(this.publication);
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
@@ -258,9 +256,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.showInviteModal = false;
-          // chiperic heto poxel
           this.chips = [];
           this.getPublication();
         }
@@ -393,7 +390,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover ? 'true' : '');
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
-    formData.append('tags', this.publication.tags.join(','));
+    formData.append('tags', this.publication.tags.map((el: any) => el.name).join(','));
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
