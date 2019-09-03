@@ -94,7 +94,53 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { text: 'Outdoors', slug: 'outdoors' },
         { text: 'Quotes', slug: 'quotes' },
         { text: 'Holy Quraan', slug: 'quraan' },
-      ]
+      ],
+      userData: {
+        user: {
+          fullName: this.accountService.loggedIn() ? this.accountService.accountInfo.fullName : '',
+          image: this.accountService.loggedIn() ? this.accountService.accountInfo.image : '',
+        },
+      },
+      userLoggedData: [
+        {
+          icon: 'pbq',
+          text: this.accountService.loggedIn() ? this.accountService.accountInfo.balance + ' PBQ' : '',
+          value: 'wallet',
+          inner: {
+            'text': 'Wallet',
+            'icon': 'arrow-right'
+          },
+          seperator: true
+        },
+        {
+          icon: 'new-story',
+          text: 'New story',
+          value: 'new-story'
+        },
+        // {
+        //   'icon': 'my-story',
+        //   'text': 'My stories',
+        //   'value': 'my-stories',
+        //   'seperator': true
+        // },
+        {
+          icon: 'publication',
+          text: 'Publications',
+          value: 'publications',
+          seperator: true
+        },
+        {
+          icon: 'profile',
+          text: 'Profile',
+          value: 'profile',
+          className: 'silly'
+        },
+        {
+          icon: 'logout',
+          text: 'Log Out',
+          value: 'logout'
+        },
+      ],
     };
   }
 

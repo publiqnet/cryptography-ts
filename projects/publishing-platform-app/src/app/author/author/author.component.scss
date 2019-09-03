@@ -597,4 +597,11 @@
     text-align: center;
   }
 }
+.stories {
+  ::ng-deep {
+    button.button.delete-draft {
+      color: $blue;
+    }
+  }
+}
 
