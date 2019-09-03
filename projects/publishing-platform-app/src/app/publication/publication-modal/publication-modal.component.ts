@@ -4,6 +4,8 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { PublicationService } from '../../core/services/publication.service';
 import { takeUntil, tap, delay } from 'rxjs/operators';
 import { ValidationService } from '../../core/validator/validator.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 @Component({
   selector: 'app-publication-modal',
@@ -24,14 +26,23 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
   loading = false;
   slug: string;
   fileUploadError: string;
+  descriptionError: string;
+  titleError: string;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(private FormBuilder: FormBuilder,
+    private notificationService: UiNotificationService,
     private publicationService: PublicationService) {
     this.buildForm();
   }
 
   ngOnInit() {
+    this.publicationForm.valueChanges.subscribe(
+      () => {
+        this.descriptionError = '';
+        this.titleError = '';
+      }
+    );
   }
 
   closePopup() {
@@ -43,6 +54,15 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.publicationForm.invalid) {
+      if (this.publicationForm.controls['description'].errors && this.publicationForm.controls['description']['errors'].maxlength) {
+        this.descriptionError = 'Maximum description length is 160';
+      }
+      if (this.publicationForm.controls['title'].errors && this.publicationForm.controls['title']['errors'].maxlength) {
+        this.titleError = 'Maximum name length is 120';
+      }
+      if (this.publicationForm.controls['title'].errors && this.publicationForm.controls['title']['errors'].required) {
+        this.titleError = 'Publication name is required';
+      }
       return;
     }
     this.loading = true;
@@ -59,15 +79,18 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     if (this.publicationForm.value.tags.length) {
       formData.append('tags', this.publicationForm.value.tags);
     }
-      this.publicationService.createPublication(formData)
-        .pipe(
-          takeUntil(this.unsubscribe$)
-        )
-        .subscribe(() => {
-          this.loading = false;
-          this.updatePublicationData.emit();
-          this.closePopup();
-        }, () => this.loading = false);
+    this.publicationService.createPublication(formData)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(() => {
+        this.loading = false;
+        this.updatePublicationData.emit();
+        this.closePopup();
+        this.notificationService.success('Publication added', '');
+      }, () => {
+        this.loading = false;
+      });
   }
 
   validateFile(file, size) {
@@ -90,6 +113,7 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
 
     if (!this.validateFile(file, 2000000)) {
       e.target.value = '';
+      this.notificationService.error('Maximum file size 1 mb', '');
       return;
     }
 
@@ -110,6 +134,7 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
 
     if (!this.validateFile(file, 1000000)) {
       e.target.value = '';
+      this.notificationService.error('Maximum file size 1 mb', '');
       return;
     }
 

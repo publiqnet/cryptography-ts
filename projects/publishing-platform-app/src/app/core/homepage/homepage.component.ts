@@ -101,6 +101,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
+  goPublicationPage(e) {
+    this.utilService.routerChangeHelper('publication', e);
+  }
+
   seeMore() {
     this.seeMoreLoading = true;
     this.blockInfiniteScroll = true;

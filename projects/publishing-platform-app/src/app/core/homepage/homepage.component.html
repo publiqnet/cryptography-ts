@@ -31,14 +31,14 @@
                 <ui-button className="button button--large" size="large" text="Sign up"></ui-button>
             </div>
             <div class="publications" *ngIf="publicationsList.length">
-                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="utilService.routerChangeHelper('publication',$event)"></ui-publication-list>
+                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="goPublicationPage($event)"></ui-publication-list>
             </div>
             <div class="copyright-space">
                 <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
-<!--                <div class="copyright-space__items">-->
-<!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'jp'}" (click)="useLang('jp')">JP</span>-->
-<!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'en'}" (click)="useLang('en')">EN</span>-->
-<!--                </div>-->
+                <!--                <div class="copyright-space__items">-->
+                <!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'jp'}" (click)="useLang('jp')">JP</span>-->
+                <!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'en'}" (click)="useLang('en')">EN</span>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>
