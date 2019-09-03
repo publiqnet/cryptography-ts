@@ -4,8 +4,8 @@ import { NewContentComponent } from './newcontent/newcontent.component';
 import { AuthguardService } from '../core/services/authguard.service';
 import { MyContentComponent } from './mycontent/mycontent.component';
 import { EditDraftComponent } from './edit-draft/edit-draft.component';
-import { EditContentComponent } from './edit-content/edit-content.component';
 import { PendingChangesGuard } from '../guards/pending-changes-guard.service';
+import { EditContentComponent } from './edit-content/edit-content.component';
 
 export const contentRoutes: Routes = [
   {
@@ -32,10 +32,9 @@ export const contentRoutes: Routes = [
         canActivate: [AuthguardService]
       },
       {
-        path: 'edit/:id',
+        path: 'edit/:uri',
         component: EditContentComponent,
-        canActivate: [AuthguardService],
-        canDeactivate: [PendingChangesGuard]
+        canActivate: [AuthguardService]
       }
     ]
   }

@@ -1,4 +1,4 @@
-import { Author, AuthorOptions } from './author';
+import { Author } from './author';
 
 export enum PageOptions {
     homepageTagStories = <any>'homepageTagStories',
@@ -11,6 +11,7 @@ export interface ContentOptions {
     title: string;
     text: string;
     cover: any;
+    contentId?: any;
     files: [];
     published: string;
     author: any;
@@ -22,6 +23,7 @@ export class Content {
     title: string;
     text: string;
     cover: any;
+    contentId: any;
     files: [];
     published: string;
     author: Author;

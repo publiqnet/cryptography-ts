@@ -20,7 +20,7 @@
                   <span class="author-info__name">{{authorFullName}}</span>
                   <span class="author-info__published">{{published * 1000 | date:'dd MMM, HH:mm'}}</span>
                 </div>
-                <div class="follow-button">
+                <div class="follow-button" *ngIf="!isCurrentUser">
                   <ui-button [type]="'primary'" [size]="'medium'" [text]="'Follow'"></ui-button>
                 </div>
               </div>
