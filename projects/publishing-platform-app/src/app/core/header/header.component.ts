@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   updateHeaderData() {
     this.headerData = {
-      logo: 'https://stage-file.publiq.network/default/publiq.svg',
+      logo: '/assets/images/publiq-media.svg',
       isLogged: this.accountService.loggedIn(),
       navigationLinks: [
         { text: 'Science', slug: 'science' },
