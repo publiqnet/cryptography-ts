@@ -8,11 +8,13 @@ import { ContentService } from '../services/content.service';
 import { ErrorService } from '../services/error.service';
 import { Search } from '../services/models/search';
 import { Publications } from '../services/models/publications';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  providers: [DecimalPipe]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
@@ -34,7 +36,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private activatedRoute: ActivatedRoute,
     private contentService: ContentService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private _decimalPipe: DecimalPipe
   ) {
   }
 
@@ -94,7 +97,47 @@ export class HeaderComponent implements OnInit, OnDestroy {
         { text: 'Outdoors', slug: 'outdoors' },
         { text: 'Quotes', slug: 'quotes' },
         { text: 'Holy Quraan', slug: 'quraan' },
-      ]
+      ],
+      userData: {
+        user: {
+          fullName: this.accountService.loggedIn() ? this.accountService.accountInfo.fullName : '',
+          image: this.accountService.loggedIn() ? this.accountService.accountInfo.image : '',
+        },
+      },
+      userLoggedData: [
+        {
+          icon: 'pbq',
+          text: this.accountService.loggedIn() ? this._decimalPipe.transform(this.accountService.accountInfo.balance, '0.0-8') + ' PBQ' : '',
+          value: 'wallet',
+          inner: {
+            'text': 'Wallet',
+            'icon': 'arrow-right'
+          },
+          seperator: true
+        },
+        {
+          icon: 'new-story',
+          text: 'New story',
+          value: 'new-story'
+        },
+        {
+          icon: 'publication',
+          text: 'Publications',
+          value: 'publications',
+          seperator: true
+        },
+        {
+          icon: 'profile',
+          text: 'Profile',
+          value: 'profile',
+          className: 'silly'
+        },
+        {
+          icon: 'logout',
+          text: 'Log Out',
+          value: 'logout'
+        },
+      ],
     };
   }
 
