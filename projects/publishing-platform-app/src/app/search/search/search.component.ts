@@ -39,4 +39,24 @@ export class SearchComponent implements OnChanges {
     this.router.navigateByUrl(url);
     this.closeSearchBar.emit(false);
   }
+
+  onContentClick(event) {
+    this.utilService.routerChangeHelper('content', event);
+    this.closeSearchBar.emit(false);
+  }
+
+  onPublicationClick(event) {
+    this.utilService.routerChangeHelper('publication', event.slug);
+    this.closeSearchBar.emit(false);
+  }
+
+  onAccountClick(event) {
+    this.utilService.routerChangeHelper('account', event.slug);
+    this.closeSearchBar.emit(false);
+  }
+
+  onTagClick(event) {
+    this.utilService.routerChangeHelper('tag', event);
+    this.closeSearchBar.emit(false);
+  }
 }

@@ -165,7 +165,7 @@
                         <div class="search-results" infiniteScroll [infiniteScrollDistance]="1" [infiniteScrollThrottle]="50" [infiniteScrollDisabled]="blockInfiniteScroll" (scrolled)="seeMore()"></div>
                     </ng-container>
                 </div>
-                <div class="no-stories" >
+                <div class="no-stories" *ngIf="selectedTab && selectedTab == '1' && !loadingAuthor && articlesLoaded && !publishedContent.length">
                     <img src="assets/images/no_story.svg" alt="no story" />
                     <span>No Stories Yet</span>
                 </div>
