@@ -772,6 +772,12 @@
     }
 }
 
+ui-input-suggestions {
+     ::ng-deep .suggestions {
+        z-index: 1;
+    }
+}
+
 ::ng-deep .cancel-modal {
     width: 100%;
     max-width: 100%;

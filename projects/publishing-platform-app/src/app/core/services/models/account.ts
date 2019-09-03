@@ -28,6 +28,7 @@ export interface AccountOptions {
   subscribed?;
   listView?: boolean;
   bio?: string;
+  subscribed: boolean;
 }
 export class Account {
   options;
@@ -56,7 +57,7 @@ export class Account {
   subscribed?;
   listView?: boolean;
   bio?: string;
-
+  subscribed: boolean;
   constructor(options?: AccountOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {

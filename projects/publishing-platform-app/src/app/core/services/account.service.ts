@@ -17,6 +17,7 @@ import { Subscriber } from './models/subscriber';
 
 import { UtilsService } from 'shared-lib';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
+import { Author } from './models/author';
 
 @Injectable()
 export class AccountService {
@@ -736,8 +737,8 @@ export class AccountService {
     return this.cryptService.checkPassword(this.brainKeyEncrypted, password);
   }
 
-  searchAccountByTerm: (term: string) => Observable<Account[]> = (term: string) => {
+  searchAccountByTerm: (term: string) => Observable<Author[]> = (term: string) => {
     return this.httpHelper.call(HttpMethodTypes.get, this.userUrl + `/search/${term}`)
-      .pipe(map((accounts: AccountOptions[]) => accounts.map(account => new Account(account))));
+      .pipe(map((accounts: Author[]) => accounts.map(account => new Author(account))));
   }
 }

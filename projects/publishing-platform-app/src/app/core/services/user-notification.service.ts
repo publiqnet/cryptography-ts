@@ -97,9 +97,10 @@ export class UserNotificationService {
     this.unreadCount = 0;
     this.notificationsChanged$.next();
 
-    this.doRequest('POST', `/notification/read-all`).subscribe(() => {}, error =>
-      this.errorService.handleError('readAllNotifications', error)
-    );
+    // this.doRequest('POST', `/notification/read-all`)
+    // .subscribe(null, error =>
+    //   this.errorService.handleError('readAllNotifications', error)
+    // );
   }
 
   deleteNotification(uNotification: UserNotification): void {
@@ -113,12 +114,12 @@ export class UserNotificationService {
     );
     this.notificationsChanged$.next();
 
-    this.doRequest(
-      'DELETE',
-      `/notification/delete/${uNotification.id}`
-    ).subscribe(() => {}, error =>
-      this.errorService.handleError('deleteNotification', error)
-    );
+    // this.doRequest(
+    //   'DELETE',
+    //   `/notification/delete/${uNotification.id}`
+    // ).subscribe(null, error =>
+    //   this.errorService.handleError('deleteNotification', error)
+    // );
   }
 
   toggleStatus(uNotification: UserNotification, readStatus: boolean): void {
@@ -128,12 +129,12 @@ export class UserNotificationService {
       this.notificationsChanged$.next();
     }
 
-    this.doRequest(
-      'POST',
-      `/notification/${readStatus ? 'read' : 'unread'}/${uNotification.id}`
-    ).subscribe(() => null, error =>
-      this.errorService.handleError('unreadSingle', error)
-    );
+    // this.doRequest(
+    //   'POST',
+    //   `/notification/${readStatus ? 'read' : 'unread'}/${uNotification.id}`
+    // ).subscribe(null, error =>
+    //   this.errorService.handleError('unreadSingle', error)
+    // );
   }
 
   reset(): void {

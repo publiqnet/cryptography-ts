@@ -20,6 +20,7 @@ export interface PublicationOptions {
   views: number;
   membersCount: number;
   subscribersCount: number;
+  tags: Array<string>;
 }
 
 export class Publication {
@@ -41,13 +42,13 @@ export class Publication {
   hideCover: any;
   listView: any;
   inviter: object;
-  // TODO: Add `status` parameter to backend response
   status: number = 0;
   storiesCount: number;
   membersList: Array<object>;
   views: number = 0;
   membersCount: number = 0;
   subscribersCount: number = 0;
+  tags: Array<string>;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
@@ -55,8 +56,11 @@ export class Publication {
           this[i] = options[i] ? environment.backend + '/' + options[i] : '';
         } else if (i === 'color') {
           this[i] = options[i] ? '#' + options[i] : '';
-        } else if (['memberStatus', 'subscribed'].includes(i)) {
+        } else if (['subscribed'].includes(i)) {
           this['following'] = options[i];
+          this[i] = options[i];
+        } else if ( i == 'memberStatus') {
+          this['status'] = options[i];
           this[i] = options[i];
         } else if (['editors', 'contributors', 'requests', 'invitations', 'subscribers'].includes(i)) {
           options[i] = options[i].map(
@@ -64,7 +68,7 @@ export class Publication {
           );
           this[i] = options[i];
         } else if (['inviter', 'owner'].includes(i)) {
-          this[i] =  new Author(options[i]);
+          this[i] = new Author(options[i]);
         } else {
           this[i] = options[i];
         }

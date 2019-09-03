@@ -26,8 +26,20 @@ export class ValidationService {
         ) {
             return null;
         } else {
-            return {email: true};
+            return { email: true };
         }
+    }
+
+    static isEmail(text) {
+        if (
+            text &&
+            text.match(
+                /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+            )
+        ) {
+            return true;
+        }
+        return false;
     }
 
     static passwordValidator(control) {
@@ -39,7 +51,7 @@ export class ValidationService {
         ) {
             return null;
         } else {
-            return {invalidPassword: true};
+            return { invalidPassword: true };
         }
     }
 
@@ -50,7 +62,7 @@ export class ValidationService {
             (c.value.confirmPassword.length > 0 &&
                 c.value.password !== c.value.confirmPassword)
         ) {
-            return {invalidConfirmPassword: true};
+            return { invalidConfirmPassword: true };
         } else {
             return null;
         }
@@ -83,7 +95,7 @@ export class ValidationService {
         if (control.value && (control.value.from_date || control.value.to_date)) {
             return null;
         } else {
-            return {dateRequire: true};
+            return { dateRequire: true };
         }
     }
 
@@ -92,17 +104,17 @@ export class ValidationService {
             control.value &&
             (control.value.first_name && control.value.first_name.search(/\S/) == -1)
         ) {
-            return {notSpaceRequire: true};
+            return { notSpaceRequire: true };
         } else {
             return null;
         }
     }
 
-    static required = (c: AbstractControl) => !(c.value && c.value.trim()) ? {required: true} : null;
+    static required = (c: AbstractControl) => !(c.value && c.value.trim()) ? { required: true } : null;
 
     static noWhitespaceValidator(control: FormControl) {
         const isWhitespace = (control.value || '').trim().length === 0;
         const isValid = !isWhitespace;
-        return isValid ? null : {'whitespace': true};
+        return isValid ? null : { 'whitespace': true };
     }
 }
