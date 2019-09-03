@@ -2,27 +2,27 @@
     <div class="row publications-heading">
         <div class="col-lg-6 offset-lg-2 col-9">
             <h1>Publications</h1>
-            <div class="arrowed-action" (click)="openPublicationModal(true, 'invitation')">
+            <div class="arrowed-action" [ngClass]="{'no-select' : !invitations?.length}" (click)="invitations?.length? openPublicationModal(true, 'invitation') : ''">
                 <span>Invitations<small>({{invitations?.length || 0}})</small></span>
                 <i class="icon-arrow-right"></i>
             </div>
         </div>
         <div class="col-lg-2 col-3">
-            <ui-button text="Settings" (click)="openPublicationModal(true, 'create')"></ui-button>
+            <ui-button text="Create" (click)="openPublicationModal(true, 'create')"></ui-button>
         </div>
     </div>
     <div class="row publications-staff" *ngIf="publications && publications.length">
         <div class="col-lg-8 offset-lg-2">
-            <h2 class="section-heading">Staff</h2>
+            <!-- <h2 class="section-heading">Staff</h2> -->
             <ui-publication-single className="staff-publication" type="staff" [publicationData]="publication" *ngFor="let publication of publications;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
         </div>
     </div>
-    <div class="row publications-following" *ngIf="membership && membership.length">
+    <!-- <div class="row publications-following" *ngIf="membership && membership.length">
         <div class="col-lg-8 offset-lg-2">
             <h2 class="section-heading">Following</h2>
             <ui-publication-single className="staff-publication" type="follow" [publicationData]="publication" *ngFor="let publication of membership;" (getPublicationSlug)="changeRoute('/p/'+$event)"></ui-publication-single>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <ng-container *ngIf="showCustomModal">

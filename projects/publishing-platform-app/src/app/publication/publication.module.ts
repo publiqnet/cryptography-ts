@@ -13,6 +13,7 @@ import { NgxMasonryModule } from 'ngx-masonry';
 import { PublicationOldComponent } from './publication-old/publication-old.component';
 import { MyPublicationsOldComponent } from './my-publications-old/my-publications-old.component';
 import { PublicationModalComponent } from './publication-modal/publication-modal.component';
+import { ChipsInputComponent } from './chips-input/chips-input.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { PublicationModalComponent } from './publication-modal/publication-modal
     MyPublicationsOldComponent,
     MyPublicationsComponent,
     NewPublicationComponent,
-    PublicationModalComponent
+    PublicationModalComponent,
+    ChipsInputComponent
   ]
 })
 export class PublicationModule {
