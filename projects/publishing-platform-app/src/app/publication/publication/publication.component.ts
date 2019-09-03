@@ -68,6 +68,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
   public searchForm: FormGroup;
   public isMyPublication = false;
   public editMode = false;
+  public editTitle = false;
+  public editDesc = false;
   public imageLoaded = false;
   public firstContentBlock = [];
   public followers = [];
@@ -321,6 +323,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.activeTab = 'stories';
     this.editMode = mode;
     this.textChanging = false;
+    this.editTitle = false;
+    this.editDesc = false;
     if (!mode) {
       this.publicationForm.controls['title'].setValue(this.publication.title);
       this.publicationForm.controls['description'].setValue(this.publication.description);
@@ -395,6 +399,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
       (result: Publication) => {
         this.editMode = false;
         this.textChanging = false;
+        this.editDesc = false;
+        this.editTitle = false;
         this.imageLoaded = false;
         this.publication = result;
         this.uiNotificationService.success('Success', 'Your publication successfully updated');
@@ -412,6 +418,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     if (event.target) {
       this.resizeTextareaElement(event.target);
     }
+    this.editTitle = true;
     this.textChanging = true;
     this.publicationForm.controls['title'].setValue(event.target.value);
   }
@@ -421,6 +428,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       this.resizeTextareaElement(event.target);
     }
     this.textChanging = true;
+    this.editDesc = true;
     this.publicationDesc = event.target.value;
     if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
       this.publicationForm.controls['description'].setValue(this.publicationDesc);
