@@ -502,7 +502,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.publicationForm = this.formBuilder.group({
-      title: new FormControl(this.publication.title, []),
+      title: new FormControl(this.publication.title, [Validators.required]),
       description: new FormControl(this.publication.description, []),
       tags: new FormControl(this.publication.tags, [])
     },

@@ -10,10 +10,10 @@
 
             <span class="create-form__label">Name</span>
             <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type your publication name'" formControlName="title"></ui-input>
-
+            <p class="error-msg" *ngIf="titleError">{{titleError}}</p>
             <span class="create-form__label">Description</span>
             <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a short description'" formControlName="description"></ui-input>
-
+            <p class="error-msg" *ngIf="descriptionError">{{descriptionError}}</p>
             <span class="create-form__label">Tags</span>
             <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a tag…'" formControlName="tags"></ui-input>
             <!--upload avatar-->
@@ -46,13 +46,12 @@
           <span>(Up to 1MB, 288px by 288px recommended)</span>
                 </span>
             </div>
-
-            <div class="create-form__button-space">
-                <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'" (click)="closePopup()"></ui-button>
-                <ui-button [size]="'large'" [className]="'modal-button'" [type]="'primary'" [text]="'Create'" (click)="onSubmit()" [disabled]="loading"></ui-button>
-
-            </div>
         </form>
+
+        <div class="create-form__button-space">
+            <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'" (click)="closePopup()"></ui-button>
+            <ui-button [size]="'large'" [className]="'modal-button'" [type]="'primary'" [text]="'Create'" (click)="onSubmit()" [disabled]="loading"></ui-button>
+        </div>
 
         <!--see invitations-->
         <div class="invitation-form" *ngIf="modalType == 'invitation'">
