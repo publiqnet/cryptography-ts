@@ -71,6 +71,9 @@
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
             <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
+            <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
+                <i class="icon icon-delete"></i>
+            </span>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -114,12 +117,6 @@
                     <div class="grid-style__choose__item">
                         <ui-chip *ngFor="let tag of publication?.tags" [text]="tag"></ui-chip>
                     </div> -->
-                    <div class="grid-style__choose__item">
-                        <h4>Remove Publication</h4>
-                    </div>
-                    <span class="delete-pub"  (click)="openPopup(true)">
-                        <i class="icon icon-delete"></i>
-                    </span>
                 </div>
                 <div class="grid-style__choose">
                     <div>
@@ -230,14 +227,14 @@
     </div>
 </div>
 <div class="modal-overlay--custom" [ngClass]="{'open' : showModal}">
-  <div class="custom-modal">
-    <span class="custom-modal__close" (click)="openPopup(false)">
+    <div class="custom-modal">
+        <span class="custom-modal__close" (click)="openPopup(false)">
       <i class="icon icon-close"></i>
     </span>
-    <h3>Are you sure you want to delete publication?</h3>
-    <div class="custom-modal__buttons">
-      <ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>
-      <ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
+        <h3>Are you sure you want to delete publication?</h3>
+        <div class="custom-modal__buttons">
+            <ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>
+            <ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
+        </div>
     </div>
-  </div>
 </div>

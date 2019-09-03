@@ -2,7 +2,7 @@
     <div class="row publications-heading">
         <div class="col-lg-6 offset-lg-2 col-9">
             <h1>Publications</h1>
-            <div class="arrowed-action" (click)="openPublicationModal(true, 'invitation')">
+            <div class="arrowed-action" [ngClass]="{'no-select' : !invitations?.length}" (click)="invitations?.length? openPublicationModal(true, 'invitation') : ''">
                 <span>Invitations<small>({{invitations?.length || 0}})</small></span>
                 <i class="icon-arrow-right"></i>
             </div>
