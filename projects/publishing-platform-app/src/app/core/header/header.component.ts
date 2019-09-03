@@ -8,11 +8,13 @@ import { ContentService } from '../services/content.service';
 import { ErrorService } from '../services/error.service';
 import { Search } from '../services/models/search';
 import { Publications } from '../services/models/publications';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  providers: [DecimalPipe]
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
@@ -34,7 +36,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private activatedRoute: ActivatedRoute,
     private contentService: ContentService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private _decimalPipe: DecimalPipe
   ) {
   }
 
@@ -104,7 +107,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       userLoggedData: [
         {
           icon: 'pbq',
-          text: this.accountService.loggedIn() ? this.accountService.accountInfo.balance + ' PBQ' : '',
+          text: this.accountService.loggedIn() ? this._decimalPipe.transform(this.accountService.accountInfo.balance, '0.0-8') + ' PBQ' : '',
           value: 'wallet',
           inner: {
             'text': 'Wallet',
@@ -117,12 +120,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           text: 'New story',
           value: 'new-story'
         },
-        // {
-        //   'icon': 'my-story',
-        //   'text': 'My stories',
-        //   'value': 'my-stories',
-        //   'seperator': true
-        // },
         {
           icon: 'publication',
           text: 'Publications',
