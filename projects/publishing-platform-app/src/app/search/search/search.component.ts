@@ -15,17 +15,6 @@ export class SearchComponent implements OnChanges {
   public activeTab = 'all';
   isInputValueChanged: boolean = false;
   public searchCount = 0;
-  private interestedAuthors = {
-    'user': {
-      'image': 'http://via.placeholder.com/120x120',
-      'first_name': 'John',
-      'last_name': 'Doe',
-      'fullName': 'John Doe'
-    },
-    'isFollowing': false,
-    'slug': 'user_data'
-  };
-
   constructor(private utilService: UtilService,
               private router: Router) {}
 
@@ -42,11 +31,12 @@ export class SearchComponent implements OnChanges {
   }
 
   onUserClick(e) {
-    this.closeSearchBar.emit(false);
     this.utilService.routerChangeHelper('account', e.slug);
+    this.closeSearchBar.emit(false);
   }
 
   changeRoute(url) {
     this.router.navigateByUrl(url);
+    this.closeSearchBar.emit(false);
   }
 }
