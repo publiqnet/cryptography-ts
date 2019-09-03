@@ -35,7 +35,7 @@ export class AuthorOldComponent implements OnInit, OnDestroy {
   author: Account;
   authorStories: Content[];
   lastLoadedStories: Content[];
-  authorStats: AuthorStats = {isSubscribed: 0};
+  authorStats: AuthorStats = {subscribed: 0};
   public seeMoreChecker = false;
   seeMoreLoading = false;
 
@@ -188,7 +188,7 @@ export class AuthorOldComponent implements OnInit, OnDestroy {
       this.avatarUrl = this.author.image;
     }
     this.shortName = this.author.shortName ? this.author.shortName : '';
-    this.canFollow = this.author.isSubscribed == 0 || this.author.isSubscribed == -1;
+    this.canFollow = this.author.subscribed == 0 || this.author.subscribed == -1;
     this.loadingAuthor = false;
     this.articlesLoaded = true;
   }

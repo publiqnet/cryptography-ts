@@ -207,14 +207,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
             this.contentUris[responseData.uri] = responseData.link;
             const uploadedImage = responseData.content_original_sample_file;
 
-            if (!this.contentId && responseData.content_id) {
-              this.contentId = responseData.content_id;
-            }
-
-            if (uploadedImage) {
-              // this.resetCurrentUrl(uploadedImage);
-            }
-
             if (img && img.get(0).height) {
               $(img).attr('height', img.get(0).height);
             }
@@ -294,10 +286,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
             const responseData = JSON.parse(response);
             this.contentUris[responseData.uri] = responseData.link;
             const uploadedImage = responseData.content_original_sample_file;
-
-            if (!this.contentId && responseData.content_id) {
-              this.contentId = responseData.content_id;
-            }
 
             if (uploadedImage) {
               // this.resetCurrentUrl(uploadedImage);
@@ -401,9 +389,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.hasDraft = true;
           const message = this.translateService.instant('content.draft_saved');
           this.draftId = draft.id;
-          if (!this.contentId) {
-            this.contentId = this.draftId;
-          }
         }
       });
   }
@@ -563,7 +548,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
     return this.contentService.unitUpload(contentData)
       .pipe(
         switchMap((data: any) => {
+          console.log(data);
           this.uploadedContentUri = data.uri;
+          this.contentId = data.contentId;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
         switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))

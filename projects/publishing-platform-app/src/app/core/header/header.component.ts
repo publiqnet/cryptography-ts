@@ -1,12 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { takeUntil } from 'rxjs/operators';
-import { debounceTime } from 'rxjs-compat/operator/debounceTime';
-import { mergeMap } from 'rxjs-compat/operator/mergeMap';
-import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
 import { FormGroup } from '@angular/forms';
+import { ContentService } from '../services/content.service';
+import { ErrorService } from '../services/error.service';
+import { Search } from '../services/models/search';
+import { Publications } from '../services/models/publications';
 
 @Component({
   selector: 'app-header',
@@ -15,11 +16,11 @@ import { FormGroup } from '@angular/forms';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showSearch: boolean = false;
-
+  public searchData: Search;
+  public searchWord: string;
+  public defaultSearchData = null;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
-  isInputValueChanged: boolean = false;
-  public searchForm: FormGroup;
   headerRoutesList = {
     '' : '/',
     'wallet' : '/wallet',
@@ -30,7 +31,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private activatedRoute: ActivatedRoute,
+    private contentService: ContentService,
+    private errorService: ErrorService
   ) {
   }
 
@@ -44,14 +48,36 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchEvent(e) {
-    console.log(e);
-    this.showSearch = e;
+  searchEvent(event) {
+    if (event) {
+      document.querySelector('html').classList.add('overflow-hidden');
+      this.contentService.getDefaultSearchData()
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe((data: any) => {
+          this.defaultSearchData = data;
+        });
+    } else {
+      document.querySelector('html').classList.remove('overflow-hidden');
+    }
+
+    this.showSearch = event;
+    this.searchData = null;
   }
 
-  onInputChange(searchValue: string): void {
-    console.log(searchValue);
-    // (searchValue) ? this.isInputValueChanged = true : this.isInputValueChanged = false;
+  onInputChange(searchValue: string) {
+    this.searchWord = searchValue;
+    if (this.showSearch && this.searchWord != '') {
+      this.contentService.searchByWord(searchValue)
+        .subscribe((data: Search) => {
+          this.searchData = data;
+        }, error => {
+          console.log(error);
+        });
+    } else {
+      this.searchData = null;
+    }
   }
 
   updateHeaderData() {
