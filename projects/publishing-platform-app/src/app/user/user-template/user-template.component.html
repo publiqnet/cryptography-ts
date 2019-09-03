@@ -1,7 +1,7 @@
 <div class="signinup">
     <div class="signinup__side signinup__side--light">
         <div class="signinup__header">
-            <img src="../../../assets/images/publiq-logo.svg" class="signinup__header__logo d-none d-lg-none d-sm-inline-block">
+            <img src="/assets/images/publiq-media-white.svg" class="signinup__header__logo d-none d-lg-none d-sm-inline-block">
             <ui-tab *ngIf="['login', 'register'].includes(activeRoute)" [type]="'navigation'" [currentValue]="activeRoute" [className]="'tabber'" (onTabChange)="changeTab($event)" [tabs]="tabberData"></ui-tab>
         </div>
         <div class="signinup__content">
@@ -17,7 +17,7 @@
     </div>
     <div class="signinup__side signinup__side--dark d-none d-sm-inline-block">
         <div class="signinup__header">
-            <a [routerLink]="['/']"> <img src="../../../assets/images/publiq-logo-white.svg" class="signinup__header__logo d-none d-lg-inline-block pointer" alt="PUBLIQ">
+            <a [routerLink]="['/']"> <img src="../../../assets/images/publiq-media-white.svg" class="signinup__header__logo d-none d-lg-inline-block pointer" alt="PUBLIQ">
             </a>
             <div class="signinup__header__language">
                 <span [ngClass]="{'language--active': activeLanguage == 'en'}" (click)="useLang('en')">EN</span>
