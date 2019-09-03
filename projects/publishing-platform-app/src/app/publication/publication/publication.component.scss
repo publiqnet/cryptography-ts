@@ -49,13 +49,14 @@
         flex: 1;
     }
     &__choose__item {
+        .icon {
+            color: red;
+        }
         span {
             display: inline-flex;
             align-items: center;
             cursor: pointer;
-          &--selected {
-
-          }
+            &--selected {}
             small {
                 font-size: 15px;
                 color: #8D929A;
@@ -483,6 +484,12 @@
     }
 }
 
+.delete-pub i {
+    font-size: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
 .publication-statistics {
     >div {
         font-size: 0;
@@ -500,38 +507,37 @@
 }
 
 .followers {
-  padding: 30px 0;
-  overflow-y: hidden;
-  overflow-x: scroll;
-  /* width */
-  &::-webkit-scrollbar {
-    width: 2px;
-    height: 5px;
-  }
-
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: #DEE2E6;
-    border-radius: 10px;
-  }
-  >div {
-      display: inline-block;
-      white-space: nowrap;
-      width: 100%;
-      margin: 0 calc((100% - 870px) / 2);
-      @include media-xl {
-          margin: 0 calc((100% - 640px) / 2);
-      }
-      @include media-lg {
-          margin: 0 calc((100% - 710px) / 2);
-      }
-      @include media-md {
-          margin: 0 calc((100% - 530px) / 2);
-      }
-      @include media-sm {
-          margin: 0 15px;
-      }
-  }
+    padding: 30px 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    /* width */
+    &::-webkit-scrollbar {
+        width: 2px;
+        height: 5px;
+    }
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: #DEE2E6;
+        border-radius: 10px;
+    }
+    >div {
+        display: inline-block;
+        white-space: nowrap;
+        width: 100%;
+        margin: 0 calc((100% - 870px) / 2);
+        @include media-xl {
+            margin: 0 calc((100% - 640px) / 2);
+        }
+        @include media-lg {
+            margin: 0 calc((100% - 710px) / 2);
+        }
+        @include media-md {
+            margin: 0 calc((100% - 530px) / 2);
+        }
+        @include media-sm {
+            margin: 0 15px;
+        }
+    }
     /*.user-card {
     margin: 0 10px 10px 0;
     &__image {
@@ -712,14 +718,24 @@
 
 ::ng-deep .invite-member-space__dropdown {
     width: 100%;
-    background-color: #f7f8f9!important;
+    background-color: #ECF0F3!important;
     max-height: 50px;
     font: 16px/20px "Open Sans", sans-serif;
     border-radius: 10px;
     transition: background-color .3s;
     .dropdown__select {
         padding: 15px 16px!important;
+        span {
+            color: #8D929A;
+            margin: 0!important;
+        }
     }
+}
+
+::ng-deep .suggestions {
+    padding-top: 6px;
+    background: #ecf0f3;
+    top: -6px;
 }
 
 .tabber-container {

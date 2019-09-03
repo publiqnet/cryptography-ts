@@ -190,7 +190,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((pub: Publication) => {
-        this.loading = false;
         this.publication = pub;
         console.log(this.publication);
         this.listType = this.publication.listView ? 'single' : 'grid';
@@ -371,6 +370,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: { data: Content[], more: boolean }) => {
+        this.loading = false;
         this.stories = data.data;
       });
   }
