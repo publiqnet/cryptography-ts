@@ -34,7 +34,7 @@ export class ChipsInputComponent implements OnInit, OnChanges {
     }
   }
 
-  enterKeyup() {
+  enterKeyup(event) {
     this.keyupEnter.emit();
   }
 
