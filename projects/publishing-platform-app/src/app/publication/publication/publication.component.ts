@@ -1,20 +1,20 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter, delay, debounce } from 'rxjs/operators';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
-import { ReplaySubject, Observable, observable } from 'rxjs';
+import { ReplaySubject, Observable, observable, fromEvent, of, Subject, timer } from 'rxjs';
 import { AccountService } from '../../core/services/account.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { UtilService } from '../../core/services/util.service';
 import { Content } from '../../core/services/models/content';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { UiNotificationService } from '../../core/services/ui-notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { Account } from '../../core/services/models/account';
 import { Author } from '../../core/services/models/author';
-import { of } from 'rxjs';
+import 'rxjs/add/observable/of';
 
 @Component({
   selector: 'app-publication',
@@ -86,6 +86,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   public pendings = [];
   public haveResult: boolean;
   public searchedMembers = [];
+  public searchedResult: boolean;
   public email = '';
   public chips = [];
   public isEmail = false;
@@ -105,6 +106,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   deleteCover = '0';
   showInviteModal: boolean = false;
   publicationDesc: string;
+  temp = new Subject<any>();
 
   constructor(
     private accountService: AccountService,
@@ -119,42 +121,56 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buildSearchForm();
-    this.searchForm.controls['members'].valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        filter((res) => res.length),
-        mergeMap(
-          res => {
-            if (ValidationService.isEmail(res)) {
-              this.email = res;
-              return of([]);
-            } else {
-              return this.accountService.searchAccountByTerm(res);
-            }
+    this.getPublication();
+
+    this.temp.pipe(
+      filter((res) => res.length >= 3),
+      distinctUntilChanged(),
+      debounce((res) => {
+        if (ValidationService.isEmail(res)) {
+          this.email = res;
+          return timer(0);
+        }
+        return timer(750);
+      }),
+      mergeMap(
+        res => {
+          if (ValidationService.isEmail(res)) {
+            return of([]);
+          } else {
+            return this.accountService.searchAccountByTerm(res);
           }
-        ),
-        debounceTime(750)
-        )
+        }
+      ),
+    )
       .subscribe(
         res => {
           this.searchedMembers = res;
-          console.log(this.searchedMembers);
+          this.searchedResult = true;
           this.haveResult = true;
         }
       );
-    this.getPublication();
   }
 
   enterTag(e) {
-    console.log(e);
     if (this.email) {
       this.chips.push(this.email);
       this.email = '';
+      this.searchedResult = false;
     }
   }
 
   removeChip(index) {
     this.chips.splice(index, 1);
+  }
+
+  suggestionSelected(e) {
+    this.chips.push(e);
+    this.searchedResult = false;
+  }
+
+  textChange(e) {
+    this.temp.next(e);
   }
 
   getPublication() {
@@ -227,12 +243,16 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   invite() {
-    const body = [{
-      publicKey: this.searchedMembers[0].publicKey,
-      email: this.searchedMembers[0].email,
-      asEditor: this.searchForm.value.status == '2'
-    }];
-    this.publicationService.inviteBecomeMember(body, this.publication.slug)
+    const memberArray = this.chips.map(
+      el => {
+        return {
+          email: el.publicKey ? null : el,
+          publicKey: el.publicKey ? el.publicKey : null,
+          asEditor: this.searchForm.value.status == '2'
+        };
+      }
+    );
+    this.publicationService.inviteBecomeMember(memberArray, this.publication.slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
@@ -240,6 +260,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         res => {
           this.showInviteModal = false;
           // chiperic heto poxel
+          this.chips = [];
           this.getPublication();
         }
       );
@@ -368,6 +389,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover ? 'true' : '');
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    formData.append('tags', this.publication.tags.join(','));
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
@@ -482,6 +504,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.publicationForm = this.formBuilder.group({
       title: new FormControl(this.publication.title, []),
       description: new FormControl(this.publication.description, []),
+      tags: new FormControl(this.publication.tags, [])
     },
       { validator: ValidationService.noSpaceValidator }
     );
@@ -489,7 +512,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   private buildSearchForm() {
     this.searchForm = this.formBuilder.group({
-      status: new FormControl('', []),
+      status: new FormControl(null, [Validators.required]),
       members: new FormControl('', []),
     });
   }

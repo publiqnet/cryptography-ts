@@ -106,6 +106,14 @@
             <div class="grid-style grid-style--custom">
                 <div class="grid-style__choose">
                     <div>
+                        <h4>Publication Tags</h4>
+                    </div>
+                    <div class="grid-style__choose__item">
+                        <ui-chip *ngFor="let tag of publication?.tags" [text]="tag"></ui-chip>
+                    </div>
+                </div>
+                <div class="grid-style__choose">
+                    <div>
                         <h4>Grid style</h4>
                         <p>Choose the way your readers will see your stories.</p>
                     </div>
@@ -143,6 +151,9 @@
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
+            <div *ngIf="!stories.length">
+                <img src="../../../assets/no_story.svg" alt=""> No stories yet
+            </div>
         </div>
     </div>
 </div>
@@ -150,7 +161,7 @@
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 tab-heading tab-heading--members">
             <h2>Members</h2>
-            <div class="tab-heading__inner">
+            <div class="tab-heading__inner" (click)="inviteModal(true)">
                 <i class="icon-search"></i>
                 <input type="text">
             </div>
@@ -159,20 +170,12 @@
                     <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
-                        <ui-chip [avatarData]="chip.fullName? chip : null" [text]="chip.fullName || chip" (onRemove)="removeChip(i)" *ngFor="let chip of chips,let i=index"></ui-chip>
-                        <!-- <ui-input [type]="'text'" formControlName="members" (keyup.enter)="enterTag($event)"></ui-input> -->
-                        <p class="search-input" [attr.contentEditable]="true" (keyup.enter)="enterTag($event)" #searchInput><span #placeholder>Enter email or account</span></p>
-                        <!-- <div class="searched-members" *ngIf="searchedMembers && haveResult">
-                            <ul>
-                                <li *ngFor="let member of searchedMembers">
-                                    {{member.fullName}}
-                                </li>
-                            </ul>
-                        </div> -->
+                        <app-chips-input [tagsArray]="chips" (keyupEnter)="enterTag($event)" (remove)="removeChip($event)" (change)="textChange($event)"></app-chips-input>
+                        <ui-input-suggestions *ngIf="searchedResult" [suggestions]="searchedMembers" (onSelect)="suggestionSelected($event)"></ui-input-suggestions>
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData" [isNone]="false"></ui-dropdown>
                         <div class="custom-modal__buttons">
                             <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
-                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'"></ui-button>
+                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'" [disabled]="!chips.length || searchForm.invalid"></ui-button>
                         </div>
                     </div>
                 </div>
@@ -205,16 +208,26 @@
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
             <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onPrimaryClicked)="answerRequest($event, 'accept', i)" (onSecondaryClicked)="answerRequest($event, 'reject', i)" *ngFor="let user of requests; let i=index"
                 primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
+            <div *ngIf="!requests.length">
+                <img src="../../../assets/no_request.svg" alt=""> No requests yet
+            </div>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
             <ui-user-single [className]="'pending'" type="two-actions" [userData]="{user: user}" *ngFor="let user of pendings; let i=index" (onUserClick)="onUserClick($event)" (onSecondaryClicked)="cancelInvitation($event,i)" secondaryButtonText="Cancel"></ui-user-single>
+            <div *ngIf="!pendings.length">
+                <img src="../../../assets/no_pending.svg" alt=""> No pending requests yet
+            </div>
         </div>
+
     </div>
 </div>
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
             <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
+        </div>
+        <div *ngIf="!subscribers.length">
+            <img src="../../../assets/no_followers.svg" alt=""> No followers yet
         </div>
     </div>
 </div>

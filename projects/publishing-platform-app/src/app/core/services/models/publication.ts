@@ -20,6 +20,7 @@ export interface PublicationOptions {
   views: number;
   membersCount: number;
   subscribersCount: number;
+  tags: Array<string>;
 }
 
 export class Publication {
@@ -41,13 +42,13 @@ export class Publication {
   hideCover: any;
   listView: any;
   inviter: object;
-  // TODO: Add `status` parameter to backend response
   status: number = 0;
   storiesCount: number;
   membersList: Array<object>;
   views: number = 0;
   membersCount: number = 0;
   subscribersCount: number = 0;
+  tags: Array<string>;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
