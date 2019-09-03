@@ -482,7 +482,11 @@
         }
     }
 }
-
+.delete-pub i{
+  font-size: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+}
 .publication-statistics {
     >div {
         font-size: 0;
@@ -712,14 +716,23 @@
 
 ::ng-deep .invite-member-space__dropdown {
     width: 100%;
-    background-color: #f7f8f9!important;
+    background-color: #ECF0F3!important;
     max-height: 50px;
     font: 16px/20px "Open Sans", sans-serif;
     border-radius: 10px;
     transition: background-color .3s;
     .dropdown__select {
         padding: 15px 16px!important;
+      span{
+        color: #8D929A;
+        margin: 0!important;
+      }
     }
+}
+::ng-deep .suggestions {
+  padding-top: 6px;
+  background: #ecf0f3;
+  top: -6px;
 }
 
 .tabber-container {

@@ -25,7 +25,6 @@ export interface AccountOptions {
   rating?: number;
   views?: number;
   articlesCount?: number;
-  subscribed?;
   listView?: boolean;
   bio?: string;
   subscribed: boolean;
@@ -54,7 +53,6 @@ export class Account {
   rating?: number;
   views?: number;
   articlesCount?: number;
-  subscribed?;
   listView?: boolean;
   bio?: string;
   subscribed: boolean;

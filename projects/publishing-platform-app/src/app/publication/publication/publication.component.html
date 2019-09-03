@@ -64,6 +64,9 @@
                 <ng-container *ngIf="editMode || textChanging">
                     <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
+                  <span class="delete-pub">
+                    <i class="icon icon-delete"></i>
+                  </span>
                 </ng-container>
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
@@ -150,8 +153,9 @@
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
-            <div *ngIf="!stories.length">
-                <img src="../../../assets/no_story.svg" alt=""> No stories yet
+            <div class="not-found local" *ngIf="!stories.length">
+                <img src="../../../assets/no_story.svg" alt="">
+              <b>No stories yet</b>
             </div>
         </div>
     </div>
@@ -207,14 +211,16 @@
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'requests'">
             <ui-user-single type="two-actions" [userData]="{user: user}" (onUserClick)="onUserClick($event)" (onPrimaryClicked)="answerRequest($event, 'accept', i)" (onSecondaryClicked)="answerRequest($event, 'reject', i)" *ngFor="let user of requests; let i=index"
                 primaryButtonText="Confirm" secondaryButtonText="Reject"></ui-user-single>
-            <div *ngIf="!requests.length">
-                <img src="../../../assets/no_request.svg" alt=""> No requests yet
+            <div class="not-found local" *ngIf="!requests.length">
+                <img src="../../../assets/no_request.svg" alt="">
+              <b>No requests yet</b>
             </div>
         </div>
         <div class="col-12 col-lg-8 offset-lg-2 requests" *ngIf="membersActiveTab === 'pending'">
             <ui-user-single [className]="'pending'" type="two-actions" [userData]="{user: user}" *ngFor="let user of pendings; let i=index" (onUserClick)="onUserClick($event)" (onSecondaryClicked)="cancelInvitation($event,i)" secondaryButtonText="Cancel"></ui-user-single>
-            <div *ngIf="!pendings.length">
-                <img src="../../../assets/no_pending.svg" alt=""> No pending requests yet
+            <div class="not-found local" *ngIf="!pendings.length">
+                <img src="../../../assets/no_pending.svg" alt="">
+              <b> No pending requests yet</b>
             </div>
         </div>
 
@@ -225,8 +231,9 @@
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
             <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
-        <div *ngIf="!subscribers.length">
-            <img src="../../../assets/no_followers.svg" alt=""> No followers yet
+        <div class="not-found local" *ngIf="!subscribers.length">
+            <img src="../../../assets/no_followers.svg" alt="">
+          <b>No followers yet</b>
         </div>
     </div>
 </div>
