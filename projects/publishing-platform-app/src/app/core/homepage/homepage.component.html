@@ -31,7 +31,7 @@
                 <ui-button className="button button--large" size="large" text="Sign up"></ui-button>
             </div>
             <div class="publications" *ngIf="publicationsList.length">
-                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()"></ui-publication-list>
+                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="utilService.routerChangeHelper('publication',$event)"></ui-publication-list>
             </div>
             <div class="copyright-space">
                 <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
