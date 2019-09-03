@@ -76,6 +76,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   public requests = [];
   public listType = 'grid';
   public logoData = {};
+  showModal = false;
   public masonryOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -172,6 +173,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   textChange(e) {
     this.temp.next(e);
+  }
+
+  openPopup(flag: boolean) {
+    this.showModal = flag;
   }
 
   getPublication() {
