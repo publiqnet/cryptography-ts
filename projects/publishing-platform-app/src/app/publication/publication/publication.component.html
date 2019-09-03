@@ -117,9 +117,9 @@
                     <div class="grid-style__choose__item">
                         <h4>Remove Publication</h4>
                     </div>
-                    <div class="grid-style__choose__item">
+                    <span class="delete-pub"  (click)="openPopup(true)">
                         <i class="icon icon-delete"></i>
-                    </div>
+                    </span>
                 </div>
                 <div class="grid-style__choose">
                     <div>
@@ -228,4 +228,16 @@
             <b>No followers yet</b>
         </div>
     </div>
+</div>
+<div class="modal-overlay--custom" [ngClass]="{'open' : showModal}">
+  <div class="custom-modal">
+    <span class="custom-modal__close" (click)="openPopup(false)">
+      <i class="icon icon-close"></i>
+    </span>
+    <h3>Are you sure you want to delete publication?</h3>
+    <div class="custom-modal__buttons">
+      <ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>
+      <ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
+    </div>
+  </div>
 </div>
