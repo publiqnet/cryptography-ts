@@ -188,7 +188,7 @@ export class AuthorOldComponent implements OnInit, OnDestroy {
       this.avatarUrl = this.author.image;
     }
     this.shortName = this.author.shortName ? this.author.shortName : '';
-    this.canFollow = this.author.subscribed == 0 || this.author.subscribed == -1;
+    this.canFollow = !this.author.subscribed;
     this.loadingAuthor = false;
     this.articlesLoaded = true;
   }
