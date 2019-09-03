@@ -203,11 +203,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.firstName = this.author.firstName;
     this.lastName = this.author.lastName;
     this.bio = this.author.bio;
-
     if (this.author.image) {
       this.currentImage = this.author.image;
     }
-
     this.authorForm = this.formBuilder.group({
       firstName: new FormControl(this.firstName, []),
       lastName: new FormControl(this.lastName, []),
@@ -239,9 +237,13 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.editTitleIcon = true;
     this.showEditModeIcons = true;
     this.fullName = event.target.value;
-    const splittedFullName = this.fullName.split(' ');
-    this.firstName = splittedFullName.slice(0, -1).join(' ');
-    this.lastName = splittedFullName.slice(-1).join(' ');
+    if (this.fullName == this.author.fullName) {
+      this.editTitleIcon = false;
+      this.showEditModeIcons = false;
+    }
+    const splittedFullName = this.fullName.split(' ').filter(item => item);
+    this.firstName = (splittedFullName.length > 1) ? splittedFullName.slice(0, -1).join(' ') : splittedFullName.slice(-1).join(' ');
+    this.lastName = (splittedFullName.length > 1) ? splittedFullName.slice(-1).join(' ') : '';
     if (this.fullName != this.author.fullName) {
       this.authorForm.controls['firstName'].setValue(this.firstName);
       this.authorForm.controls['lastName'].setValue(this.lastName);
@@ -260,6 +262,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.resizeTextareaElement(event.target);
     }
     this.bio = event.target.value;
+    if (this.bio == this.author.bio) {
+      this.editBioIcon = false;
+      this.showEditModeIcons = false;
+    }
     if (this.bio.trim().length && (this.bio !== this.author.bio)) {
       this.authorForm.controls['bio'].setValue(this.bio);
     } else if (!this.bio.trim().length) {
@@ -424,9 +430,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (this.photo) {
       formData.append('image', this.photo, this.photo.name);
     }
-    formData.append('firstName', this.authorForm.controls['firstName'].value.trim());
-    formData.append('lastName', this.authorForm.controls['lastName'].value);
-    formData.append('bio', this.authorForm.controls['bio'].value);
+
+    formData.append('firstName',  this.authorForm.controls['firstName'].value ? this.authorForm.controls['firstName'].value : '');
+    formData.append('lastName',  this.authorForm.controls['lastName'].value ? this.authorForm.controls['lastName'].value : '');
+    formData.append('bio', this.authorForm.controls['bio'].value ? this.authorForm.controls['bio'].value : '');
     formData.append('listView', (this.listType == 'single') ? 'true' : '');
 
     this.accountService.updateAccount(formData)
