@@ -1,118 +1,110 @@
 @import "../../../assets/css/variables.scss";
-
 .arrowed-action {
-  font-family: $open-sans;
-  font-size: 20px;
-  color: $grey;
-
-  span {
-    font-size: inherit;
-    vertical-align: middle;
-    font-weight: 600;
-
-    small {
-      font-size: inherit;
-      font-weight: 700;
-      margin-left: .35em;
-      vertical-align: baseline;
-      color: $blue;
+    font-family: $open-sans;
+    font-size: 20px;
+    color: $grey;
+    &.no-select {
+        pointer-events: none;
+        cursor: default;
     }
-  }
-
-  i {
-    display: inline-block;
-    transition: transform .3s;
-    vertical-align: middle;
-    color: pbq-color($lightgrey, 700);
-    font-size: 1.2em;
-    margin-top: 2px;
-  }
-
-  &:hover {
+    span {
+        font-size: inherit;
+        vertical-align: middle;
+        font-weight: 600;
+        small {
+            font-size: inherit;
+            font-weight: 700;
+            margin-left: .35em;
+            vertical-align: baseline;
+            color: $blue;
+        }
+    }
     i {
-      transform: translateX(.2em);
+        display: inline-block;
+        transition: transform .3s;
+        vertical-align: middle;
+        color: pbq-color($lightgrey, 700);
+        font-size: 1.2em;
+        margin-top: 2px;
     }
-  }
+    &:hover {
+        i {
+            transform: translateX(.2em);
+        }
+    }
 }
 
 .section-heading {
-  font: 700 20px/27px $open-sans;
-  letter-spacing: 1px;
-  margin: 36px 0;
-  text-transform: uppercase;
-  color: pbq-color($lightgrey, 700);
+    font: 700 20px/27px $open-sans;
+    letter-spacing: 1px;
+    margin: 36px 0;
+    text-transform: uppercase;
+    color: pbq-color($lightgrey, 700);
 }
 
 .publications-heading {
-  margin: 60px 0 24px;
-
-  > div {
-    padding-bottom: 50px;
-    border-bottom: 5px solid pbq-color($grey, 100);
-
-    &:last-child {
-      text-align: right;
+    margin: 60px 0 24px;
+    >div {
+        padding-bottom: 50px;
+        border-bottom: 5px solid pbq-color($grey, 100);
+        &:last-child {
+            text-align: right;
+        }
     }
-  }
-
-  h1 {
-    font: 500 50px/1 $vollkorn;
-    color: pbq-color($grey, 700);
-    margin: 0 0 5px;
-  }
-
-  .arrowed-action {
-    cursor: pointer;
-  }
+    h1 {
+        font: 500 50px/1 $vollkorn;
+        color: pbq-color($grey, 700);
+        margin: 0 0 5px;
+    }
+    .arrowed-action {
+        cursor: pointer;
+    }
 }
 
 .publications-staff {
-  ui-publication-single {
-    @include media-sm {
-      ::ng-deep .staff-publication {
-        display: inline-block;
-        width: 100% !important;
-        max-width: unset;
-        margin-bottom: 10px;
-      }
-    }
-
-    @include media-sm-up {
-      ::ng-deep .staff-publication {
-        display: inline-block;
-        width: calc(50% - 20px / 2) !important;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        max-width: unset;
-      }
-
-      &:nth-of-type(2n) {
-        ::ng-deep .staff-publication {
-          margin-right: 0;
+    ui-publication-single {
+        @include media-sm {
+             ::ng-deep .staff-publication {
+                display: inline-block;
+                width: 100% !important;
+                max-width: unset;
+                margin-bottom: 10px;
+            }
         }
-      }
-    }
-
-    @include media-xl-up {
-      ::ng-deep .staff-publication {
-        display: inline-block;
-        width: calc(33.333% - 20px / 3) !important;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        max-width: unset;
-      }
-
-      &:nth-of-type(2n):not(:nth-of-type(3n)) { margin-right: 10px; }
-
-      &:nth-of-type(3n) {
-        ::ng-deep .staff-publication {
-          margin-right: 0;
+        @include media-sm-up {
+             ::ng-deep .staff-publication {
+                display: inline-block;
+                width: calc(50% - 20px / 2) !important;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                max-width: unset;
+            }
+            &:nth-of-type(2n) {
+                 ::ng-deep .staff-publication {
+                    margin-right: 0;
+                }
+            }
         }
-      }
+        @include media-xl-up {
+             ::ng-deep .staff-publication {
+                display: inline-block;
+                width: calc(33.333% - 20px / 3) !important;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                max-width: unset;
+            }
+            &:nth-of-type(2n):not(:nth-of-type(3n)) {
+                margin-right: 10px;
+            }
+            &:nth-of-type(3n) {
+                 ::ng-deep .staff-publication {
+                    margin-right: 0;
+                }
+            }
+        }
     }
-  }
 }
 
 .publications-following {
-  margin: 30px 0 0;
+    margin: 30px 0 0;
 }

@@ -38,7 +38,7 @@
 ::ng-deep .search-publication{
   margin-bottom: 25px;
 }
-::ng-deep .search-people{
+.search-people ::ng-deep .followers-card{
   margin-bottom: 25px;
 }
 .search-tabber{
@@ -46,6 +46,7 @@
     background-color: black;
   }
 }
+
 
 @keyframes showSearchComponent {
   0% {

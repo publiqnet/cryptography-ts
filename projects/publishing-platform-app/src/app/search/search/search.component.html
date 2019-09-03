@@ -15,27 +15,37 @@
 
           <!--!!!!! not in default-->
           <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
-          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article">
+          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length">
             <div *ngFor="let articleItem of searchResult.article">
               <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem"
-                                 (accountClick)="utilService.routerChangeHelper('account', $event.slug)" (contentClick)="utilService.routerChangeHelper('content', $event)" (publicationClick)="utilService.routerChangeHelper('publication', $event.slug)"
-                                 (tagClick)="utilService.routerChangeHelper('tag',$event)" ></ui-content-single>
+                                 (accountClick)="onAccountClick($event)"
+                                 (contentClick)="onContentClick($event)"
+                                 (publicationClick)="onPublicationClick($event)"
+                                 (tagClick)="onTagClick($event)" ></ui-content-single>
             </div>
+          </div>
+          <div class="not-found" *ngIf="activeTab === 'stories' || activeTab === 'all' && !searchResult.article.length">
+            <img src="assets/images/no_story.svg" alt="No story">
           </div>
 
           <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
-          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication">
+          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication.length">
             <div  *ngFor="let publicationItem of searchResult.publication">
               <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem"></ui-publication-single>
             </div>
-
+          </div>
+          <div class="not-found" *ngIf="activeTab === 'publications' || activeTab === 'all' && !searchResult.publication.length">
+            <img src="assets/images/no_publications.svg" alt="No publication">
           </div>
 
           <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
-          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors">
-            <div  *ngFor="let authorItem of searchResult.authors">
-              <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
+          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length">
+            <div class="search-people"  *ngFor="let authorItem of searchResult.authors">
+              <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem}"></ui-user-single>
             </div>
+          </div>
+          <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors.length">
+            <img src="assets/images/no_people.svg" alt="No author">
           </div>
 
         </ng-container>
@@ -73,7 +83,7 @@
             </div>
 
             <div *ngFor="let publicationItem of defaultSearchData.publication">
-              <ui-publication-single [className]="'popular__item'" [type]="'follow'"
+              <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'popular__item'" [type]="'follow'"
                                      [publicationData]="publicationItem"></ui-publication-single>
             </div>
           </div>
@@ -86,7 +96,7 @@
                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
               </div>
             </div>
-            <div *ngFor="let authorItem of defaultSearchData.authors">
+            <div class="search-people"  *ngFor="let authorItem of defaultSearchData.authors">
               <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
             </div>
           </div>

@@ -87,6 +87,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
       );
   }
 
+
   calculateLastStoriUri() {
     const lastIndex = this.contentArray.length - 1;
     if (this.contentArray[lastIndex].uri !== this.startFromUri) {
@@ -98,6 +99,10 @@ export class HomepageComponent implements OnInit, OnDestroy {
     if (event && event.length > 1) {
       this.isMasonryLoaded = true;
     }
+  }
+
+  goPublicationPage(e) {
+    this.utilService.routerChangeHelper('publication', e);
   }
 
   seeMore() {

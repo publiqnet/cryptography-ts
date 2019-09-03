@@ -476,14 +476,16 @@ export class NewContentComponent implements OnInit, OnDestroy {
     allContentBlocks.forEach((node) => {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
-        calls.push(this.contentService.uploadTextFiles(nodeHtml));
+        if (nodeHtml != this.titleText) {
+          calls.push(this.contentService.uploadTextFiles(nodeHtml));
+        }
       } else if (nodeHtml.match(/<img/)) {
         let outerText = node.outerHTML;
-        const regex = /<img[^>]*src="([^"]*)"/g;
-        const src = regex.exec(outerText)[1];
-        const imgUri = Object.keys(this.contentUris).find(key => this.contentUris[key] === src);
-        if (imgUri && this.contentUris[imgUri]) {
-          outerText = outerText.replace(this.contentUris[imgUri], imgUri);
+        const regex = /<img[^>]*data-uri="([^"]*)"/g;
+        const imageUri = regex.exec(outerText)[1];
+        const imageUrl = this.contentUris[imageUri];
+        if (imageUrl && imageUri) {
+          outerText = outerText.replace(/<img[^>]*src="([^"]*)"/g, `<img src="${imageUri}"`);
         }
         calls.push(of(outerText));
       } else {

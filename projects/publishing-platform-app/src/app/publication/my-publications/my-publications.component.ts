@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { PublicationService } from '../../core/services/publication.service';
 import { AccountService } from '../../core/services/account.service';
@@ -7,7 +7,7 @@ import { Publication } from '../../core/services/models/publication';
 import { Publications } from '../../core/services/models/publications';
 
 import { ReplaySubject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-my-publications',
@@ -16,6 +16,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 })
 export class MyPublicationsComponent implements OnInit, OnDestroy {
   public publications: Publication[];
+  public myPublications: Publication[];
   public membership: Publication[];
   public invitations: Publication[];
   public requests: Publication[];
@@ -33,10 +34,11 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   }
 
   set PublicationsData(data: Publications) {
-    this.publications = data.owned;
+    this.myPublications = data.owned;
     this.membership = data.membership;
     this.invitations = data.invitations;
     this.requests = data.requests;
+    this.publications = this.myPublications.concat(this.membership);
   }
 
   ngOnInit() {

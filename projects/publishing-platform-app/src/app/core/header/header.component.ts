@@ -82,7 +82,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   updateHeaderData() {
     this.headerData = {
-      logo: 'https://stage-file.publiq.network/default/publiq.svg',
+      logo: '/assets/images/publiq-media.svg',
       isLogged: this.accountService.loggedIn(),
       navigationLinks: [
         { text: 'Science', slug: 'science' },
@@ -106,6 +106,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (event.action == 'redirect') {
       if (event.slug == 'logout') {
         this.accountService.logout();
+        this.router.navigate(['/']);
       } else if (event.slug == 'profile') {
         this.router.navigate([`/a/${this.accountService.accountInfo.publicKey}`]);
       } else if (this.headerRoutesList[event.slug]) {
