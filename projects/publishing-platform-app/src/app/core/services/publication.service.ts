@@ -137,7 +137,8 @@ export class PublicationService {
   cancelInvitation = (body: any): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`);
 
   getPublications(fromSlug = null, count: number = 10): Observable<any> {
-    return this.httpHelperService.customCall(HttpMethodTypes.get, `${this.url}s/${count}/${fromSlug}`, null, null, false)
+    console.log('tttt');
+    return this.httpHelperService.call(HttpMethodTypes.get, `${this.url}s/${count}/${fromSlug}`)
       .pipe(
         filter(data => data != null),
         map(publicationsData => {

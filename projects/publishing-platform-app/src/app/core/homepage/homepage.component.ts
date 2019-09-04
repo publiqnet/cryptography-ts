@@ -6,6 +6,7 @@ import { ReplaySubject } from 'rxjs';
 import { UtilService } from '../services/util.service';
 import { PublicationService } from '../services/publication.service';
 import { AccountService } from '../services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
@@ -22,6 +23,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   public blockInfiniteScroll = false;
   requestMade = false;
   public activeLanguage = 'en';
+  public following: boolean = true;
   public welcomeBlockVisible = true;
   public startFromUri = null;
   public storiesDefaultCount = 20;
@@ -47,6 +49,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
     private publicationService: PublicationService,
     public utilService: UtilService,
     public accountService: AccountService,
+    private router: Router,
   ) {
   }
 
@@ -81,6 +84,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
         (publicationsListData: any) => {
           this.hasMorePublications = publicationsListData.more;
           this.publicationsList = this.publicationsList.concat(publicationsListData.publications);
+          this.following = publicationsListData.subscribed;
           const lastIndex = this.publicationsList.length - 1;
           if (this.publicationsList[lastIndex].slug !== this.publicationsFromSlug) {
             this.publicationsFromSlug = this.publicationsList[lastIndex].slug;
@@ -97,10 +101,36 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
+  followPublication(event) {
+    if (event.follow && this.accountService.loggedIn()) {
+      this.publicationService.follow(event.slug)
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
+          () => this.following = false
+        );
+    } else if (event.follow == false && this.accountService.loggedIn()) {
+      this.publicationService.unfollow(event.slug)
+        .pipe(
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(
+          () => this.following = true
+        );
+    } else {
+      this.router.navigate(['/user/login']);
+    }
+  }
+
   onLayoutComplete(event) {
     if (event && event.length > 1) {
       this.isMasonryLoaded = true;
     }
+  }
+
+  goPublicationPage(e) {
+    this.utilService.routerChangeHelper('publication', e);
   }
 
   seeMore() {

@@ -651,7 +651,8 @@ export class ContentService {
 
   getContentByUri(uri: string): Observable<any> {
     const url = `${environment.backend}/api/content/${uri}`;
-    return this.httpHelperService.customCall(HttpMethodTypes.get, url);
+    return this.httpHelperService.call(HttpMethodTypes.get, url)
+      .pipe(map(contentData => new Content(contentData)));
   }
 
   getFileContentFromUrl(url: string): Observable<any> {

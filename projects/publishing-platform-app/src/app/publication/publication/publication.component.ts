@@ -1,20 +1,20 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter, delay, debounce } from 'rxjs/operators';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Observable, observable, fromEvent, of, Subject, timer } from 'rxjs';
 import { AccountService } from '../../core/services/account.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { UtilService } from '../../core/services/util.service';
 import { Content } from '../../core/services/models/content';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { UiNotificationService } from '../../core/services/ui-notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { Account } from '../../core/services/models/account';
 import { Author } from '../../core/services/models/author';
-
+import 'rxjs/add/observable/of';
 
 @Component({
   selector: 'app-publication',
@@ -76,6 +76,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   public requests = [];
   public listType = 'grid';
   public logoData = {};
+  showModal = false;
   public masonryOptions: NgxMasonryOptions = {
     transitionDuration: '0s',
     itemSelector: '.story--grid',
@@ -88,6 +89,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
   public pendings = [];
   public haveResult: boolean;
   public searchedMembers = [];
+  public searchedResult: boolean;
+  public email = '';
+  public chips = [];
+  public isEmail = false;
   public activeTab = 'stories';
   public membersActiveTab = 'requests';
   public loading = true;
@@ -104,6 +109,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   deleteCover = '0';
   showInviteModal: boolean = false;
   publicationDesc: string;
+  temp = new Subject<any>();
 
   constructor(
     private accountService: AccountService,
@@ -118,24 +124,59 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buildSearchForm();
-    this.searchForm.controls['members'].valueChanges
-      .pipe(
-        debounceTime(750),
-        distinctUntilChanged(),
-        mergeMap(
-          res => {
-            if (res) {
-              return this.accountService.searchAccountByTerm(res);
-            }
+    this.getPublication();
+    this.temp.pipe(
+      filter((res) => res.length >= 3),
+      distinctUntilChanged(),
+      debounce((res) => {
+        if (ValidationService.isEmail(res)) {
+          this.email = res;
+          return timer(0);
+        }
+        return timer(750);
+      }),
+      mergeMap(
+        res => {
+          if (ValidationService.isEmail(res)) {
+            return of([]);
+          } else {
+            return this.accountService.searchAccountByTerm(res);
           }
-        ))
+        }
+      ),
+    )
       .subscribe(
         res => {
           this.searchedMembers = res;
+          this.searchedResult = true;
           this.haveResult = true;
         }
       );
-    this.getPublication();
+  }
+
+  enterTag(e) {
+    if (this.email) {
+      this.chips = [...this.chips, this.email];
+      this.email = '';
+      this.searchedResult = false;
+    }
+  }
+
+  removeChip(index) {
+    this.chips.splice(index, 1);
+  }
+
+  suggestionSelected(e) {
+  this.chips = [...this.chips, e];
+  this.searchedResult = false;
+  }
+
+  textChange(e) {
+    this.temp.next(e);
+  }
+
+  openPopup(flag: boolean) {
+    this.showModal = flag;
   }
 
   getPublication() {
@@ -153,7 +194,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((pub: Publication) => {
-        this.loading = false;
         this.publication = pub;
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
@@ -175,6 +215,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
               }
             }
           );
+        } else {
+          this.publicationForm.disable();
         }
         if (this.publication.logo) {
           this.logoData = {
@@ -205,19 +247,23 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   invite() {
-    const body = [{
-      publicKey: this.searchedMembers[0].publicKey,
-      email: this.searchedMembers[0].email,
-      asEditor: this.searchForm.value.status == '2'
-    }];
-    this.publicationService.inviteBecomeMember(body, this.publication.slug)
+    const memberArray = this.chips.map(
+      el => {
+        return {
+          email: el.publicKey ? null : el,
+          publicKey: el.publicKey ? el.publicKey : null,
+          asEditor: this.searchForm.value.status == '2'
+        };
+      }
+    );
+    this.publicationService.inviteBecomeMember(memberArray, this.publication.slug)
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
-        res => {
+        () => {
           this.showInviteModal = false;
-          // chiperic heto poxel
+          this.chips = [];
           this.getPublication();
         }
       );
@@ -237,13 +283,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     if (e.follow) {
       this.accountService.follow(user.publicKey).subscribe(
         res => {
-          // console.log(res);
+          user.subscribed = true;
         }
       );
     } else {
       this.accountService.unfollow(user.publicKey).subscribe(
         res => {
-          // console.log(res);
+          user.subscribed = false;
         }
       );
     }
@@ -274,15 +320,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
-  setEditMode(mode = true, title, description) {
+  setEditMode(mode = true) {
     this.activeTab = 'stories';
     this.editMode = mode;
     this.textChanging = false;
     this.editTitle = false;
     this.editDesc = false;
     if (!mode) {
-      title.innerHTML = this.publication.title;
-      description.innerHTML = this.publication.description;
       this.publicationForm.controls['title'].setValue(this.publication.title);
       this.publicationForm.controls['description'].setValue(this.publication.description);
       this.listType = this.publication.listView ? 'single' : 'grid';
@@ -328,6 +372,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: { data: Content[], more: boolean }) => {
+        this.loading = false;
         this.stories = data.data;
       });
   }
@@ -350,6 +395,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('deleteCover', this.deleteCover);
     formData.append('hideCover', this.publication.hideCover ? 'true' : '');
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
+    formData.append('tags', this.publication.tags.map((el: any) => el.name).join(','));
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug).subscribe(
       (result: Publication) => {
@@ -424,7 +470,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
       publicKey: member.publicKey,
       status: e.slug
     }).subscribe(
-      () => {}
+      () => { }
     );
   }
 
@@ -433,7 +479,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   onFollowChange(e) {
-   // console.log(e);
+    // console.log(e);
   }
 
   answerRequest(e, action, index) {
@@ -466,8 +512,9 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.publicationForm = this.formBuilder.group({
-      title: new FormControl(this.publication.title, []),
+      title: new FormControl(this.publication.title, [Validators.required]),
       description: new FormControl(this.publication.description, []),
+      tags: new FormControl(this.publication.tags, [])
     },
       { validator: ValidationService.noSpaceValidator }
     );
@@ -475,7 +522,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   private buildSearchForm() {
     this.searchForm = this.formBuilder.group({
-      status: new FormControl('', []),
+      status: new FormControl(null, [Validators.required]),
       members: new FormControl('', []),
     });
   }

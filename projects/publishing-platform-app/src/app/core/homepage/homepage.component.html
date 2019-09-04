@@ -20,25 +20,25 @@
             </div>
         </ng-container>
         <div class="col-lg-4 col-xl-3">
-            <div class="welcome-to-media" *ngIf="welcomeBlockVisible">
-                <i class="icon-close pointer" (click)="welcomeBlockVisible = false"></i>
-                <div class="welcome-to-media__heading">
-                    <div></div>
-                    <h4>Welcome to Media</h4>
-                </div>
-                <p>Become an early bird of the future media and get your share from our biggest <b>1,000,000</b> PBQ airdrop!</p>
-                <ui-input type="email" placeholder="Your email"></ui-input>
-                <ui-button className="button button--large" size="large" text="Sign up"></ui-button>
-            </div>
-            <div class="publications" *ngIf="publicationsList.length">
-                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="utilService.routerChangeHelper('publication',$event)"></ui-publication-list>
+<!--            <div class="welcome-to-media" *ngIf="welcomeBlockVisible">-->
+<!--                <i class="icon-close pointer" (click)="welcomeBlockVisible = false"></i>-->
+<!--                <div class="welcome-to-media__heading">-->
+<!--                    <div></div>-->
+<!--                    <h4>Welcome to Media</h4>-->
+<!--                </div>-->
+<!--                <p>Become an early bird of the future media and get your share from our biggest <b>1,000,000</b> PBQ airdrop!</p>-->
+<!--                <ui-input type="email" placeholder="Your email"></ui-input>-->
+<!--                <ui-button className="button button&#45;&#45;large" size="large" text="Sign up"></ui-button>-->
+<!--            </div>-->
+            <div class="publications" *ngIf="publicationsList && publicationsList.length">
+                <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="goPublicationPage($event)" (onFollow)="followPublication($event)"></ui-publication-list>
             </div>
             <div class="copyright-space">
                 <span class="copyright-space__text">© PUBLIQ – Decentralized Media</span>
-<!--                <div class="copyright-space__items">-->
-<!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'jp'}" (click)="useLang('jp')">JP</span>-->
-<!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'en'}" (click)="useLang('en')">EN</span>-->
-<!--                </div>-->
+                <!--                <div class="copyright-space__items">-->
+                <!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'jp'}" (click)="useLang('jp')">JP</span>-->
+                <!--                    <span class="copyright-space__items__item" [ngClass]="{'selected' : activeLanguage == 'en'}" (click)="useLang('en')">EN</span>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>

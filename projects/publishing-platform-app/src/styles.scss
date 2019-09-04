@@ -1794,3 +1794,20 @@ p.sponsored{
   padding: 0;
   position: absolute;
 }
+.not-found{
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  img{
+    width: 60px;
+  }
+  b{
+    font-size: 14px;
+  }
+  &.local{
+    min-height: 270px;
+  }
+}

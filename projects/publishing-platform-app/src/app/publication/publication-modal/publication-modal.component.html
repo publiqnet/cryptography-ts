@@ -6,7 +6,7 @@
 
         <!--create publication form-->
         <div *ngIf="modalType == 'create'">
-          <form class="create-form" novalidate [formGroup]="publicationForm">
+            <form class="create-form" novalidate [formGroup]="publicationForm">
                 <h3>Create New Publication</h3>
 
                 <span class="create-form__label">Name</span>
@@ -19,12 +19,12 @@
                 <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a tag…'" formControlName="tags"></ui-input>
                 <!--upload avatar-->
                 <div class="create-form__upload">
-                  <label class="create-form__upload__pic" for="publicationAvatar">
-                <input type="file" accept="image/jpeg,image/png" id="publicationAvatar" formControlName="logo" (change)="selectLogo($event)">
-                <span class="create-form__upload__pic__icon" *ngIf="!logoImage">
-                  <i class="icon icon-plus"></i>
-                </span>
-                <img class="uploaded-pic" *ngIf="logoImage" src="{{logoImage}}" alt="">
+                    <label class="create-form__upload__pic" for="publicationAvatar">
+              <input type="file" accept="image/jpeg,image/png" id="publicationAvatar" formControlName="logo" (change)="selectLogo($event)">
+              <span class="create-form__upload__pic__icon" *ngIf="!logoImage">
+                <i class="icon icon-plus"></i>
+              </span>
+              <img class="uploaded-pic" *ngIf="logoImage" src="{{logoImage}}" alt="">
             </label>
                     <span class="create-form__upload__text">
               <b *ngIf="!logoImage">Upload logo</b>
@@ -51,6 +51,7 @@
             <div class="create-form__button-space">
                 <ui-button [size]="'large'" [className]="'modal-button'" [text]="'Cancel'" (click)="closePopup()"></ui-button>
                 <ui-button [size]="'large'" [className]="'modal-button'" [type]="'primary'" [text]="'Create'" (click)="onSubmit()" [disabled]="loading"></ui-button>
+
             </div>
         </div>
 
