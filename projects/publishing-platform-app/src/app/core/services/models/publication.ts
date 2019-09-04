@@ -21,6 +21,8 @@ export interface PublicationOptions {
   membersCount: number;
   subscribersCount: number;
   tags: Array<string>;
+  storiesCount: number;
+  members: Array<Author>;
 }
 
 export class Publication {
@@ -43,12 +45,13 @@ export class Publication {
   listView: any;
   inviter: object;
   status: number = 0;
-  storiesCount: number;
+  storiesCount: number = 0;
   membersList: Array<object>;
   views: number = 0;
   membersCount: number = 0;
   subscribersCount: number = 0;
   tags: Array<string>;
+  members: Array<Author>;
   constructor(options?: PublicationOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {
@@ -62,13 +65,15 @@ export class Publication {
         } else if ( i == 'memberStatus') {
           this['status'] = options[i];
           this[i] = options[i];
-        } else if (['editors', 'contributors', 'requests', 'invitations', 'subscribers'].includes(i)) {
+        } else if (['editors', 'contributors', 'requests', 'invitations', 'subscribers', 'members'].includes(i)) {
           options[i] = options[i].map(
             el => new Author(el)
           );
           this[i] = options[i];
         } else if (['inviter', 'owner'].includes(i)) {
           this[i] = new Author(options[i]);
+        } else if (['storiesCount'].includes(i)) {
+          this[i] = options[i] ? options[i] : 0;
         } else {
           this[i] = options[i];
         }

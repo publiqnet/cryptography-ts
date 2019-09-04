@@ -41,8 +41,8 @@
 .search-people ::ng-deep .followers-card{
   margin-bottom: 25px;
 }
-.search-tabber{
-  ::ng-deep .button-tabber__background{
+::ng-deep .search-tabber{
+  .button-tabber__background{
     background-color: black;
   }
 }

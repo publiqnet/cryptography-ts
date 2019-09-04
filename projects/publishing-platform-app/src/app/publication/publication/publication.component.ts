@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter, delay, debounce } from 'rxjs/operators';
-import { Params, ActivatedRoute } from '@angular/router';
+import { Params, ActivatedRoute, Router } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
 import { ReplaySubject, Observable, observable, fromEvent, of, Subject, timer } from 'rxjs';
 import { AccountService } from '../../core/services/account.service';
@@ -118,6 +118,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     public utilService: UtilService,
     private formBuilder: FormBuilder,
     public uiNotificationService: UiNotificationService,
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
@@ -167,8 +168,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   suggestionSelected(e) {
-  this.chips = [...this.chips, e];
-  this.searchedResult = false;
+    this.chips = [...this.chips, e];
+    this.searchedResult = false;
   }
 
   textChange(e) {
@@ -198,7 +199,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
-        if (this.isMyPublication) {
+        if (this.isMyPublication || this.publication.memberStatus == 2) {
           this.requests = this.publication.requests;
           this.pendings = this.publication.invitations;
           this.subscribers = this.publication.subscribers;
@@ -479,7 +480,12 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   onFollowChange(e) {
-    // console.log(e);
+    const followType = e.isFollowing ? this.accountService.follow(e.user.publicKey) : this.accountService.unfollow(e.user.publicKey);
+    followType.subscribe(
+      () => {
+        e.user.subscribed = e.isFollowing;
+      }
+    );
   }
 
   answerRequest(e, action, index) {
@@ -510,6 +516,14 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
+  deletePublication() {
+    this.publicationService.deletePublication(this.publication.slug).subscribe(
+      () => {
+        this.router.navigate(['/p/my-publications']);
+      }
+    );
+  }
+
   private buildForm() {
     this.publicationForm = this.formBuilder.group({
       title: new FormControl(this.publication.title, [Validators.required]),
@@ -528,10 +542,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.articlesLoaded = false;
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
-    }
+    this.articlesLoaded = false;
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
