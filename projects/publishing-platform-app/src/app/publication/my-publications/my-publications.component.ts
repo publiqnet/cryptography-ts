@@ -41,6 +41,10 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.invitations = data.invitations;
     this.requests = data.requests;
     this.publications = this.myPublications.concat(this.membership);
+    this.publications = this.publications.map((el: any) => {
+      el.membersList = el.members;
+      return el;
+    });
   }
 
   ngOnInit() {
