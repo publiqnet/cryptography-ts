@@ -10,7 +10,7 @@ import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
 import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
-import { IPublications, Publications } from '../../core/services/models/publications';
+import { Publications } from '../../core/services/models/publications';
 
 declare const $: any;
 
@@ -231,7 +231,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.contentOptions = {
       key: environment.froala_editor_key,
       toolbarInline: true,
-      toolbarButtons: ['bold', 'italic', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
+      toolbarButtons: ['bold', 'italic', 'title', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
       language: (this.accountService.accountInfo && this.accountService.accountInfo.language == 'jp') ? 'ja' : 'en_us',
       dragInline: false,
       pastePlain: true,
@@ -246,9 +246,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
         H3: 'H3',
         H4: 'H4'
       },
-      // fontSizeDefaultSelection: '40',
-      // fontSize: '40',
-      // fontSizeUnit: 'px',
       listAdvancedTypes: false,
       linkText: false,
       linkInsertButtons: ['linkBack'],
@@ -311,6 +308,37 @@ export class NewContentComponent implements OnInit, OnDestroy {
         }
       }
     };
+
+    this.addCustomButton();
+  }
+
+  addCustomButton () {
+    $.FroalaEditor.DefineIcon('title', {NAME: 'T', template: 'text'});
+    $.FroalaEditor.RegisterCommand('title', {
+      title: 'Title',
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback: () => {
+        const selectedText = this.editorContentObject.html.getSelected().replace(/<\/?[^>]+(>|$)/g, '');
+        if ($(this.editorContentObject.html.getSelected()).attr('data-title')) {
+          this.editorContentObject.html.insert('<p>' + selectedText + '</p>', true);
+        } else {
+          const index = '_' + Math.random().toString(36).substr(2, 9);
+          const firstTag = '<h1 data-title="true" data-index="' + index + '">';
+          const lastTag = '</h1>';
+          this.editorContentObject.html.insert(firstTag + selectedText + lastTag, true);
+          const contentBlocks = this.editorContentObject.html.blocks();
+          contentBlocks.forEach((node) => {
+            const nodeHtml = $.trim(node.innerHTML);
+            if (node.hasAttribute('data-title') && node.hasAttribute('data-index') && node.getAttribute('data-index') != index) {
+              $(node).replaceWith('<p>' + nodeHtml + '</p>');
+            }
+          });
+        }
+        this.editorContentObject.toolbar.hide();
+      }
+    });
   }
 
   initSubmitFormView() {
