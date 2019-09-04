@@ -15,7 +15,7 @@
 
           <!--!!!!! not in default-->
           <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
-          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length">
+          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length && searchResult.article">
             <div *ngFor="let articleItem of searchResult.article">
               <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem"
                                  (accountClick)="onAccountClick($event)"
@@ -24,27 +24,27 @@
                                  (tagClick)="onTagClick($event)" ></ui-content-single>
             </div>
           </div>
-          <div class="not-found" *ngIf="activeTab === 'stories' || activeTab === 'all' && !searchResult.article.length">
+          <div class="not-found" *ngIf="activeTab === 'stories' || activeTab === 'all' && !searchResult.article && !searchResult.article.length">
             <img src="assets/images/no_story.svg" alt="No story">
           </div>
 
           <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
-          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication.length">
+          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication && searchResult.publication.length">
             <div  *ngFor="let publicationItem of searchResult.publication">
               <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem"></ui-publication-single>
             </div>
           </div>
-          <div class="not-found" *ngIf="activeTab === 'publications' || activeTab === 'all' && !searchResult.publication.length">
+          <div class="not-found" *ngIf="activeTab === 'publications' || activeTab === 'all' && !searchResult.publication && !searchResult.publication.length">
             <img src="assets/images/no_publications.svg" alt="No publication">
           </div>
 
           <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
-          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length">
+          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length && searchResult.authors">
             <div class="search-people"  *ngFor="let authorItem of searchResult.authors">
               <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem}"></ui-user-single>
             </div>
           </div>
-          <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors.length">
+          <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors && !searchResult.authors.length">
             <img src="assets/images/no_people.svg" alt="No author">
           </div>
 
