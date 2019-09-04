@@ -26,6 +26,7 @@ export class Content {
     contentId: any;
     files: [];
     published: string;
+    views: number = 0;
     author: Author;
     image: string;
     tags = [
@@ -33,7 +34,7 @@ export class Content {
         'DEVELOPER',
         'FULLSTACK'
     ];
-    view_count = '1K';
+    view_count: number = 0;
     publication = null;
 
     constructor(options?: ContentOptions) {
@@ -43,6 +44,9 @@ export class Content {
                     this[i] = new Author(options[i]);
                 } else if (i == 'cover' && options[i] && options[i].url) {
                     this.image = options[i].url;
+                } else if (i == 'views' && options[i]) {
+                    this.views = options[i];
+                    this.view_count = this.views;
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }
