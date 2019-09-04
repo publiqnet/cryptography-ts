@@ -45,7 +45,6 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
       el.membersList = el.members;
       return el;
     });
-    console.log(this.publications);
   }
 
   ngOnInit() {
