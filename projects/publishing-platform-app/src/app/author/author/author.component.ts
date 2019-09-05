@@ -20,6 +20,11 @@ import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { style } from '@angular/animations';
 
+enum ModalConfirmActions {
+  DeleteOne,
+  DeleteAll
+}
+
 @Component({
   selector: 'app-author',
   templateUrl: './author.component.html',
@@ -107,6 +112,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
   bio: string;
   photo: File;
   editMode: boolean = false;
+
+  showModal: boolean = false;
+  modalProps: any = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -333,17 +341,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   deleteDraft(id: number, index: number) {
-    this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        switchMap(() => this.draftService.delete(id)),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        if (this.drafts && index in this.drafts) {
-          this.drafts.splice(index, 1);
-        }
-      });
+    this.modalProps = {action: ModalConfirmActions.DeleteOne.toString(), slug: id, index};
+    this.showModal = !this.showModal;
   }
 
   editDraft(id: string) {
@@ -351,17 +350,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   deleteAllDrafts() {
-    this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        tap(() => this.loading = true),
-        switchMap(() => this.draftService.deleteAll()),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        this.drafts = [];
-        this.loading = false;
-      });
+    this.modalProps = {action: ModalConfirmActions.DeleteAll.toString()};
+    this.showModal = !this.showModal;
   }
 
   onLayoutComplete(event) {
@@ -443,6 +433,38 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.editBioIcon = false;
         this.showEditModeIcons = false;
       });
+  }
+
+  doDelete(data) {
+    if (!data.answer) {
+      this.showModal = !this.showModal;
+      return;
+    }
+    if (data.properties.action == ModalConfirmActions.DeleteOne.toString()) {
+      this.doDeleteOne(data.properties);
+    } else {
+      this.doDeleteAll(data.properties);
+    }
+    this.showModal = !this.showModal;
+  }
+
+  private doDeleteOne(props) {
+    this.draftService.delete(props['slug'])
+        .pipe(takeUntil(this.unsubscribe$))
+          .subscribe(() => {
+          if (this.drafts && props['index'] in this.drafts) {
+            this.drafts.splice(props['index'], 1);
+          }});
+  }
+
+  private doDeleteAll(props) {
+    this.loading = true;
+    this.draftService.deleteAll()
+        .pipe(takeUntil(this.unsubscribe$))
+          .subscribe(() => {
+            this.drafts = [];
+            this.loading = false;
+          });
   }
 
   ngOnDestroy() {

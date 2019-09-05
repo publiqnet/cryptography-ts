@@ -97,11 +97,7 @@ export class PublicationService {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', { dsId: dsId });
   }
 
-  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug).pipe(
-    tap(() => {
-      this.observers['getMyPublications'].refresh = true;
-    })
-  )
+  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug);
 
   requestBecomeMember = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
 

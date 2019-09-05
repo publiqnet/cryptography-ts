@@ -534,14 +534,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     );
   }
 
-  deletePublication() {
-    this.publicationService.deletePublication(this.publication.slug).subscribe(
-      () => {
-        this.router.navigate(['/p/my-publications']);
-      }
-    );
-  }
-
   private buildForm() {
     this.publicationForm = this.formBuilder.group({
       title: new FormControl(this.publication.title, [Validators.required]),

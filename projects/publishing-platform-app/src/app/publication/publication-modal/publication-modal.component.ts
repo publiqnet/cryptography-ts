@@ -108,59 +108,54 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
   }
 
   selectCover(e) {
-    if (e) {
-      const reader = new FileReader();
-      const file = e[0];
-      if (!this.validateFile(file, 2000000)) {
-        e.target.value = '';
-        this.notificationService.error('Maximum file size 1 mb', '');
-        return;
-      }
+    const reader = new FileReader();
+    const file = e.target.files[0];
 
-      reader.addEventListener(
-        'load',
-        () => {
-          this.coverImage = reader.result;
-          this.coverFile = file;
-        },
-        false
-      );
-      reader.readAsDataURL(file);
-    } else {
-      this.removeCover();
+    if (!this.validateFile(file, 2000000)) {
+      e.target.value = '';
+      this.notificationService.error('Maximum file size 1 mb', '');
+      return;
     }
+
+    reader.addEventListener(
+      'load',
+      () => {
+        this.coverImage = reader.result;
+        this.coverFile = file;
+      },
+      false
+    );
+    reader.readAsDataURL(file);
   }
 
   selectLogo(e) {
-    if (e) {
-      const reader = new FileReader();
-      const file = e[0];
-      if (!this.validateFile(file, 1000000)) {
-        e.target.value = '';
-        this.notificationService.error('Maximum file size 1 mb', '');
-        return;
-      }
-      reader.addEventListener(
-        'load',
-        () => {
-          this.logoImage = reader.result;
-          this.logoFile = file;
-        },
-        false
-      );
-      reader.readAsDataURL(file);
-    } else {
-      this.removeLogo();
+    const reader = new FileReader();
+    const file = e.target.files[0];
+
+    if (!this.validateFile(file, 1000000)) {
+      e.target.value = '';
+      this.notificationService.error('Maximum file size 1 mb', '');
+      return;
     }
+
+    reader.addEventListener(
+      'load',
+      () => {
+        this.logoImage = reader.result;
+        this.logoFile = file;
+      },
+      false
+    );
+    reader.readAsDataURL(file);
   }
 
-  removeCover() {
+  removeCover(coverInput) {
     this.coverImage = null;
     this.coverFile = null;
     this.publicationForm.controls['cover'].reset();
   }
 
-  removeLogo() {
+  removeLogo(logoInput) {
     this.logoImage = null;
     this.logoFile = null;
     this.publicationForm.controls['logo'].reset();
@@ -191,7 +186,7 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
       title: new FormControl('', [ValidationService.required, Validators.maxLength(this.titleMaxLenght)]),
       cover: new FormControl(),
       logo: new FormControl(),
-      tags: new FormControl([])
+      tags: new FormControl('')
     });
   }
 

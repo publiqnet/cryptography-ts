@@ -68,15 +68,14 @@
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
                     <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
-                    <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
-                            <i class="icon icon-delete"></i>
-                        </span>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
                 </ng-container>
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
             <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
-
+            <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
+                <i class="icon icon-delete"></i>
+            </span>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -134,7 +133,7 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="activeTab === 'stories' || (!isMyPublication && publication && publication.memberStatus !== 2)" [class.editable-disabled]="editMode">
+    <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
@@ -214,7 +213,7 @@
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
-            <ui-user-single type="followers" [userData]="{user: follower, isFollowing: follower.subscribed}" (onUserClick)="onUserClick($event)" (onFollowChange)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
         <div class="not-found local" *ngIf="!subscribers.length">
             <img src="../../../assets/no_followers.svg" alt="">
@@ -222,15 +221,19 @@
         </div>
     </div>
 </div>
-<div class="modal-overlay--custom" [ngClass]="{'open' : showModal}">
-    <div class="custom-modal">
-        <span class="custom-modal__close" (click)="openPopup(false)">
-      <i class="icon icon-close"></i>
-    </span>
-        <h3>Are you sure you want to delete publication?</h3>
-        <div class="custom-modal__buttons">
-            <ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>
-            <ui-button [text]="'Delete'" (btnClicked)="deletePublication()" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
-        </div>
-    </div>
+
+<div *ngIf="showModal">
+  <app-confirm-modal (closeConfirmModal)="openPopup(false)"></app-confirm-modal>
 </div>
+<!--<div class="modal-overlay&#45;&#45;custom">-->
+    <!--<div class="custom-modal">-->
+        <!--<span class="custom-modal__close" (click)="openPopup(false)">-->
+      <!--<i class="icon icon-close"></i>-->
+    <!--</span>-->
+        <!--<h3>Are you sure you want to delete publication?</h3>-->
+        <!--<div class="custom-modal__buttons">-->
+            <!--<ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>-->
+            <!--<ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
