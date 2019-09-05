@@ -9,14 +9,13 @@ export class ConfirmModalComponent implements OnInit {
   @Output() closeConfirmModal = new EventEmitter<any>();
   @Input('properties') properties: any;
 
-   title: string;
-
-  closeModal(answer: boolean) {
-    answer ? this.closeConfirmModal.emit({answer, properties: this.properties}) : this.closeConfirmModal.emit({answer});
-  }
+  public title: string;
 
   ngOnInit(): void {
     this.title = this.properties.title ? this.properties.title : 'Are you sure you want to proceed?';
   }
 
+  closeModal(answer: boolean) {
+    answer ? this.closeConfirmModal.emit({answer, properties: this.properties}) : this.closeConfirmModal.emit({answer});
+  }
 }

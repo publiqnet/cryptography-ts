@@ -5,8 +5,7 @@
         <div class="post-field">
           <!--content-->
           <div id="editor-froala">
-            <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required
-                      (froalaInit)="initFroala($event)"></textarea>
+            <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
           </div>
         </div>
 
@@ -81,7 +80,7 @@
           <ui-input className="add-tag-input"></ui-input>
 
           <span class="add-tag__label">Add to Publication</span>
-          <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList" [optionsData]="publicationsList" [type]="'withIcon'"></ui-dropdown>
+          <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList.length" [optionsData]="publicationsList" [type]="'withIcon'" [selectedOptionValue]="selectedPublication"></ui-dropdown>
           <!--for mobile-->
           <!--FOR ADDING OR CHANGING COVER PIC -->
           <ng-container *ngIf="(!boostField || boostView == 'preview')">
