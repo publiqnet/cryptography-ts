@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { forkJoin, of, ReplaySubject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -33,15 +33,12 @@ export class EditContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private titleObject;
-  private editorTitleInitObject;
   private editorTitleObject;
   public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
   title: string;
-  titleOptions: object;
   contentOptions: object;
   public publicationsList = [];
   public currentContentData = {};
@@ -121,22 +118,33 @@ export class EditContentComponent implements OnInit, OnDestroy {
 
   initContentData() {
     this.contentId = +this.content.contentId;
-    this.editorTitleObject.html.set(this.titleText);
     this.editorContentObject.html.set(this.content.text);
     this.content.files.forEach((file) => {
       this.contentUris[file['uri']] = file['url'];
     });
-    console.log(this.content);
+
+    const contentBlocks = this.editorContentObject.html.blocks();
+    contentBlocks.forEach((node) => {
+      const nodeHtml = $.trim(node.innerHTML);
+      if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/) && nodeHtml == this.titleText) {
+        const index = '_' + Math.random().toString(36).substr(2, 9);
+        const firstTag = '<h1 data-title="true" data-index="' + index + '">';
+        const lastTag = '</h1>';
+        this.titleText = nodeHtml;
+        $(node).replaceWith(firstTag + nodeHtml + lastTag);
+      }
+    });
+    this.initSubmitFormView();
     this.contentLoaded = true;
   }
 
   private buildForm(): void {
     this.contentForm = this.formBuilder.group({
-      title: new FormControl(this.title, [
-        Validators.required,
-        Validators.maxLength(this.titleMaxLenght),
-        ValidationService.noWhitespaceValidator
-      ]),
+      // title: new FormControl(this.title, [
+      //   Validators.required,
+      //   Validators.maxLength(this.titleMaxLenght),
+      //   ValidationService.noWhitespaceValidator
+      // ]),
       // tags: new FormControl(this.tags, [Validators.required]),
       content: new FormControl(this.content, [
         Validators.required,
@@ -208,87 +216,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.titleOptions = {
-      key: environment.froala_editor_key,
-      toolbarInline: true,
-      toolbarButtons: ['bold', 'italic', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
-      language: (this.accountService.accountInfo && this.accountService.accountInfo.language == 'jp') ? 'ja' : 'en_us',
-      dragInline: false,
-      pastePlain: true,
-      imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
-      videoEditButtons: [],
-      quickInsertButtons: ['image', 'video'],
-      imageUpload: true,
-      imageUploadMethod: 'POST',
-      paragraphFormat: {
-        N: 'Normal',
-        H2: 'H2',
-        H3: 'H3',
-        H4: 'H4'
-      },
-      listAdvancedTypes: false,
-      linkText: false,
-      linkInsertButtons: ['linkBack'],
-      imageUploadURL: this.contentUrl,
-      videoAllowedTypes: ['mp4', 'webm', 'ogg'],
-      imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
-      charCounterMax: 65535,
-      charCounterCount: false,
-      lineBreakerTags: ['table', 'hr', 'form'],
-      linkAlwaysBlank: true,
-      imageMaxSize: 5 * 1024 * 1024, // 5MB
-      pasteDeniedAttrs: ['class', 'id', 'style', 'srcset'],
-      imageResize: false,
-      imageEditButtons: ['imageCaption'],
-      imagePasteProcess: true,
-      imageDefaultWidth: null,
-      requestHeaders: {
-        'X-API-TOKEN': (this.accountService.accountInfo && this.accountService.accountInfo.token)
-          ? this.accountService.accountInfo.token
-          : ''
-      },
-      events: {
-        'froalaEditor.initialized': (e, editor) => {
-          this.titleObject = e;
-          this.editorTitleObject = editor;
-        },
-        'froalaEditor.html.set': function (e, editor) {
-          editor.events.trigger('charCounter.update');
-        },
-        'froalaEditor.contentChanged': (e, editor) => {
-          // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
-        },
-        'froalaEditor.image.inserted': (e, editor, img, response) => {
-          if (response) {
-            const responseData = JSON.parse(response);
-            this.contentUris[responseData.uri] = responseData.link;
-            const uploadedImage = responseData.content_original_sample_file;
-
-            if (img && img.get(0).height) {
-              $(img).attr('height', img.get(0).height);
-            }
-
-            if (img && img.get(0).width) {
-              $(img).attr('width', img.get(0).width);
-            }
-
-            $(img).closest('p').find('br:first').remove();
-            $(img).closest('p').after('<p data-empty="true"><br></p>');
-          }
-        },
-        'froalaEditor.image.error': (e, editor, error, response) => {
-        },
-        'froalaEditor.video.inserted': function (e, editor, $video) {
-          $video.closest('p').find('br:last').remove();
-          $video.closest('p').after('<p data-empty="true"><br></p>');
-        }
-      }
-    };
-
     this.contentOptions = {
       key: environment.froala_editor_key,
       toolbarInline: true,
-      toolbarButtons: ['bold', 'italic', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
+      toolbarButtons: ['bold', 'italic', 'title', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
       language: (this.accountService.accountInfo && this.accountService.accountInfo.language == 'jp') ? 'ja' : 'en_us',
       dragInline: false,
       pastePlain: true,
@@ -303,9 +234,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
         H3: 'H3',
         H4: 'H4'
       },
-      // fontSizeDefaultSelection: '40',
-      // fontSize: '40',
-      // fontSizeUnit: 'px',
       listAdvancedTypes: false,
       linkText: false,
       linkInsertButtons: ['linkBack'],
@@ -335,8 +263,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
         'froalaEditor.html.set': function (e, editor) {
           editor.events.trigger('charCounter.update');
         },
-        'froalaEditor.contentChanged': (e, editor) => {
-          // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
+        'froalaEditor.keyup': (e, editor, keyupEvent) => {
+          if (keyupEvent.which == 13 && !this.titleText && this.editorContentObject) {
+            this.setDefaultTitle();
+          }
         },
         'froalaEditor.image.inserted': (e, editor, img, response) => {
           if (response) {
@@ -368,6 +298,51 @@ export class EditContentComponent implements OnInit, OnDestroy {
         }
       }
     };
+
+    this.addCustomButton();
+  }
+
+  setDefaultTitle() {
+    const contentBlocks = this.editorContentObject.html.blocks();
+    contentBlocks.forEach((node) => {
+      const nodeHtml = $.trim(node.innerHTML);
+      if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/) && !this.titleText) {
+        const index = '_' + Math.random().toString(36).substr(2, 9);
+        const firstTag = '<h1 data-title="true" data-index="' + index + '">';
+        const lastTag = '</h1>';
+        this.titleText = nodeHtml;
+        $(node).replaceWith(firstTag + nodeHtml + lastTag);
+      }
+    });
+  }
+
+  addCustomButton () {
+    $.FroalaEditor.DefineIcon('title', {NAME: 'T', template: 'text'});
+    $.FroalaEditor.RegisterCommand('title', {
+      title: 'Title',
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback: () => {
+        const selectedText = this.editorContentObject.html.getSelected().replace(/<\/?[^>]+(>|$)/g, '');
+        if ($(this.editorContentObject.html.getSelected()).attr('data-title')) {
+          this.editorContentObject.html.insert('<p>' + selectedText + '</p>', true);
+        } else {
+          const index = '_' + Math.random().toString(36).substr(2, 9);
+          const firstTag = '<h1 data-title="true" data-index="' + index + '">';
+          const lastTag = '</h1>';
+          this.editorContentObject.html.insert(firstTag + selectedText + lastTag, true);
+          const contentBlocks = this.editorContentObject.html.blocks();
+          contentBlocks.forEach((node) => {
+            const nodeHtml = $.trim(node.innerHTML);
+            if (node.hasAttribute('data-title') && node.hasAttribute('data-index') && node.getAttribute('data-index') != index) {
+              $(node).replaceWith('<p>' + nodeHtml + '</p>');
+            }
+          });
+        }
+        this.editorContentObject.toolbar.hide();
+      }
+    });
   }
 
   initSubmitFormView() {
@@ -376,11 +351,11 @@ export class EditContentComponent implements OnInit, OnDestroy {
     this.titleText = '';
     this.mainCoverImageUrl = '';
     this.mainCoverImageUri = '';
-    if (this.editorTitleObject) {
-      const titleBlocks = this.editorTitleObject.html.blocks();
-      titleBlocks.forEach((node) => {
+    if (this.editorContentObject) {
+      const contentBlocks = this.editorContentObject.html.blocks();
+      contentBlocks.forEach((node) => {
         const nodeHtml = $.trim(node.innerHTML);
-        if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
+        if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/) && node.hasAttribute('data-title') && node.hasAttribute('data-index')) {
           if (this.titleText == '') {
             this.titleText = nodeHtml;
           }
@@ -465,14 +440,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
     }
   }
 
-  initTitleFroala($event) {
-    this.editorTitleInitObject = $event;
-    this.editorTitleInitObject.initialize();
-    setTimeout(() => {
-      this.editorTitleObject.$placeholder[0].textContent = this.translateService.instant('content.title');
-    }, 20);
-  }
-
   initFroala($event) {
     this.editorContentInitObject = $event;
     this.editorContentInitObject.initialize();
@@ -482,7 +449,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   onShowStepForm(flag: boolean) {
-    console.log('ttttttt');
     if (flag && this.showStoryForm == true) {
       this.changeStep();
     } else {
@@ -518,8 +484,9 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if (!this.contentForm.value.content) {
+    if (!this.contentForm.value.content || !this.titleText) {
       this.submitError = true;
+      console.log('not valid content');
       return false;
     }
     const password = this.contentForm.value.password;
@@ -528,14 +495,13 @@ export class EditContentComponent implements OnInit, OnDestroy {
     const contentBlocks = this.editorContentObject.html.blocks();
     const calls = [];
 
-    const titleBlocks = this.editorTitleObject.html.blocks();
-    const allContentBlocks = [...titleBlocks, ...contentBlocks];
-
-    allContentBlocks.forEach((node) => {
+    contentBlocks.forEach((node) => {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
           calls.push(this.contentService.uploadTextFiles(nodeHtml));
+        } else {
+          calls.push(of(nodeHtml));
         }
       } else if (nodeHtml.match(/<img/)) {
         let outerText = node.outerHTML;
@@ -552,47 +518,47 @@ export class EditContentComponent implements OnInit, OnDestroy {
     });
 
     forkJoin(calls).subscribe((data: any) => {
-      if (data.length) {
-        data.forEach((nextResult) => {
-          if (nextResult['uri']) {
-            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
-            this.contentUris[nextResult['uri']] = nextResult['link'];
-          } else {
-            uploadedContentHtml += nextResult;
-          }
-        });
-      }
-
-      let contentData = `${contentTitle} ${uploadedContentHtml}`;
-      if (this.mainCoverImageUri && this.mainCoverImageUrl) {
-        this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
-        const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
-        contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
-      }
-
-      this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
-
-      if (Object.keys(this.contentUris).length) {
-        this.contentService.signFiles(Object.keys(this.contentUris), password)
-          .pipe(
-            switchMap((data: any) => {
-              return this.submitContent(contentData, password);
-            }),
-            switchMap((data: any) => {
-              return (this.boostField) ? this.contentService.contentBoost(this.uploadedContentUri, this.boostPrice, this.boostDays, password) : of(data);
-            })
-          ).subscribe(data => {
-            this.afterContentSubmit();
-          },
-          error => {
-            this.submitError = true;
-            console.log('error 1 - ', error);
+        if (data.length) {
+          data.forEach((nextResult) => {
+            if (nextResult['uri']) {
+              uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+              this.contentUris[nextResult['uri']] = nextResult['link'];
+            } else {
+              uploadedContentHtml += nextResult;
+            }
           });
-      }
-    },
-    error => {
-      console.log('error 2 - ', error);
-    });
+        }
+
+        let contentData = `${contentTitle} ${uploadedContentHtml}`;
+        if (this.mainCoverImageUri && this.mainCoverImageUrl) {
+          this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
+          const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+          contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
+        }
+
+        this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
+
+        if (Object.keys(this.contentUris).length) {
+          this.contentService.signFiles(Object.keys(this.contentUris), password)
+            .pipe(
+              switchMap((data: any) => {
+                return this.submitContent(contentData, password);
+              }),
+              switchMap((data: any) => {
+                return (this.boostField) ? this.contentService.contentBoost(this.uploadedContentUri, this.boostPrice, this.boostDays, password) : of(data);
+              })
+            ).subscribe(data => {
+              this.afterContentSubmit();
+            },
+            error => {
+              this.submitError = true;
+              console.log('error 1 - ', error);
+            });
+        }
+      },
+      error => {
+        console.log('error 2 - ', error);
+      });
   }
 
   afterContentSubmit() {
