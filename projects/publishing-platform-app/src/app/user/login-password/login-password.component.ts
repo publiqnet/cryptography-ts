@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
@@ -11,6 +11,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { NotificationService } from '../../core/services/notification.service';
 import { OauthService } from 'helper-lib';
+import { isPlatformBrowser } from '@angular/common';
+import { UtilService } from '../../core/services/util.service';
 
 @Component({
   selector: 'app-login-password',
@@ -34,7 +36,8 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
     public oauthService: OauthService,
     private errorService: ErrorService,
     public notificationService: NotificationService,
-    public t: TranslateService
+    public t: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
   }
 
@@ -63,12 +66,12 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: ErrorEvent) => {
-          if (data.action === 'loadConfirm') {
-            this.router.navigate(['/page-not-found']);
-          } else if (data.action === 'login' || data.action === 'authenticate') {
-            this.loginError = this.errorService.getError('password_error');
-          }
+        if (data.action === 'loadConfirm') {
+          this.router.navigate(['/page-not-found']);
+        } else if (data.action === 'login' || data.action === 'authenticate') {
+          this.loginError = this.errorService.getError('password_error');
         }
+      }
       );
 
     this.configForm.valueChanges.subscribe(newValues => this.loginError = '');
@@ -80,10 +83,10 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.configForm = this.formBuilder.group({
-        password: new FormControl('', [
-          Validators.required
-        ])
-      }
+      password: new FormControl('', [
+        Validators.required
+      ])
+    }
     );
   }
 
@@ -94,13 +97,20 @@ export class LoginPasswordComponent implements OnInit, OnDestroy {
         switchMap((data: any) => this.accountService.accountAuthenticate(data.token)),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(authData => {
-        this.router.navigate(['/']);
+      .subscribe(() => {
+        if (isPlatformBrowser(this.platformId) && UtilService.getCookie('redirectUrl')) {
+          const redirectUrl = UtilService.getCookie('redirectUrl');
+          this.router.navigate([redirectUrl]);
+          UtilService.removeCookie('redirectUrl');
+        } else {
+          this.router.navigate(['/']);
+        }
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('login', err);
       });
   }
+
 
   ngOnDestroy() {
     this.unsubscribe$.next();
