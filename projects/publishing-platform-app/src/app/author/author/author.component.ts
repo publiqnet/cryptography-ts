@@ -65,6 +65,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
   loadingAuthor = true;
   avatarUrl: string;
   canFollow = true;
+  showPrivateKey: boolean = false;
+  showPhase: boolean = false;
+  showModal: boolean = false;
+
   isCurrentUser = false;
   articlesLoaded = false;
   editTitleIcon: boolean = false;
@@ -95,10 +99,16 @@ export class AuthorComponent implements OnInit, OnDestroy {
     },
     {
       'value': '3',
-      'text': 'Settings',
+      'text': 'Edit stories',
+      'active': false
+    },
+    {
+      'value': '4',
+      'text': 'Security',
       'active': false
     }
   ];
+  types = [1, 2, 3];
   author: Account;
   currentImage: string;
   fullName: string;
@@ -364,6 +374,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
+  testing(event) {
+    console.log(event);
+  }
+
   onLayoutComplete(event) {
     if (event && event.length > 1) {
       this.isMasonryLoaded = true;
@@ -443,6 +457,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.editBioIcon = false;
         this.showEditModeIcons = false;
       });
+  }
+
+  openPopup(flag: boolean, type?: number) {
+    this.showModal = flag;
+    if (type == 1) {
+      this.showPrivateKey = true;
+    } else if (type == 2) {
+      this.showPhase = true;
+    }
   }
 
   ngOnDestroy() {
