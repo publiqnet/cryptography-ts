@@ -138,6 +138,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           value: 'logout'
         },
       ],
+      notificationData: [],
     };
   }
 
