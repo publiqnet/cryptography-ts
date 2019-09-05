@@ -343,19 +343,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   deleteDraft(id: number, index: number) {
     this.modalProps = {action: ModalConfirmActions.DeleteOne.toString(), slug: id, index};
     this.showModal = !this.showModal;
-
-
-    /*this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        switchMap(() => this.draftService.delete(id)),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        if (this.drafts && index in this.drafts) {
-          this.drafts.splice(index, 1);
-        }
-      });*/
   }
 
   editDraft(id: string) {
@@ -365,17 +352,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   deleteAllDrafts() {
     this.modalProps = {action: ModalConfirmActions.DeleteAll.toString()};
     this.showModal = !this.showModal;
-    /*this.dialogService.openConfirmDialog('')
-      .pipe(
-        filter(result => result),
-        tap(() => this.loading = true),
-        switchMap(() => this.draftService.deleteAll()),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        this.drafts = [];
-        this.loading = false;
-      });*/
   }
 
   onLayoutComplete(event) {
@@ -459,31 +435,23 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.articlesLoaded = false;
-      this.isCurrentUser = false;
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
-    }
-  }
-
   doDelete(data) {
     if (!data.answer) {
       this.showModal = !this.showModal;
       return;
     }
     if (data.properties.action == ModalConfirmActions.DeleteOne.toString()) {
-        this.doDeleteOne(data.properties);
+      this.doDeleteOne(data.properties);
     } else {
-        this.doDeleteAll(data.properties);
+      this.doDeleteAll(data.properties);
     }
     this.showModal = !this.showModal;
   }
 
   private doDeleteOne(props) {
     this.draftService.delete(props['slug'])
-        .subscribe(() => {
+        .pipe(takeUntil(this.unsubscribe$))
+          .subscribe(() => {
           if (this.drafts && props['index'] in this.drafts) {
             this.drafts.splice(props['index'], 1);
           }});
@@ -492,9 +460,19 @@ export class AuthorComponent implements OnInit, OnDestroy {
   private doDeleteAll(props) {
     this.loading = true;
     this.draftService.deleteAll()
-        .subscribe(() => {
-          this.drafts = [];
-          this.loading = false;
-        });
+        .pipe(takeUntil(this.unsubscribe$))
+          .subscribe(() => {
+            this.drafts = [];
+            this.loading = false;
+          });
+  }
+
+  ngOnDestroy() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.articlesLoaded = false;
+      this.isCurrentUser = false;
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
   }
 }
