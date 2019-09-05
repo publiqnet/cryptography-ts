@@ -2,9 +2,11 @@
     <mat-spinner></mat-spinner>
 </div>
 <div class="container" *ngIf="!loading">
-    <div class="row publication-cover publication-cover--editable" *ngIf="publication && !publication.hideCover" [ngStyle]="{'background-image': publication && publication.cover ? 'url('+publication.cover+')' : 'none'}" #coverContainer>
+    <div class="row publication-cover publication-cover--editable" [ngClass]="{'publication-cover--editable--no-img' : !publication.cover}" *ngIf="publication && !publication.hideCover" #coverContainer>
         <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
-        <div class="col-lg-8 offset-lg-2">
+      <img class="publication-cover-blured" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
+      <img class="publication-cover-visible" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
+      <div class="col-lg-8 offset-lg-2">
             <div class="publication-cover__guide" *ngIf="publication && !publication.cover && isMyPublication">
                 <div class="icon-profile upload-icon"></div>
                 <div class="publication-cover__guide__texts">
@@ -66,14 +68,15 @@
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
                     <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
+                    <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
+                            <i class="icon icon-delete"></i>
+                        </span>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
                 </ng-container>
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
             <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
-            <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
-                <i class="icon icon-delete"></i>
-            </span>
+
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -111,26 +114,19 @@
         <div class="col-12 col-lg-8 offset-lg-2" *ngIf="editMode">
             <div class="grid-style grid-style--custom">
                 <div class="grid-style__choose">
-                    <!-- <div>
-                        <h4>Publication Tags</h4>
-                    </div>
-                    <div class="grid-style__choose__item">
-                        <ui-chip *ngFor="let tag of publication?.tags" [text]="tag"></ui-chip>
-                    </div> -->
-                </div>
-                <div class="grid-style__choose">
                     <div>
                         <h4>{{listType | titlecase}} style</h4>
                         <p>Choose the way your readers will see your stories.</p>
                     </div>
                     <div class="grid-style__choose__item">
-                        <span (click)="changeListType('grid')" [ngClass]="{'--selected': (listType == 'grid')}">
-                          <i  class="grid-icon icon-multi-grid"></i>
+                        <span (click)="listType = 'grid'">
+                          <i  class="grid-icon icon-multi-grid"
+                              [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                           <small>Grid</small>
                         </span>
-                        <span (click)="changeListType('single')">
-                           <i  class="grid-icon icon-single-grid"
-                            [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                        <span (click)="listType = 'single'">
+                           <i  class="list-icon icon-single-grid"
+                            [ngClass]="{'list-icon--selected': (listType == 'single')}"></i>
                           <small>List</small>
                         </span>
                     </div>
@@ -138,7 +134,7 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
+    <div class="row" *ngIf="activeTab === 'stories' || (!isMyPublication && publication && publication.memberStatus !== 2)" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
@@ -175,9 +171,9 @@
         </div>
     </div>
 </div>
-<div class="container" *ngIf="activeTab === 'members'">
+<div class="container-fluid" *ngIf="activeTab === 'members'">
     <div class="row">
-        <div class="followers col-12 col-lg-8 offset-lg-2">
+        <div class="followers col-12">
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
                     [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1"
@@ -218,7 +214,7 @@
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
-            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower, isFollowing: follower.subscribed}" (onUserClick)="onUserClick($event)" (onFollowChange)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
         </div>
         <div class="not-found local" *ngIf="!subscribers.length">
             <img src="../../../assets/no_followers.svg" alt="">
@@ -234,7 +230,7 @@
         <h3>Are you sure you want to delete publication?</h3>
         <div class="custom-modal__buttons">
             <ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>
-            <ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
+            <ui-button [text]="'Delete'" (btnClicked)="deletePublication()" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
         </div>
     </div>
 </div>

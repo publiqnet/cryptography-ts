@@ -97,7 +97,11 @@ export class PublicationService {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', { dsId: dsId });
   }
 
-  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug);
+  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug).pipe(
+    tap(() => {
+      this.observers['getMyPublications'].refresh = true;
+    })
+  )
 
   requestBecomeMember = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
 
@@ -137,7 +141,8 @@ export class PublicationService {
   cancelInvitation = (body: any): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`);
 
   getPublications(fromSlug = null, count: number = 10): Observable<any> {
-    return this.httpHelperService.customCall(HttpMethodTypes.get, `${this.url}s/${count}/${fromSlug}`, null, null, false)
+    console.log('tttt');
+    return this.httpHelperService.call(HttpMethodTypes.get, `${this.url}s/${count}/${fromSlug}`)
       .pipe(
         filter(data => data != null),
         map(publicationsData => {
