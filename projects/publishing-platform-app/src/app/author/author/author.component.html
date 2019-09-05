@@ -171,7 +171,10 @@
                 </div>
                 <div *ngIf="selectedTab == '2' && drafts">
                     <div *ngIf="drafts && drafts.length > 0;else no_content">
-                        <ui-draft *ngFor="let oDraft of drafts; let index = index" [type]="'single'" (deleteClick)="deleteDraft(oDraft.id, index)" (editClick)="editDraft(oDraft.id)" (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
+                        <ui-draft *ngFor="let oDraft of drafts; let index = index" [type]="'single'"
+                                  (deleteClick)="deleteDraft(oDraft.id, index)"
+                                  (editClick)="editDraft(oDraft.id)"
+                                  (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
                     </div>
                     <ng-template #no_content></ng-template>
                 </div>
