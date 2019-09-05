@@ -6,6 +6,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ArticleService } from '../../core/services/article.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { DraftService } from '../../core/services/draft.service';
+import { Draft } from '../../core/services/models/draft';
 
 @Component({
   selector: 'app-edit-draft',
@@ -37,9 +38,8 @@ export class EditDraftComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe((draft) => {
+      .subscribe((draft: Draft) => {
           this.draft = draft;
-          console.log(this.draft);
       });
 
     this.errorService.errorEventEmiter

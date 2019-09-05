@@ -11,6 +11,8 @@ export interface DraftOptions { // todo delete
   image: string;
   publication: any;
   view_count: string;
+  contentUris?: object;
+  content?: string;
 }
 
 export class Draft {
@@ -24,6 +26,8 @@ export class Draft {
   image: string;
   publication: any;
   view_count: string;
+  contentUris: object;
+  content: string;
   constructor(options?: DraftOptions) {
     for (const i in options) {
       if (options.hasOwnProperty(i)) {

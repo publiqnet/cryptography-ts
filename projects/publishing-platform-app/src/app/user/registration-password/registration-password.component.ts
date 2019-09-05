@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
@@ -11,6 +11,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ValidationService } from '../../core/validator/validator.service';
 import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { OauthService } from 'helper-lib';
+import { UtilService } from '../../core/services/util.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-registration-password',
@@ -32,7 +34,8 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
     public accountService: AccountService,
     public oauthService: OauthService,
     private errorService: ErrorService,
-    public t: TranslateService
+    public t: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
   }
 
@@ -99,7 +102,13 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(data => {
-        this.router.navigate(['/']);
+        if (isPlatformBrowser(this.platformId) && UtilService.getCookie('redirectUrl')) {
+          const redirectUrl = UtilService.getCookie('redirectUrl');
+          this.router.navigate([redirectUrl]);
+          UtilService.removeCookie('redirectUrl');
+        } else {
+          this.router.navigate(['/']);
+        }
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('register', err);
