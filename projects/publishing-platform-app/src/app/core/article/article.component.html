@@ -1,4 +1,4 @@
-<div class="main-wrap" *ngIf="article">
+<div class="main-wrap" *ngIf="false">
   <div class="inner-wrap-main">
     <div class="main-wrap">
       <div *ngIf="coverImageUrl">
@@ -30,6 +30,22 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="article__cover" [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " ></div>
+    </div>
+  </div>
+</div>
+<div class="container" *ngIf="article">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1 class="article__title">{{article.title}}</h1>
+      <div class="article__content" [innerHTML]="article.text"></div>
     </div>
   </div>
 </div>

@@ -1811,3 +1811,41 @@ p.sponsored{
     min-height: 270px;
   }
 }
+
+.article__title {
+  font: 400 40px/56px $vollkorn;
+  margin: 50px 0 15px;
+}
+
+.article__content {
+  font-family: $open-sans;
+  color: pbq-color($lightgrey, 700);
+  font-size: 17px;
+  line-height: 1.5;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  h2, h3, h4, h5 {
+    color: pbq-color($grey, 700);
+  }
+
+  p {
+    margin: 0 0 15px;
+  }
+
+  .fr-img-wrap {
+    display: block;
+    text-align: center;
+  }
+
+  .fr-img-wrap .fr-inner {
+    display: block;
+    font: 400 15px/20px $open-sans;
+    color: pbq-color($grey, 500);
+    margin: 15px 0;
+  }
+}
+
