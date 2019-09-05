@@ -114,26 +114,19 @@
         <div class="col-12 col-lg-8 offset-lg-2" *ngIf="editMode">
             <div class="grid-style grid-style--custom">
                 <div class="grid-style__choose">
-                    <!-- <div>
-                        <h4>Publication Tags</h4>
-                    </div>
-                    <div class="grid-style__choose__item">
-                        <ui-chip *ngFor="let tag of publication?.tags" [text]="tag"></ui-chip>
-                    </div> -->
-                </div>
-                <div class="grid-style__choose">
                     <div>
                         <h4>{{listType | titlecase}} style</h4>
                         <p>Choose the way your readers will see your stories.</p>
                     </div>
                     <div class="grid-style__choose__item">
-                        <span (click)="changeListType('grid')" [ngClass]="{'--selected': (listType == 'grid')}">
-                          <i  class="grid-icon icon-multi-grid"></i>
+                        <span (click)="listType = 'grid'">
+                          <i  class="grid-icon icon-multi-grid"
+                              [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                           <small>Grid</small>
                         </span>
-                        <span (click)="changeListType('single')">
-                           <i  class="grid-icon icon-single-grid"
-                            [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
+                        <span (click)="listType = 'single'">
+                           <i  class="list-icon icon-single-grid"
+                            [ngClass]="{'list-icon--selected': (listType == 'single')}"></i>
                           <small>List</small>
                         </span>
                     </div>

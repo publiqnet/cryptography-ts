@@ -135,8 +135,8 @@
     background-color: pbq-color($blue, 300);
     background-size: contain;
     background-position: center;
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
     &--editable {
         &--no-img {
             border: 3px solid rgba($blue, 0.1);
@@ -612,9 +612,25 @@
             margin-left: 20px;
             cursor: pointer;
             &--selected {
-                color: pbq-color($lightgrey, 700);
-                cursor: default;
+              color: $blue;
+              cursor: default;
+              +small {
+                color: $blue;
+              }
             }
+        }
+        .list-icon {
+          font-size: 24px;
+          color: pbq-color($grey, 400);
+          margin-left: 20px;
+          cursor: pointer;
+          &--selected {
+            color: $blue;
+            cursor: default;
+            +small {
+              color: $blue;
+            }
+          }
         }
     }
     h4 {
