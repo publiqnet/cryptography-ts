@@ -3,7 +3,7 @@
         <span class="custom-modal__close" (click)="closeModal(false)">
       <i class="icon icon-close"></i>
     </span>
-    <h3>Are you sure you want to proceed?</h3>
+    <h3>{{title}}</h3>
     <div class="custom-modal__buttons">
       <ui-button [text]="'No'" (btnClicked)="closeModal(false)" [className]="'cancel-modal'"></ui-button>
       <ui-button [text]="'Yes'" (btnClicked)="closeModal(true)" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
