@@ -10,7 +10,6 @@ export class ConfirmModalComponent {
   @Input('properties') properties: any;
 
   closeModal(answer: boolean) {
-
     answer ? this.closeConfirmModal.emit({answer, properties: this.properties}) : this.closeConfirmModal.emit({answer});
   }
 

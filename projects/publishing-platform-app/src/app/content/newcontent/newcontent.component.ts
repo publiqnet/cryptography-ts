@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publications } from '../../core/services/models/publications';
+import { Draft } from '../../core/services/models/draft';
 
 declare const $: any;
 
@@ -49,9 +50,11 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private uploadedContentUri: string;
   public submitError: boolean = false;
   public titleText: string;
+  public draftId: number;
+  public selectedPublication: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
-  @Input() draftId: number;
+  @Input() draft?: Draft;
 
   constructor(
     private router: Router,
@@ -68,6 +71,26 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.initDefaultData();
     this.buildForm();
     this.initSubscribes();
+  }
+
+  initDraftData() {
+    this.hasDraft = true;
+    // if (Array.isArray(this.draft.tags)) {
+    //   this.tags = this.draft.tags;
+    // }
+    this.contentForm.controls['content'].setValue(this.draft.content);
+    this.content = this.draft.content;
+    this.title = this.draft.title;
+    if (this.draft.publication) {
+      this.selectedPublication = this.draft.publication;
+      this.contentForm.controls['publication'].setValue(this.selectedPublication);
+    }
+    this.contentUris = this.draft.contentUris;
+    this.draftId = this.draft.id;
+    if (this.editorContentObject) {
+      this.editorContentObject.html.set(this.content);
+      this.initSubmitFormView();
+    }
   }
 
   private buildForm(): void {
@@ -191,6 +214,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'froalaEditor.initialized': (e, editor) => {
           this.contentObject = e;
           this.editorContentObject = editor;
+          if (this.draft) {
+            this.initDraftData();
+          }
         },
         'froalaEditor.html.set': function (e, editor) {
           editor.events.trigger('charCounter.update');
@@ -433,7 +459,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
         if (nodeHtml != this.titleText) {
           calls.push(this.contentService.uploadTextFiles(nodeHtml));
         } else {
-          calls.push(of(nodeHtml));
+          const firstTag = '<h1 data-title="true">';
+          const lastTag = '</h1>';
+          calls.push(of(firstTag + nodeHtml + lastTag));
         }
       } else if (nodeHtml.match(/<img/)) {
         let outerText = node.outerHTML;

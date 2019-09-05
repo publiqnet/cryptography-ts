@@ -64,6 +64,9 @@
       &:first-child{
         margin-right: 12px;
       }
+      button{
+        width: 100%;
+      }
     }
     @include media-md {
       flex-direction: column;
