@@ -4,10 +4,6 @@
       <div class=" offset-lg-2 col-lg-8 col-xl-9">
         <form class="form" [formGroup]="contentForm">
           <div class="post-field">
-            <!--title-->
-            <div class="post-field__areas">
-              <textarea [froalaEditor]="titleOptions" rows="10" formControlName="title" (froalaInit)="initTitleFroala($event)"></textarea>
-            </div>
             <!--content-->
             <div id="editor-froala">
               <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
@@ -100,9 +96,7 @@
           <!--boost step-->
           <ng-container *ngIf="submitStep == 2">
             <span class="add-tag__label">Enter your password to submit story</span>
-            <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'"
-                      [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
-
+            <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'" [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
             <div class="boost-story">
               <div class="boost-story__field">
                 <span class="boost-story__field__icon">
