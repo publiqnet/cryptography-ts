@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, Route, ActivatedRoute, RouterEvent } from '@angular/router';
 import { PublicationService } from '../../core/services/publication.service';
 import { AccountService } from '../../core/services/account.service';
 
@@ -8,6 +8,7 @@ import { Publications } from '../../core/services/models/publications';
 
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { filter } from 'minimatch';
 
 @Component({
   selector: 'app-my-publications',
@@ -28,7 +29,8 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   constructor(
     public router: Router,
     public publicationService: PublicationService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private route: ActivatedRoute
   ) {
 
   }
@@ -39,6 +41,10 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.invitations = data.invitations;
     this.requests = data.requests;
     this.publications = this.myPublications.concat(this.membership);
+    this.publications = this.publications.map((el: any) => {
+      el.membersList = el.members;
+      return el;
+    });
   }
 
   ngOnInit() {
@@ -50,14 +56,14 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
     this.showModalType = type;
   }
 
-  getMyPublications () {
+  getMyPublications() {
     this.publicationService.getMyPublications()
-    .pipe(
-      takeUntil(this.unsubscribe$)
-    )
-    .subscribe((data: Publications) => {
-      this.PublicationsData = data;
-    });
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((data: Publications) => {
+        this.PublicationsData = data;
+      });
   }
 
   changeRoute(url) {
@@ -65,6 +71,7 @@ export class MyPublicationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
