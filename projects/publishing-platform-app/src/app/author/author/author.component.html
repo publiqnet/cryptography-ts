@@ -185,3 +185,7 @@
         </div>
     </div>
 </div>
+
+<div *ngIf="showModal">
+    <app-confirm-modal [properties]="modalProps" (closeConfirmModal)="doDelete($event)"></app-confirm-modal>
+</div>

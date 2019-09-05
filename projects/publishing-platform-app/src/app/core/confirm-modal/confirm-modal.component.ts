@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -6,10 +6,12 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./confirm-modal.component.scss']
 })
 export class ConfirmModalComponent {
-  @Output() closeConfirmModal = new EventEmitter<boolean>();
+  @Output() closeConfirmModal = new EventEmitter<any>();
+  @Input('properties') properties: any;
 
-  closeModal() {
-    this.closeConfirmModal.emit();
+  closeModal(answer: boolean) {
+
+    answer ? this.closeConfirmModal.emit({answer, properties: this.properties}) : this.closeConfirmModal.emit({answer});
   }
 
 }

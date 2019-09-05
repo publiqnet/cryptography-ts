@@ -6,7 +6,7 @@
     <h3>Are you sure you want to proceed?</h3>
     <div class="custom-modal__buttons">
       <ui-button [text]="'No'" (btnClicked)="closeModal(false)" [className]="'cancel-modal'"></ui-button>
-      <ui-button [text]="'Yes'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
+      <ui-button [text]="'Yes'" (btnClicked)="closeModal(true)" [className]="'cancel-modal'" [type]="'primary'"></ui-button>
     </div>
   </div>
 </div>
