@@ -15,9 +15,9 @@
                 <span class="create-form__label">Description</span>
                 <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a short description'" formControlName="description"></ui-input>
                 <p class="error-msg" *ngIf="descriptionError">{{descriptionError}}</p>
-                <span class="create-form__label">Tags</span>
+                <!-- <span class="create-form__label">Tags</span>
                 <ui-input [type]="'text'" [className]="'create-form__input'" [placeholder]="'Type a tag…'" formControlName="tags"></ui-input>
-                <!--upload avatar-->
+                upload avatar -->
                 <div class="create-form__upload">
                     <label class="create-form__upload__pic" for="publicationAvatar">
               <input type="file" accept="image/jpeg,image/png" id="publicationAvatar" formControlName="logo" (change)="selectLogo($event)">

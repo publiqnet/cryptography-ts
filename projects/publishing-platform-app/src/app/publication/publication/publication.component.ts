@@ -117,9 +117,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     private publicationService: PublicationService,
     public utilService: UtilService,
     private formBuilder: FormBuilder,
-    public uiNotificationService: UiNotificationService,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    public uiNotificationService: UiNotificationService
   ) {
   }
 
