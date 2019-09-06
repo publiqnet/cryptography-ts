@@ -27,8 +27,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private titleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -567,7 +565,10 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.contentId = data.contentId;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 

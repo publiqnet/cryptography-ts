@@ -33,8 +33,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private editorTitleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -43,6 +41,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
   public publicationsList = [];
   public currentContentData = {};
   public boostTab = [];
+  public tags: String[] = [];
   public mainCoverImageUri: string;
   public mainCoverImageUrl: string;
   public submitStep: number = 1;
@@ -577,7 +576,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
           this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 
