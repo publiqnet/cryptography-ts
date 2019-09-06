@@ -145,6 +145,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
           }
         }
       ),
+      takeUntil(this.unsubscribe$)
     )
       .subscribe(
         res => {

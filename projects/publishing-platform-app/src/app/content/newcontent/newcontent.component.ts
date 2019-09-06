@@ -4,7 +4,7 @@ import { AccountService } from '../../core/services/account.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin, of, ReplaySubject } from 'rxjs';
+import { forkJoin, of, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ContentService } from '../../core/services/content.service';
 import { Router } from '@angular/router';
@@ -34,6 +34,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
   title: string;
   content: string;
   contentOptions: object;
+  tags: String[] = [];
+  tag: string = '';
+  tagSubject = new Subject<any>();
   public publicationsList = [];
   public currentContentData = {};
   public boostTab = [];
@@ -49,7 +52,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private uploadedContentUri: string;
   public submitError: boolean = false;
   public titleText: string;
-
   private unsubscribe$ = new ReplaySubject<void>(1);
   @Input() draftId: number;
 
@@ -77,7 +79,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       //   Validators.maxLength(this.titleMaxLenght),
       //   ValidationService.noWhitespaceValidator
       // ]),
-      // tags: new FormControl(this.tags, [Validators.required]),
+      tags: new FormControl(this.tags, [Validators.required]),
       content: new FormControl(this.content, [
         Validators.required,
         // (control: AbstractControl): { [key: string]: any } | null => {
@@ -92,7 +94,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       password: new FormControl('', [
         ValidationService.passwordValidator
       ]),
-      publication: new FormControl( 'none')
+      publication: new FormControl('none')
     });
   }
 
@@ -117,14 +119,14 @@ export class NewContentComponent implements OnInit, OnDestroy {
     ];
 
     this.stepperData = [
-      {'value': 'Preview', 'slug': 'preview', 'status': false},
-      {'value': 'Boost', 'slug': 'boost', 'status': true},
+      { 'value': 'Preview', 'slug': 'preview', 'status': false },
+      { 'value': 'Boost', 'slug': 'boost', 'status': true },
     ];
 
     this.publicationService.getMyPublications()
       .pipe(
         map((publicationsData: Publications) => {
-          const publicationsList = [ ...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          const publicationsList = [...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
           return publicationsList;
         }),
         takeUntil(this.unsubscribe$)
@@ -248,8 +250,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
     });
   }
 
-  addCustomButton () {
-    $.FroalaEditor.DefineIcon('title', {NAME: 'T', template: 'text'});
+  addCustomButton() {
+    $.FroalaEditor.DefineIcon('title', { NAME: 'T', template: 'text' });
     $.FroalaEditor.RegisterCommand('title', {
       title: 'Title',
       focus: true,
@@ -340,7 +342,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-        },
+      },
         err => console.log(err)
       );
 
@@ -355,6 +357,17 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.draftId = draft.id;
         }
       });
+    this.tagSubject
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
+      tag => {
+        if (typeof tag == 'string') {
+          this.tag = tag;
+        }
+      }
+    );
   }
 
   saveDraft(id = null) {
@@ -415,6 +428,21 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.contentForm.controls['publication'].setValue(event.value);
   }
 
+  enterTag() {
+    if (this.tag) {
+      this.tags = [...this.tags, this.tag];
+      this.tag = '';
+    }
+  }
+
+  removeTag(index) {
+    this.tags.splice(index, 1);
+  }
+
+  textChange(e) {
+    this.tagSubject.next(e);
+  }
+
   submit() {
     if (!this.contentForm.value.content || !this.titleText) {
       this.submitError = true;
@@ -450,44 +478,44 @@ export class NewContentComponent implements OnInit, OnDestroy {
     });
 
     forkJoin(calls).subscribe((data: any) => {
-        if (data.length) {
-          data.forEach((nextResult) => {
-            if (nextResult['uri']) {
-              uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
-              this.contentUris[nextResult['uri']] = nextResult['link'];
-            } else {
-              uploadedContentHtml += nextResult;
-            }
-          });
-        }
+      if (data.length) {
+        data.forEach((nextResult) => {
+          if (nextResult['uri']) {
+            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+            this.contentUris[nextResult['uri']] = nextResult['link'];
+          } else {
+            uploadedContentHtml += nextResult;
+          }
+        });
+      }
 
-        let contentData = `${contentTitle} ${uploadedContentHtml}`;
-        if (this.mainCoverImageUri && this.mainCoverImageUrl) {
-          this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
-          const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
-          contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
-        }
+      let contentData = `${contentTitle} ${uploadedContentHtml}`;
+      if (this.mainCoverImageUri && this.mainCoverImageUrl) {
+        this.contentUris[this.mainCoverImageUri] = this.mainCoverImageUrl;
+        const contentCover = `<img src="${this.mainCoverImageUri}" data-uri="${this.mainCoverImageUri}">`;
+        contentData = `${contentCover} ${contentTitle} ${uploadedContentHtml}`;
+      }
 
-        this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
+      this.contentForm.value.content = this.contentForm.value.content.replace(/contenteditable="[^"]*"/g, '');
 
-        if (Object.keys(this.contentUris).length) {
-          this.contentService.signFiles(Object.keys(this.contentUris), password)
-            .pipe(
-              switchMap((data: any) => {
-                return this.submitContent(contentData, password);
-              }),
-              switchMap((data: any) => {
-                return (this.boostField) ? this.contentService.contentBoost(this.uploadedContentUri, this.boostPrice, this.boostDays, password) : of(data);
-              })
-            ).subscribe(data => {
-              this.afterContentSubmit();
-            },
+      if (Object.keys(this.contentUris).length) {
+        this.contentService.signFiles(Object.keys(this.contentUris), password)
+          .pipe(
+            switchMap((data: any) => {
+              return this.submitContent(contentData, password);
+            }),
+            switchMap((data: any) => {
+              return (this.boostField) ? this.contentService.contentBoost(this.uploadedContentUri, this.boostPrice, this.boostDays, password) : of(data);
+            })
+          ).subscribe(data => {
+            this.afterContentSubmit();
+          },
             error => {
               this.submitError = true;
               console.log('error 1 - ', error);
             });
-        }
-      },
+      }
+    },
       error => {
         console.log('error 2 - ', error);
       });
