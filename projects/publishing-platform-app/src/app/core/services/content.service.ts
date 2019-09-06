@@ -618,9 +618,9 @@ export class ContentService {
     return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
 
-  publish(uri: string, contentId, publicationSlug: string): Observable<any> {
+  publish(uri: string, contentId, publicationSlug: string, tags: string): Observable<any> {
     const url = environment.backend + '/api/content/publish';
-    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId, publicationSlug});
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId, publicationSlug, tags});
   }
 
   getMyContents(fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
@@ -660,7 +660,7 @@ export class ContentService {
   }
 
   contentBoost(uri: string, price: number, days: number, password: string) {
-    const url = this.contentUrl + `/boost`;
+    const url = this.url + `/content-boost`;
     const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
     const signBoost = this.cryptService.getSignBoost(brainKey, uri, price, days * 24);
     const now = new Date();

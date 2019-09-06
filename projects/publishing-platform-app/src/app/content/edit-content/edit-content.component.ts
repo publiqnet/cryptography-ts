@@ -33,8 +33,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private editorTitleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -43,6 +41,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
   public publicationsList = [];
   public currentContentData = {};
   public boostTab = [];
+  public tags: String[] = [];
   public mainCoverImageUri: string;
   public mainCoverImageUrl: string;
   public submitStep: number = 1;
@@ -499,7 +498,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
-          calls.push(this.contentService.uploadTextFiles(nodeHtml));
+          calls.push(this.contentService.uploadTextFiles(node.outerHTML));
         } else {
           calls.push(of(nodeHtml));
         }
@@ -521,7 +520,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
         if (data.length) {
           data.forEach((nextResult) => {
             if (nextResult['uri']) {
-              uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+              uploadedContentHtml += `${nextResult['uri']} `;
               this.contentUris[nextResult['uri']] = nextResult['link'];
             } else {
               uploadedContentHtml += nextResult;
@@ -577,7 +576,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
           this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 

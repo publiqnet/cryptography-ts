@@ -27,8 +27,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private titleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -486,7 +484,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
-          calls.push(this.contentService.uploadTextFiles(nodeHtml));
+          calls.push(this.contentService.uploadTextFiles(node.outerHTML));
         } else {
           const firstTag = '<h1 data-title="true">';
           const lastTag = '</h1>';
@@ -510,7 +508,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       if (data.length) {
         data.forEach((nextResult) => {
           if (nextResult['uri']) {
-            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+            uploadedContentHtml += `${nextResult['uri']} `;
             this.contentUris[nextResult['uri']] = nextResult['link'];
           } else {
             uploadedContentHtml += nextResult;
@@ -567,7 +565,10 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.contentId = data.contentId;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 

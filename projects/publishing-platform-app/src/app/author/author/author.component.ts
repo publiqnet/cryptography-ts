@@ -1,15 +1,15 @@
 import {
-    Component,
-    Inject,
-    OnDestroy,
-    OnInit,
-    PLATFORM_ID,
-    Optional,
-    Input,
-    ViewChild,
-    ElementRef,
-    AfterViewInit,
-    ContentChild
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  Optional,
+  Input,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  ContentChild, HostListener
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -31,6 +31,7 @@ import { ValidationService } from '../../core/validator/validator.service';
 import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { style } from '@angular/animations';
+import { CryptService } from '../../core/services/crypt.service';
 
 enum ModalConfirmActions {
     DeleteOne,
@@ -92,6 +93,16 @@ export class AuthorComponent implements OnInit, OnDestroy {
     editTitleIcon: boolean = false;
     editBioIcon: boolean = false;
     disableSave: boolean = false;
+    showPrivateKey: boolean = false;
+    showPhase: boolean = false;
+    showModal: boolean = false;
+    showSecurityModal: boolean = false;
+    protected password: string = '';
+    passwordVerified = false;
+    decriptedPrivateKey: string;
+    passError = '';
+    incorrectRecoverPhrase = '';
+    public decryptedBrainKey: string;
     public publishedContent: Content[] = [];
     public loading = true;
     listType = 'grid';
@@ -117,8 +128,13 @@ export class AuthorComponent implements OnInit, OnDestroy {
         },
         {
             'value': '3',
-            'text': 'Settings',
+            'text': 'Edit stories',
             'active': false
+        },
+        {
+          'value': '4',
+          'text': 'Security',
+          'active': false
         }
     ];
     author: Account;
@@ -129,8 +145,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     bio: string;
     photo: File;
     editMode: boolean = false;
-
-    showModal: boolean = false;
     modalProps: any = {};
 
     constructor(
@@ -146,6 +160,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         private formBuilder: FormBuilder,
         private safeStylePipe: SafeStylePipe,
         protected sanitizer: DomSanitizer,
+        public cryptService: CryptService,
         @Inject(PLATFORM_ID) private platformId: Object
     ) {
     }
@@ -223,6 +238,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
                 }
             );
     }
+
+  @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {}
 
     private buildForm() {
         this.firstName = this.author.firstName;
@@ -489,12 +506,81 @@ export class AuthorComponent implements OnInit, OnDestroy {
             });
     }
 
-    ngOnDestroy() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.articlesLoaded = false;
-            this.isCurrentUser = false;
-            this.unsubscribe$.next();
-            this.unsubscribe$.complete();
-        }
+  openPopup(flag: boolean, type?: number) {
+    this.showSecurityModal = flag;
+    if (this.showSecurityModal == false) {
+      this.passwordVerified = false;
+      this.passError = '';
+      this.password = '';
     }
+    if (type == 1) {
+      this.showPrivateKey = true;
+      this.showPhase = false;
+    } else if (type == 2) {
+      this.showPhase = true;
+      this.showPrivateKey = false;
+    }
+  }
+
+  passwordValidator() {
+    if (this.password) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  generatePrivateKey() {
+    this.decryptPK(this.accountService.brainKeyEncrypted);
+  }
+
+  decryptPK(brainKeyEncrypted) {
+    if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
+      const brainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
+      this.decriptedPrivateKey = this.cryptService.getPrivateKey(brainKey);
+    }
+
+    if (this.decriptedPrivateKey) {
+      this.passwordVerified = true;
+    } else {
+      this.passError = 'Incorrect Password';
+      this.passwordVerified = false;
+    }
+  }
+
+  focusFunction() {
+    this.passError = '';
+    this.incorrectRecoverPhrase = '';
+  }
+
+  generateBK() {
+    this.decryptBK(this.accountService.brainKeyEncrypted);
+  }
+
+  decryptBK(brainKeyEncrypted) {
+    if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
+      this.decryptedBrainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
+      this.passwordVerified = true;
+    } else {
+      this.passError = 'Incorrect Password';
+      this.passwordVerified = false;
+    }
+  }
+
+  public keyupFunc(event: KeyboardEvent, callBackFunc: string): void {
+    this.focusFunction();
+    if ((event.code === 'Enter' || event.code === 'NumpadEnter') && !this.passwordValidator() && callBackFunc !== '') {
+      this[callBackFunc]();
+    }
+  }
+
+  ngOnDestroy() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.articlesLoaded = false;
+      this.isCurrentUser = false;
+      this.passwordVerified = false;
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
+  }
 }
