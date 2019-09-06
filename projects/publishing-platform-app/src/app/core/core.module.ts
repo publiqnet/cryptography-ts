@@ -101,7 +101,7 @@ export function createTranslateLoader(http: HttpClient) {
         CoverEditDialogComponent,
         InputPasswordDialogComponent,
         NewstorySubmissionComponent,
-        NewstorySubmission2Component
+        NewstorySubmission2Component,
     ],
     providers: [
         AuthguardService,
@@ -139,7 +139,7 @@ export function createTranslateLoader(http: HttpClient) {
       AdaptiveDialogComponent,
       SecurityDialogComponent,
       CoverEditDialogComponent,
-      NotificationCardComponent
+      NotificationCardComponent,
     ]
 })
 export class CoreModule {
