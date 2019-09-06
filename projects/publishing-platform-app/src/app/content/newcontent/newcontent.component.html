@@ -73,10 +73,9 @@
                 <!--step 1 (choose cover + story view)-->
                 <ng-container *ngIf="submitStep == 1">
                     <span class="add-tag__label">Add Tags</span>
-                    <!-- <ui-input className="add-tag-input"></ui-input> -->
                     <app-chips-input [tagsArray]="tags" [placeholder]="'Add tag'" (keyupEnter)="enterTag($event)" (remove)="removeTag($event)" (change)="textChange($event)"></app-chips-input>
                     <span class="add-tag__label">Add to Publication</span>
-                    <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList" [optionsData]="publicationsList" [type]="'withIcon'"></ui-dropdown>
+                    <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList.length" [optionsData]="publicationsList" [type]="'withIcon'" [selectedOptionValue]="selectedPublication"></ui-dropdown>
                     <!--for mobile-->
                     <!--FOR ADDING OR CHANGING COVER PIC -->
                     <ng-container *ngIf="(!boostField || boostView == 'preview')">
