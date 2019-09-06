@@ -696,4 +696,9 @@ export class ContentService {
     return this.httpHelperService.customCall(HttpMethodTypes.post, url)
       .pipe(map(searchData => new Search(searchData)));
   }
+
+  updateContentPublication(publicationSlug: string, uri: string): Observable<any> {
+    const url = this.contentUrl + `/publication`;
+    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, publicationSlug});
+  }
 }
