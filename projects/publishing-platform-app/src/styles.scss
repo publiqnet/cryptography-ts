@@ -1812,24 +1812,43 @@ p.sponsored{
   }
 }
 
-.article__title {
+%article-title {
+  color: pbq-color($grey, 700);
   font: 400 40px/56px $vollkorn;
   margin: 50px 0 15px;
 }
 
-.article__content {
+.article__title { @extend %article-title; }
+
+.article__content, .fr-element.fr-view {
   font-family: $open-sans;
   color: pbq-color($lightgrey, 700);
   font-size: 17px;
   line-height: 1.5;
 
+  h1 { @extend %article-title; margin: 0 0 15px; }
+
   img {
+    display: block;
     max-width: 100%;
+    margin: auto;
     height: auto;
   }
 
   h2, h3, h4, h5 {
     color: pbq-color($grey, 700);
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+
+  h3 {
+    font-size: 24px;
+  }
+
+  h4 {
+    font-size: 17px;
   }
 
   p {
@@ -1839,6 +1858,7 @@ p.sponsored{
   .fr-img-wrap {
     display: block;
     text-align: center;
+    margin: 40px 0 0;
   }
 
   .fr-img-wrap .fr-inner {

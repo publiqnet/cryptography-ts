@@ -7,6 +7,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AccountService } from '../services/account.service';
 import { Account } from '../services/models/account';
 import { environment } from '../../../environments/environment';
+import * as moment from 'moment';
+
 
 @Component({
   selector: 'app-article',
@@ -87,6 +89,14 @@ export class ArticleComponent implements OnInit, OnDestroy {
           this.article = data;
         }
       });
+  }
+
+  formatDate(date, format) {
+    return moment(new Date(date * 1000), format);
+  }
+
+  openVersion(slug) {
+    console.log(slug);
   }
 
   ngOnDestroy(): void {
