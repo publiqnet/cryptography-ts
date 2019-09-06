@@ -1,5 +1,5 @@
 <ui-header [headerData]="headerData" [showSearchBar]="showSearch" (userSignIn)="userAuth('login')" (userSignUp)="userAuth('register')" (navigationLink)="onRouteChange($event)"
-           (searchEvent)="searchEvent($event)" (onInputChange)="onInputChange($event)" [tagItems]="items"></ui-header>
+           (searchEvent)="searchEvent($event)" (onInputChange)="onInputChange($event)" [tagItems]="tagsList"></ui-header>
 
 <ng-container *ngIf="showSearch">
   <app-search (closeSearchBar)="searchEvent($event)" [searchResult]="searchData" [defaultSearchData]="defaultSearchData"></app-search>
