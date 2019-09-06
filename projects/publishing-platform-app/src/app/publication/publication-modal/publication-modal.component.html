@@ -29,7 +29,7 @@
                     <span class="create-form__upload__text">
               <b *ngIf="!logoImage">Upload logo</b>
               <b class="blue" *ngIf="logoImage" (click)="removeLogo()">Remove logo</b>
-              <span>(Up to 1MB, 288px by 288px recommended)</span>
+              <span>(Up to 5MB, 288px by 288px recommended)</span>
                     </span>
                 </div>
                 <!--upload cover-->
@@ -44,7 +44,7 @@
                     <span class="create-form__upload__text">
               <b *ngIf="!coverImage">Upload cover</b>
               <b *ngIf="coverImage" class="blue" (click)="removeCover()">Remove cover</b>
-              <span>(Up to 1MB, 288px by 288px recommended)</span>
+              <span>(Up to 5MB, 288px by 288px recommended)</span>
                     </span>
                 </div>
             </form>
