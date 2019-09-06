@@ -216,11 +216,103 @@
                     </ng-template>
                 </div>
                 <div *ngIf="selectedTab == '3'">
-                    <p>Settings tab worked!</p>
+                  <div>
+                    <ui-content-single *ngFor="let data of publishedContent" (accountClick)="utilService.routerChangeHelper('account', $event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
+                                       (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'" [contentData]="data" (historyClick)="testing($event)">
+                    </ui-content-single>
+
+                  </div>
+                  <div class="no-stories" *ngIf="selectedTab && selectedTab == '3' && !loadingAuthor && articlesLoaded && !publishedContent.length">
+                    <img src="assets/images/no_story.svg" alt="no story" />
+                    <span>No Stories Yet</span>
+                  </div>
                 </div>
+              <div *ngIf="selectedTab == '4'">
+                <div class="security">
+                  <h3>Security</h3>
+                  <p>Please store recovery phrase in a physically separate, offline environment. This is the only way to reset your password and access your wallet.</p>
+                  <div class="security__steps">
+                    <div>
+                      <span>Address:</span>
+                      <i class="icon-info"></i>
+                      <span class="tooltip_text">Address (Public key) is used for user identification, it can be freely shared, allowing users to verify digital signatures.</span>
+                    </div>
+                  </div>
+                  <div class="security__steps">
+                    <div>
+                      <span>Private key:</span>
+                      <i class="icon-info"></i>
+                      <span class="tooltip_text">Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets.</span>
+                    </div>
+                    <div class="security__steps__inputs">
+                      <ui-input [readonly]="true" [placeholder]="''" [type]="'password'" [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
+                    </div>
+                    <div class="show">
+                      <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                    </div>
+                  </div>
+                  <div class="security__steps">
+                    <div>
+                      <span>Recovery Phrase:</span>
+                      <i class="icon-info"></i>
+                      <span class="tooltip_text">Recovery phrase contains 16 words in a specific order. This is the only way to reset your password! Your PBQ tokens can’t be recovered without it.</span>
+                    </div>
+                    <div class="security__steps__inputs">
+                      <ui-input [readonly]="true" [placeholder]="''" [type]="'password'" [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
+                    </div>
+                    <div class="show">
+                      <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
     </div>
+</div>
+<div class="modal-overlay--custom" [ngClass]="{'open' : showSecurityModal}">
+  <div class="custom-modal">
+        <span class="custom-modal__close" (click)="openPopup(false)">
+      <i class="icon icon-close"></i>
+    </span>
+    <div *ngIf="showPrivateKey">
+      <h3>PRIVATE KEY</h3>
+      <span>Enter your password to see your <b>Private Key</b></span>
+      <ui-input [type]="'password'" [inputId]="'private-key'" [placeholder]="'Password'" (focus)="focusFunction()"
+                (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password"></ui-input>
+      <span class="text-error" *ngIf="passError">{{passError}}</span>
+      <div *ngIf="passwordVerified">
+        <div class="password-container">
+          <p>Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets</p>
+          <p class="password-block">{{decriptedPrivateKey}}</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showPhase">
+      <h3>RECOVERY PHASE</h3>
+      <span>Enter your password to see your <b>Recovery Phase</b></span>
+      <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
+                (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password"></ui-input>
+      <span class="text-error" *ngIf="passError">{{passError}}</span>
+      <div *ngIf="passwordVerified">
+        <div class="password-container">
+          <p>This is the only way to reset your password! Your PBQ tokens can’t be recovered without it.</p>
+          <div class="password-block">
+            {{decryptedBrainKey}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-modal__buttons">
+      <ng-container *ngIf="showPrivateKey">
+        <ui-button [text]="'Submit'" (btnClicked)="generatePrivateKey()" [className]="'cancel-modal'" [type]="'primary'" [disabled]="passwordValidator()"></ui-button>
+      </ng-container>
+      <ng-container *ngIf="showPhase">
+        <ui-button [text]="'Submit'" (btnClicked)="generateBK()" [className]="'cancel-modal'" [type]="'primary'" [disabled]="passwordValidator()"></ui-button>
+      </ng-container>
+    </div>
+  </div>
 </div>
 
 <div *ngIf="showModal">

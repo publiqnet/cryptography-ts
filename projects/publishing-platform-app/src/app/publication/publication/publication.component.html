@@ -4,9 +4,9 @@
 <div class="container" *ngIf="!loading">
     <div class="row publication-cover publication-cover--editable" [ngClass]="{'publication-cover--editable--no-img' : !publication.cover}" *ngIf="publication && !publication.hideCover" #coverContainer>
         <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
-      <img class="publication-cover-blured" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
-      <img class="publication-cover-visible" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
-      <div class="col-lg-8 offset-lg-2">
+        <img class="publication-cover-blured" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
+        <img class="publication-cover-visible" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
+        <div class="col-lg-8 offset-lg-2">
             <div class="publication-cover__guide" *ngIf="publication && !publication.cover && isMyPublication">
                 <div class="icon-profile upload-icon"></div>
                 <div class="publication-cover__guide__texts">
@@ -157,7 +157,7 @@
                     <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
                         <p>To add members search by name or type email to invite.</p>
-                        <app-chips-input [tagsArray]="chips" (keyupEnter)="enterTag($event)" (remove)="removeChip($event)" (change)="textChange($event)"></app-chips-input>
+                        <app-chips-input [tagsArray]="chips" [placeholder]="'Search people'" (keyupEnter)="enterTag($event)" (remove)="removeChip($event)" (change)="textChange($event)"></app-chips-input>
                         <ui-input-suggestions *ngIf="searchedResult" [suggestions]="searchedMembers" (onSelect)="suggestionSelected($event)"></ui-input-suggestions>
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData" [isNone]="false"></ui-dropdown>
                         <div class="custom-modal__buttons">
@@ -223,17 +223,17 @@
 </div>
 
 <div *ngIf="showModal">
-  <app-confirm-modal (closeConfirmModal)="openPopup(false)"></app-confirm-modal>
+    <app-confirm-modal (closeConfirmModal)="openPopup(false)"></app-confirm-modal>
 </div>
 <!--<div class="modal-overlay&#45;&#45;custom">-->
-    <!--<div class="custom-modal">-->
-        <!--<span class="custom-modal__close" (click)="openPopup(false)">-->
-      <!--<i class="icon icon-close"></i>-->
-    <!--</span>-->
-        <!--<h3>Are you sure you want to delete publication?</h3>-->
-        <!--<div class="custom-modal__buttons">-->
-            <!--<ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>-->
-            <!--<ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>-->
-        <!--</div>-->
-    <!--</div>-->
+<!--<div class="custom-modal">-->
+<!--<span class="custom-modal__close" (click)="openPopup(false)">-->
+<!--<i class="icon icon-close"></i>-->
+<!--</span>-->
+<!--<h3>Are you sure you want to delete publication?</h3>-->
+<!--<div class="custom-modal__buttons">-->
+<!--<ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>-->
+<!--<ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>-->
+<!--</div>-->
+<!--</div>-->
 <!--</div>-->
