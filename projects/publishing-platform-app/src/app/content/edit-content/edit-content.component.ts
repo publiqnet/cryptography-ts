@@ -15,6 +15,7 @@ import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 declare const $: any;
 
@@ -58,6 +59,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
   tag: string = '';
   tagSubject = new Subject<any>();
   private unsubscribe$ = new ReplaySubject<void>(1);
+  public selectedPublication: string;
 
   constructor(
     private router: Router,
@@ -69,7 +71,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
     public translateService: TranslateService,
     private draftService: DraftService,
     private publicationService: PublicationService,
-    private errorService: ErrorService
+    public uiNotificationService: UiNotificationService
   ) {
   }
 
@@ -106,7 +108,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
               }
 
               this.content = data;
-              this.titleText = this.content.title;
               this.initContentData();
             });
         } else {
@@ -117,11 +118,19 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   initContentData() {
+    if (this.content.publication) {
+      this.selectedPublication = this.content.publication.slug;
+      this.contentForm.controls['publication'].setValue(this.selectedPublication);
+    }
+    this.tags = this.content.tags;
     this.contentId = +this.content.contentId;
+    this.contentForm.controls['content'].setValue(this.content.text);
     this.editorContentObject.html.set(this.content.text);
     this.content.files.forEach((file) => {
       this.contentUris[file['uri']] = file['url'];
     });
+
+    this.titleText = this.content.title;
 
     const contentBlocks = this.editorContentObject.html.blocks();
     contentBlocks.forEach((node) => {
@@ -381,17 +390,12 @@ export class EditContentComponent implements OnInit, OnDestroy {
       },
       'published': '1563889376',
       'title': this.titleText,
-      'tags': [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-      ],
+      'tags': this.tags,
       'image': this.mainCoverImageUrl,
       'publication': {
-        'title': 'UX Planet',
-        'slug': 'ux_planet'
+        'slug': this.selectedPublication
       },
-      'view_count': '1K'
+      'view_count': (this.content) ? this.content.views : 0
     };
   }
 
@@ -496,7 +500,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
 
   enterTag() {
     if (this.tag) {
-      this.tags = [...this.tags, this.tag];
+      this.tags.push(this.tag);
       this.tag = '';
     }
   }
@@ -510,9 +514,11 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if (!this.contentForm.value.content || !this.titleText) {
-      this.submitError = true;
-      console.log('not valid content');
+    if (!this.contentForm.value.content) {
+      this.uiNotificationService.error('Error', 'Content Is Empty');
+      return false;
+    } else if (!this.titleText) {
+      this.uiNotificationService.error('Error', 'Title Is Empty');
       return false;
     }
     const password = this.contentForm.value.password;

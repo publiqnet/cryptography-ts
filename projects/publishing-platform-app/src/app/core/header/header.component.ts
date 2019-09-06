@@ -9,6 +9,7 @@ import { ErrorService } from '../services/error.service';
 import { Search } from '../services/models/search';
 import { Publications } from '../services/models/publications';
 import { DecimalPipe } from '@angular/common';
+import { Tag } from '../services/models/tag';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public defaultSearchData = null;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
-  public tagsList = [];
+  public tagsList: Tag[] = [];
 
   headerRoutesList = {
     '' : '/',
@@ -49,8 +50,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         switchMap(() => this.contentService.getAllTags()),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(result => {
-        this.tagsList = result;
+      .subscribe((tagsList: Tag[]) => {
+        this.tagsList = tagsList;
         this.updateHeaderData();
       });
   }
