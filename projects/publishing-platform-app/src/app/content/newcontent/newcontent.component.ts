@@ -486,7 +486,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
-          calls.push(this.contentService.uploadTextFiles(nodeHtml));
+          calls.push(this.contentService.uploadTextFiles(node.outerHTML));
         } else {
           const firstTag = '<h1 data-title="true">';
           const lastTag = '</h1>';
@@ -510,7 +510,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
       if (data.length) {
         data.forEach((nextResult) => {
           if (nextResult['uri']) {
-            uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+            uploadedContentHtml += `${nextResult['uri']} `;
             this.contentUris[nextResult['uri']] = nextResult['link'];
           } else {
             uploadedContentHtml += nextResult;
