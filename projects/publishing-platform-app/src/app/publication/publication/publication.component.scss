@@ -497,6 +497,10 @@
     cursor: pointer;
     width: 35px;
     height: 35px;
+    margin: 0 8px;
+    .icon-delete {
+        color: red;
+    }
     vertical-align: middle;
     i {
         font-size: 18px;
@@ -611,25 +615,25 @@
             margin-left: 20px;
             cursor: pointer;
             &--selected {
-              color: $blue;
-              cursor: default;
-              +small {
                 color: $blue;
-              }
+                cursor: default;
+                +small {
+                    color: $blue;
+                }
             }
         }
         .list-icon {
-          font-size: 24px;
-          color: pbq-color($grey, 400);
-          margin-left: 20px;
-          cursor: pointer;
-          &--selected {
-            color: $blue;
-            cursor: default;
-            +small {
-              color: $blue;
+            font-size: 24px;
+            color: pbq-color($grey, 400);
+            margin-left: 20px;
+            cursor: pointer;
+            &--selected {
+                color: $blue;
+                cursor: default;
+                +small {
+                    color: $blue;
+                }
             }
-          }
         }
     }
     h4 {
@@ -928,18 +932,20 @@ ui-input-suggestions {
         }
     }
 }
+
 .publication-cover-visible {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
 }
-.publication-cover-blured{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  filter: blur(30px);
+
+.publication-cover-blured {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: blur(30px);
 }

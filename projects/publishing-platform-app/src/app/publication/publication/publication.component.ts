@@ -117,9 +117,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
     private publicationService: PublicationService,
     public utilService: UtilService,
     private formBuilder: FormBuilder,
-    public uiNotificationService: UiNotificationService,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    public uiNotificationService: UiNotificationService
   ) {
   }
 
@@ -145,6 +143,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
           }
         }
       ),
+      takeUntil(this.unsubscribe$)
     )
       .subscribe(
         res => {
@@ -279,8 +278,8 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   follow() {
-    this.publicationService.follow(this.publication.slug)
-      .pipe(
+    const followType = this.publication.following ? this.publicationService.unfollow(this.publication.slug) : this.publicationService.follow(this.publication.slug);
+    followType.pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(
@@ -406,14 +405,18 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
     formData.append('tags', this.publication.tags.map((el: any) => el.name).join(','));
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
-    this.publicationService.editPublication(formData, this.publication.slug).subscribe(
+    this.publicationService.editPublication(formData, this.publication.slug)
+    .subscribe(
       (result: Publication) => {
         this.editMode = false;
         this.textChanging = false;
         this.editDesc = false;
         this.editTitle = false;
         this.imageLoaded = false;
-        this.publication = result;
+        this.publication.title = result.title;
+        this.publication.description = result.description;
+        this.publication.cover = result.cover;
+        this.publication.logo = result.logo;
         this.uiNotificationService.success('Success', 'Your publication successfully updated');
       },
       err => {
@@ -547,7 +550,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   private buildSearchForm() {
     this.searchForm = this.formBuilder.group({
       status: new FormControl(null, [Validators.required]),
-      members: new FormControl('', []),
+      members: new FormControl(''),
     });
   }
 

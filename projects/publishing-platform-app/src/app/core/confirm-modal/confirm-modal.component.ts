@@ -12,7 +12,7 @@ export class ConfirmModalComponent implements OnInit {
   public title: string;
 
   ngOnInit(): void {
-    this.title = this.properties.title ? this.properties.title : 'Are you sure you want to proceed?';
+    this.title = this.properties && this.properties.title ? this.properties.title : 'Are you sure you want to proceed?';
   }
 
   closeModal(answer: boolean) {
