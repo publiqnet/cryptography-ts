@@ -44,6 +44,7 @@ export class Content {
                     this[i] = new Author(options[i]);
                 } else if (i == 'cover' && options[i] && options[i].url) {
                     this.image = options[i].url;
+                    this[i] = options[i] ? options[i] : '';
                 } else if (i == 'views' && options[i]) {
                     this.views = options[i];
                     this.view_count = this.views;

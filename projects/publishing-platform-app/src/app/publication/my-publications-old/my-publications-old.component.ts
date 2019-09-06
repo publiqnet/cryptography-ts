@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class MyPublicationsOldComponent implements OnInit, OnDestroy {
     public router: Router,
     public dialogService: DialogService,
     public publicationService: PublicationService,
-    private accountService: AccountService,
+    private accountService: AccountService
   ) {
   }
 

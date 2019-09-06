@@ -9,6 +9,8 @@ import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { AccountService } from '../../core/services/account.service';
 import { ValidationService } from '../../core/validator/validator.service';
 import { OauthService } from 'helper-lib';
+import { UtilService } from '../../core/services/util.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-new-password',
@@ -64,8 +66,14 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.unsubscribe$)
       )
-      .subscribe(recoverData => {
-        this.router.navigate(['/']);
+      .subscribe(() => {
+        if (isPlatformBrowser(this.platformId) && UtilService.getCookie('redirectUrl')) {
+          const redirectUrl = UtilService.getCookie('redirectUrl');
+          this.router.navigate([redirectUrl]);
+          UtilService.removeCookie('redirectUrl');
+        } else {
+          this.router.navigate(['/']);
+        }
       }, (err) => {
         this.errorService.handleError('login', {status: 404});
       });

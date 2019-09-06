@@ -145,6 +145,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
           }
         }
       ),
+      takeUntil(this.unsubscribe$)
     )
       .subscribe(
         res => {
@@ -199,6 +200,14 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.listType = this.publication.listView ? 'single' : 'grid';
         this.buildForm();
         this.isMyPublication = this.publication.memberStatus == 1;
+        if (this.publication.memberStatus == 2) {
+          this.pubSelectData = [
+            {
+              'value': '3',
+              'text': 'Contributor',
+            }
+          ];
+        }
         if (this.isMyPublication || this.publication.memberStatus == 2) {
           this.requests = this.publication.requests;
           this.pendings = this.publication.invitations;
@@ -421,24 +430,34 @@ export class PublicationComponent implements OnInit, OnDestroy {
     if (event.target) {
       this.resizeTextareaElement(event.target);
     }
-    this.editTitle = true;
-    this.textChanging = true;
-    this.publicationForm.controls['title'].setValue(event.target.value);
+    if (event.target.value !== this.publication.title) {
+      this.editTitle = true;
+      this.textChanging = true;
+      this.publicationForm.controls['title'].setValue(event.target.value);
+    } else {
+      this.editTitle = false;
+      this.textChanging = false;
+    }
   }
 
   onDescriptionChange(event) {
     if (event.target) {
       this.resizeTextareaElement(event.target);
     }
-    this.textChanging = true;
-    this.editDesc = true;
     this.publicationDesc = event.target.value;
-    if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
-      this.publicationForm.controls['description'].setValue(this.publicationDesc);
-    } else if (!this.publicationDesc.trim().length) {
-      this.publicationForm.controls['description'].setValue('');
+    if (this.publicationDesc !== this.publication.description) {
+      this.textChanging = true;
+      this.editDesc = true;
+      if (this.publicationDesc.trim().length && (this.publicationDesc !== this.publication.description)) {
+        this.publicationForm.controls['description'].setValue(this.publicationDesc);
+      } else if (!this.publicationDesc.trim().length) {
+        this.publicationForm.controls['description'].setValue('');
+      }
+      this.publicationForm.controls['description'].setValue(event.target.value);
+    } else {
+      this.editDesc = false;
+      this.textChanging = false;
     }
-    this.publicationForm.controls['description'].setValue(event.target.value);
   }
 
   dropdownSelect($event) {
@@ -512,14 +531,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.publicationService.deleteMember(this.publication.slug, member.publicKey).subscribe(
       () => {
         this.getPublication();
-      }
-    );
-  }
-
-  deletePublication() {
-    this.publicationService.deletePublication(this.publication.slug).subscribe(
-      () => {
-        this.router.navigate(['/p/my-publications']);
       }
     );
   }
