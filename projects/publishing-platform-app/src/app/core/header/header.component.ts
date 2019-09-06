@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
 import { ContentService } from '../services/content.service';
 import { ErrorService } from '../services/error.service';
@@ -23,59 +23,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public defaultSearchData = null;
   private unsubscribe$ = new ReplaySubject<void>(1);
   public headerData = {};
-  public items = [
-    {text: 'Science', slug: 'science'},
-    {text: 'History', slug: 'history'},
-    {text: 'Geek', slug: 'geek'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Science', slug: 'science'},
-    {text: 'History', slug: 'history'},
-    {text: 'Geek', slug: 'geek'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Science', slug: 'science'},
-    {text: 'History', slug: 'history'},
-    {text: 'Geek', slug: 'geek'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Science', slug: 'science'},
-    {text: 'History', slug: 'history'},
-    {text: 'Geek', slug: 'geek'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-    {text: 'Science', slug: 'science'},
-    {text: 'History', slug: 'history'},
-    {text: 'Geek', slug: 'geek'},
-    {text: 'Gardens', slug: 'gardens'},
-    {text: 'Entertainment', slug: 'entertainment'},
-    {text: 'Education', slug: 'education'},
-    {text: 'Outdoors', slug: 'outdoors'},
-    {text: 'Quotes', slug: 'quotes'},
-  ];
+  public tagsList = [];
 
   headerRoutesList = {
     '' : '/',
@@ -98,9 +46,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountService.accountUpdated$
       .pipe(
+        switchMap(() => this.contentService.getAllTags()),
         takeUntil(this.unsubscribe$)
       )
       .subscribe(result => {
+        this.tagsList = result;
         this.updateHeaderData();
       });
   }

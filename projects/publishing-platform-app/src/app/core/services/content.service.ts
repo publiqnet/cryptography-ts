@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IPublications, Publications } from './models/publications';
 import { Author } from './models/author';
 import { Publication } from './models/publication';
+import { Tag } from './models/tag';
 
 export enum OrderOptions {
   author_desc = <any>'+author',
@@ -700,5 +701,13 @@ export class ContentService {
   updateContentPublication(publicationSlug: string, uri: string): Observable<any> {
     const url = this.contentUrl + `/publication`;
     return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, publicationSlug});
+  }
+
+  getAllTags(): Observable<any> {
+    return this.httpHelperService.customCall(HttpMethodTypes.get, this.url + '/tags')
+        .pipe(map(tagsData => {
+          tagsData = tagsData && tagsData.length ? tagsData.map(nextOption => new Tag(nextOption)) : [];
+          return tagsData;
+        }));
   }
 }
