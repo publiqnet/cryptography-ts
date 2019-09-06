@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { forkJoin, of, ReplaySubject } from 'rxjs';
+import { forkJoin, of, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { Content } from '../../core/services/models/content';
@@ -55,7 +55,8 @@ export class EditContentComponent implements OnInit, OnDestroy {
   public submitError: boolean = false;
   public titleText: string;
   public contentLoaded: boolean = false;
-
+  tag: string = '';
+  tagSubject = new Subject<any>();
   private unsubscribe$ = new ReplaySubject<void>(1);
 
   constructor(
@@ -422,6 +423,17 @@ export class EditContentComponent implements OnInit, OnDestroy {
           this.draftId = draft.id;
         }
       });
+      this.tagSubject
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
+      tag => {
+        if (typeof tag == 'string') {
+          this.tag = tag;
+        }
+      }
+    );
   }
 
   saveDraft(id = null) {
@@ -480,6 +492,21 @@ export class EditContentComponent implements OnInit, OnDestroy {
 
   publicationChange(event) {
     this.contentForm.controls['publication'].setValue(event.value);
+  }
+
+  enterTag() {
+    if (this.tag) {
+      this.tags = [...this.tags, this.tag];
+      this.tag = '';
+    }
+  }
+
+  removeTag(index) {
+    this.tags.splice(index, 1);
+  }
+
+  textChange(e) {
+    this.tagSubject.next(e);
   }
 
   submit() {
