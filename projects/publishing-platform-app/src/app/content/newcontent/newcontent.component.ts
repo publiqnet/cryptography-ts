@@ -12,6 +12,7 @@ import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publications } from '../../core/services/models/publications';
 import { Draft } from '../../core/services/models/draft';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 declare const $: any;
 
@@ -66,7 +67,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
     public translateService: TranslateService,
     private contentService: ContentService,
     private draftService: DraftService,
-    private publicationService: PublicationService
+    private publicationService: PublicationService,
+  public uiNotificationService: UiNotificationService,
   ) {
   }
 
@@ -382,6 +384,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.hasDraft = true;
           const message = this.translateService.instant('content.draft_saved');
           this.draftId = draft.id;
+          this.uiNotificationService.success('Success', 'Your draft successfully updated');
         }
       });
     this.tagSubject

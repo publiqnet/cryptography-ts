@@ -9,6 +9,7 @@ import { ErrorService } from '../services/error.service';
 import { Search } from '../services/models/search';
 import { Publications } from '../services/models/publications';
 import { DecimalPipe } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -25,7 +26,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public headerData = {};
   headerRoutesList = {
     '' : '/',
-    'wallet' : '/wallet',
     'new-story' : '/content/newcontent',
     'profile' : '/content/newcontent',
     'publications' : '/p/my-publications',
@@ -108,11 +108,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
         {
           icon: 'pbq',
           text: this.accountService.loggedIn() ? this._decimalPipe.transform(this.accountService.accountInfo.balance, '0.0-8') + ' PBQ' : '',
-          value: 'wallet',
           inner: {
             'text': 'Wallet',
-            'icon': 'arrow-right'
+            'icon': 'arrow-right',
           },
+          value: 'wallet',
           seperator: true
         },
         {
@@ -153,6 +153,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       } else if (event.slug == 'profile') {
         this.router.navigate([`/a/${this.accountService.accountInfo.publicKey}`]);
+      } else if (event.slug == 'wallet') {
+        window.open(environment.wallet_url, '_blank');
       } else if (this.headerRoutesList[event.slug]) {
         this.router.navigate([this.headerRoutesList[event.slug]]);
       }

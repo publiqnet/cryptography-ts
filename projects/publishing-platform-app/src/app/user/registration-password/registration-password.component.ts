@@ -26,6 +26,9 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   public registerError: string = '';
   public token;
   public stringToSign;
+  showPhase: boolean = false;
+  loginAccount: boolean = true;
+  generatedPhase: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -97,6 +100,8 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((data: any) => {
           this.accountService.brainKeyEncrypted = data.brainKey;
+          this.showPhase = true;
+          console.log('created');
           return this.accountService.accountAuthenticate(data.token);
         }),
         takeUntil(this.unsubscribe$)
@@ -107,12 +112,18 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
           this.router.navigate([redirectUrl]);
           UtilService.removeCookie('redirectUrl');
         } else {
-          this.router.navigate(['/']);
+          if (this.loginAccount) {
+            this.router.navigate(['/']);
+          }
         }
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('register', err);
       });
+  }
+
+  doneRegistration () {
+    this.loginAccount = true;
   }
 
   ngOnDestroy() {
