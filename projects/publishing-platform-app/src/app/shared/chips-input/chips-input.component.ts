@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy } from '@angular/core';
 })
 export class ChipsInputComponent implements OnInit, OnChanges {
   @Input() tagsArray = [];
+  @Input() placeholder = '';
   @Output() change = new EventEmitter();
   @Output() remove = new EventEmitter();
   @Output() keyupEnter = new EventEmitter();

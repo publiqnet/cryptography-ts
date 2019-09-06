@@ -53,7 +53,6 @@ import { NgxMasonryModule } from 'ngx-masonry';
 import { UtilService } from './services/util.service';
 import { UiNotificationService } from './services/ui-notification.service';
 import { NotificationCardComponent } from 'ui-lib';
-import { SearchComponent } from '../search/search/search.component';
 import { SearchModule } from '../search/search.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
