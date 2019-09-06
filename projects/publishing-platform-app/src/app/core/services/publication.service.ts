@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 
-import { BehaviorSubject, Observable, Subject, from } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, from, of } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -8,6 +8,10 @@ import { Publication } from './models/publication';
 import { PageOptions, Content } from './models/content';
 import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-lib';
 import { IPublications, Publications } from './models/publications';
+import { AccountService } from './account.service';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+import { UtilService } from './util.service';
 
 @Injectable()
 export class PublicationService {
@@ -26,7 +30,8 @@ export class PublicationService {
 
   private readonly url = environment.backend + '/api/publication';
 
-  constructor(private httpHelperService: HttpHelperService, private httpObserverService: HttpObserverService) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router, private accountService: AccountService, private httpHelperService: HttpHelperService, private httpObserverService: HttpObserverService) { }
 
   public set RefreshObserver(name: any) {
     if (this.observers.hasOwnProperty(name)) {
@@ -97,13 +102,17 @@ export class PublicationService {
     return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/` + 'remove-article', { dsId: dsId });
   }
 
-  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug).pipe(
-    tap(() => {
-      this.observers['getMyPublications'].refresh = true;
-    })
-  )
+  deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug);
 
-  requestBecomeMember = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
+  requestBecomeMember = (slug: string): Observable<any> => {
+    if (this.accountService.loggedIn()) {
+      return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');
+    } else {
+      UtilService.setRedirectUrl(this.router.url);
+      this.router.navigate(['/user/login']);
+      return of([]);
+    }
+  }
 
   cancelBecomeMember = (slug: string): Observable<any> => {
     return this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug + '/request')
@@ -141,7 +150,6 @@ export class PublicationService {
   cancelInvitation = (body: any): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, `${this.url}/cancel-invitation/${body}`);
 
   getPublications(fromSlug = null, count: number = 10): Observable<any> {
-    console.log('tttt');
     return this.httpHelperService.call(HttpMethodTypes.get, `${this.url}s/${count}/${fromSlug}`)
       .pipe(
         filter(data => data != null),
@@ -194,7 +202,15 @@ export class PublicationService {
 
   getPublicationSubscribers = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.get, this.url + `/subscribers/${slug}`);
 
-  follow = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/subscribe`);
+  follow = (slug: string): Observable<any> => {
+    if (this.accountService.loggedIn()) {
+      return this.httpHelperService.call(HttpMethodTypes.post, this.url + `/${slug}/subscribe`);
+    } else {
+      UtilService.setRedirectUrl(this.router.url);
+      this.router.navigate(['/user/login']);
+      return of([]);
+    }
+  }
 
   unfollow = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + `/${slug}/subscribe`);
 

@@ -581,7 +581,7 @@
 .button-tabber--profile {
   margin: 0 0 20px;
 }
-.no-stories{
+.no-stories, .no-drafts {
   min-height: 60vh;
   display: flex;
   align-items: center;
@@ -598,6 +598,7 @@
     text-align: center;
   }
 }
+
 .stories {
   ::ng-deep {
     button.button.delete-draft {
@@ -622,6 +623,9 @@
         &:hover + .tooltip_text{
           visibility: visible;
         }
+      }
+      div:first-child {
+        min-width: 150px;
       }
       .tooltip_text {
         visibility: hidden;
@@ -723,6 +727,23 @@
       opacity: 1;
       pointer-events: auto;
       visibility: visible;
+      ::ng-deep {
+        input {
+          margin: 20px 0px;
+        }
+      }
+      .password-container {
+        .password-block {
+          word-break: break-all;
+          text-align: center;
+          font-weight: 700;
+        }
+      }
+      .text-error {
+        color: $red;
+        display: block;
+        margin-bottom: 10px;
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publications } from '../../core/services/models/publications';
+import { Draft } from '../../core/services/models/draft';
 
 declare const $: any;
 
@@ -27,15 +28,12 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private editorContentInitObject;
   private editorContentObject;
   private titleObject;
-  private editorTitleInitObject;
-  private editorTitleObject;
   public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
   title: string;
   content: string;
-  titleOptions: object;
   contentOptions: object;
   public publicationsList = [];
   public currentContentData = {};
@@ -52,9 +50,11 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private uploadedContentUri: string;
   public submitError: boolean = false;
   public titleText: string;
+  public draftId: number;
+  public selectedPublication: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);
-  @Input() draftId: number;
+  @Input() draft?: Draft;
 
   constructor(
     private router: Router,
@@ -73,13 +73,33 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.initSubscribes();
   }
 
+  initDraftData() {
+    this.hasDraft = true;
+    // if (Array.isArray(this.draft.tags)) {
+    //   this.tags = this.draft.tags;
+    // }
+    this.contentForm.controls['content'].setValue(this.draft.content);
+    this.content = this.draft.content;
+    this.title = this.draft.title;
+    if (this.draft.publication) {
+      this.selectedPublication = this.draft.publication;
+      this.contentForm.controls['publication'].setValue(this.selectedPublication);
+    }
+    this.contentUris = this.draft.contentUris;
+    this.draftId = this.draft.id;
+    if (this.editorContentObject) {
+      this.editorContentObject.html.set(this.content);
+      this.initSubmitFormView();
+    }
+  }
+
   private buildForm(): void {
     this.contentForm = this.formBuilder.group({
-      title: new FormControl(this.title, [
-        Validators.required,
-        Validators.maxLength(this.titleMaxLenght),
-        ValidationService.noWhitespaceValidator
-      ]),
+      // title: new FormControl(this.title, [
+      //   Validators.required,
+      //   Validators.maxLength(this.titleMaxLenght),
+      //   ValidationService.noWhitespaceValidator
+      // ]),
       // tags: new FormControl(this.tags, [Validators.required]),
       content: new FormControl(this.content, [
         Validators.required,
@@ -151,83 +171,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.titleOptions = {
-      key: environment.froala_editor_key,
-      toolbarInline: true,
-      toolbarButtons: ['bold', 'italic', 'paragraphFormat', 'insertLink', 'formatOL', 'formatUL', 'quote'],
-      language: (this.accountService.accountInfo && this.accountService.accountInfo.language == 'jp') ? 'ja' : 'en_us',
-      dragInline: false,
-      pastePlain: true,
-      imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
-      videoEditButtons: [],
-      quickInsertButtons: ['image', 'video'],
-      imageUpload: true,
-      imageUploadMethod: 'POST',
-      paragraphFormat: {
-        N: 'Normal',
-        H2: 'H2',
-        H3: 'H3',
-        H4: 'H4'
-      },
-      listAdvancedTypes: false,
-      linkText: false,
-      linkInsertButtons: ['linkBack'],
-      imageUploadURL: this.contentUrl,
-      videoAllowedTypes: ['mp4', 'webm', 'ogg'],
-      imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
-      charCounterMax: 65535,
-      charCounterCount: false,
-      lineBreakerTags: ['table', 'hr', 'form'],
-      linkAlwaysBlank: true,
-      imageMaxSize: 5 * 1024 * 1024, // 5MB
-      pasteDeniedAttrs: ['class', 'id', 'style', 'srcset'],
-      imageResize: false,
-      imageEditButtons: ['imageCaption'],
-      imagePasteProcess: true,
-      imageDefaultWidth: null,
-      requestHeaders: {
-        'X-API-TOKEN': (this.accountService.accountInfo && this.accountService.accountInfo.token)
-          ? this.accountService.accountInfo.token
-          : ''
-      },
-      events: {
-        'froalaEditor.initialized': (e, editor) => {
-          this.titleObject = e;
-          this.editorTitleObject = editor;
-        },
-        'froalaEditor.html.set': function (e, editor) {
-          editor.events.trigger('charCounter.update');
-        },
-        'froalaEditor.contentChanged': (e, editor) => {
-          // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
-        },
-        'froalaEditor.image.inserted': (e, editor, img, response) => {
-          if (response) {
-            const responseData = JSON.parse(response);
-            this.contentUris[responseData.uri] = responseData.link;
-            const uploadedImage = responseData.content_original_sample_file;
-
-            if (img && img.get(0).height) {
-              $(img).attr('height', img.get(0).height);
-            }
-
-            if (img && img.get(0).width) {
-              $(img).attr('width', img.get(0).width);
-            }
-
-            $(img).closest('p').find('br:first').remove();
-            $(img).closest('p').after('<p data-empty="true"><br></p>');
-          }
-        },
-        'froalaEditor.image.error': (e, editor, error, response) => {
-        },
-        'froalaEditor.video.inserted': function (e, editor, $video) {
-          $video.closest('p').find('br:last').remove();
-          $video.closest('p').after('<p data-empty="true"><br></p>');
-        }
-      }
-    };
-
     this.contentOptions = {
       key: environment.froala_editor_key,
       toolbarInline: true,
@@ -271,12 +214,17 @@ export class NewContentComponent implements OnInit, OnDestroy {
         'froalaEditor.initialized': (e, editor) => {
           this.contentObject = e;
           this.editorContentObject = editor;
+          if (this.draft) {
+            this.initDraftData();
+          }
         },
         'froalaEditor.html.set': function (e, editor) {
           editor.events.trigger('charCounter.update');
         },
-        'froalaEditor.contentChanged': (e, editor) => {
-          // this.currentEditorLenght = this.calculateContentLength(editor.html.get());
+        'froalaEditor.keyup': (e, editor, keyupEvent) => {
+          if (keyupEvent.which == 13 && !this.titleText && this.editorContentObject) {
+            this.setDefaultTitle();
+          }
         },
         'froalaEditor.image.inserted': (e, editor, img, response) => {
           if (response) {
@@ -310,6 +258,20 @@ export class NewContentComponent implements OnInit, OnDestroy {
     };
 
     this.addCustomButton();
+  }
+
+  setDefaultTitle() {
+    const contentBlocks = this.editorContentObject.html.blocks();
+    contentBlocks.forEach((node) => {
+      const nodeHtml = $.trim(node.innerHTML);
+      if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/) && !this.titleText) {
+        const index = '_' + Math.random().toString(36).substr(2, 9);
+        const firstTag = '<h1 data-title="true" data-index="' + index + '">';
+        const lastTag = '</h1>';
+        this.titleText = nodeHtml;
+        $(node).replaceWith(firstTag + nodeHtml + lastTag);
+      }
+    });
   }
 
   addCustomButton () {
@@ -347,11 +309,11 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.titleText = '';
     this.mainCoverImageUrl = '';
     this.mainCoverImageUri = '';
-    if (this.editorTitleObject) {
-      const titleBlocks = this.editorTitleObject.html.blocks();
-      titleBlocks.forEach((node) => {
+    if (this.editorContentObject) {
+      const contentBlocks = this.editorContentObject.html.blocks();
+      contentBlocks.forEach((node) => {
         const nodeHtml = $.trim(node.innerHTML);
-        if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
+        if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/) && node.hasAttribute('data-title') && node.hasAttribute('data-index')) {
           if (this.titleText == '') {
             this.titleText = nodeHtml;
           }
@@ -436,14 +398,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
     }
   }
 
-  initTitleFroala($event) {
-    this.editorTitleInitObject = $event;
-    this.editorTitleInitObject.initialize();
-    setTimeout(() => {
-      this.editorTitleObject.$placeholder[0].textContent = this.translateService.instant('content.title');
-    }, 20);
-  }
-
   initFroala($event) {
     this.editorContentInitObject = $event;
     this.editorContentInitObject.initialize();
@@ -488,8 +442,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if (!this.contentForm.value.content) {
+    if (!this.contentForm.value.content || !this.titleText) {
       this.submitError = true;
+      console.log('not valid content');
       return false;
     }
     const password = this.contentForm.value.password;
@@ -498,14 +453,15 @@ export class NewContentComponent implements OnInit, OnDestroy {
     const contentBlocks = this.editorContentObject.html.blocks();
     const calls = [];
 
-    const titleBlocks = this.editorTitleObject.html.blocks();
-    const allContentBlocks = [ ...titleBlocks, ...contentBlocks];
-
-    allContentBlocks.forEach((node) => {
+    contentBlocks.forEach((node) => {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
           calls.push(this.contentService.uploadTextFiles(nodeHtml));
+        } else {
+          const firstTag = '<h1 data-title="true">';
+          const lastTag = '</h1>';
+          calls.push(of(firstTag + nodeHtml + lastTag));
         }
       } else if (nodeHtml.match(/<img/)) {
         let outerText = node.outerHTML;
@@ -578,7 +534,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
     return this.contentService.unitUpload(contentData)
       .pipe(
         switchMap((data: any) => {
-          console.log(data);
           this.uploadedContentUri = data.uri;
           this.contentId = data.contentId;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);

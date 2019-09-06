@@ -3,15 +3,9 @@
     <div class=" offset-lg-2 col-lg-8 col-xl-9">
       <form class="form" [formGroup]="contentForm">
         <div class="post-field">
-          <!--title-->
-          <!--<div class="post-field__areas">-->
-            <!--<textarea [froalaEditor]="titleOptions" rows="10" formControlName="title"-->
-                      <!--(froalaInit)="initTitleFroala($event)"></textarea>-->
-          <!--</div>-->
           <!--content-->
           <div id="editor-froala">
-            <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required
-                      (froalaInit)="initFroala($event)"></textarea>
+            <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
           </div>
         </div>
 
@@ -51,8 +45,7 @@
             <span>Add cover</span>
           </label>
         </div>
-        <ui-content-single className="boost-post-img" type="grid"
-                           [contentData]="currentContentData"></ui-content-single>
+        <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
       </ng-container>
       <ng-template #isBoosted>
         <!--for boosting-->
@@ -87,9 +80,7 @@
           <ui-input className="add-tag-input"></ui-input>
 
           <span class="add-tag__label">Add to Publication</span>
-          <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList"
-                       [optionsData]="publicationsList" [type]="'withIcon'"></ui-dropdown>
-
+          <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList.length" [optionsData]="publicationsList" [type]="'withIcon'" [selectedOptionValue]="selectedPublication"></ui-dropdown>
           <!--for mobile-->
           <!--FOR ADDING OR CHANGING COVER PIC -->
           <ng-container *ngIf="(!boostField || boostView == 'preview')">
