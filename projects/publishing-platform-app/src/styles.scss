@@ -1833,6 +1833,10 @@ p.sponsored{
     max-width: 100%;
     margin: auto;
     height: auto;
+
+    &.fr-dib {
+      margin: 40px auto 0;
+    }
   }
 
   h2, h3, h4, h5 {

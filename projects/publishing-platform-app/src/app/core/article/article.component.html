@@ -34,8 +34,15 @@
   </div>
 </div>
 
-{{article | json}}
-
+<div *ngIf="article && article.nextVersions.length" class="article__old-warning">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[0].uri]">here</a>. 
+      </div>
+    </div>
+  </div>
+</div>
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
@@ -44,6 +51,18 @@
   </div>
 </div>
 <div class="container" *ngIf="article">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="article__author">
+        <ui-avatar [avatarData]="article.author"></ui-avatar>
+        <div>
+          <a routerLink="/a/{{article.author.slug}}" class="article__author__name">{{article.author.fullName}}</a>
+          <span class="article__author__date">{{formatDate(article.published, 'DD MMM, YYYY')}}</span>
+        </div>
+        <ui-button size="small" type="primary" text="Follow"></ui-button>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-8 offset-md-2">
       <h1 class="article__title">{{article.title}}</h1>
@@ -64,11 +83,11 @@
   </div> -->
   <div class="row article__versions">
     <div class="col-md-8 offset-md-2">
-      <div class="article__version" (click)="openVersion(version.uri)" *ngFor="let version of article.previousVersions;">
+      <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">
         <span>Updated: {{formatDate(version.published, 'hh:mm, MMM DD')}}</span>
         <h2>{{version.title}}</h2>
         <i class="icon-arrow-right article__version__arrow"></i>
-      </div>
+      </a>
     </div>
   </div>
 </div>

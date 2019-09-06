@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ContentService } from '../services/content.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, ReplaySubject } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -34,6 +34,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   constructor(
     private contentService: ContentService,
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     protected sanitizer: DomSanitizer,
     private accountService: AccountService,
   ) {
@@ -92,11 +93,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   formatDate(date, format) {
-    return moment(new Date(date * 1000), format);
-  }
-
-  openVersion(slug) {
-    console.log(slug);
+    return moment(date * 1000).format(format);
   }
 
   ngOnDestroy(): void {
