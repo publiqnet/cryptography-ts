@@ -4,20 +4,17 @@ import {
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  Optional,
   Input,
   ViewChild,
   ElementRef,
-  AfterViewInit,
-  ContentChild, HostListener, Output
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
-import { debounceTime, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Account } from '../../core/services/models/account';
-import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { Content } from '../../core/services/models/content';
@@ -30,8 +27,10 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
-import { style } from '@angular/animations';
 import { CryptService } from '../../core/services/crypt.service';
+import { Publications } from '../../core/services/models/publications';
+import { PublicationService } from '../../core/services/publication.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 enum ModalConfirmActions {
   DeleteOne,
@@ -52,7 +51,7 @@ enum ModalTitles {
 export class AuthorComponent implements OnInit, OnDestroy {
 
   public isMasonryLoaded = false;
-
+  public publicationsList = [];
   bioTextElement: ElementRef;
   authorNameElement: ElementRef;
 
@@ -144,6 +143,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   lastName: string;
   bio: string;
   photo: File;
+  editMode: boolean = false;
+  modalProps: any = {};
   public boostTab = [];
   public boostPrice: number;
   public boostDays: number;
@@ -155,7 +156,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private notification: NotificationService,
+    private uiNotificationService: UiNotificationService,
     private accountService: AccountService,
     public dialogService: DialogService,
     private errorService: ErrorService,
@@ -166,6 +167,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     private safeStylePipe: SafeStylePipe,
     protected sanitizer: DomSanitizer,
     public cryptService: CryptService,
+    private publicationService: PublicationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
   }
@@ -208,7 +210,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           } else {
             return this.contentService.getContents(this.authorId, this.startFromUri, this.storiesDefaultCount);
           }
-
         }),
         takeUntil(this.unsubscribe$)
       )
@@ -239,7 +240,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
           } else if (data.action == 'loadAuthorStories') {
             console.log('--error--', data.message);
           } else if (['getUserDrafts', 'deleteDraft', 'deleteAllDrafts'].includes(data.action)) {
-            this.notification.error(data.message);
+            this.uiNotificationService.error('Error', data.message);
           }
         }
       );
@@ -295,7 +296,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
       el.style.height = newHeight + 'px';
     }
   }
-
 
   onNameEdit(event) {
     if (event.target) {
@@ -371,6 +371,9 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (e == 2 && !this.drafts) {
       this.loading = true;
       this.getDrafts();
+    } else if (e == 3) {
+      this.loading = true;
+      this.getMyPublications();
     }
   }
 
@@ -397,6 +400,41 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.drafts = drafts;
         this.loading = false;
       });
+  }
+
+  getMyPublications() {
+    this.publicationsList = [];
+    this.publicationService.getMyPublications()
+      .pipe(
+        map((publicationsData: Publications) => {
+          const publicationsList = [...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          return publicationsList;
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(publicationsList => {
+        if (publicationsList.length) {
+          publicationsList.forEach(publication => {
+            const text = publication.title ? publication.title : publication.description;
+            const nextPublication = {
+              'value': publication.slug,
+              'text': text,
+              'metaData': {
+                'image': publication.logo ? publication.logo : publication.cover,
+                'first_name': text,
+                'last_name': '',
+                'fullName': text
+              }
+            };
+            this.publicationsList.push(nextPublication);
+          });
+        }
+        console.log(this.publicationsList);
+      });
+  }
+
+  historyClicked(event) {
+    console.log(event);
   }
 
   deleteDraft(id: number, index: number) {
@@ -599,6 +637,14 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if ((event.code === 'Enter' || event.code === 'NumpadEnter') && !this.passwordValidator() && callBackFunc !== '') {
       this[callBackFunc]();
     }
+  }
+
+  changePublication(event, contentUri) {
+    this.contentService.updateContentPublication(event, contentUri)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(data => {
+        this.uiNotificationService.success('Success', 'Publication Was Successfully Updated');
+      });
   }
 
   ngOnDestroy() {

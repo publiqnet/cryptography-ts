@@ -16,6 +16,7 @@ export interface ContentOptions {
     published: string;
     author: any;
     publication: string;
+    tags?: any;
 }
 
 export class Content {
@@ -29,11 +30,7 @@ export class Content {
     views: number = 0;
     author: Author;
     image: string;
-    tags = [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-    ];
+    tags = [];
     view_count: number = 0;
     publication = null;
 
@@ -48,6 +45,8 @@ export class Content {
                 } else if (i == 'views' && options[i]) {
                     this.views = options[i];
                     this.view_count = this.views;
+                } else if (i == 'tags') {
+                    this[i] = (options[i] && options[i].length) ? options[i].map(tag => tag['name']) : [];
                 } else {
                     this[i] = options[i] ? options[i] : '';
                 }

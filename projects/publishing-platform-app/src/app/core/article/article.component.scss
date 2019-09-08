@@ -1,42 +1,175 @@
-.inner-content-wrap.article-full-content {
-  .content {
-    max-width: 100%;
-    margin-top: 50px;
-    .article-title {
-      font-family: "Vollkorn", sans-serif;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 40px;
-      line-height: 56px;
-      color: #191B1E;
+@import "../../../assets/css/variables.scss";
+
+.article {
+  &__old-warning {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: pbq-color($yellow, 400);
+
+    ::ng-deep a { color: inherit; font-weight: 600; }
+  }
+
+  &__cover {
+    width: calc(100% + 10px); height: 400px;
+    background-color: pbq-color($grey, 100);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    margin: 0 0 0 -5px;
+
+    @include media-md {
+      height: 280px;
     }
-    .article-author {
-      display: flex;
-      align-items: center;
-      margin-bottom: 50px;
-      .author-info {
-        margin-left: 20px;
-        &__name {
-          font-family: "Open Sans", sans-serif;
-          font-style: normal;
-          font-weight: 600;
-          font-size: 17px;
-          line-height: 20px;
-          color: #2B2B2B;
-          vertical-align: top;
-        }
-        &__published {
-          display: block;
-          margin-top: -10px;
+  }
+
+  &__author {
+    margin: 55px 0 0 -70px;
+    display: flex;
+
+    ::ng-deep .avatar {
+      width: 50px; height: 50px;
+      font-size: 14px;
+      margin: -5px 20px 0 0;
+
+      span {
+        font-size: 17px!important;
+      }
+    }
+
+    ::ng-deep .button {
+      line-height: 21px;
+      font-size: 13px;
+      height: 25px;
+      margin: 0 0 0 10px;
+    }
+
+    &__name {
+      display: block;
+      font: 600 17px/20px $open-sans;
+      color: pbq-color($lightgrey, 700);
+      margin: 0 0 5px;
+    }
+
+    &__date {
+      display: block;
+      font: 400 15px/1 $open-sans;
+      color: pbq-color($grey, 500);
+    }
+
+    @include media-md {
+      margin: 55px 0 0;
+
+      ::ng-deep .avatar {
+        margin: -5px 10px 0 0;
+      }
+    }
+  }
+
+  &__content {
+    margin: 0 0 80px;
+  }
+
+  &__tag {
+    display: inline-block;
+    font: 400 15px/20px $open-sans;
+    color: pbq-color($lightgrey, 700);
+    border: 1px solid pbq-color($grey, 300);
+    border-radius: 5px;
+    margin: 0 10px 10px 0;
+    padding: 6.5px 15px;
+    transition: 300ms background-color;
+    height: 35px;
+    cursor: pointer;
+
+    &:last-of-type {
+      margin: 0 0 10px;
+    }
+
+    &:hover {
+      background-color: pbq-color($grey, 100);
+    }
+  }
+
+  &__footing {
+
+    > div{
+      border: 1px solid pbq-color($grey, 200);
+      border-left: 0;
+      border-right: 0;
+      padding-bottom: 32px;
+      padding-top: 32px;
+
+      &:last-child {
+        text-align: right;
+      }
+    }
+  }
+
+  &__report {
+    display: inline-block;
+    font: 400 13px/18px $open-sans;
+    color: pbq-color($grey, 500);
+    cursor: pointer;
+  }
+
+  &__likes {
+    display: inline-block;
+    margin: 0 0 0 25px;
+
+    span {
+      font: 400 13px/18px $open-sans;
+      color: pbq-color($grey, 700);
+      margin: 0 10px 0 0;
+    }
+
+    ui-button {
+      vertical-align: middle;
+    }
+  }
+
+  &__versions { 
+    margin: 0 0 30px;
+  }
+
+  &__version {
+    display: block;
+    position: relative;
+    padding: 20px 0;
+    border-bottom: 1px solid pbq-color($grey, 200);
+    cursor: pointer;
+
+    span {
+      display: block;
+      font: 600 12px/15px $open-sans;
+      color: pbq-color($grey, 500);
+      margin: 0 0 10px;
+    }
+
+    h2 {
+      color: $grey;
+      font: 400 20px/28px $vollkorn;
+      transition: color 300ms;
+      margin: 0;
+    }
+
+    &__arrow {
+      color: pbq-color($grey, 500);;
+      position: absolute;
+      top: 50%; right: 0;
+      transition: opacity 300ms;
+      opacity: 0;
+    }
+
+    &:hover, &:focus {
+      h2 {
+        color: pbq-color($lightgrey, 700);
+      }
+
+      .article__version {
+        &__arrow {
+          opacity: 1;
         }
       }
     }
-    .follow-button {
-      margin-left: 10px;
-      margin-top: -15px;
-    }
   }
-}
-.article-main-content {
-  margin-top: 20px;
 }

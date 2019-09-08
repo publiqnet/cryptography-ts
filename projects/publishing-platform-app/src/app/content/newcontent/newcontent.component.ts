@@ -12,6 +12,7 @@ import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
 import { Publications } from '../../core/services/models/publications';
 import { Draft } from '../../core/services/models/draft';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 declare const $: any;
 
@@ -27,8 +28,6 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private titleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -66,7 +65,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
     public translateService: TranslateService,
     private contentService: ContentService,
     private draftService: DraftService,
-    private publicationService: PublicationService
+    private publicationService: PublicationService,
+    public uiNotificationService: UiNotificationService
   ) {
   }
 
@@ -342,17 +342,12 @@ export class NewContentComponent implements OnInit, OnDestroy {
       },
       'published': '1563889376',
       'title': this.titleText,
-      'tags': [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-      ],
+      'tags': this.tags,
       'image': this.mainCoverImageUrl,
       'publication': {
-        'title': 'UX Planet',
-        'slug': 'ux_planet'
+        'slug': this.selectedPublication
       },
-      'view_count': '1K'
+      'view_count': 0
     };
   }
 
@@ -457,7 +452,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   enterTag() {
     if (this.tag) {
-      this.tags = [...this.tags, this.tag];
+      this.tags.push(this.tag);
       this.tag = '';
     }
   }
@@ -471,9 +466,11 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if (!this.contentForm.value.content || !this.titleText) {
-      this.submitError = true;
-      console.log('not valid content');
+    if (!this.contentForm.value.content) {
+      this.uiNotificationService.error('Error', 'Content Is Empty');
+      return false;
+    } else if (!this.titleText) {
+      this.uiNotificationService.error('Error', 'Title Is Empty');
       return false;
     }
     const password = this.contentForm.value.password;
@@ -567,7 +564,10 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.contentId = data.contentId;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 

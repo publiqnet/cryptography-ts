@@ -64,19 +64,21 @@
         <div class="col-lg-6 col-md-6 col-sm-7 col-10">
           <h1 class="profile-metadata__fullname">
             <label>
-                            <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true"
-                                      [placeholder]="isCurrentUser ? 'Add your name' : ''" #authorName
-                                      (keyup)="onNameEdit($event)" class="author-fullname" rows="1"
-                                      [readonly]="!isCurrentUser">{{author.fullName}}</textarea>
+              <textarea [attr.contenteditable]="isCurrentUser" contenteditable="true"
+                        [placeholder]="isCurrentUser ? 'Add your name' : ''" #authorName
+                        (keyup)="onNameEdit($event)" class="author-fullname" rows="1"
+                        [readonly]="!isCurrentUser">{{author.fullName}}</textarea>
               <i class="icon-edit editable-icon" [ngClass]="editTitleIcon ? 'active-icon' : ''"></i>
             </label>
           </h1>
           <h3 class="profile-metadata__bio">
             <label>
-                            <textarea [attr.contenteditable]="isCurrentUser"
-                                      [placeholder]="isCurrentUser ? 'Write a short bio' : ''" #bioText
-                                      (keyup)="onBioEdit($event)" class="author-bio" rows="1"
-                                      [readonly]="!isCurrentUser">{{author.bio}}</textarea>
+              <textarea [attr.contenteditable]="isCurrentUser"
+                        [placeholder]="isCurrentUser ? 'Write a short bio' : ''" #bioText
+                        (keyup)="onBioEdit($event)" class="author-bio" rows="1"
+                        [readonly]="!isCurrentUser">
+                {{author.bio}}
+              </textarea>
               <i class="icon-edit editable-icon" [ngClass]="editBioIcon ? 'active-icon' : ''"></i>
             </label>
           </h3>
@@ -220,14 +222,16 @@
         <div *ngIf="selectedTab == '3'">
           <div>
             <ui-content-single *ngFor="let data of publishedContent"
-                               (accountClick)="utilService.routerChangeHelper('account', $event.slug)"
-                               (contentClick)="utilService.routerChangeHelper('content',$event)"
-                               (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)"
-                               (boostClick)="onBoostModal('boost')"
-                               (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
-                               [contentData]="data" (historyClick)="testing($event)">
+             (accountClick)="utilService.routerChangeHelper('account', $event.slug)"
+             (contentClick)="utilService.routerChangeHelper('content', $event)"
+             (publicationClick)="utilService.routerChangeHelper('publication', $event.slug)"
+             (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
+             (publicationsListClick)="changePublication($event, data.uri)"
+             [contentData]="data"
+             (boostClick)="onBoostModal('boost')"
+             [publicationList]="publicationsList"
+             (historyClick)="historyClicked($event)">
             </ui-content-single>
-
           </div>
           <div class="no-stories"
                *ngIf="selectedTab && selectedTab == '3' && !loadingAuthor && articlesLoaded && !publishedContent.length">
