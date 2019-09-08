@@ -179,6 +179,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         debounceTime(500),
         switchMap((params: Params) => {
           this.authorId = params['id'];
+          this.clearData();
           return this.accountService.accountUpdated$;
         }),
         switchMap((data: any) => {
@@ -507,7 +508,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (this.authorForm.invalid) {
+    if (this.authorForm.invalid || this.author.publicKey != this.accountService.accountInfo.publicKey) {
       return;
     }
     const formData = new FormData();
@@ -646,14 +647,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
     this.accountService.follow(this.author.publicKey)
       .pipe(
-        switchMap((data: Params) => {
-          this.canFollow = false;
-          return this.accountService.getAuthorByPublicKey(this.authorId);
-        }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe((author: Account) => {
-        // this.initAuthorData(author);
+        this.canFollow = false;
       });
   }
 
@@ -665,24 +662,25 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
     this.accountService.unfollow(this.author.publicKey)
       .pipe(
-        switchMap((data: Params) => {
-          this.canFollow = true;
-          return this.accountService.getAuthorByPublicKey(this.authorId);
-        }),
         takeUntil(this.unsubscribe$)
       )
       .subscribe((author: Account) => {
-        // this.initAuthorData(author);
+        this.canFollow = true;
       });
   }
 
+  clearData() {
+    this.articlesLoaded = false;
+    this.isCurrentUser = false;
+    this.passwordVerified = false;
+    this.publishedContent = [];
+    this.drafts = [];
+    this.author = null;
+  }
+
   ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.articlesLoaded = false;
-      this.isCurrentUser = false;
-      this.passwordVerified = false;
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
-    }
+    this.clearData();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
