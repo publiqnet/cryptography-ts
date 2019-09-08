@@ -7,14 +7,14 @@
         <img class="publication-cover-blured" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
         <img class="publication-cover-visible" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
         <div class="col-lg-8 offset-lg-2">
-            <div class="publication-cover__guide" *ngIf="publication && !publication.cover && isMyPublication">
+            <div class="publication-cover__guide" *ngIf="publication && !publication.cover && (isMyPublication || publication.memberStatus == 2)">
                 <div class="icon-profile upload-icon"></div>
                 <div class="publication-cover__guide__texts">
                     <h4>Drop or upload a cover photo here!</h4>
                     <p>JPG, PNG up to 5mb, 1400x364px recommended.</p>
                 </div>
             </div>
-            <div class="publication-cover__actions" *ngIf="isMyPublication && !imageLoaded">
+            <div class="publication-cover__actions" *ngIf="(isMyPublication || publication.memberStatus == 2) && !imageLoaded">
                 <label for="addCover">
           <div class="cover__upload">
             <input type="file" (change)="uploadCover($event, coverContainer)">
@@ -35,17 +35,17 @@
             </div>
         </div>
     </div>
-    <div class="row publication-show-cover" *ngIf="isMyPublication && publication.hideCover">
+    <div class="row publication-show-cover" *ngIf="(isMyPublication || publication.memberStatus == 2) && publication.hideCover">
         <div class="col-lg-8 offset-lg-2">
             <ui-button text="Show Cover" iconClassName="preview" (btnClicked)="showCover()"></ui-button>
         </div>
     </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
-        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [ngClass]="{'publication-metadata__avatar--editable' : isMyPublication,
-                      'publication-metadata__avatar--editable-no-img' : isMyPublication && publication?.logo}">
-            <input *ngIf="isMyPublication" type="file" (change)="uploadLogo($event)">
+        <div class="col-lg-2 col-md-2 publication-metadata__avatar" [ngClass]="{'publication-metadata__avatar--editable' : (isMyPublication || publication.memberStatus == 2),
+                      'publication-metadata__avatar--editable-no-img' : (isMyPublication || publication.memberStatus == 2) && publication?.logo}">
+            <input *ngIf="(isMyPublication || publication.memberStatus == 2)" type="file" (change)="uploadLogo($event)">
             <ui-avatar size="large" [isSquaric]="true" [avatarData]="logoData"></ui-avatar>
-            <i class="icon-close" *ngIf="isMyPublication && publication?.logo" (click)="removeLogo()"></i>
+            <i class="icon-close" *ngIf="(isMyPublication || publication.memberStatus == 2) && publication?.logo" (click)="removeLogo()"></i>
         </div>
         <div class="col-lg-5 col-md-7 col">
             <form novalidate [formGroup]="publicationForm">
@@ -64,18 +64,18 @@
             </form>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
-            <ng-container *ngIf="isMyPublication">
+            <ng-container *ngIf="(isMyPublication || publication.memberStatus == 2)">
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
                     <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
+                    <span *ngIf="(editMode || textChanging) && isMyPublication" class="delete-pub" (click)="openPopup(true)">
+                            <i class="icon icon-delete"></i>
+                        </span>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
                 </ng-container>
             </ng-container>
             <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
-            <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication"></ui-button>
-            <span *ngIf="editMode || textChanging" class="delete-pub" (click)="openPopup(true)">
-                <i class="icon icon-delete"></i>
-            </span>
+            <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication && publication.memberStatus !== 2"></ui-button>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -133,7 +133,7 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="activeTab === 'stories' || !isMyPublication" [class.editable-disabled]="editMode">
+    <div class="row row-mob" *ngIf="activeTab === 'stories' || (!isMyPublication && publication.memberStatus !==2)" [class.editable-disabled]="editMode">
         <div class="stories col-12 col-lg-8 offset-lg-2" ngx-masonry [options]="masonryOptions" [useImagesLoaded]="true">
             <ui-content-single (accountClick)="utilService.routerChangeHelper('account',$event.slug)" (contentClick)="utilService.routerChangeHelper('content',$event)" (publicationClick)="utilService.routerChangeHelper('publication',$event.slug)" (tagClick)="utilService.routerChangeHelper('tag',$event)"
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
@@ -162,7 +162,7 @@
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData" [isNone]="false"></ui-dropdown>
                         <div class="custom-modal__buttons">
                             <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
-                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'" [disabled]="!chips.length || searchForm.invalid"></ui-button>
+                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'" [disabled]="chips.length==0 || searchForm.invalid"></ui-button>
                         </div>
                     </div>
                 </div>
@@ -176,11 +176,12 @@
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
                     [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1"
-                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]" [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
             </div>
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
-                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"></ui-user-single>
+                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"
+                    [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
             </div>
         </div>
     </div>
@@ -213,7 +214,7 @@
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
-            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (follow)="onFollowChange($event)" *ngFor="let follower of subscribers;"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (onFollowChange)="onFollowChange($event)" *ngFor="let follower of subscribers;" [showFollowButton]="currentUser.publicKey !== follower.publicKey"></ui-user-single>
         </div>
         <div class="not-found local" *ngIf="!subscribers.length">
             <img src="../../../assets/no_followers.svg" alt="">
@@ -222,18 +223,15 @@
     </div>
 </div>
 
+
+<!--create story-->
+<div class="container container--new-story container--new-story" *ngIf="currentUser">
+  <div class="new-story new-story--publication-inner" [routerLink]="'/content/newcontent'">
+    <img src="assets/images/new-story.svg" alt="new story">
+  </div>
+</div>
+<!--end-->
+
 <div *ngIf="showModal">
     <app-confirm-modal (closeConfirmModal)="openPopup(false)"></app-confirm-modal>
 </div>
-<!--<div class="modal-overlay&#45;&#45;custom">-->
-<!--<div class="custom-modal">-->
-<!--<span class="custom-modal__close" (click)="openPopup(false)">-->
-<!--<i class="icon icon-close"></i>-->
-<!--</span>-->
-<!--<h3>Are you sure you want to delete publication?</h3>-->
-<!--<div class="custom-modal__buttons">-->
-<!--<ui-button [text]="'Cancel'" (btnClicked)="openPopup(false)" [className]="'cancel-modal'"></ui-button>-->
-<!--<ui-button [text]="'Delete'" [className]="'cancel-modal'" [type]="'primary'"></ui-button>-->
-<!--</div>-->
-<!--</div>-->
-<!--</div>-->

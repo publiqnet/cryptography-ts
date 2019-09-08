@@ -37,10 +37,12 @@ export class ChipsInputComponent implements OnInit, OnChanges {
 
   enterKeyup(event) {
     this.keyupEnter.emit();
+    this.textControl.setValue('');
   }
 
   removeChip(index) {
     this.remove.emit(index);
+    this.textControl.setValue('');
   }
 
 }
