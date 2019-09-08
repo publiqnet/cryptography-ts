@@ -164,6 +164,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  onTagSelect(event) {
+    console.log(event);
+  }
+
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
