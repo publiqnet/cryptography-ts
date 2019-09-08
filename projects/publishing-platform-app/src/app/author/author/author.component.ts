@@ -7,7 +7,8 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  HostListener
+  HostListener,
+  Output
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -145,13 +146,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
   photo: File;
   editMode: boolean = false;
   modalProps: any = {};
-  public boostTab = [];
   public boostPrice: number;
   public boostDays: number;
-  editMode: boolean = false;
   @Output() showBoostModal: boolean = false;
   showBoostModalType: string = 'boost';
-  modalProps: any = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
