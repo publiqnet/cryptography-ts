@@ -7,7 +7,8 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  HostListener
+  HostListener,
+  Output
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -15,6 +16,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Account } from '../../core/services/models/account';
+import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { Content } from '../../core/services/models/content';
@@ -27,6 +29,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
+import { style } from '@angular/animations';
 import { CryptService } from '../../core/services/crypt.service';
 import { Publications } from '../../core/services/models/publications';
 import { PublicationService } from '../../core/services/publication.service';
@@ -145,6 +148,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   photo: File;
   editMode: boolean = false;
   modalProps: any = {};
+  public showBoostModal: boolean = false;
+  showBoostModalType: string = 'boost';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -171,6 +176,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         debounceTime(500),
         switchMap((params: Params) => {
           this.authorId = params['id'];
+          this.clearData();
           return this.accountService.accountUpdated$;
         }),
         switchMap((data: any) => {
@@ -238,6 +244,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
       );
   }
 
+  onBoostModal(type: string) {
+    this.showBoostModal = true;
+    this.showBoostModalType = type;
+  }
+
+  closeBoostModal() {
+    this.showBoostModal = false;
+  }
+
   @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
   }
 
@@ -289,11 +304,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.authorForm.controls['firstName'].setValue(this.firstName);
       this.authorForm.controls['lastName'].setValue(this.lastName);
     }
-  }
-
-  onFollowClick(event) {
-    event.preventDefault();
-    console.log('Follow Clicked');
   }
 
   onBioEdit(event) {
@@ -486,7 +496,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (this.authorForm.invalid) {
+    if (this.authorForm.invalid || this.author.publicKey != this.accountService.accountInfo.publicKey) {
       return;
     }
     const formData = new FormData();
@@ -577,9 +587,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
       const brainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
       this.decriptedPrivateKey = this.cryptService.getPrivateKey(brainKey);
-    }
-
-    if (this.decriptedPrivateKey) {
       this.passwordVerified = true;
     } else {
       this.passError = 'Incorrect Password';
@@ -621,13 +628,47 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.articlesLoaded = false;
-      this.isCurrentUser = false;
-      this.passwordVerified = false;
-      this.unsubscribe$.next();
-      this.unsubscribe$.complete();
+  follow() {
+    if (!this.accountService.loggedIn()) {
+      this.router.navigate(['/user/login']);
     }
+
+    this.accountService.follow(this.author.publicKey)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        this.canFollow = false;
+      });
+  }
+
+  unfollow() {
+    if (!this.accountService.loggedIn()) {
+      this.router.navigate(['/user/login']);
+      return false;
+    }
+
+    this.accountService.unfollow(this.author.publicKey)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        this.canFollow = true;
+      });
+  }
+
+  clearData() {
+    this.articlesLoaded = false;
+    this.isCurrentUser = false;
+    this.passwordVerified = false;
+    this.publishedContent = [];
+    this.drafts = [];
+    this.author = null;
+  }
+
+  ngOnDestroy() {
+    this.clearData();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

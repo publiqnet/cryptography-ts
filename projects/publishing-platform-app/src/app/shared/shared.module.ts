@@ -69,6 +69,7 @@ import { SharedLibModule } from 'shared-lib';
 import { UiLibModule } from 'ui-lib';
 import { ConfirmModalComponent } from '../core/confirm-modal/confirm-modal.component';
 import { ChipsInputComponent } from './chips-input/chips-input.component';
+import { BoostModalComponent } from '../core/boost-modal/boost-modal.component';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -156,6 +157,7 @@ export function createTranslateLoader(http: HttpClient) {
     SearchMemberComponent,
     NuxComponent,
     ConfirmModalComponent,
+    BoostModalComponent,
     ChipsInputComponent
   ],
   exports: [
@@ -222,6 +224,7 @@ export function createTranslateLoader(http: HttpClient) {
     PubTitlePipe,
     NuxComponent,
     ConfirmModalComponent,
+    BoostModalComponent,
     ChipsInputComponent
   ],
   providers: [
