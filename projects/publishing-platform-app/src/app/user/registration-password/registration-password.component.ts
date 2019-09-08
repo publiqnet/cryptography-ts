@@ -101,7 +101,6 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
         switchMap((data: any) => {
           this.accountService.brainKeyEncrypted = data.brainKey;
           this.showPhase = true;
-          console.log('created');
           return this.accountService.accountAuthenticate(data.token);
         }),
         takeUntil(this.unsubscribe$)
