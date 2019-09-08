@@ -116,7 +116,7 @@
       margin: 0 0 20px;
     }
   }
-  ::ng-deep .button-boost{
+  ::ng-deep .button-boost:not(.button-boost--cancel){
     display: flex;
     justify-content: center;
     margin-left: auto;
@@ -138,9 +138,15 @@
     max-width: 440px;
     h3{
       color: #2b2b2b;
-      font-size: 18px;
-      margin-bottom: 25px;
-      padding-right: 40px;
+      padding: 0;
+    }
+    p{
+      color: #2b2b2b;
+      font-size: 16px;
+      margin: 30px 0 10px;
+    }
+    ::ng-deep .button-boost--cancel{
+      margin-top: 20px;
     }
   }
 }

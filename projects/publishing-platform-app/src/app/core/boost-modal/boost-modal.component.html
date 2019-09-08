@@ -24,10 +24,11 @@
 
   <!--cancel boost-->
   <div class="cancel-boost" *ngIf="modalType == 'cancel-boost'">
-    <h3>To cancel boost you should enter your password</h3>
+    <h3>Cancel Boost</h3>
+    <p>To cancel boost you should enter your password</p>
     <ui-input [type]="'password'" [className]="'boost-input'" [inputId]="'confirm_password'"
               [placeholder]="'Enter password' | translate"></ui-input>
-    <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Cancel boost'"></ui-button>
+    <ui-button [className]="'button-boost button-boost--cancel'" [type]="'primary'" [text]="'Cancel boost'"></ui-button>
   </div>
 </div>
 
