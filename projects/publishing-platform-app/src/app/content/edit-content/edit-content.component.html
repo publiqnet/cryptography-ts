@@ -6,11 +6,13 @@
           <div class="post-field">
             <!--content-->
             <div id="editor-froala">
-              <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required (froalaInit)="initFroala($event)"></textarea>
+              <textarea [froalaEditor]="contentOptions" rows="10" formControlName="content" required
+                        (froalaInit)="initFroala($event)"></textarea>
             </div>
           </div>
           <div class="post-field-fixed">
-            <button class="button--publish" (click)="onShowStepForm(true)" [ngClass]="{'animate' : showStoryForm === true, 'with-submit' : boostField}">
+            <button class="button--publish" (click)="onShowStepForm(true)"
+                    [ngClass]="{'animate' : showStoryForm === true, 'with-submit' : boostField}">
               <span class="visible--span">{{(submitStep == 1) ? 'Next' : 'Publish'}}</span>
               <i class="icon-arrow-link"></i>
               <!--TODO: tooltip-->
@@ -29,7 +31,8 @@
       <div class="publish__main--white-space publish__main--white-space--descktop">
         <div>
           <h3 *ngIf="!boostField">Preview</h3>
-          <ui-dropdown className="preview-tab" *ngIf="boostField" [type]="'role'" [roleData]='stepperData' (onRoleChange)="changeBoostView($event)"></ui-dropdown>
+          <ui-dropdown className="preview-tab" *ngIf="boostField" [type]="'role'" [roleData]='stepperData'
+                       (onRoleChange)="changeBoostView($event)"></ui-dropdown>
         </div>
 
         <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
@@ -52,7 +55,8 @@
               <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice"
                            [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
             </div>
-            <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="tabChange($event)"></ui-tab>
+            <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays"
+                    (onTabChange)="tabChange($event)"></ui-tab>
             <div class="boost-progress__balance">
               <span>Your Balance: <b>{{accountService.accountInfo.balance | number:'0.0-8'}} PBQ</b></span>
               <div class="boost-progress__balance__amount">
@@ -73,12 +77,10 @@
           <!--step 1 (choose cover + story view)-->
           <ng-container *ngIf="submitStep == 1">
             <span class="add-tag__label">Add Tags</span>
-            <ui-input className="add-tag-input"></ui-input>
-
+            <app-chips-input [tagsArray]="tags" [placeholder]="'Add tag'" (keyupEnter)="enterTag($event)"
+                             (remove)="removeTag($event)" (change)="textChange($event)"></app-chips-input>
             <span class="add-tag__label">Add to Publication</span>
-            <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList" [optionsData]="publicationsList" [type]="'withIcon'"
-            [selectedOptionValue]="content?.publication?.slug"></ui-dropdown>
-
+            <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList" [optionsData]="publicationsList" [type]="'withIcon'" [selectedOptionValue]="selectedPublication"></ui-dropdown>
             <!--for mobile-->
             <!--FOR ADDING OR CHANGING COVER PIC -->
             <ng-container *ngIf="(!boostField || boostView == 'preview')">
@@ -96,10 +98,11 @@
           <!--boost step-->
           <ng-container *ngIf="submitStep == 2">
             <span class="add-tag__label">Enter your password to submit story</span>
-            <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'" [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
+            <ui-input type="password" [ngClass]="{'password-error': submitError}" [placeholder]="'Password'"
+                      [className]="'add-tag-input'" (_onChange)="onPasswordChange($event)"></ui-input>
             <div class="boost-story">
               <div class="boost-story__field">
-                <span class="boost-story__field__icon">
+                                <span class="boost-story__field__icon">
                   <img src="assets/images/boost-icon.svg" alt="boost">
                 </span>
                 <div class="boost-story__field__text">
