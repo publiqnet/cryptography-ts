@@ -9,7 +9,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  ContentChild, HostListener
+  ContentChild, HostListener, Output
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -148,7 +148,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
   public boostPrice: number;
   public boostDays: number;
   editMode: boolean = false;
-  showBoostModal: boolean = false;
+  @Output() showBoostModal: boolean = false;
+  showBoostModalType: string = 'boost';
   modalProps: any = {};
 
   constructor(
@@ -247,29 +248,19 @@ export class AuthorComponent implements OnInit, OnDestroy {
   initDefaultData() {
     this.boostPrice = 50;
     this.boostDays = 1;
-
-    this.boostTab = [
-      {
-        'value': '1-day',
-        'text': '1 Day'
-      },
-      {
-        'value': '3-days',
-        'text': '3 Days',
-      },
-      {
-        'value': '7-days',
-        'text': '7 Days',
-      }
-    ];
   }
 
   onRangeChange(event) {
     this.boostPrice = event.target.value;
   }
 
-  onBoostModal(flag: boolean, event = null) {
-    this.showBoostModal = flag;
+  onBoostModal(type: string) {
+    this.showBoostModal = true;
+    this.showBoostModalType = type;
+  }
+
+  closeBoostModal() {
+    this.showBoostModal = false;
   }
 
   @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -381,10 +372,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.getDrafts();
     }
-  }
-
-  boostTabChange(e) {
-    this.boostDays = e;
   }
 
   onEditMode(flag: boolean, fullName?, bio?) {

@@ -1,0 +1,35 @@
+<div id="publishMain" class="publish__main">
+  <span class="close-icon" (click)="closeBoostModal()"><i class="icon-close"></i></span>
+  <span class="white-overlay"></span>
+  <!--edit boost-->
+  <div *ngIf="modalType == 'boost'" class="publish__main--white-space">
+    <h3>Boost</h3>
+    <div class="boost-progress">
+      <div class="boost-progress__item">
+        <span>Total budget</span>
+        <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice"
+                     [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
+      </div>
+      <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays"
+              (onTabChange)="boostTabChange($event)"></ui-tab>
+      <div class="boost-progress__balance">
+        <span>Your Balance: <b>343434 PBQ</b></span>
+        <div class="boost-progress__balance__amount">
+          You will spend <b>3434343 PBQ</b> per 1 day.
+        </div>
+      </div>
+
+      <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Boost'"></ui-button>
+
+    </div>
+  </div>
+
+  <!--cancel boost-->
+  <div class="cancel-boost" *ngIf="modalType == 'cancel-boost'">
+    <h3>To cancel boost you should enter your password</h3>
+    <ui-input [type]="'password'" [className]="'boost-input'" [inputId]="'confirm_password'"
+              [placeholder]="'Enter password' | translate"></ui-input>
+    <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Cancel boost'"></ui-button>
+  </div>
+</div>
+
