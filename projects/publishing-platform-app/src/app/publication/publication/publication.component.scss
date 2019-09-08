@@ -932,7 +932,11 @@ ui-input-suggestions {
         }
     }
 }
-
+.row-mob{
+  @include media-sm{
+    margin-bottom: 100px;
+  }
+}
 .publication-cover-visible {
     position: absolute;
     width: 100%;

@@ -2,7 +2,7 @@
   <mat-spinner></mat-spinner>
 </div>
 
-<div class="content" *ngIf="author">
+<div class="content content--mob" *ngIf="author">
   <div class="container">
     <form class="form" *ngIf="authorForm" novalidate (ngSubmit)="onSubmit()" [formGroup]="authorForm">
       <div class="row profile-metadata">
@@ -288,6 +288,14 @@
     </div>
   </div>
 </div>
+
+<!--create story-->
+<div class="container container--new-story" *ngIf="isCurrentUser">
+  <div class="new-story" [routerLink]="'/content/newcontent'">
+    <img src="assets/images/new-story.svg" alt="new story">
+  </div>
+</div>
+<!--end-->
 
 <div *ngIf="showModal">
   <app-confirm-modal [properties]="modalProps" (closeConfirmModal)="doDelete($event)"></app-confirm-modal>

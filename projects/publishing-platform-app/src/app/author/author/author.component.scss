@@ -1,3 +1,13 @@
+@import "../../../assets/css/variables.scss";
+
+.content{
+  &--mob{
+    @include media-sm{
+      margin-bottom: 140px;
+    }
+  }
+}
+
 .follow-button {
   display: inline-block;
   cursor: pointer;
@@ -774,4 +784,3 @@
     justify-content: center;
   }
 }
-
