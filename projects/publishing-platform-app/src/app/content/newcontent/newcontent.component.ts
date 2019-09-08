@@ -53,7 +53,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
   public submitError: boolean = false;
   public titleText: string;
   public draftId: number;
-  public selectedPublication: string;
+  public selectedPublication: {text: string, value: string} = {'text' : '', 'value': ''};
 
   private unsubscribe$ = new ReplaySubject<void>(1);
   @Input() draft?: Draft;
@@ -78,16 +78,12 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   initDraftData() {
     this.hasDraft = true;
-    // if (Array.isArray(this.draft.tags)) {
-    //   this.tags = this.draft.tags;
-    // }
+    if (Array.isArray(this.draft.tags)) {
+      this.tags = this.draft.tags;
+    }
     this.contentForm.controls['content'].setValue(this.draft.content);
     this.content = this.draft.content;
     this.title = this.draft.title;
-    if (this.draft.publication) {
-      this.selectedPublication = this.draft.publication;
-      this.contentForm.controls['publication'].setValue(this.selectedPublication);
-    }
     this.contentUris = this.draft.contentUris;
     this.draftId = this.draft.id;
     if (this.editorContentObject) {
@@ -98,26 +94,9 @@ export class NewContentComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     this.contentForm = this.formBuilder.group({
-      // title: new FormControl(this.title, [
-      //   Validators.required,
-      //   Validators.maxLength(this.titleMaxLenght),
-      //   ValidationService.noWhitespaceValidator
-      // ]),
-      tags: new FormControl(this.tags, [Validators.required]),
-      content: new FormControl(this.content, [
-        Validators.required,
-        // (control: AbstractControl): { [key: string]: any } | null => {
-        //   return this.currentEditorLenght ? null : {'required': true};
-        // },
-        // (control: AbstractControl): { [key: string]: any } | null => {
-        //   return this.currentEditorLenght > this.contentOptions.charCounterMax
-        //     ? {'contentLength': {value: this.currentEditorLenght}}
-        //     : null;
-        // }
-      ]),
-      password: new FormControl('', [
-        ValidationService.passwordValidator
-      ]),
+      tags: new FormControl(this.tags),
+      content: new FormControl(this.content, [Validators.required]),
+      password: new FormControl('', [ValidationService.passwordValidator]),
       publication: new FormControl('none')
     });
   }
@@ -171,6 +150,14 @@ export class NewContentComponent implements OnInit, OnDestroy {
             };
             this.publicationsList.push(nextPublication);
           });
+        }
+
+        if (this.publicationsList && this.draft && this.draft.publication) {
+          const selectedPublicationData: any = this.publicationsList.filter(item => item.value == this.draft.publication);
+          if (selectedPublicationData && selectedPublicationData[0]) {
+            this.selectedPublication = {'text' : selectedPublicationData[0].text, 'value': selectedPublicationData[0].value};
+            this.contentForm.controls['publication'].setValue(this.selectedPublication.value);
+          }
         }
       });
 
@@ -345,7 +332,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
       'tags': this.tags,
       'image': this.mainCoverImageUrl,
       'publication': {
-        'slug': this.selectedPublication
+        'title': this.selectedPublication ? this.selectedPublication.text : '',
+        'slug': this.selectedPublication ? this.selectedPublication.value : ''
       },
       'view_count': 0
     };
@@ -379,6 +367,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.draftId = draft.id;
         }
       });
+
     this.tagSubject
     .pipe(
       takeUntil(this.unsubscribe$)
@@ -397,7 +386,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
       title: this.titleText || '',
       content: this.contentForm.value.content || '',
       publication: this.contentForm.value.publication,
-      contentUris: this.contentUris || {}
+      contentUris: this.contentUris || {},
+      tags: this.tags || []
     };
 
     if (id) {
@@ -447,18 +437,25 @@ export class NewContentComponent implements OnInit, OnDestroy {
   }
 
   publicationChange(event) {
+    this.selectedPublication = event;
     this.contentForm.controls['publication'].setValue(event.value);
+  }
+
+  tagChange() {
+    this.contentForm.controls['tags'].setValue(this.tags);
   }
 
   enterTag() {
     if (this.tag) {
       this.tags.push(this.tag);
       this.tag = '';
+      this.tagChange();
     }
   }
 
   removeTag(index) {
     this.tags.splice(index, 1);
+    this.tagChange();
   }
 
   textChange(e) {
