@@ -59,7 +59,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
   tag: string = '';
   tagSubject = new Subject<any>();
   private unsubscribe$ = new ReplaySubject<void>(1);
-  public selectedPublication: string;
+  public selectedPublication: {text: string, value: string} = {'text' : '', 'value': ''};
 
   constructor(
     private router: Router,
@@ -119,8 +119,8 @@ export class EditContentComponent implements OnInit, OnDestroy {
 
   initContentData() {
     if (this.content.publication) {
-      this.selectedPublication = this.content.publication.slug;
-      this.contentForm.controls['publication'].setValue(this.selectedPublication);
+      this.selectedPublication = {'value': this.content.publication.slug, 'text': this.content.publication.title};
+      this.contentForm.controls['publication'].setValue(this.selectedPublication.value);
     }
     this.tags = this.content.tags;
     this.contentId = +this.content.contentId;
@@ -149,26 +149,9 @@ export class EditContentComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     this.contentForm = this.formBuilder.group({
-      // title: new FormControl(this.title, [
-      //   Validators.required,
-      //   Validators.maxLength(this.titleMaxLenght),
-      //   ValidationService.noWhitespaceValidator
-      // ]),
-      // tags: new FormControl(this.tags, [Validators.required]),
-      content: new FormControl(this.content, [
-        Validators.required,
-        // (control: AbstractControl): { [key: string]: any } | null => {
-        //   return this.currentEditorLenght ? null : {'required': true};
-        // },
-        // (control: AbstractControl): { [key: string]: any } | null => {
-        //   return this.currentEditorLenght > this.contentOptions.charCounterMax
-        //     ? {'contentLength': {value: this.currentEditorLenght}}
-        //     : null;
-        // }
-      ]),
-      password: new FormControl('', [
-        ValidationService.passwordValidator
-      ]),
+      tags: new FormControl(this.tags),
+      content: new FormControl(this.content, [Validators.required]),
+      password: new FormControl('', [ValidationService.passwordValidator]),
       publication: new FormControl('none')
     });
   }
@@ -393,7 +376,8 @@ export class EditContentComponent implements OnInit, OnDestroy {
       'tags': this.tags,
       'image': this.mainCoverImageUrl,
       'publication': {
-        'slug': this.selectedPublication
+        'title': this.selectedPublication ? this.selectedPublication.text : '',
+        'slug': this.selectedPublication ? this.selectedPublication.value : ''
       },
       'view_count': (this.content) ? this.content.views : 0
     };
@@ -445,7 +429,8 @@ export class EditContentComponent implements OnInit, OnDestroy {
       title: this.titleText || '',
       content: this.contentForm.value.content || '',
       publication: this.contentForm.value.publication,
-      contentUris: this.contentUris || {}
+      contentUris: this.contentUris || {},
+      tags: this.tags || []
     };
 
     if (id) {
@@ -495,18 +480,25 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   publicationChange(event) {
+    this.selectedPublication = event;
     this.contentForm.controls['publication'].setValue(event.value);
+  }
+
+  tagChange() {
+    this.contentForm.controls['tags'].setValue(this.tags);
   }
 
   enterTag() {
     if (this.tag) {
       this.tags.push(this.tag);
       this.tag = '';
+      this.tagChange();
     }
   }
 
   removeTag(index) {
     this.tags.splice(index, 1);
+    this.tagChange();
   }
 
   textChange(e) {

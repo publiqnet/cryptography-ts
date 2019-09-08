@@ -36,6 +36,10 @@ export class BoostModalComponent implements OnInit {
     ];
   }
 
+  onRangeChange(event) {
+    this.boostPrice = event.target.value;
+  }
+
   boostTabChange(e) {
     this.boostDays = e;
   }

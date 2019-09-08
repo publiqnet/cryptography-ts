@@ -148,9 +148,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   photo: File;
   editMode: boolean = false;
   modalProps: any = {};
-  public boostPrice: number;
-  public boostDays: number;
-  @Output() showBoostModal: boolean = false;
+  public showBoostModal: boolean = false;
   showBoostModalType: string = 'boost';
 
   constructor(
@@ -173,7 +171,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initDefaultData();
     this.activatedRoute.params
       .pipe(
         debounceTime(500),
@@ -245,15 +242,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           }
         }
       );
-  }
-
-  initDefaultData() {
-    this.boostPrice = 50;
-    this.boostDays = 1;
-  }
-
-  onRangeChange(event) {
-    this.boostPrice = event.target.value;
   }
 
   onBoostModal(type: string) {

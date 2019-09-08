@@ -84,7 +84,7 @@
           <span class="add-tag__label">Add to Publication</span>
           <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList.length"
                        [optionsData]="publicationsList" [type]="'withIcon'"
-                       [selectedOptionValue]="selectedPublication"></ui-dropdown>
+                       [selectedOptionValue]="selectedPublication.value"></ui-dropdown>
           <!--for mobile-->
           <!--FOR ADDING OR CHANGING COVER PIC -->
           <ng-container *ngIf="(!boostField || boostView == 'preview')">
