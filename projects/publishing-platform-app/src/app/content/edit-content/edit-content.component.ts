@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { forkJoin, of, ReplaySubject } from 'rxjs';
+import { forkJoin, of, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { Content } from '../../core/services/models/content';
@@ -15,6 +15,7 @@ import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { DraftService } from '../../core/services/draft.service';
 import { PublicationService } from '../../core/services/publication.service';
+import { UiNotificationService } from '../../core/services/ui-notification.service';
 
 declare const $: any;
 
@@ -33,8 +34,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
-  private editorTitleObject;
-  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -43,6 +42,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
   public publicationsList = [];
   public currentContentData = {};
   public boostTab = [];
+  public tags: String[] = [];
   public mainCoverImageUri: string;
   public mainCoverImageUrl: string;
   public submitStep: number = 1;
@@ -56,8 +56,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
   public submitError: boolean = false;
   public titleText: string;
   public contentLoaded: boolean = false;
-
+  tag: string = '';
+  tagSubject = new Subject<any>();
   private unsubscribe$ = new ReplaySubject<void>(1);
+  public selectedPublication: string;
 
   constructor(
     private router: Router,
@@ -69,7 +71,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
     public translateService: TranslateService,
     private draftService: DraftService,
     private publicationService: PublicationService,
-    private errorService: ErrorService
+    public uiNotificationService: UiNotificationService
   ) {
   }
 
@@ -106,7 +108,6 @@ export class EditContentComponent implements OnInit, OnDestroy {
               }
 
               this.content = data;
-              this.titleText = this.content.title;
               this.initContentData();
             });
         } else {
@@ -117,11 +118,19 @@ export class EditContentComponent implements OnInit, OnDestroy {
   }
 
   initContentData() {
+    if (this.content.publication) {
+      this.selectedPublication = this.content.publication.slug;
+      this.contentForm.controls['publication'].setValue(this.selectedPublication);
+    }
+    this.tags = this.content.tags;
     this.contentId = +this.content.contentId;
+    this.contentForm.controls['content'].setValue(this.content.text);
     this.editorContentObject.html.set(this.content.text);
     this.content.files.forEach((file) => {
       this.contentUris[file['uri']] = file['url'];
     });
+
+    this.titleText = this.content.title;
 
     const contentBlocks = this.editorContentObject.html.blocks();
     contentBlocks.forEach((node) => {
@@ -381,17 +390,12 @@ export class EditContentComponent implements OnInit, OnDestroy {
       },
       'published': '1563889376',
       'title': this.titleText,
-      'tags': [
-        '2017',
-        'DEVELOPER',
-        'FULLSTACK'
-      ],
+      'tags': this.tags,
       'image': this.mainCoverImageUrl,
       'publication': {
-        'title': 'UX Planet',
-        'slug': 'ux_planet'
+        'slug': this.selectedPublication
       },
-      'view_count': '1K'
+      'view_count': (this.content) ? this.content.views : 0
     };
   }
 
@@ -423,6 +427,17 @@ export class EditContentComponent implements OnInit, OnDestroy {
           this.draftId = draft.id;
         }
       });
+      this.tagSubject
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
+      tag => {
+        if (typeof tag == 'string') {
+          this.tag = tag;
+        }
+      }
+    );
   }
 
   saveDraft(id = null) {
@@ -483,10 +498,27 @@ export class EditContentComponent implements OnInit, OnDestroy {
     this.contentForm.controls['publication'].setValue(event.value);
   }
 
+  enterTag() {
+    if (this.tag) {
+      this.tags.push(this.tag);
+      this.tag = '';
+    }
+  }
+
+  removeTag(index) {
+    this.tags.splice(index, 1);
+  }
+
+  textChange(e) {
+    this.tagSubject.next(e);
+  }
+
   submit() {
-    if (!this.contentForm.value.content || !this.titleText) {
-      this.submitError = true;
-      console.log('not valid content');
+    if (!this.contentForm.value.content) {
+      this.uiNotificationService.error('Error', 'Content Is Empty');
+      return false;
+    } else if (!this.titleText) {
+      this.uiNotificationService.error('Error', 'Title Is Empty');
       return false;
     }
     const password = this.contentForm.value.password;
@@ -499,7 +531,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
       const nodeHtml = $.trim(node.innerHTML);
       if (nodeHtml != '' && nodeHtml != '<br>' && !nodeHtml.match(/<img/)) {
         if (nodeHtml != this.titleText) {
-          calls.push(this.contentService.uploadTextFiles(nodeHtml));
+          calls.push(this.contentService.uploadTextFiles(node.outerHTML));
         } else {
           calls.push(of(nodeHtml));
         }
@@ -521,7 +553,7 @@ export class EditContentComponent implements OnInit, OnDestroy {
         if (data.length) {
           data.forEach((nextResult) => {
             if (nextResult['uri']) {
-              uploadedContentHtml += `<p>${nextResult['uri']}</p>`;
+              uploadedContentHtml += `${nextResult['uri']} `;
               this.contentUris[nextResult['uri']] = nextResult['link'];
             } else {
               uploadedContentHtml += nextResult;
@@ -577,7 +609,10 @@ export class EditContentComponent implements OnInit, OnDestroy {
           this.uploadedContentUri = data.uri;
           return this.contentService.unitSign(data.channelAddress, this.contentId, data.uri, Object.keys(this.contentUris), password);
         }),
-        switchMap((data: any) => this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug))
+        switchMap((data: any) => {
+          const tagsData = this.tags.join(', ');
+          return this.contentService.publish(this.uploadedContentUri, this.contentId, publicationSlug, tagsData);
+        })
       );
   }
 
