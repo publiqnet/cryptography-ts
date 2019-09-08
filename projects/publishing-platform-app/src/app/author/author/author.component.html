@@ -280,7 +280,7 @@
       <span>Enter your password to see your <b>Private Key</b></span>
       <ui-input [type]="'password'" [inputId]="'private-key'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
-      <span class="text-error" *ngIf="passError">{{passError}}</span>
+      <span class="text-error" *ngIf="passError && !passwordVerified">{{passError}}</span>
       <div *ngIf="passwordVerified">
         <div class="password-container">
           <p>Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets</p>
@@ -293,7 +293,7 @@
       <span>Enter your password to see your <b>Recovery Phase</b></span>
       <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
-      <span class="text-error" *ngIf="passError">{{passError}}</span>
+      <span class="text-error" *ngIf="passError && !passwordVerified">{{passError}}</span>
       <div *ngIf="passwordVerified">
         <div class="password-container">
           <p>This is the only way to reset your password! Your PBQ tokens can’t be recovered without it.</p>
@@ -305,10 +305,10 @@
     </div>
 
     <div class="custom-modal__buttons">
-      <ng-container *ngIf="showPrivateKey">
+      <ng-container *ngIf="showPrivateKey && !passwordVerified">
         <ui-button [text]="'Submit'" (btnClicked)="generatePrivateKey()" [className]="'cancel-modal'" [type]="'primary'" [disabled]="passwordValidator()"></ui-button>
       </ng-container>
-      <ng-container *ngIf="showPhase">
+      <ng-container *ngIf="showPhase && !passwordVerified">
         <ui-button [text]="'Submit'" (btnClicked)="generateBK()" [className]="'cancel-modal'" [type]="'primary'" [disabled]="passwordValidator()"></ui-button>
       </ng-container>
     </div>

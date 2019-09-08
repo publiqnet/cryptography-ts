@@ -98,6 +98,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     showModal: boolean = false;
     showSecurityModal: boolean = false;
     protected password: string = '';
+    followAuthor: boolean = false;
     passwordVerified = false;
     decriptedPrivateKey: string;
     passError = '';
@@ -294,7 +295,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
     onFollowClick(event) {
         event.preventDefault();
-        console.log('Follow Clicked');
+        console.log(event);
     }
 
     onBioEdit(event) {
@@ -542,10 +543,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
       const brainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
       this.decriptedPrivateKey = this.cryptService.getPrivateKey(brainKey);
-      this.passwordVerified = false;
-    }
-
-    if (this.decriptedPrivateKey) {
       this.passwordVerified = true;
     } else {
       this.passError = 'Incorrect Password';
