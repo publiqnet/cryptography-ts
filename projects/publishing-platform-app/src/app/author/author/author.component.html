@@ -159,7 +159,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 offset-lg-2 col-xl-9 stories">
+      <div class="col-lg-8 offset-lg-2 col-xl-8 stories">
         <div style="display: flex; justify-content: space-between">
           <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'"
                   (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
@@ -228,6 +228,7 @@
              (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
              (publicationsListClick)="changePublication($event, data.uri)"
              [contentData]="data"
+             (boostClick)="onBoostModal('boost')"
              [publicationList]="publicationsList"
              (historyClick)="historyClicked($event)">
             </ui-content-single>
@@ -335,4 +336,10 @@
 
 <div *ngIf="showModal">
   <app-confirm-modal [properties]="modalProps" (closeConfirmModal)="doDelete($event)"></app-confirm-modal>
+</div>
+
+<!--for boosting-->
+
+<div class="publishing-space publishing-space--edit-boost" [ngClass]="{'visible' : showBoostModal}">
+  <app-boost-modal [modalType]="showBoostModalType" (closeBoostedModal)="closeBoostModal()"></app-boost-modal>
 </div>
