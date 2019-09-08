@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Button-/-Oval-/-New_story" transform="translate(-17.000000, -17.000000)">
+            <g id="Group-5">
+                <g id="Group-2" transform="translate(13.000000, 13.000000)">
+                    <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+                    <g id="Group-14" transform="translate(5.000000, 5.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                        <path d="M14,8.05606258 L14,13.0528031 C14,13.6054426 13.552,14.0521512 13,14.0521512 L1,14.0521512 C0.448,14.0521512 0,13.6054426 0,13.0528031 L0,1.06062581 C0,0.50798631 0.448,0.0612777053 1,0.0612777053 L5,0.0612777053" id="Stroke-446"></path>
+                        <polygon id="Stroke-447" points="12 0.0612777053 14 2.05997392 8 8.05606258 6 8.05606258 6 6.05736636"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

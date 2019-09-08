@@ -1872,4 +1872,39 @@ p.sponsored{
     margin: 15px 0;
   }
 }
+.container--new-story{
+  display: flex;
+  justify-content: flex-end;
+  .new-story{
+    background: #2B2B2B;
+    box-shadow: 0px 3px 7px rgba(43, 43, 43, 0.1);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: .3s ease-out;
+    &:focus, &:hover{
+      outline: none;
+      box-shadow: 0px 6px 10px 5px rgba(43, 43, 43, 0.1);
+      transition: .3s ease-out;
+    }
+    img{
+      width: 18px;
+    }
+    @include media-sm{
+      bottom: 70px;
+    }
+    &--publication-inner{
+      @include media-sm{
+        bottom: 40px;
+      }
+    }
+  }
+}
+
 
