@@ -534,10 +534,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.decryptPK(this.accountService.brainKeyEncrypted);
   }
 
+  generateBK() {
+    this.decryptBK(this.accountService.brainKeyEncrypted);
+  }
+
   decryptPK(brainKeyEncrypted) {
     if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
       const brainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
       this.decriptedPrivateKey = this.cryptService.getPrivateKey(brainKey);
+      this.passwordVerified = false;
     }
 
     if (this.decriptedPrivateKey) {
@@ -553,10 +558,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.incorrectRecoverPhrase = '';
   }
 
-  generateBK() {
-    this.decryptBK(this.accountService.brainKeyEncrypted);
-  }
-
   decryptBK(brainKeyEncrypted) {
     if (this.cryptService.checkPassword(brainKeyEncrypted, this.password)) {
       this.decryptedBrainKey = this.cryptService.getDecryptedBrainKey(brainKeyEncrypted, this.password);
@@ -568,7 +569,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   public keyupFunc(event: KeyboardEvent, callBackFunc: string): void {
-    this.focusFunction();
     if ((event.code === 'Enter' || event.code === 'NumpadEnter') && !this.passwordValidator() && callBackFunc !== '') {
       this[callBackFunc]();
     }

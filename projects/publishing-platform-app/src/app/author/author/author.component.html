@@ -279,7 +279,7 @@
       <h3>PRIVATE KEY</h3>
       <span>Enter your password to see your <b>Private Key</b></span>
       <ui-input [type]="'password'" [inputId]="'private-key'" [placeholder]="'Password'" (focus)="focusFunction()"
-                (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password"></ui-input>
+                (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
       <span class="text-error" *ngIf="passError">{{passError}}</span>
       <div *ngIf="passwordVerified">
         <div class="password-container">
@@ -292,7 +292,7 @@
       <h3>RECOVERY PHASE</h3>
       <span>Enter your password to see your <b>Recovery Phase</b></span>
       <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
-                (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password"></ui-input>
+                (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
       <span class="text-error" *ngIf="passError">{{passError}}</span>
       <div *ngIf="passwordVerified">
         <div class="password-container">
