@@ -28,6 +28,8 @@ export class NewContentComponent implements OnInit, OnDestroy {
   private contentObject;
   private editorContentInitObject;
   private editorContentObject;
+  private titleObject;
+  public titleMaxLenght = 120;
   contentUrl = environment.backend + '/api/file/upload';
   public contentForm: FormGroup;
   contentUris = {};
@@ -129,7 +131,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.publicationService.getMyPublications()
       .pipe(
         map((publicationsData: Publications) => {
-          const publicationsList = [...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          const publicationsList = [...publicationsData.membership, ...publicationsData.owned];
           return publicationsList;
         }),
         takeUntil(this.unsubscribe$)
@@ -343,7 +345,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.contentForm.valueChanges
       .pipe(
         tap(() => this.initSubmitFormView()),
-        debounceTime(3000),
+        debounceTime(1500),
         map(() => {
           if (!this.isSubmited) {
             this.saveDraft(this.draftId);
@@ -365,6 +367,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
           this.hasDraft = true;
           const message = this.translateService.instant('content.draft_saved');
           this.draftId = draft.id;
+          this.uiNotificationService.success('Success', 'Your draft successfully updated');
         }
       });
 

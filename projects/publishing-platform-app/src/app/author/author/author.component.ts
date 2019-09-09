@@ -200,7 +200,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.shortName = this.author.shortName ? this.author.shortName : '';
           this.canFollow = !this.author.subscribed;
           this.loadingAuthor = false;
-          this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
             this.setAuthorName();
@@ -217,6 +216,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.seeMoreLoading = false;
         this.calculateLastStoriUri();
         this.buildForm();
+        this.articlesLoaded = true;
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
@@ -352,7 +352,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   tabChange(e) {
     this.selectedTab = e;
-    if (e == 2 && !this.drafts) {
+    if (e == 2 && (!this.drafts || !this.drafts.length)) {
       this.loading = true;
       this.getDrafts();
     } else if (e == 3) {
@@ -367,7 +367,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
-    console.log(flag);
     if (!flag) {
       fullName.textContent = this.setAuthorName();
       bio.textContent = this.author.bio || 'Write a short bio';
@@ -391,7 +390,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.publicationService.getMyPublications()
       .pipe(
         map((publicationsData: Publications) => {
-          const publicationsList = [...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          const publicationsList = [...publicationsData.membership, ...publicationsData.owned];
           return publicationsList;
         }),
         takeUntil(this.unsubscribe$)
@@ -413,7 +412,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
             this.publicationsList.push(nextPublication);
           });
         }
-        console.log(this.publicationsList);
       });
   }
 
@@ -655,6 +653,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe((author: Account) => {
         this.canFollow = true;
       });
+  }
+
+  editStory(event) {
+    this.router.navigate([`/content/edit/${event}`]);
   }
 
   clearData() {

@@ -15,7 +15,9 @@ export interface ContentOptions {
     files: [];
     published: string;
     author: any;
+    boosted: boolean;
     publication: string;
+    boosts?: [];
     tags?: any;
 }
 
@@ -33,6 +35,8 @@ export class Content {
     tags = [];
     view_count: number = 0;
     publication = null;
+    boosted: boolean;
+    boosts: [];
 
     constructor(options?: ContentOptions) {
         for (const i in options) {

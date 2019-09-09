@@ -66,7 +66,7 @@
 
     <div class="row profile-statistics" [ngClass]="{'editable-disabled' : editMode}">
       <div class="col-lg-2 offset-lg-2 col-3 offset-0">
-        <div class="datum">
+        <div *ngIf="false" class="datum">
           <span class="datum__value">{{author && author.rating ? author.rating.toFixed(1) : 0}}</span>
           <span class="datum__descriptor">RATING</span>
           <span class="datum__rating"><img src="assets/images/rating.svg" alt="rating"></span>
@@ -120,11 +120,9 @@
     <div class="row">
       <div class="col-lg-8 offset-lg-2 col-xl-8 stories">
         <div style="display: flex; justify-content: space-between">
-          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'"
-                  (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
+          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
           <ng-container *ngIf="selectedTab == '2' && drafts">
-            <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'"
-                       [className]="'delete-draft'"></ui-button>
+            <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
           </ng-container>
         </div>
         <div
@@ -172,7 +170,8 @@
                       (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
           </div>
           <ng-template #no_content>
-            <div class="no-drafts">
+            <div class="no-drafts"
+              *ngIf="selectedTab && selectedTab == '2' && !loadingAuthor && articlesLoaded && !publishedContent.length">>
               <img src="assets/images/no_story.svg" alt="no drafts"/>
               <span>No Drafts Yet</span>
             </div>
@@ -186,7 +185,9 @@
              (publicationClick)="utilService.routerChangeHelper('publication', $event.slug)"
              (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
              (publicationsListClick)="changePublication($event, data.uri)"
+             (editClick)="editStory($event)"
              [contentData]="data"
+             [hasBoost]="data.boosted"
              (boostClick)="onBoostModal('boost')"
              [publicationList]="publicationsList"
              (historyClick)="historyClicked($event)">
@@ -219,9 +220,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
             <div class="security__steps">
@@ -233,9 +234,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -245,12 +246,12 @@
   </div>
 </div>
 <div class="modal-overlay--custom" [ngClass]="{'open' : showSecurityModal}">
-  <div class="custom-modal">
+  <div class="custom-modal custom-modal--security">
         <span class="custom-modal__close" (click)="openPopup(false)">
       <i class="icon icon-close"></i>
     </span>
     <div *ngIf="showPrivateKey">
-      <h3>PRIVATE KEY</h3>
+      <h3>Private Key</h3>
       <span *ngIf="!passwordVerified">Enter your password to see your <b>Private Key</b></span>
       <ui-input [type]="'password'" [inputId]="'private-key'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
@@ -263,8 +264,8 @@
       </div>
     </div>
     <div *ngIf="showPhase">
-      <h3>RECOVERY PHASE</h3>
-      <span *ngIf="!passwordVerified">Enter your password to see your <b>Recovery Phase</b></span>
+      <h3>Recovery Phrase</h3>
+      <span *ngIf="!passwordVerified">Enter your password to see your <b>Recovery Phrase</b></span>
       <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
       <span class="text-error" *ngIf="passError && !passwordVerified">{{passError}}</span>
@@ -297,7 +298,7 @@
 </div>
 <!--end-->
 
-<div *ngIf="showModal">
+<div class="no-visible" [ngClass]="{'visible' : showModal}">
   <app-confirm-modal [properties]="modalProps" (closeConfirmModal)="doDelete($event)"></app-confirm-modal>
 </div>
 
