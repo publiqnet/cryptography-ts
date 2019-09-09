@@ -345,7 +345,7 @@ export class NewContentComponent implements OnInit, OnDestroy {
     this.contentForm.valueChanges
       .pipe(
         tap(() => this.initSubmitFormView()),
-        debounceTime(3000),
+        debounceTime(1500),
         map(() => {
           if (!this.isSubmited) {
             this.saveDraft(this.draftId);
