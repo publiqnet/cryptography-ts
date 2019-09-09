@@ -249,8 +249,11 @@ export class PublicationComponent implements OnInit, OnDestroy {
           };
         }
         this.getPublicationStories();
-      });
-
+      },
+        err => {
+          this.loading = false;
+          this.router.navigate(['/page-not-found']);
+        });
   }
 
   resizeTextareaElement(el: HTMLElement) {
@@ -372,7 +375,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
           delay(3000),
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(() => {});
+        .subscribe(() => { });
       return;
     }
     return true;
@@ -446,7 +449,6 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('hideCover', this.publication.hideCover ? 'true' : '');
     formData.append('listView', this.listType == 'grid' ? '' : 'true');
     formData.append('tags', this.publication.tags.map((el: any) => el.name).join(','));
-    // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug)
       .subscribe(
         (result: Publication) => {
@@ -553,12 +555,15 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   answerRequest(e, action, index) {
     this.publicationService.acceptRejectRequest(this.publication.slug, e.user.publicKey, action).subscribe(
-      res => {
+      () => {
         if (action == 'accept') {
           e.user.memberStatus = 3;
           this.members.length % 2 == 0 ? this.membersOdd.push(e.user) : this.membersEven.push(e.user);
         }
         this.requests.splice(index, 1);
+      }, err => {
+        this.requests.splice(index, 1);
+        this.uiNotificationService.error('Invalid request', '');
       }
     );
   }

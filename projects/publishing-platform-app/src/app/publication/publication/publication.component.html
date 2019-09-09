@@ -2,7 +2,8 @@
     <mat-spinner></mat-spinner>
 </div>
 <div class="container" *ngIf="!loading">
-    <div class="row publication-cover publication-cover--editable" [ngClass]="{'publication-cover--editable--no-img' : !publication.cover}" *ngIf="publication && !publication.hideCover" #coverContainer>
+    <div class="row publication-cover publication-cover--editable" [ngClass]="{'publication-cover--editable--no-img' : !publication.cover, 'no-cover': (!publication.cover && publication.memberStatus !==2 && !isMyPublication)}" *ngIf="publication && !publication.hideCover"
+        #coverContainer>
         <!-- style="background-image: url(https://via.placeholder.com/1320x340);" -->
         <img class="publication-cover-blured" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">
         <img class="publication-cover-visible" *ngIf="publication && publication.cover" [src]="publication.cover" alt="cover">

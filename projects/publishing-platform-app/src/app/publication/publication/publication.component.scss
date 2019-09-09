@@ -486,6 +486,10 @@
     }
 }
 
+.no-cover {
+    display: none;
+}
+
 .delete-pub {
     border-radius: 50%;
     padding: 0;
@@ -932,11 +936,13 @@ ui-input-suggestions {
         }
     }
 }
-.row-mob{
-  @include media-sm{
-    margin-bottom: 100px;
-  }
+
+.row-mob {
+    @include media-sm {
+        margin-bottom: 100px;
+    }
 }
+
 .publication-cover-visible {
     position: absolute;
     width: 100%;
