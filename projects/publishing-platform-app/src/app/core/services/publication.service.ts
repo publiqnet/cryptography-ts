@@ -59,8 +59,8 @@ export class PublicationService {
       .pipe(
         filter(data => data != null),
         map((data: IPublications) => new Publications(data)),
-        tap((data: Publications) => { callData.refresh = false; this.myPublications$.next(data); })
-      ), callData.refresh);
+        tap((data: Publications) => { callData.refresh = true; this.myPublications$.next(data); })
+      ), callData.refresh = true);
   }
 
   getMyPublicationsByType = (type: string) => {

@@ -352,7 +352,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   tabChange(e) {
     this.selectedTab = e;
-    if (e == 2 && !this.drafts) {
+    if (e == 2 && (!this.drafts || !this.drafts.length)) {
       this.loading = true;
       this.getDrafts();
     } else if (e == 3) {
@@ -367,7 +367,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
-    console.log(flag);
     if (!flag) {
       fullName.textContent = this.setAuthorName();
       bio.textContent = this.author.bio || 'Write a short bio';
@@ -413,7 +412,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
             this.publicationsList.push(nextPublication);
           });
         }
-        console.log(this.publicationsList);
       });
   }
 
@@ -655,6 +653,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       .subscribe((author: Account) => {
         this.canFollow = true;
       });
+  }
+
+  editStory(event) {
+    this.router.navigate([`/content/edit/${event}`]);
   }
 
   clearData() {

@@ -179,7 +179,10 @@
     outline: none;
   }
 }
-
+.publishing-space{
+  position: relative;
+  z-index: 9;
+}
 .publish__main{
   max-width: 837px;
   width: 100%;

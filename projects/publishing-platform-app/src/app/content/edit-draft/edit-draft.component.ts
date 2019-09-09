@@ -14,7 +14,7 @@ import { Draft } from '../../core/services/models/draft';
   styleUrls: ['./edit-draft.component.scss']
 })
 export class EditDraftComponent implements OnInit, OnDestroy {
-  public draft;
+  public draft: Draft;
   public draftId: string;
 
   private unsubscribe$ = new ReplaySubject<void>(1);

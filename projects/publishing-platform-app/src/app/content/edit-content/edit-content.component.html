@@ -37,7 +37,7 @@
 
         <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
           <!--FOR ADDING OR CHANGING COVER PIC -->
-          <div class="add__cover" *ngIf="!mainCoverImageUrl">
+          <div class="add__cover" *ngIf="!mainCoverImageUrl && false">
             <p>Add cover image for your story to attract more readers</p>
             <label class="cover__img" for="coverPic">
               <input type="file" accept="image/jpeg,image/png" id="coverPic">
