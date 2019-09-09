@@ -806,3 +806,15 @@
     justify-content: center;
   }
 }
+.no-visible{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: .2s ease-out;
+  &.visible{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: .2s ease-out;
+  }
+}
