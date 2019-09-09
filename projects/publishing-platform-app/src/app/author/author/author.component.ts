@@ -657,6 +657,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
+  editStory(event) {
+    console.log(event);
+  }
+
   clearData() {
     this.articlesLoaded = false;
     this.isCurrentUser = false;
