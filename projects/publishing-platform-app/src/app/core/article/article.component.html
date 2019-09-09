@@ -38,7 +38,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 offset-md-2">
-        This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[0].uri]">here</a>. 
+        This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[article.nextVersions.length-1].uri]">here</a>. 
       </div>
     </div>
   </div>
@@ -69,18 +69,18 @@
       <div class="article__content" [innerHTML]="article.text"></div>
     </div>
   </div>
-  <!-- <div class="row article__footing">
-    <div class="col-9 col-md-5 offset-md-2">
+  <div class="row article__footing" *ngIf="article.tags.length > 0">
+    <div class="col-9 col-md-8 offset-md-2">
       <div class="article__tag" *ngFor="let tag of article.tags;">{{tag}}</div>
     </div>
-    <div class="col-3 col-md-3">
+    <div class="col-3 col-md-3" *ngIf="false">
       <span class="article__report">Report story</span>
       <div class="article__likes">
         <span>24 likes</span>
         <ui-button [iconButton]="true" [iconClassName]="'like'" size="large"></ui-button>
       </div>
     </div>
-  </div> -->
+  </div>
   <div class="row article__versions">
     <div class="col-md-8 offset-md-2">
       <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">

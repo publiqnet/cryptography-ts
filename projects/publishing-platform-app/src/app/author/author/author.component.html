@@ -188,7 +188,7 @@
              (editClick)="editStory($event)"
              [contentData]="data | contentHistory: data.previousVersions"
              [hasBoost]="data.boosted"
-             (boostClick)="onBoostModal('boost')"
+             (boostClick)="onBoostModal($event)"
              [publicationList]="publicationsList"
              (historyClick)="historyClicked($event)"
             >
@@ -211,6 +211,9 @@
                 <i class="icon-info"></i>
                 <span class="tooltip_text">Address (Public key) is used for user identification, it can be freely shared, allowing users to verify digital signatures.</span>
               </div>
+              <div class="security__steps__inputs">
+                <ui-input [readonly]="true" [placeholder]="''" [type]="'text'" [inputValue]="accountService.accountInfo.publicKey"></ui-input>
+              </div>
             </div>
             <div class="security__steps">
               <div>
@@ -219,8 +222,7 @@
                 <span class="tooltip_text">Private key is a secret key. It is the only way to decrypt the encrypted data. You might need this to transfer your funds to other wallets.</span>
               </div>
               <div class="security__steps__inputs">
-                <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
-                          [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
+                <ui-input [readonly]="true" [placeholder]="''" [type]="'password'" [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
                 <div class="show">
                   <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
                 </div>
@@ -304,7 +306,6 @@
 </div>
 
 <!--for boosting-->
-
 <div class="publishing-space publishing-space--edit-boost" [ngClass]="{'visible' : showBoostModal}">
-  <app-boost-modal [modalType]="showBoostModalType" (closeBoostedModal)="closeBoostModal()"></app-boost-modal>
+  <app-boost-modal [modalType]="showBoostModalType" (closeBoostedModal)="closeBoostModal()" (cancelBoost)="cancelBoostSubmit($event)" (newBoost)="newBoostSubmit($event)"></app-boost-modal>
 </div>

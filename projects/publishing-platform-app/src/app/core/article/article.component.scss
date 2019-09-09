@@ -100,7 +100,8 @@
       padding-top: 32px;
 
       &:last-child {
-        text-align: right;
+        // text-align: right;
+        padding-bottom: 32px - 10px; // subsracting 10 because of the bottom margin of tags
       }
     }
   }

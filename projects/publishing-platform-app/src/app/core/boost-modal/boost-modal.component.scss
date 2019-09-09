@@ -65,13 +65,10 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-
     i{
       font-size: 20px;
       margin: 0;
     }
-
-
   }
   .white-overlay{
     position: fixed;
@@ -84,6 +81,9 @@
     bottom: 0;
     opacity: 0.8;
     z-index: -1;
+  }
+  .new-boost-input{
+    margin: 15px 0 0;
   }
   h3{
     font-size: 22px;
