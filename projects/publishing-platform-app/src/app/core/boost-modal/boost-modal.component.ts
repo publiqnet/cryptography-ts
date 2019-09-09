@@ -1,16 +1,25 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-boost-modal',
   templateUrl: 'boost-modal.component.html',
   styleUrls: ['./boost-modal.component.scss']
 })
-export class BoostModalComponent implements OnInit {
+export class BoostModalComponent implements OnInit, OnDestroy {
   @Output() closeBoostedModal = new EventEmitter<any>();
+  @Output() cancelBoost = new EventEmitter<any>();
+  @Output() newBoost = new EventEmitter<any>();
   @Input() modalType: string;
   public boostTab = [];
   public boostPrice: number;
   public boostDays: number;
+  public boostPassword: string = '';
+
+  constructor(
+    public accountService: AccountService
+  ) {
+  }
 
   ngOnInit() {
     this.initDefaultData();
@@ -46,5 +55,21 @@ export class BoostModalComponent implements OnInit {
 
   closeBoostModal(e) {
     this.closeBoostedModal.emit(e);
+  }
+
+  onInputChange(event) {
+    this.boostPassword = event.value;
+  }
+
+  cancelBoostSubmit() {
+    this.cancelBoost.emit(this.boostPassword);
+  }
+
+  addBoostSubmit() {
+    this.newBoost.emit({'boostDays': this.boostDays, 'boostPrice': this.boostPrice, 'password': this.boostPassword});
+  }
+
+  ngOnDestroy(): void {
+    this.boostPassword = '';
   }
 }

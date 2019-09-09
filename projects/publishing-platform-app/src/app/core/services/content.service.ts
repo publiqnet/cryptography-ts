@@ -118,12 +118,21 @@ export class ContentService {
   ) {
   }
 
-  cancelArticleBoosting(password: string, id: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.walletService.initExternalWsService();
-    }
+  cancelStoryBoosting(uri: string, transactionHash: string, password: string): Observable<any> {
+    const url = this.url + `/content-boost-cancel`;
+    const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
+    const signBoost = this.cryptService.getSignCancelBoost(brainKey, uri, transactionHash);
+    const now = new Date();
+    const now_1h = new Date(now.getTime() + (60 * 60 * 1000));
+    const requestData = {
+      'signature': signBoost,
+      'uri': uri,
+      'transactionHash': transactionHash,
+      'creationTime': Math.floor(now.getTime() / 1000),
+      'expiryTime': Math.floor(now_1h.getTime() / 1000)
+    };
+    return this.httpHelperService.call(HttpMethodTypes.post, url, requestData);
   }
-
 
   articleBoost(
     password: string,

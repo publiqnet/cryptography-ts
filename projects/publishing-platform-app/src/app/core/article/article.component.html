@@ -38,42 +38,41 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[0].uri]">here</a>.
+                This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[article.nextVersions.length-1].uri]">here</a>.
             </div>
         </div>
     </div>
-</div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="article__cover" [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } "></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="article__cover" [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } "></div>
+            </div>
         </div>
     </div>
-</div>
-<div class="container" *ngIf="article">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="article__author">
-                <ui-avatar [avatarData]="article.author"></ui-avatar>
-                <div>
-                    <a routerLink="/a/{{article.author.slug}}" class="article__author__name">{{article.author.fullName}}</a>
-                    <span class="article__author__date">{{formatDate(article.published, 'DD MMM, YYYY')}}</span>
+    <div class="container" *ngIf="article">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="article__author">
+                    <ui-avatar [avatarData]="article.author"></ui-avatar>
+                    <div>
+                        <a routerLink="/a/{{article.author.slug}}" class="article__author__name">{{article.author.fullName}}</a>
+                        <span class="article__author__date">{{formatDate(article.published, 'DD MMM, YYYY')}}</span>
+                    </div>
+                    <ui-button size="small" type="primary" [text]="author.subscribed? 'Unfollow' : 'Follow'" iconClassName="follow" [isFollowing]="author.subscribed" (btnClicked)="follow($event)"></ui-button>
                 </div>
-                <ui-button size="small" type="primary" [text]="author.subscribed? 'Unfollow' : 'Follow'" iconClassName="follow" [isFollowing]="author.subscribed" (btnClicked)="follow($event)"></ui-button>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <h1 class="article__title">{{article.title}}</h1>
-            <div class="article__content" [innerHTML]="article.text"></div>
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="article__title">{{article.title}}</h1>
+                <div class="article__content" [innerHTML]="article.text"></div>
+            </div>
         </div>
-    </div>
-    <!-- <div class="row article__footing">
+        <!-- <div class="row article__footing">
     <div class="col-9 col-md-5 offset-md-2">
       <div class="article__tag" *ngFor="let tag of article.tags;">{{tag}}</div>
     </div>
-    <div class="col-3 col-md-3">
+    <div class="col-3 col-md-3" *ngIf="false">
       <span class="article__report">Report story</span>
       <div class="article__likes">
         <span>24 likes</span>
@@ -81,13 +80,13 @@
       </div>
     </div>
   </div> -->
-    <div class="row article__versions">
-        <div class="col-md-8 offset-md-2">
-            <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">
-                <span>Updated: {{formatDate(version.published, 'hh:mm, MMM DD')}}</span>
-                <h2>{{version.title}}</h2>
-                <i class="icon-arrow-right article__version__arrow"></i>
-            </a>
+        <div class="row article__versions">
+            <div class="col-md-8 offset-md-2">
+                <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">
+                    <span>Updated: {{formatDate(version.published, 'hh:mm, MMM DD')}}</span>
+                    <h2>{{version.title}}</h2>
+                    <i class="icon-arrow-right article__version__arrow"></i>
+                </a>
+            </div>
         </div>
     </div>
-</div>
