@@ -219,9 +219,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
             <div class="security__steps">
@@ -233,9 +233,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -245,12 +245,12 @@
   </div>
 </div>
 <div class="modal-overlay--custom" [ngClass]="{'open' : showSecurityModal}">
-  <div class="custom-modal">
+  <div class="custom-modal custom-modal--security">
         <span class="custom-modal__close" (click)="openPopup(false)">
       <i class="icon icon-close"></i>
     </span>
     <div *ngIf="showPrivateKey">
-      <h3>PRIVATE KEY</h3>
+      <h3>Private Key</h3>
       <span *ngIf="!passwordVerified">Enter your password to see your <b>Private Key</b></span>
       <ui-input [type]="'password'" [inputId]="'private-key'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generatePrivateKey')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
@@ -263,7 +263,7 @@
       </div>
     </div>
     <div *ngIf="showPhase">
-      <h3>RECOVERY PHRASE</h3>
+      <h3>Recovery Phrase</h3>
       <span *ngIf="!passwordVerified">Enter your password to see your <b>Recovery Phrase</b></span>
       <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
@@ -297,7 +297,7 @@
 </div>
 <!--end-->
 
-<div *ngIf="showModal">
+<div class="no-visible" [ngClass]="{'visible' : showModal}">
   <app-confirm-modal [properties]="modalProps" (closeConfirmModal)="doDelete($event)"></app-confirm-modal>
 </div>
 
