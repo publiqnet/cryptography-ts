@@ -619,6 +619,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   changePublication(event, contentUri) {
+    console.log(event + ' event', contentUri + ' content');
     this.contentService.updateContentPublication(event, contentUri)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(data => {
