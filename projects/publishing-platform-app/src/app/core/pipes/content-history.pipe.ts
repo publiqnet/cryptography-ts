@@ -7,8 +7,8 @@ import { Content } from '../services/models/content';
 
 export class ContentHistoryPipe implements PipeTransform {
 
-  transform(content: Content) {
+  transform(content: Content, data: any, published: number, slug: any) {
     console.log(content);
-    return content;
+    return (content);
   }
 }
