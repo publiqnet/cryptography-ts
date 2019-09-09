@@ -177,6 +177,9 @@
           </ng-template>
         </div>
         <div *ngIf="selectedTab == '3'">
+          <div *ngFor="let data of publishedContent">
+            {{data.previousVersions | json}}
+          </div>
           <div>
             <ui-content-single *ngFor="let data of publishedContent"
              (accountClick)="utilService.routerChangeHelper('account', $event.slug)"
@@ -189,7 +192,8 @@
              [hasBoost]="data.boosted"
              (boostClick)="onBoostModal('boost')"
              [publicationList]="publicationsList"
-             (historyClick)="historyClicked($event)">
+             (historyClick)="historyClicked($event)"
+            >
             </ui-content-single>
           </div>
           <div class="no-stories"

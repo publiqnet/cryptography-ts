@@ -37,6 +37,7 @@ export class Content {
     publication = null;
     boosted: boolean;
     boosts: [];
+    previousVersions: [];
 
     constructor(options?: ContentOptions) {
         for (const i in options) {
@@ -49,6 +50,8 @@ export class Content {
                 } else if (i == 'views' && options[i]) {
                     this.views = options[i];
                     this.view_count = this.views;
+                } else if (i == 'previousVersions') {
+                  this[i] = (options[i] && options[i].length) ? options[i].map(version => version['title']) : [];
                 } else if (i == 'tags') {
                     this[i] = (options[i] && options[i].length) ? options[i].map(tag => tag['name']) : [];
                 } else {
