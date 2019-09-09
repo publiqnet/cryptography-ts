@@ -111,9 +111,9 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     const file = e.target.files[0];
 
-    if (!this.validateFile(file, 2000000)) {
+    if (!this.validateFile(file, 5000000)) {
       e.target.value = '';
-      this.notificationService.error('Maximum file size 1 mb', '');
+      this.notificationService.error('Maximum file size 5 mb', '');
       return;
     }
 
@@ -132,9 +132,9 @@ export class PublicationModalComponent implements OnInit, OnDestroy {
     const reader = new FileReader();
     const file = e.target.files[0];
 
-    if (!this.validateFile(file, 1000000)) {
+    if (!this.validateFile(file, 5000000)) {
       e.target.value = '';
-      this.notificationService.error('Maximum file size 1 mb', '');
+      this.notificationService.error('Maximum file size 5 mb', '');
       return;
     }
 
