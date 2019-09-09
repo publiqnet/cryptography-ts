@@ -70,6 +70,7 @@ import { UiLibModule } from 'ui-lib';
 import { ConfirmModalComponent } from '../core/confirm-modal/confirm-modal.component';
 import { ChipsInputComponent } from './chips-input/chips-input.component';
 import { BoostModalComponent } from '../core/boost-modal/boost-modal.component';
+import { ContentHistoryPipe } from '../core/pipes/content-history.pipe';
 
 HttpHelperService.setBaseHeaders([
   {
@@ -140,6 +141,7 @@ export function createTranslateLoader(http: HttpClient) {
     ControlMessagesComponent,
     PageNotFoundComponent,
     PbqPipe,
+    ContentHistoryPipe,
     TimeIntervalPipe,
     ShortNamePipe,
     SettingsComponent,
@@ -207,6 +209,7 @@ export function createTranslateLoader(http: HttpClient) {
     HelperLibModule,
     UiLibModule,
     PbqPipe,
+    ContentHistoryPipe,
     TimeIntervalPipe,
     ShortNamePipe,
     HttpsPipe,
