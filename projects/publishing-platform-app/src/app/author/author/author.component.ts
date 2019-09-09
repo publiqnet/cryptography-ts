@@ -200,7 +200,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
           this.shortName = this.author.shortName ? this.author.shortName : '';
           this.canFollow = !this.author.subscribed;
           this.loadingAuthor = false;
-          this.articlesLoaded = true;
           if (this.accountService.loggedIn() && this.author && this.accountService.accountInfo.publicKey == this.author.publicKey) {
             this.isCurrentUser = true;
             this.setAuthorName();
@@ -217,6 +216,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         this.seeMoreLoading = false;
         this.calculateLastStoriUri();
         this.buildForm();
+        this.articlesLoaded = true;
       }, error => this.errorService.handleError('loadAuthorData', error));
 
     this.accountService.followAuthorChanged
