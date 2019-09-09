@@ -186,7 +186,7 @@
              (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
              (publicationsListClick)="changePublication($event, data.uri)"
              (editClick)="editStory($event)"
-             [contentData]="data | contentHistory: data.previousVersions"
+             [contentData]="data | contentHistory"
              [hasBoost]="data.boosted"
              (boostClick)="onBoostModal($event)"
              [publicationList]="publicationsList"

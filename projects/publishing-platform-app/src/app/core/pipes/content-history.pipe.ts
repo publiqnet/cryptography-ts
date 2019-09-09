@@ -7,8 +7,18 @@ import { Content } from '../services/models/content';
 
 export class ContentHistoryPipe implements PipeTransform {
 
-  transform(content: Content, data: any, published: number, slug: any) {
-    console.log(content);
-    return (content);
+  transform(content: Content) {
+    if (content) {
+      content['slug'] = content['uri'];
+      content['slug'] = content['published'];
+      content['history'] = content['previousVersions'];
+      if (content['history'] && content['history'].length) {
+        content['history'].forEach(nextHistory => {
+          nextHistory['slug'] =  nextHistory['uri'];
+          nextHistory['updated'] =  nextHistory['published'];
+        });
+      }
+    }
+    return content;
   }
 }

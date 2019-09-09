@@ -417,8 +417,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
-  historyClicked(event) {
-    console.log(event);
+  historyClicked(uri) {
+    this.router.navigate([`/s/${uri}`]);
   }
 
   deleteDraft(id: number, index: number) {

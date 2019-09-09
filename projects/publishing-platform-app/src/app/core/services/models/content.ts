@@ -51,7 +51,7 @@ export class Content {
                     this.views = options[i];
                     this.view_count = this.views;
                 } else if (i == 'previousVersions') {
-                  this[i] = (options[i] && options[i].length) ? options[i].map(version => version['title']) : [];
+                  this[i] = (options[i] && options[i].length) ? options[i] : [];
                 } else if (i == 'tags') {
                     this[i] = (options[i] && options[i].length) ? options[i].map(tag => tag['name']) : [];
                 } else {
