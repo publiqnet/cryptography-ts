@@ -44,6 +44,9 @@
   font-weight: 400;
 }
 .post-field{
+  ::ng-deep .fr-element .fr-video::after{
+    z-index: -1;
+  }
   &__areas{
     textarea{
       width: 100%;

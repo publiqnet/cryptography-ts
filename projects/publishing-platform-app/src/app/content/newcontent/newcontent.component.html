@@ -53,8 +53,7 @@
         <div class="boost-progress">
           <div class="boost-progress__item">
             <span>Total budget</span>
-            <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice"
-                         [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
+            <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice" [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
           </div>
           <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays"
                   (onTabChange)="tabChange($event)"></ui-tab>
