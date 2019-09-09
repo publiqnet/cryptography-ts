@@ -219,9 +219,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 1)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
             <div class="security__steps">
@@ -233,9 +233,9 @@
               <div class="security__steps__inputs">
                 <ui-input [readonly]="true" [placeholder]="''" [type]="'password'"
                           [inputValue]="'ub035e40d09c7797e3b04a49bc01948a8'"></ui-input>
-              </div>
-              <div class="show">
-                <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                <div class="show">
+                  <i (click)="openPopup(true, 2)" [ngClass]="showSecurityModal ? 'icon-hidden' : 'icon-preview'"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -245,7 +245,7 @@
   </div>
 </div>
 <div class="modal-overlay--custom" [ngClass]="{'open' : showSecurityModal}">
-  <div class="custom-modal">
+  <div class="custom-modal custom-modal--security">
         <span class="custom-modal__close" (click)="openPopup(false)">
       <i class="icon icon-close"></i>
     </span>
