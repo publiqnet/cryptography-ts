@@ -262,8 +262,8 @@
       </div>
     </div>
     <div *ngIf="showPhase">
-      <h3>RECOVERY PHASE</h3>
-      <span *ngIf="!passwordVerified">Enter your password to see your <b>Recovery Phase</b></span>
+      <h3>RECOVERY PHRASE</h3>
+      <span *ngIf="!passwordVerified">Enter your password to see your <b>Recovery Phrase</b></span>
       <ui-input [type]="'password'" [inputId]="'recovery-phase'" [placeholder]="'Password'" (focus)="focusFunction()"
                 (keyup)="keyupFunc($event, 'generateBK')"  [(ngModel)]="password" [inputValue]="password" [hidden]="passwordVerified"></ui-input>
       <span class="text-error" *ngIf="passError && !passwordVerified">{{passError}}</span>
