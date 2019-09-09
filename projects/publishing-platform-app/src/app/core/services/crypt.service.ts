@@ -5,9 +5,7 @@ import PubliqFile from 'blockchain-models-ts/bin/models/PubliqFile';
 import PubliqContentUnit from 'blockchain-models-ts/bin/models/PubliqContentUnit';
 import { environment } from '../../../environments/environment';
 import PubliqSponsorContentUnit from 'blockchain-models-ts/bin/models/PubliqSponsorContentUnit';
-import PubliqSignedTransaction from 'blockchain-models-ts/bin/models/PubliqSignedTransaction';
-import PubliqAuthority from 'blockchain-models-ts/bin/models/PubliqAuthority';
-import PubliqBroadcast from 'blockchain-models-ts/bin/models/PubliqBroadcast';
+import PubliqCancelSponsorContentUnit from 'blockchain-models-ts/bin/models/PubliqCancelSponsorContentUnit';
 import { UtilsService } from 'shared-lib';
 
 KeyPair.setPublicKeyPrefix(environment.coinName);
@@ -32,6 +30,31 @@ export class CryptService {
       startTimePoint: +now,
       hours: hours,
       amount: amountData,
+    });
+
+    const transactionObj = new PubliqTransaction({
+      creation: +now,
+      expiry: +now_1h,
+      fee: {
+        whole: 0, fraction: 0
+      },
+      action: boostObj
+    });
+
+    return keyPair.signMessage(JSON.stringify(transactionObj.toJson()));
+  }
+
+  getSignCancelBoost(fromBrainKey: string, uri: string, transactionHash: string) {
+    const keyPair = new KeyPair(fromBrainKey);
+    const fromPublicKey = keyPair.PpublicKey;
+
+    const now = new Date();
+    const now_1h = new Date(now.getTime() + (60 * 60 * 1000));
+
+    const boostObj =  new PubliqCancelSponsorContentUnit( {
+      sponsorAddress: fromPublicKey,
+      uri: uri,
+      transactionHash: transactionHash
     });
 
     const transactionObj = new PubliqTransaction({
@@ -132,6 +155,6 @@ export class CryptService {
 
   getPrivateKey(brainKey: string): string {
     const keyPair = new KeyPair(brainKey);
-    return keyPair.Private.key;
+    return keyPair.Private.Base58;
   }
 }

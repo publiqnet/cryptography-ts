@@ -7,18 +7,17 @@
     <div class="boost-progress">
       <div class="boost-progress__item">
         <span>Total budget</span>
-        <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice"
-                     [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
+        <ui-progress [className]="'custom-class'" [minValue]="30" [maxValue]='100' [defaultValue]="boostPrice" [titleName]="'PBQ'" (onRange)="onRangeChange($event)"></ui-progress>
       </div>
-      <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays"
-              (onTabChange)="boostTabChange($event)"></ui-tab>
+      <ui-tab className="boost-tabber" [tabs]="boostTab" [type]="'buttons'" [currentValue]="''+boostDays" (onTabChange)="boostTabChange($event)"></ui-tab>
       <div class="boost-progress__balance">
-        <span>Your Balance: <b>343434 PBQ</b></span>
+        <span>Your Balance: <b>{{accountService.accountInfo ? (accountService.accountInfo.balance | number:'0.0-8') : 0}} PBQ</b></span>
         <div class="boost-progress__balance__amount">
-          You will spend <b>3434343 PBQ</b> per 1 day.
+          You will spend <b>{{(boostPrice / boostDays) | number : '1.2-2'}} PBQ</b> per 1 day.
         </div>
       </div>
-      <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Boost'"></ui-button>
+      <ui-input [type]="'password'" class="new-boost-input" [inputId]="'new_boost_password'" [placeholder]="'Enter password' | translate" (_onChange)="onInputChange($event)"></ui-input>
+      <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Boost'" (btnClicked)="addBoostSubmit()"></ui-button>
     </div>
   </div>
 
@@ -26,9 +25,7 @@
   <div class="cancel-boost" *ngIf="modalType == 'cancel-boost'">
     <h3>Cancel Boost</h3>
     <p>To cancel boost you should enter your password</p>
-    <ui-input [type]="'password'" [className]="'boost-input'" [inputId]="'confirm_password'"
-              [placeholder]="'Enter password' | translate"></ui-input>
-    <ui-button [className]="'button-boost button-boost--cancel'" [type]="'primary'" [text]="'Cancel boost'"></ui-button>
+    <ui-input [type]="'password'" [className]="'boost-input'" [inputId]="'cancel_password'" [placeholder]="'Enter password' | translate" (_onChange)="onInputChange($event)"></ui-input>
+    <ui-button [className]="'button-boost button-boost--cancel'" [type]="'primary'" [text]="'Cancel boost'" [disabled]="!boostPassword" (btnClicked)="cancelBoostSubmit()"></ui-button>
   </div>
 </div>
-

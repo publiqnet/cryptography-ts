@@ -7,16 +7,13 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  HostListener,
-  Output
+  HostListener
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 
 import { ReplaySubject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Account } from '../../core/services/models/account';
-import { NotificationService } from '../../core/services/notification.service';
 import { AccountService } from '../../core/services/account.service';
 import { ErrorEvent, ErrorService } from '../../core/services/error.service';
 import { Content } from '../../core/services/models/content';
@@ -29,7 +26,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ValidationService } from '../../core/validator/validator.service';
 import { SafeStylePipe } from '../../core/pipes/safeStyle.pipe';
 import { DomSanitizer } from '@angular/platform-browser';
-import { style } from '@angular/animations';
 import { CryptService } from '../../core/services/crypt.service';
 import { Publications } from '../../core/services/models/publications';
 import { PublicationService } from '../../core/services/publication.service';
@@ -115,7 +111,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   public seeMoreChecker = false;
   seeMoreLoading = false;
   public startFromUri = null;
-  public storiesDefaultCount = 4;
+  public storiesDefaultCount = 10;
   authorForm: FormGroup;
   tabs = [
     {
@@ -150,6 +146,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   modalProps: any = {};
   public showBoostModal: boolean = false;
   showBoostModalType: string = 'boost';
+  public selectedBoostData: any = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -244,9 +241,15 @@ export class AuthorComponent implements OnInit, OnDestroy {
       );
   }
 
-  onBoostModal(type: string) {
+  onBoostModal(data) {
+    this.selectedBoostData = {};
+    if (data && data['boostData'] && data['boostData'][0] && data['boostData'][0]['transaction']) {
+      this.selectedBoostData['transactionHash'] = data['boostData'][0]['transaction']['transactionHash'];
+    }
+    this.selectedBoostData['uri'] = data.uri;
+    this.selectedBoostData['type'] = data.type;
     this.showBoostModal = true;
-    this.showBoostModalType = type;
+    this.showBoostModalType = data.type == 'cancel' ? 'cancel-boost' : 'boost';
   }
 
   closeBoostModal() {
@@ -372,7 +375,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
       bio.textContent = this.author.bio || 'Write a short bio';
     }
   }
-
 
   getDrafts() {
     this.draftService.getUserDrafts()
@@ -657,6 +659,32 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   editStory(event) {
     this.router.navigate([`/content/edit/${event}`]);
+  }
+
+  cancelBoostSubmit(password) {
+    if (password && this.selectedBoostData && this.selectedBoostData.type == 'cancel') {
+      this.contentService.cancelStoryBoosting(this.selectedBoostData.uri, this.selectedBoostData.transactionHash, password)
+      .subscribe(data => {
+        this.uiNotificationService.success('Success', 'Your Boost successfully canceled');
+        this.closeBoostModal();
+      },
+      error => {
+        this.uiNotificationService.error('Error', 'Boost Cancel Error');
+      });
+    }
+  }
+
+  newBoostSubmit(boostData) {
+    if (boostData.password && this.selectedBoostData && this.selectedBoostData.type == 'boost') {
+      this.contentService.contentBoost(this.selectedBoostData.uri, boostData.boostPrice, boostData.boostDays, boostData.password)
+        .subscribe(data => {
+          this.uiNotificationService.success('Success', 'Your Boost successfully Added');
+            this.closeBoostModal();
+        },
+        error => {
+          this.uiNotificationService.error('Error', 'Content Boost Error');
+        });
+    }
   }
 
   clearData() {

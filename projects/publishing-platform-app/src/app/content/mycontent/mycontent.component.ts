@@ -227,7 +227,7 @@ export class MyContentComponent implements OnInit, OnDestroy {
         if (data && data.password) {
           this.pendingProcess = true;
           this.loading = true;
-          this.contentService.cancelArticleBoosting(data.password, id);
+          // this.contentService.cancelArticleBoosting(data.password, id);
         }
       });
   }
