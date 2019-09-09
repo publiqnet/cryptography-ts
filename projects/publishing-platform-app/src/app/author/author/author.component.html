@@ -66,7 +66,7 @@
 
     <div class="row profile-statistics" [ngClass]="{'editable-disabled' : editMode}">
       <div class="col-lg-2 offset-lg-2 col-3 offset-0">
-        <div class="datum">
+        <div *ngIf="false" class="datum">
           <span class="datum__value">{{author && author.rating ? author.rating.toFixed(1) : 0}}</span>
           <span class="datum__descriptor">RATING</span>
           <span class="datum__rating"><img src="assets/images/rating.svg" alt="rating"></span>
@@ -170,7 +170,8 @@
                       (contentClick)="editDraft(oDraft.id)" [draftData]="oDraft"></ui-draft>
           </div>
           <ng-template #no_content>
-            <div class="no-drafts">
+            <div class="no-drafts"
+              *ngIf="selectedTab && selectedTab == '2' && !loadingAuthor && articlesLoaded && !publishedContent.length">>
               <img src="assets/images/no_story.svg" alt="no drafts"/>
               <span>No Drafts Yet</span>
             </div>
