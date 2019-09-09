@@ -186,11 +186,12 @@
              (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
              (publicationsListClick)="changePublication($event, data.uri)"
              (editClick)="editStory($event)"
-             [contentData]="data"
+             [contentData]="data | contentHistory"
              [hasBoost]="data.boosted"
              (boostClick)="onBoostModal($event)"
              [publicationList]="publicationsList"
-             (historyClick)="historyClicked($event)">
+             (historyClick)="historyClicked($event)"
+            >
             </ui-content-single>
           </div>
           <div class="no-stories"

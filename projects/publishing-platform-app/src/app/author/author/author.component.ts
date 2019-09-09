@@ -417,8 +417,8 @@ export class AuthorComponent implements OnInit, OnDestroy {
       });
   }
 
-  historyClicked(event) {
-    console.log(event);
+  historyClicked(uri) {
+    this.router.navigate([`/s/${uri}`]);
   }
 
   deleteDraft(id: number, index: number) {
@@ -621,6 +621,10 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   changePublication(event, contentUri) {
+    console.log(event + ' event', contentUri + ' content');
+    if (!event) {
+      event = null;
+    }
     this.contentService.updateContentPublication(event, contentUri)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(data => {

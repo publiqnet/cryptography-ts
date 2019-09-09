@@ -61,11 +61,11 @@ export class UserTemplateComponent implements OnInit, OnDestroy {
     event.preventDefault();
     this.router.navigate([route]);
   }
-
-  useLang(lang) {
-   this.activeLanguage = lang;
-    localStorage.setItem('lang', lang);
-  }
+  // commented language switcher
+  // useLang(lang) {
+  //  this.activeLanguage = lang;
+  //   localStorage.setItem('lang', lang);
+  // }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
