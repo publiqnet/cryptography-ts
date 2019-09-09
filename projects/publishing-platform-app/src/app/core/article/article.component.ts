@@ -50,6 +50,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((data: any) => {
+        console.log(data);
+
         const getFileCalls = [];
         if (data.files && data.files.length) {
           data.files.forEach((file) => {
