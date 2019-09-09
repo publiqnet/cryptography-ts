@@ -367,7 +367,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.showEditModeIcons = false;
     this.showEditIcon = false;
     this.showEditIcon1 = false;
-    console.log(flag);
     if (!flag) {
       fullName.textContent = this.setAuthorName();
       bio.textContent = this.author.bio || 'Write a short bio';
@@ -413,7 +412,6 @@ export class AuthorComponent implements OnInit, OnDestroy {
             this.publicationsList.push(nextPublication);
           });
         }
-        console.log(this.publicationsList);
       });
   }
 
@@ -658,7 +656,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   editStory(event) {
-    console.log(event);
+    this.router.navigate([`/content/edit/${event}`]);
   }
 
   clearData() {

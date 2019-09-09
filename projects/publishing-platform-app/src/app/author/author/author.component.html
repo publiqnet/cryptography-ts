@@ -186,6 +186,7 @@
              (publicationsListClick)="changePublication($event, data.uri)"
              (editClick)="editStory($event)"
              [contentData]="data"
+             [hasBoost]="data.boosted"
              (boostClick)="onBoostModal('boost')"
              [publicationList]="publicationsList"
              (historyClick)="historyClicked($event)">
