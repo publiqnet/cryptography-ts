@@ -186,6 +186,7 @@
              (publicationClick)="utilService.routerChangeHelper('publication', $event.slug)"
              (tagClick)="utilService.routerChangeHelper('tag',$event)" [type]="'edit'"
              (publicationsListClick)="changePublication($event, data.uri)"
+             (editClick)="editStory($event)"
              [contentData]="data"
              (boostClick)="onBoostModal('boost')"
              [publicationList]="publicationsList"
