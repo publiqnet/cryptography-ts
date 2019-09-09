@@ -120,11 +120,9 @@
     <div class="row">
       <div class="col-lg-8 offset-lg-2 col-xl-8 stories">
         <div style="display: flex; justify-content: space-between">
-          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'"
-                  (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
+          <ui-tab *ngIf="isCurrentUser && !editMode" [className]="'author-tab'" (onTabChange)="tabChange($event)" [tabs]="tabs"></ui-tab>
           <ng-container *ngIf="selectedTab == '2' && drafts">
-            <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'"
-                       [className]="'delete-draft'"></ui-button>
+            <ui-button *ngIf="drafts.length" (btnClicked)="deleteAllDrafts()" [text]="'Delete All Drafts'" [className]="'delete-draft'"></ui-button>
           </ng-container>
         </div>
         <div

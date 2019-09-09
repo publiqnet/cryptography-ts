@@ -352,7 +352,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
 
   tabChange(e) {
     this.selectedTab = e;
-    if (e == 2 && !this.drafts) {
+    if (e == 2 && (!this.drafts || !this.drafts.length)) {
       this.loading = true;
       this.getDrafts();
     } else if (e == 3) {
