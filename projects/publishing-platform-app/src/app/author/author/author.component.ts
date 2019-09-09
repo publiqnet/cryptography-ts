@@ -390,7 +390,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
     this.publicationService.getMyPublications()
       .pipe(
         map((publicationsData: Publications) => {
-          const publicationsList = [...publicationsData.invitations, ...publicationsData.membership, ...publicationsData.owned, ...publicationsData.requests];
+          const publicationsList = [...publicationsData.membership, ...publicationsData.owned];
           return publicationsList;
         }),
         takeUntil(this.unsubscribe$)
