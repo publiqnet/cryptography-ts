@@ -66,7 +66,7 @@ export class DraftService {
       );
   }
 
-  get(id: string): Observable <DraftOptions> {
+  get(id: string): Observable <any> {
     const url = this.url + `/draft/${id}`;
     return this.httpHelperService.call(HttpMethodTypes.get, url).pipe(map(data => new Draft(data)));
   }
