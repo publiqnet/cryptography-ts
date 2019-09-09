@@ -38,7 +38,7 @@
 
       <ng-container *ngIf="(!boostField || boostView == 'preview'); else isBoosted">
         <!--FOR ADDING OR CHANGING COVER PIC -->
-        <div class="add__cover" *ngIf="!mainCoverImageUrl">
+        <div class="add__cover" *ngIf="!mainCoverImageUrl && false">
           <p>Add cover image for your story to attract more readers</p>
           <label class="cover__img" for="coverPic">
             <input type="file" accept="image/jpeg,image/png" id="coverPic">
@@ -46,8 +46,7 @@
             <span>Add cover</span>
           </label>
         </div>
-        <ui-content-single className="boost-post-img" type="grid"
-                           [contentData]="currentContentData"></ui-content-single>
+        <ui-content-single className="boost-post-img" type="grid" [contentData]="currentContentData"></ui-content-single>
       </ng-container>
       <ng-template #isBoosted>
         <!--for boosting-->
@@ -84,7 +83,7 @@
           <span class="add-tag__label">Add to Publication</span>
           <ui-dropdown (onSelectChange)="publicationChange($event)" *ngIf="publicationsList.length"
                        [optionsData]="publicationsList" [type]="'withIcon'"
-                       [selectedOptionValue]="selectedPublication"></ui-dropdown>
+                       [selectedOptionValue]="selectedPublication.value"></ui-dropdown>
           <!--for mobile-->
           <!--FOR ADDING OR CHANGING COVER PIC -->
           <ng-container *ngIf="(!boostField || boostView == 'preview')">

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnDestroy, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReplaySubject } from 'rxjs';
@@ -13,6 +13,7 @@ import { TokenCheckStatus } from '../../core/models/enumes/TokenCheckStatus';
 import { OauthService } from 'helper-lib';
 import { UtilService } from '../../core/services/util.service';
 import { isPlatformBrowser } from '@angular/common';
+import { CryptService } from '../../core/services/crypt.service';
 
 @Component({
   selector: 'app-registration-password',
@@ -26,6 +27,10 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
   public registerError: string = '';
   public token;
   public stringToSign;
+  showPhase: boolean = false;
+  loginAccount: boolean = true;
+  public decryptedBrainKey: string;
+  passwordVerified = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +40,7 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
     public oauthService: OauthService,
     private errorService: ErrorService,
     public t: TranslateService,
+    public cryptService: CryptService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
   }
@@ -97,6 +103,12 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((data: any) => {
           this.accountService.brainKeyEncrypted = data.brainKey;
+          if (this.cryptService.checkPassword(data.brainKey, this.configForm.value.password)) {
+            this.decryptedBrainKey = this.cryptService.getDecryptedBrainKey(data.brainKey, this.configForm.value.password);
+          } else {
+            this.loginAccount = false;
+          }
+          this.showPhase = true;
           return this.accountService.accountAuthenticate(data.token);
         }),
         takeUntil(this.unsubscribe$)
@@ -106,13 +118,16 @@ export class RegistrationPasswordComponent implements OnInit, OnDestroy {
           const redirectUrl = UtilService.getCookie('redirectUrl');
           this.router.navigate([redirectUrl]);
           UtilService.removeCookie('redirectUrl');
-        } else {
-          this.router.navigate(['/']);
         }
       }, (err) => {
         this.tokenCheckStatus = TokenCheckStatus.Error;
         this.errorService.handleError('register', err);
       });
+  }
+
+  doneRegistration() {
+    this.loginAccount = true;
+    this.router.navigate(['/']);
   }
 
   ngOnDestroy() {

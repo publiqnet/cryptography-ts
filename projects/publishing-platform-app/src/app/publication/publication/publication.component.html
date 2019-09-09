@@ -214,7 +214,7 @@
 <div class="container" *ngIf="activeTab === 'followers'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 followers" *ngIf="subscribers.length">
-            <ui-user-single type="followers" [userData]="{user: follower}" (onUserClick)="onUserClick($event)" (onFollowChange)="onFollowChange($event)" *ngFor="let follower of subscribers;" [showFollowButton]="currentUser.publicKey !== follower.publicKey"></ui-user-single>
+            <ui-user-single type="followers" [userData]="{user: follower, isFollowing: follower.subscribed}" (onUserClick)="onUserClick($event)" (onFollowChange)="onFollowChange(follower)" *ngFor="let follower of subscribers;" [showFollowButton]="currentUser.publicKey !== follower.publicKey"></ui-user-single>
         </div>
         <div class="not-found local" *ngIf="!subscribers.length">
             <img src="../../../assets/no_followers.svg" alt="">
@@ -226,12 +226,12 @@
 
 <!--create story-->
 <div class="container container--new-story container--new-story" *ngIf="currentUser">
-  <div class="new-story new-story--publication-inner" [routerLink]="'/content/newcontent'">
-    <img src="assets/images/new-story.svg" alt="new story">
-  </div>
+    <div class="new-story new-story--publication-inner" [routerLink]="'/content/newcontent'">
+        <img src="assets/images/new-story.svg" alt="new story">
+    </div>
 </div>
 <!--end-->
 
 <div *ngIf="showModal">
-    <app-confirm-modal (closeConfirmModal)="openPopup(false)"></app-confirm-modal>
+    <app-confirm-modal (closeConfirmModal)="doDelete($event)"></app-confirm-modal>
 </div>

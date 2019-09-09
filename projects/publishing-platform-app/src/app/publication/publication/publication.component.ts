@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef, AfterViewInit, TemplateRef, Inject, PLATFORM_ID } from '@angular/core';
 import { NgxMasonryOptions } from 'ngx-masonry';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter, delay, debounce } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, mergeMap, filter, delay, debounce, tap } from 'rxjs/operators';
 import { Params, ActivatedRoute, Router } from '@angular/router';
 import { Publication } from '../../core/services/models/publication';
 import { ReplaySubject, Observable, observable, fromEvent, of, Subject, timer } from 'rxjs';
@@ -15,6 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Account } from '../../core/services/models/account';
 import { Author } from '../../core/services/models/author';
 import 'rxjs/add/observable/of';
+import { ContentService } from '../../core/services/content.service';
 
 @Component({
   selector: 'app-publication',
@@ -117,7 +118,9 @@ export class PublicationComponent implements OnInit, OnDestroy {
     private publicationService: PublicationService,
     public utilService: UtilService,
     private formBuilder: FormBuilder,
-    public uiNotificationService: UiNotificationService
+    public uiNotificationService: UiNotificationService,
+    private router: Router,
+    private contentService: ContentService
   ) {
   }
 
@@ -175,8 +178,22 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.temp.next(e);
   }
 
-  openPopup(flag: boolean) {
-    this.showModal = flag;
+  openPopup(e: any) {
+    this.showModal = e;
+  }
+
+
+  doDelete(data) {
+    if (!data.answer) {
+      this.showModal = !this.showModal;
+      return;
+    } else {
+      this.publicationService.deletePublication(this.publication.slug).subscribe(
+        () => {
+          this.router.navigate(['/p/my-publications']);
+        }
+      );
+    }
   }
 
   getPublication() {
@@ -252,6 +269,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
 
   inviteModal(flag: boolean) {
     this.showInviteModal = flag;
+    this.searchedMembers = [];
   }
 
   invite() {
@@ -280,10 +298,13 @@ export class PublicationComponent implements OnInit, OnDestroy {
   follow() {
     const followType = this.publication.following ? this.publicationService.unfollow(this.publication.slug) : this.publicationService.follow(this.publication.slug);
     followType.pipe(
-        takeUntil(this.unsubscribe$)
-      )
+      takeUntil(this.unsubscribe$)
+    )
       .subscribe(
-        () => this.publication.following = !this.publication.following
+        () => {
+          this.contentService.updateSearchData = true;
+          this.publication.following = !this.publication.following;
+        }
       );
   }
 
@@ -344,10 +365,27 @@ export class PublicationComponent implements OnInit, OnDestroy {
     }
   }
 
+  validateFile(file, size) {
+    if ((file.type !== 'image/jpeg' && file.type !== 'image/png') || file.size > size) {
+      of('Invalid file size or extension')
+        .pipe(
+          delay(3000),
+          takeUntil(this.unsubscribe$)
+        )
+        .subscribe(() => {});
+      return;
+    }
+    return true;
+  }
+
   uploadCover(event) {
     const input = event.target;
     if (input.files && input.files[0]) {
       const myReader: FileReader = new FileReader();
+      if (!this.validateFile(input.files[0], 5000000)) {
+        this.uiNotificationService.error('Maximum file size 5 mb', '');
+        return;
+      }
       myReader.onloadend = (loadEvent: any) => {
         this.imageLoaded = true;
         this.coverFile = input.files[0];
@@ -361,6 +399,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
     const input = event.target;
     if (input.files && input.files[0]) {
       const myReader: FileReader = new FileReader();
+      if (!this.validateFile(input.files[0], 5000000)) {
+        this.uiNotificationService.error('Maximum file size 5 mb', '');
+        return;
+      }
       myReader.onloadend = (loadEvent: any) => {
         this.imageLoaded = true;
         this.logoFile = input.files[0];
@@ -406,26 +448,26 @@ export class PublicationComponent implements OnInit, OnDestroy {
     formData.append('tags', this.publication.tags.map((el: any) => el.name).join(','));
     // formData.append('tags', this.listType == 'grid' ? '' : 'true');
     this.publicationService.editPublication(formData, this.publication.slug)
-    .subscribe(
-      (result: Publication) => {
-        this.editMode = false;
-        this.textChanging = false;
-        this.editDesc = false;
-        this.editTitle = false;
-        this.imageLoaded = false;
-        this.publication.title = result.title;
-        this.publication.description = result.description;
-        this.publication.cover = result.cover;
-        this.publication.logo = result.logo;
-        this.uiNotificationService.success('Success', 'Your publication successfully updated');
-      },
-      err => {
-        this.editMode = false;
-        this.textChanging = false;
-        this.imageLoaded = false;
-        this.uiNotificationService.error('Error', err.error.content);
-      }
-    );
+      .subscribe(
+        (result: Publication) => {
+          this.editMode = false;
+          this.textChanging = false;
+          this.editDesc = false;
+          this.editTitle = false;
+          this.imageLoaded = false;
+          this.publication.title = result.title;
+          this.publication.description = result.description;
+          this.publication.cover = result.cover;
+          this.publication.logo = result.logo;
+          this.uiNotificationService.success('Success', 'Your publication successfully updated');
+        },
+        err => {
+          this.editMode = false;
+          this.textChanging = false;
+          this.imageLoaded = false;
+          this.uiNotificationService.error('Error', err.error.content);
+        }
+      );
   }
 
   onTitleChange(event) {
@@ -501,10 +543,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
   }
 
   onFollowChange(e) {
-    const followType = e.isFollowing ? this.accountService.follow(e.user.publicKey) : this.accountService.unfollow(e.user.publicKey);
+    const followType = e.subscribed ? this.accountService.unfollow(e.publicKey) : this.accountService.follow(e.publicKey);
     followType.subscribe(
       () => {
-        e.user.subscribed = e.isFollowing;
+        e.subscribed = !e.subscribed;
       }
     );
   }

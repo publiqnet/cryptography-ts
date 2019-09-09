@@ -1,5 +1,5 @@
 <div id="publishMain" class="publish__main">
-  <span class="close-icon" (click)="closeBoostModal()"><i class="icon-close"></i></span>
+  <span class="close-icon" (click)="closeBoostModal($event)"><i class="icon-close"></i></span>
   <span class="white-overlay"></span>
   <!--edit boost-->
   <div *ngIf="modalType == 'boost'" class="publish__main--white-space">
@@ -18,9 +18,7 @@
           You will spend <b>3434343 PBQ</b> per 1 day.
         </div>
       </div>
-
       <ui-button [className]="'button-boost'" [type]="'primary'" [text]="'Boost'"></ui-button>
-
     </div>
   </div>
 

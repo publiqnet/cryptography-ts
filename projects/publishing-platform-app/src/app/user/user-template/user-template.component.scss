@@ -180,6 +180,52 @@
     max-width: 360px;
     min-height: 380px;
     text-align: center;
+    .phase {
+      display: flex;
+      flex-direction: column;
+      p {
+        font-family: $open-sans;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 18px;
+        color: #191B1E;
+        margin-bottom: 30px;
+      }
+      &__container {
+        background: #FFF3E7;
+        border-top: 1.5px solid #FF8E20;
+        border-radius: 0px 0px 10px 10px;
+        font-family: $open-sans;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 22px;
+        color: #191B1E;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+      }
+      &__footer--top {
+        display: flex;
+        align-items: center;
+        div:first-child {
+          margin-right: 15px;
+          i {
+           color: #FF8E20;
+            font-size: 25px;
+          }
+        }
+        div:last-child {
+          font-family: $open-sans;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 13px;
+          line-height: 18px;
+          color: #565A60;
+          text-align: left;
+        }
+      }
+    }
 
     h2 {
       font: 700 50px/70px $vollkorn;
