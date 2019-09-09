@@ -1,108 +1,102 @@
 <div class="search">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
 
-        <!--when you begin typing in search bar-->
-        <ng-container *ngIf="searchResult">
-          <div class="search__tabber" *ngIf="searchResult.article || searchResult.publication || searchResult.authors">
-            <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]"
-                    (onTabChange)="changeTab($event)" [currentValue]="activeTab"></ui-tab>
-            <span class="search__tabber__results">
+                <!--when you begin typing in search bar-->
+                <ng-container *ngIf="searchResult">
+                    <div class="search__tabber" *ngIf="searchResult.article || searchResult.publication || searchResult.authors">
+                        <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]" (onTabChange)="changeTab($event)" [currentValue]="activeTab"></ui-tab>
+                        <span class="search__tabber__results">
               {{searchCount}} results
             </span>
-          </div>
+                    </div>
 
-          <!--!!!!! not in default-->
-          <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
-          <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length && searchResult.article">
-            <div *ngFor="let articleItem of searchResult.article">
-              <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem"
-                                 (accountClick)="onAccountClick($event)"
-                                 (contentClick)="onContentClick($event)"
-                                 (publicationClick)="onPublicationClick($event)"
-                                 (tagClick)="onTagClick($event)" ></ui-content-single>
+                    <!--!!!!! not in default-->
+                    <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
+                    <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length && searchResult.article">
+                        <div *ngFor="let articleItem of searchResult.article">
+                            <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem" (accountClick)="onAccountClick($event)" (contentClick)="onContentClick($event)" (publicationClick)="onPublicationClick($event)" (tagClick)="onTagClick($event)"></ui-content-single>
+                        </div>
+                    </div>
+                    <div class="not-found" *ngIf="activeTab === 'stories' || activeTab === 'all' && !searchResult.article && !searchResult.article.length">
+                        <img src="assets/images/no_story.svg" alt="No story">
+                    </div>
+
+                    <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
+                    <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication && searchResult.publication.length">
+                        <div *ngFor="let publicationItem of searchResult.publication">
+                            <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem" (follow)="followPublication($event, publicationItem)"></ui-publication-single>
+                        </div>
+                    </div>
+                    <div class="not-found" *ngIf="activeTab === 'publications' || activeTab === 'all' && !searchResult.publication && !searchResult.publication.length">
+                        <img src="assets/images/no_publications.svg" alt="No publication">
+                    </div>
+
+                    <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
+                    <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length && searchResult.authors">
+                        <div class="search-people" *ngFor="let authorItem of searchResult.authors">
+                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem}"></ui-user-single>
+                        </div>
+                    </div>
+                    <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors && !searchResult.authors.length">
+                        <img src="assets/images/no_people.svg" alt="No author">
+                    </div>
+
+                </ng-container>
+
+                <!--<div #noSearchResult> No Search Result</div>-->
+
+                <!--when you just entered search component-->
+                <ng-container *ngIf="defaultSearchData && !searchResult">
+
+                    <div class="publication-widget" *ngIf="false">
+                        <h3>Resent Searches</h3>
+                        <div class="publication-widget__buttons">
+                            <span class="blue">Clear</span>
+                        </div>
+                    </div>
+
+                    <div class="recent-searches" *ngIf="false">
+                        <span>#STARTUPS</span>
+                        <span>#HEALTH</span>
+                        <span>#COMPUTER SCIENCE</span>
+                        <span>#TECHNOLOGY</span>
+                        <span>#SCIENCE</span>
+                        <span>#SPORT</span>
+                        <span>#DESIGN</span>
+                        <span>#WEATHER</span>
+                    </div>
+
+                    <div class="popular" *ngIf="defaultSearchData">
+                        <div class="publication-widget">
+                            <h3>Popular Publications</h3>
+                            <div *ngIf="false" class="publication-widget__buttons">
+                                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+                                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+                            </div>
+                        </div>
+
+                        <div *ngFor="let publicationItem of defaultSearchData.publication">
+                            <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'popular__item'" [type]="'follow'" [publicationData]="publicationItem" (follow)="followPublication($event,publicationItem)"></ui-publication-single>
+                        </div>
+                    </div>
+
+                    <div class="popular">
+                        <div class="publication-widget">
+                            <h3>Authors you may interest</h3>
+                            <div *ngIf="false" class="publication-widget__buttons">
+                                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
+                                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
+                            </div>
+                        </div>
+                        <div class="search-people" *ngFor="let authorItem of defaultSearchData.authors">
+                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
-          </div>
-          <div class="not-found" *ngIf="activeTab === 'stories' || activeTab === 'all' && !searchResult.article && !searchResult.article.length">
-            <img src="assets/images/no_story.svg" alt="No story">
-          </div>
-
-          <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
-          <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication && searchResult.publication.length">
-            <div  *ngFor="let publicationItem of searchResult.publication">
-              <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem"></ui-publication-single>
-            </div>
-          </div>
-          <div class="not-found" *ngIf="activeTab === 'publications' || activeTab === 'all' && !searchResult.publication && !searchResult.publication.length">
-            <img src="assets/images/no_publications.svg" alt="No publication">
-          </div>
-
-          <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
-          <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length && searchResult.authors">
-            <div class="search-people"  *ngFor="let authorItem of searchResult.authors">
-              <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem}"></ui-user-single>
-            </div>
-          </div>
-          <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors && !searchResult.authors.length">
-            <img src="assets/images/no_people.svg" alt="No author">
-          </div>
-
-        </ng-container>
-
-        <!--<div #noSearchResult> No Search Result</div>-->
-
-        <!--when you just entered search component-->
-        <ng-container *ngIf="defaultSearchData && !searchResult">
-
-          <div class="publication-widget" *ngIf="false">
-            <h3>Resent Searches</h3>
-            <div class="publication-widget__buttons">
-              <span class="blue">Clear</span>
-            </div>
-          </div>
-
-          <div class="recent-searches" *ngIf="false">
-            <span>#STARTUPS</span>
-            <span>#HEALTH</span>
-            <span>#COMPUTER SCIENCE</span>
-            <span>#TECHNOLOGY</span>
-            <span>#SCIENCE</span>
-            <span>#SPORT</span>
-            <span>#DESIGN</span>
-            <span>#WEATHER</span>
-          </div>
-
-          <div class="popular" *ngIf="defaultSearchData">
-            <div class="publication-widget">
-              <h3>Popular Publications</h3>
-              <div *ngIf="false" class="publication-widget__buttons">
-                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
-                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
-              </div>
-            </div>
-
-            <div *ngFor="let publicationItem of defaultSearchData.publication">
-              <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'popular__item'" [type]="'follow'"
-                                     [publicationData]="publicationItem"></ui-publication-single>
-            </div>
-          </div>
-
-          <div class="popular">
-            <div class="publication-widget">
-              <h3>Authors you may interest</h3>
-              <div *ngIf="false" class="publication-widget__buttons">
-                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
-                <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
-              </div>
-            </div>
-            <div class="search-people"  *ngFor="let authorItem of defaultSearchData.authors">
-              <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
-            </div>
-          </div>
-        </ng-container>
-      </div>
+        </div>
     </div>
-  </div>
 
 </div>

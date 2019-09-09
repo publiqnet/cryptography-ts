@@ -51,7 +51,7 @@ export class ContentService {
   url = environment.backend + '/api';
 
   private observers: object = {
-    'getDefaultSearchData': {name: '_getDefaultSearchData', refresh: false}
+    'getDefaultSearchData': { name: '_getDefaultSearchData', refresh: false }
   };
 
   private feedback: Feedback;
@@ -78,6 +78,7 @@ export class ContentService {
   private destroyContentData;
   destroyContentDataChanged = new Subject<any>();
 
+  public updateSearchData = false;
 
   private articleUpLoading = false;
   articleUpLoadingChanged = new Subject<boolean>();
@@ -93,10 +94,10 @@ export class ContentService {
   static generateTags(metaTags) {
     let result;
     if (typeof metaTags === 'string') {
-      result = [{display: metaTags, value: metaTags}];
+      result = [{ display: metaTags, value: metaTags }];
     } else if (Array.isArray(metaTags)) {
       result = metaTags.map(tag => {
-        return {display: tag, value: tag};
+        return { display: tag, value: tag };
       });
     } else if (typeof metaTags === 'undefined') {
       result = [];
@@ -138,7 +139,7 @@ export class ContentService {
         console.log('MalformedURLException');
         this.errorService.handleError('transfer_failed', {
           status: 409,
-          error: {message: 'transfer_failed'}
+          error: { message: 'transfer_failed' }
         });
         this.articleUpLoading = false;
         this.articleUpLoadingChanged.next(this.articleUpLoading);
@@ -161,7 +162,7 @@ export class ContentService {
         console.log('MalformedURLException');
         this.errorService.handleError('transfer_failed', {
           status: 409,
-          error: {message: 'transfer_failed'}
+          error: { message: 'transfer_failed' }
         });
         this.articleUpLoading = false;
         this.articleUpLoadingChanged.next(this.articleUpLoading);
@@ -175,7 +176,7 @@ export class ContentService {
     const url = this.contentUrl + `/upload-content-complete/${dsId}`;
     // upload-content-complete/{dsId}
     const authToken = localStorage.getItem('auth');
-    const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
+    const header = { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) };
     console.log('upload-content-complete: start', new Date());
     this.http.post(url, {}, header).subscribe(
       (data: any) => {
@@ -229,10 +230,10 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('submit', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
-      const header = {headers: new HttpHeaders({'X-API-TOKEN': authToken})};
+      const header = { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) };
       const channelId = this.channelService.channel
         ? this.channelService.channel
         : '';
@@ -311,7 +312,7 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('uploadCroppedMainPhoto', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
       const formData = new FormData();
@@ -323,7 +324,7 @@ export class ContentService {
 
       this.http
         .post(url, formData, {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
+          headers: new HttpHeaders({ 'X-API-TOKEN': authToken })
         })
         .subscribe(
           data => {
@@ -341,7 +342,7 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('uploadListPhoto', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
       const formData = new FormData();
@@ -352,7 +353,7 @@ export class ContentService {
 
       this.http
         .post(url, formData, {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
+          headers: new HttpHeaders({ 'X-API-TOKEN': authToken })
         })
         .subscribe(
           data => {
@@ -370,13 +371,13 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('destroyContent', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
       const url = this.contentUrl + '/destroy-content/' + contentId;
 
       this.http
-        .delete(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .delete(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .subscribe(
           data => {
             console.log('destroyContentData---OK');
@@ -433,7 +434,7 @@ export class ContentService {
             contentData.push(nextContent);
           });
           const viewCountUrl = environment.ds_backend + '/content/views';
-          return forkJoin(of(contentData), this.http.post(viewCountUrl, {ids}));
+          return forkJoin(of(contentData), this.http.post(viewCountUrl, { ids }));
         }
       })
     );
@@ -445,7 +446,7 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('submit', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
 
@@ -459,7 +460,7 @@ export class ContentService {
             reason: reasonId,
             author_publiq_id: authorPubliqId
           },
-          {headers: new HttpHeaders({'X-API-TOKEN': authToken})}
+          { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) }
         )
         .subscribe(
           res => {
@@ -471,7 +472,7 @@ export class ContentService {
                 'addFeedbackLike',
                 {
                   status: 409,
-                  error: {message: 'add_feedback_report_error'}
+                  error: { message: 'add_feedback_report_error' }
                 },
                 url
               );
@@ -488,7 +489,7 @@ export class ContentService {
     if (!authToken) {
       this.errorService.handleError('submit', {
         status: 409,
-        error: {message: 'invalid_session_id'}
+        error: { message: 'invalid_session_id' }
       });
     }
 
@@ -502,7 +503,7 @@ export class ContentService {
             action: action,
             author_publiq_id: authorPubliqId
           },
-          {headers: new HttpHeaders({'X-API-TOKEN': authToken})}
+          { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) }
         )
         .subscribe(
           res => {
@@ -514,7 +515,7 @@ export class ContentService {
                 'addFeedbackLike',
                 {
                   status: 409,
-                  error: {message: 'add_feedback_like_error'}
+                  error: { message: 'add_feedback_like_error' }
                 },
                 url
               );
@@ -531,14 +532,14 @@ export class ContentService {
       if (!authToken) {
         this.errorService.handleError('submit', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
 
       const url = this.feedbackUrl + '/get-impression-status/' + dsId;
 
       this.http
-        .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(map(feedback => new Feedback(feedback)))
         .subscribe(
           res => {
@@ -556,13 +557,13 @@ export class ContentService {
 
   public getAccountToken() {
     return this.accountService.accountInfo &&
-    this.accountService.accountInfo.token
+      this.accountService.accountInfo.token
       ? this.accountService.accountInfo.token
       : null;
   }
 
   getImage(imageUrl): Observable<Blob> {
-    return this.http.get(imageUrl, {responseType: 'blob'});
+    return this.http.get(imageUrl, { responseType: 'blob' });
   }
 
   // new
@@ -581,7 +582,7 @@ export class ContentService {
     const brainKey = this.cryptService.getDecryptedBrainKey(this.accountService.brainKeyEncrypted, password);
     const data = (files.length) ? files.map(f => this.signFile(f, brainKey)) : [];
     const url = this.fileUrl + `/sign`;
-    return this.httpHelperService.call(HttpMethodTypes.post, url, {files: data});
+    return this.httpHelperService.call(HttpMethodTypes.post, url, { files: data });
   }
 
   uploadTextFiles(content): Observable<any> {
@@ -621,7 +622,7 @@ export class ContentService {
 
   publish(uri: string, contentId, publicationSlug: string, tags: string): Observable<any> {
     const url = environment.backend + '/api/content/publish';
-    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, contentId, publicationSlug, tags});
+    return this.httpHelperService.call(HttpMethodTypes.post, url, { uri, contentId, publicationSlug, tags });
   }
 
   getMyContents(fromUri = null, count: number = 10, boostedCount: number = 0): Observable<any> {
@@ -657,7 +658,7 @@ export class ContentService {
   }
 
   getFileContentFromUrl(url: string): Observable<any> {
-    return this.http.get(url, {responseType: 'text'});
+    return this.http.get(url, { responseType: 'text' });
   }
 
   contentBoost(uri: string, price: number, days: number, password: string) {
@@ -680,34 +681,34 @@ export class ContentService {
 
   getDefaultSearchData(): Observable<any> {
     const searchData: any = this.observers['getDefaultSearchData'];
-    return this.httpObserverService.observerCall(
-      searchData.name,
-      this.httpHelperService.customCall(HttpMethodTypes.get, this.url + '/search')
-        .pipe(map(defaultSearchData => {
+      return this.httpObserverService.observerCall(
+        searchData.name,
+        this.httpHelperService.call(HttpMethodTypes.get, this.url + '/search')
+          .pipe(map(defaultSearchData => {
             defaultSearchData.authors = (defaultSearchData.authors && defaultSearchData.authors.length) ? defaultSearchData.authors.map(nextAuthor => new Author(nextAuthor)) : [];
             defaultSearchData.publication = (defaultSearchData.publication && defaultSearchData.publication.length) ? defaultSearchData.publication.map(nextPublication => new Publication(nextPublication)) : [];
             return defaultSearchData;
           })
-        )
-      , searchData.refresh);
+          )
+        , searchData.refresh = this.updateSearchData);
   }
 
   searchByWord(word: string): Observable<any> {
     const url = this.url + `/search/${word}`;
-    return this.httpHelperService.customCall(HttpMethodTypes.post, url)
+    return this.httpHelperService.call(HttpMethodTypes.post, url)
       .pipe(map(searchData => new Search(searchData)));
   }
 
   updateContentPublication(publicationSlug: string, uri: string): Observable<any> {
     const url = this.contentUrl + `/publication`;
-    return this.httpHelperService.call(HttpMethodTypes.post, url, {uri, publicationSlug});
+    return this.httpHelperService.call(HttpMethodTypes.post, url, { uri, publicationSlug });
   }
 
   getAllTags(): Observable<any> {
     return this.httpHelperService.customCall(HttpMethodTypes.get, this.url + '/tags')
-        .pipe(map(tagsData => {
-          tagsData = tagsData && tagsData.length ? tagsData.map(nextOption => new Tag(nextOption)) : [];
-          return tagsData;
-        }));
+      .pipe(map(tagsData => {
+        tagsData = tagsData && tagsData.length ? tagsData.map(nextOption => new Tag(nextOption)) : [];
+        return tagsData;
+      }));
   }
 }
