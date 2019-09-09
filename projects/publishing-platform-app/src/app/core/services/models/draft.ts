@@ -5,7 +5,7 @@ export interface DraftOptions { // todo delete
   id: any;
   author: Author;
   created: string;
-  published: string;
+  updated: string;
   title: string;
   tags: Array<string>;
   image: string;
@@ -37,6 +37,9 @@ export class Draft {
           this[i] = options[i] ? options[i] : '';
         } else if (i == 'content') {
           this['description'] = options[i] ? options[i].replace(/(<([^>]+)>)/ig, '') : '';
+          this[i] = options[i] ? options[i] : '';
+        } else if (i == 'updated') {
+          this['published'] = options[i] ? options[i] : '';
           this[i] = options[i] ? options[i] : '';
         } else {
           this[i] = options[i] ? options[i] : '';
