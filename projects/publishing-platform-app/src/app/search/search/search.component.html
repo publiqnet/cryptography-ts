@@ -6,14 +6,15 @@
                 <!--when you begin typing in search bar-->
                 <ng-container *ngIf="searchResult">
                     <div class="search__tabber" *ngIf="searchResult.article || searchResult.publication || searchResult.authors">
-                        <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: 'All'}, {value: 'stories', text: 'Stories'}, {value: 'publications', text: 'Publications'}, {value: 'people', text: 'People'}]" (onTabChange)="changeTab($event)" [currentValue]="activeTab"></ui-tab>
+                        <ui-tab [className]="'search-tabber'" [type]="'buttons'" [tabs]="[{value: 'all', text: ('header.all' | translate)}, {value: 'stories', text: ('header.stories' | translate)}, {value: 'publications', text: ('header.publications' | translate)}, {value: 'people', text: ('header.people' | translate)}]"
+                            (onTabChange)="changeTab($event)" [currentValue]="activeTab"></ui-tab>
                         <span class="search__tabber__results">
-              {{searchCount}} results
+              {{searchCount}} {{'header.results' | translate}}
             </span>
                     </div>
 
                     <!--!!!!! not in default-->
-                    <h3 *ngIf="searchResult.article && activeTab === 'all'">Popular Stories</h3>
+                    <h3 *ngIf="searchResult.article && activeTab === 'all'">{{'header.popular_stories' | translate}}</h3>
                     <div *ngIf="activeTab === 'stories' || activeTab === 'all' && searchResult.article.length && searchResult.article">
                         <div *ngFor="let articleItem of searchResult.article">
                             <ui-content-single [type]="'single'" [className]="'search-stories'" [contentData]="articleItem" (accountClick)="onAccountClick($event)" (contentClick)="onContentClick($event)" (publicationClick)="onPublicationClick($event)" (tagClick)="onTagClick($event)"></ui-content-single>
@@ -23,7 +24,7 @@
                         <img src="assets/images/no_story.svg" alt="No story">
                     </div>
 
-                    <h3 *ngIf="searchResult.publication && activeTab === 'all'">Popular Publications</h3>
+                    <h3 *ngIf="searchResult.publication && activeTab === 'all'">{{'header.popular_publications' | translate}}</h3>
                     <div *ngIf="activeTab === 'publications' || activeTab === 'all' && searchResult.publication && searchResult.publication.length">
                         <div *ngFor="let publicationItem of searchResult.publication">
                             <ui-publication-single (getPublicationSlug)="changeRoute('/p/'+$event)" [className]="'search-publication'" [type]="'follow'" [publicationData]="publicationItem" (follow)="followPublication($event, publicationItem)"></ui-publication-single>
@@ -33,10 +34,10 @@
                         <img src="assets/images/no_publications.svg" alt="No publication">
                     </div>
 
-                    <h3 *ngIf="searchResult.authors && activeTab === 'all'">Authors you may interest</h3>
+                    <h3 *ngIf="searchResult.authors && activeTab === 'all'">{{'header.interest_authors' | translate}}</h3>
                     <div *ngIf="activeTab === 'people' || activeTab === 'all' && searchResult.authors.length && searchResult.authors">
                         <div class="search-people" *ngFor="let authorItem of searchResult.authors">
-                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem}"></ui-user-single>
+                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [userData]="{user: authorItem, isFollowing: authorItem.subscribed}" (onFollowChange)="followUser($event)"></ui-user-single>
                         </div>
                     </div>
                     <div class="not-found" *ngIf="activeTab === 'people' || activeTab === 'all' && !searchResult.authors && !searchResult.authors.length">
@@ -51,9 +52,9 @@
                 <ng-container *ngIf="defaultSearchData && !searchResult">
 
                     <div class="publication-widget" *ngIf="false">
-                        <h3>Resent Searches</h3>
+                        <h3>{{'header.recent_searches' | translate}}</h3>
                         <div class="publication-widget__buttons">
-                            <span class="blue">Clear</span>
+                            <span class="blue">{{'header.clear' | translate}}</span>
                         </div>
                     </div>
 
@@ -70,7 +71,7 @@
 
                     <div class="popular" *ngIf="defaultSearchData">
                         <div class="publication-widget">
-                            <h3>Popular Publications</h3>
+                            <h3>{{'header.popular_publications' | translate}}</h3>
                             <div *ngIf="false" class="publication-widget__buttons">
                                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
                                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
@@ -84,19 +85,18 @@
 
                     <div class="popular">
                         <div class="publication-widget">
-                            <h3>Authors you may interest</h3>
+                            <h3>{{'header.interest_authors' | translate}}</h3>
                             <div *ngIf="false" class="publication-widget__buttons">
                                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true" [className]="'left-arrow'"></ui-button>
                                 <ui-button [iconClassName]="'arrow-right'" [iconButton]="true"></ui-button>
                             </div>
                         </div>
                         <div class="search-people" *ngFor="let authorItem of defaultSearchData.authors">
-                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem}"></ui-user-single>
+                            <ui-user-single (onUserClick)="onUserClick(authorItem)" [type]="'followers'" [className]="" [userData]="{user: authorItem, isFollowing: authorItem.subscribed}" (onFollowChange)="followUser($event, authorItem)"></ui-user-single>
                         </div>
                     </div>
                 </ng-container>
             </div>
         </div>
     </div>
-
 </div>

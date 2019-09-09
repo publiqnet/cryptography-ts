@@ -111,7 +111,7 @@ export class PublicationComponent implements OnInit, OnDestroy {
   showInviteModal: boolean = false;
   publicationDesc: string;
   temp = new Subject<any>();
-
+  removePub: boolean;
   constructor(
     private accountService: AccountService,
     private route: ActivatedRoute,
@@ -178,8 +178,9 @@ export class PublicationComponent implements OnInit, OnDestroy {
     this.temp.next(e);
   }
 
-  openPopup(e: any) {
+  openPopup(e: any, remove) {
     this.showModal = e;
+    this.removePub = remove;
   }
 
 
@@ -188,11 +189,20 @@ export class PublicationComponent implements OnInit, OnDestroy {
       this.showModal = !this.showModal;
       return;
     } else {
-      this.publicationService.deletePublication(this.publication.slug).subscribe(
-        () => {
-          this.router.navigate(['/p/my-publications']);
-        }
-      );
+      if (this.removePub) {
+        this.publicationService.deletePublication(this.publication.slug).subscribe(
+          () => {
+            this.router.navigate(['/p/my-publications']);
+          }
+        );
+      } else {
+        this.publicationService.leavePublication(this.publication.slug).subscribe(
+          () => {
+            this.showModal = false;
+            this.getPublication();
+          }
+        );
+      }
     }
   }
 
@@ -582,6 +592,10 @@ export class PublicationComponent implements OnInit, OnDestroy {
         this.getPublication();
       }
     );
+  }
+
+  leavePublication() {
+
   }
 
   private buildForm() {

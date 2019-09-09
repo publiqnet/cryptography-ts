@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { filter, flatMap, map, switchMap, tap } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 
 import { AccountService } from './account.service';
 import { environment } from '../../../environments/environment';
@@ -17,7 +17,6 @@ import { HttpHelperService, HttpMethodTypes, HttpObserverService } from 'helper-
 import { Content } from './models/content';
 import { Search } from './models/search';
 import { TranslateService } from '@ngx-translate/core';
-import { IPublications, Publications } from './models/publications';
 import { Author } from './models/author';
 import { Publication } from './models/publication';
 import { Tag } from './models/tag';

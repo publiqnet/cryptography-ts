@@ -627,17 +627,14 @@ export class AuthorComponent implements OnInit, OnDestroy {
   }
 
   follow() {
-    if (!this.accountService.loggedIn()) {
-      this.router.navigate(['/user/login']);
-    }
-
     this.accountService.follow(this.author.publicKey)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe((author: Account) => {
-        this.canFollow = false;
-      });
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe((author: Account) => {
+      this.contentService.updateSearchData = true;
+      this.canFollow = false;
+    });
   }
 
   unfollow() {
@@ -651,6 +648,7 @@ export class AuthorComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
       )
       .subscribe((author: Account) => {
+        this.contentService.updateSearchData = true;
         this.canFollow = true;
       });
   }

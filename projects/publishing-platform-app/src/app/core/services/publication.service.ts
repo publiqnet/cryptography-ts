@@ -104,6 +104,8 @@ export class PublicationService {
 
   deletePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + '/' + slug);
 
+  leavePublication = (slug: string): Observable<any> => this.httpHelperService.call(HttpMethodTypes.delete, this.url + `/${slug}/leave`);
+
   requestBecomeMember = (slug: string): Observable<any> => {
     if (this.accountService.loggedIn()) {
       return this.httpHelperService.call(HttpMethodTypes.post, this.url + '/' + slug + '/request');

@@ -149,5 +149,9 @@
          ::ng-deep .inviters {
             margin-bottom: 25px;
         }
+         ::ng-deep .inv-part__content {
+            flex: 1;
+            margin-right: 4px;
+        }
     }
 }

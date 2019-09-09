@@ -96,6 +96,18 @@ export class ArticleComponent implements OnInit, OnDestroy {
     return moment(date * 1000).format(format);
   }
 
+  follow() {
+    const followType = this.author.subscribed ? this.accountService.unfollow(this.author.publicKey) : this.accountService.follow(this.author.publicKey);
+    followType
+    .pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe((author: Account) => {
+      this.contentService.updateSearchData = true;
+      this.author.subscribed = !this.author.subscribed;
+    });
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

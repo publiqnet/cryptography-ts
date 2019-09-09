@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-8 col-xl-9">
             <div class="grid-style">
-                <h2 class="shadowed-heading" data-shadow-text="Recommended">Recommended</h2>
+                <h2 class="shadowed-heading" data-shadow-text="Recommended">{{'core.recommended' | translate}}</h2>
                 <div class="grid-style__items">
                     <i (click)="listType = 'grid'" class="grid-icon grid-icon--selected icon-multi-grid" [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
                     <i (click)="listType = 'single'" class="grid-icon icon-single-grid" [ngClass]="{'grid-icon--selected': (listType == 'single')}"></i>
@@ -20,16 +20,16 @@
             </div>
         </ng-container>
         <div class="col-lg-4 col-xl-3">
-<!--            <div class="welcome-to-media" *ngIf="welcomeBlockVisible">-->
-<!--                <i class="icon-close pointer" (click)="welcomeBlockVisible = false"></i>-->
-<!--                <div class="welcome-to-media__heading">-->
-<!--                    <div></div>-->
-<!--                    <h4>Welcome to Media</h4>-->
-<!--                </div>-->
-<!--                <p>Become an early bird of the future media and get your share from our biggest <b>1,000,000</b> PBQ airdrop!</p>-->
-<!--                <ui-input type="email" placeholder="Your email"></ui-input>-->
-<!--                <ui-button className="button button&#45;&#45;large" size="large" text="Sign up"></ui-button>-->
-<!--            </div>-->
+            <!--            <div class="welcome-to-media" *ngIf="welcomeBlockVisible">-->
+            <!--                <i class="icon-close pointer" (click)="welcomeBlockVisible = false"></i>-->
+            <!--                <div class="welcome-to-media__heading">-->
+            <!--                    <div></div>-->
+            <!--                    <h4>Welcome to Media</h4>-->
+            <!--                </div>-->
+            <!--                <p>Become an early bird of the future media and get your share from our biggest <b>1,000,000</b> PBQ airdrop!</p>-->
+            <!--                <ui-input type="email" placeholder="Your email"></ui-input>-->
+            <!--                <ui-button className="button button&#45;&#45;large" size="large" text="Sign up"></ui-button>-->
+            <!--            </div>-->
             <div class="publications" *ngIf="publicationsList && publicationsList.length">
                 <ui-publication-list [countByPage]="3" [data]="publicationsList" [hasMore]="hasMorePublications" (loadMore)="loadMorePublications()" (getPublication)="goPublicationPage($event)" (onFollow)="followPublication($event)"></ui-publication-list>
             </div>

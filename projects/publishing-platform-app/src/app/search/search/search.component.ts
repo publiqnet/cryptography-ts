@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { PublicationService } from '../../core/services/publication.service';
+import { AccountService } from '../../core/services/account.service';
 
 @Component({
   selector: 'app-search',
@@ -20,7 +21,7 @@ export class SearchComponent implements OnChanges, OnDestroy {
   public searchCount = 0;
   private unsubscribe$ = new ReplaySubject<void>(1);
 
-  constructor(private utilService: UtilService, private publicationService: PublicationService,
+  constructor(private accountService: AccountService, private utilService: UtilService, private publicationService: PublicationService,
     private router: Router) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -73,6 +74,17 @@ export class SearchComponent implements OnChanges, OnDestroy {
       .subscribe(
         () => {}
       );
+  }
+
+  followUser(event, item) {
+    const followType = item.subscribed ? this.accountService.unfollow(item.publicKey) : this.accountService.follow(item.publicKey);
+    followType
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe((author: Account) => {
+        item.subscribed = !item.subscribed;
+      });
   }
 
   ngOnDestroy() {

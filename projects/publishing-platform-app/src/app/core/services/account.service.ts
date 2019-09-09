@@ -2,7 +2,7 @@ import { EventEmitter, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, of } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -18,18 +18,21 @@ import { Subscriber } from './models/subscriber';
 import { UtilsService } from 'shared-lib';
 import { HttpHelperService, HttpMethodTypes } from 'helper-lib';
 import { Author } from './models/author';
+import { UtilService } from './util.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AccountService {
 
   constructor(private http: HttpClient,
-              @Inject(PLATFORM_ID) private platformId: Object,
-              private httpRpcService: HttpRpcService,
-              private httpHelper: HttpHelperService,
-              private errorService: ErrorService,
-              private utilsService: UtilsService,
-              private cryptService: CryptService,
-              public translateService: TranslateService) {
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private httpRpcService: HttpRpcService,
+    private httpHelper: HttpHelperService,
+    private errorService: ErrorService,
+    private utilsService: UtilsService,
+    private cryptService: CryptService,
+    private router: Router,
+    public translateService: TranslateService) {
   }
 
   public api;
@@ -150,7 +153,7 @@ export class AccountService {
           err =>
             this.errorService.handleError('load_balance_error', {
               status: 409,
-              error: {message: 'load_balance_error'}
+              error: { message: 'load_balance_error' }
             })
         );
     }
@@ -165,7 +168,7 @@ export class AccountService {
   sendRecoverEmail(email: string): void {
     if (isPlatformBrowser(this.platformId)) {
       const url: string = this.userUrl + '/check-email';
-      this.http.post(url, {email}).subscribe(
+      this.http.post(url, { email }).subscribe(
         data => {
           this.sendRecoverEmailData = data;
           this.sendRecoverEmailDataChanged.next(data);
@@ -193,7 +196,7 @@ export class AccountService {
 
   accountAuthenticate(token: string): Observable<any> {
     const url = this.userUrl + `/authenticate`;
-    return this.http.get(url, {headers: new HttpHeaders({'X-OAUTH-TOKEN': token})})
+    return this.http.get(url, { headers: new HttpHeaders({ 'X-OAUTH-TOKEN': token }) })
       .pipe(
         map((userInfo: any) => {
           localStorage.setItem('auth', userInfo.token);
@@ -258,7 +261,7 @@ export class AccountService {
     if (!authToken) {
       this.errorService.handleError('loginSession', {
         status: 409,
-        error: {message: 'invalid_session_id'}
+        error: { message: 'invalid_session_id' }
       });
     }
 
@@ -272,12 +275,12 @@ export class AccountService {
           return userInfo;
         })
       ).subscribe(
-      data => {
-        this.loginSessionData = data;
-        this.loginSessionDataChanged.next(this.loginSessionData);
-      },
-      error => this.errorService.handleError('loginSession', error, url)
-    );
+        data => {
+          this.loginSessionData = data;
+          this.loginSessionDataChanged.next(this.loginSessionData);
+        },
+        error => this.errorService.handleError('loginSession', error, url)
+      );
   }
 
   loadAuthorSubscribers(accountName: string) {
@@ -289,9 +292,9 @@ export class AccountService {
           map((result: any[]) => result.length ? result.map(data => new Subscriber(data['subscriber'])) : [])
         )
         .subscribe((res: Subscriber[]) => {
-            this.subscribers = res;
-            this.subscribersChanged.next(this.subscribers);
-          },
+          this.subscribers = res;
+          this.subscribersChanged.next(this.subscribers);
+        },
           error => this.errorService.handleError('loadAuthorSubscribers', error, url)
         );
     }
@@ -301,7 +304,7 @@ export class AccountService {
     const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
     if (authToken) {
       const url = this.userUrl + `/subscriptions`;
-      return this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})});
+      return this.http.get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) });
     }
   }
 
@@ -322,12 +325,12 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('invalid_session_id', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
       const url = this.userUrl + '/subscription';
       this.http
-        .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(
           filter(data => data != null),
           map((result: any) => {
@@ -344,9 +347,9 @@ export class AccountService {
           })
         )
         .subscribe((res: any) => {
-            this.subscriptionData = res;
-            this.subscriptionDataChanged.next(this.subscriptionData);
-          },
+          this.subscriptionData = res;
+          this.subscriptionDataChanged.next(this.subscriptionData);
+        },
           error => this.errorService.handleError('getSubscription', error, url)
         );
     }
@@ -358,12 +361,12 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('invalid_session_id', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
       const url = this.userUrl + '/subscription-preferences';
       this.http
-        .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(map(result => {
           // @ts-ignore
           return new Preference(result);
@@ -398,7 +401,7 @@ export class AccountService {
 
     this.http
       .post(this.userUrl + '/signout', '', {
-        headers: new HttpHeaders({'X-API-TOKEN': token})
+        headers: new HttpHeaders({ 'X-API-TOKEN': token })
       })
       .subscribe(
         () => {
@@ -437,14 +440,14 @@ export class AccountService {
     if (!authToken) {
       this.errorService.handleError('loginSession', {
         status: 409,
-        error: {message: 'invalid_session_id'}
+        error: { message: 'invalid_session_id' }
       });
       return;
     }
     const formData = new FormData();
     formData.append('image', file, file.name);
     return this.http.post(this.userUrl + '/image', formData, {
-      headers: new HttpHeaders({'X-API-TOKEN': authToken})
+      headers: new HttpHeaders({ 'X-API-TOKEN': authToken })
     });
   }
 
@@ -461,7 +464,15 @@ export class AccountService {
     }
   }
 
-  follow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.post, this.userUrl + `/${slug}/subscribe`);
+  follow = (slug: string): Observable<any> => {
+    if (this.loggedIn()) {
+      return this.httpHelper.call(HttpMethodTypes.post, this.userUrl + `/${slug}/subscribe`);
+    } else {
+      UtilService.setRedirectUrl(this.router.url);
+      this.router.navigate(['/user/login']);
+      return of([]);
+    }
+  }
 
   unfollow = (slug: string): Observable<any> => this.httpHelper.call(HttpMethodTypes.delete, this.userUrl + `/${slug}/subscribe`);
 
@@ -471,7 +482,7 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
 
@@ -479,8 +490,8 @@ export class AccountService {
       this.http
         .post(
           url,
-          {account: publicKey},
-          {headers: new HttpHeaders({'X-API-TOKEN': authToken})}
+          { account: publicKey },
+          { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) }
         )
         .subscribe(
           result => {
@@ -504,13 +515,13 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
       }
 
       const url = this.userUrl + `/channels`;
       this.http
-        .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .subscribe(
           data => {
             this.authorChannelsData = data;
@@ -528,14 +539,14 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
         return;
       }
       const url = this.userUrl + `/set-language/${lang}`;
       this.http
         .post(url, '', {
-          headers: new HttpHeaders({'X-API-TOKEN': authToken})
+          headers: new HttpHeaders({ 'X-API-TOKEN': authToken })
         })
         .subscribe(
           () => {
@@ -553,13 +564,13 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
         return;
       }
       const url = this.userUrl + '/preferences';
       this.http
-        .get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(map(result => {
           if (result) {
             // @ts-ignore
@@ -567,8 +578,8 @@ export class AccountService {
           }
         }))
         .subscribe((data: Preference) => {
-            this.preferencesDataChanged.next(data);
-          },
+          this.preferencesDataChanged.next(data);
+        },
           error => this.errorService.handleError('getPreferences', error, url));
     }
   }
@@ -579,16 +590,16 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
         return;
       }
       const url = this.userUrl + `/preferred-article/${articleId}`;
       this.http
-        .post(url, '', {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+        .post(url, '', { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .subscribe((data) => {
-            this.preferredArticleDataChanged.next(data);
-          },
+          this.preferredArticleDataChanged.next(data);
+        },
           error => this.errorService.handleError('updatePreferredArticle', error, url));
     }
   }
@@ -633,14 +644,14 @@ export class AccountService {
     if (isPlatformBrowser(this.platformId)) {
       const authToken = localStorage.getItem('auth') ? localStorage.getItem('auth') : '';
       const url = this.userUrl + `/author-stats/${authorId}`;
-      this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+      this.http.get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(
           filter(data => data != null),
           map((data: AuthorStatsOptions) => new AuthorStats(data))
         )
         .subscribe((data: AuthorStats) => {
-            this.authorStatsDataChanged.next(data);
-          },
+          this.authorStatsDataChanged.next(data);
+        },
           error => this.errorService.handleError('loadAuthorStats', error, url));
     }
   }
@@ -662,8 +673,8 @@ export class AccountService {
           })
         )
         .subscribe((data: Account[]) => {
-            this.getAccountDataByTermChanged.next(data);
-          },
+          this.getAccountDataByTermChanged.next(data);
+        },
           error => this.errorService.handleError('getAccountByTerm', error)
         );
     }
@@ -693,18 +704,18 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
         return;
       }
-      this.http.get(url, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+      this.http.get(url, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(
           filter(data => data != null),
           map((result: any[]) => result.length ? result.map(data => new Subscriber(data['subscriber'])) : [])
         )
         .subscribe((mySubscribers: Subscriber[]) => {
-            this.mySubscribersChanged.next(mySubscribers);
-          },
+          this.mySubscribersChanged.next(mySubscribers);
+        },
           error => this.errorService.handleError('loadAuthorSubscribers', error, url)
         );
     }
@@ -717,17 +728,17 @@ export class AccountService {
       if (!authToken) {
         this.errorService.handleError('loginSession', {
           status: 409,
-          error: {message: 'invalid_session_id'}
+          error: { message: 'invalid_session_id' }
         });
         return;
       }
-      this.http.post(url, {authors: authorsList}, {headers: new HttpHeaders({'X-API-TOKEN': authToken})})
+      this.http.post(url, { authors: authorsList }, { headers: new HttpHeaders({ 'X-API-TOKEN': authToken }) })
         .pipe(
           filter(data => data != null)
         )
         .subscribe((subscriptions: string[]) => {
-            this.isSubscribedByAuthorsChanged.next(subscriptions);
-          },
+          this.isSubscribedByAuthorsChanged.next(subscriptions);
+        },
           error => this.errorService.handleError('getIsSubscribedByAuthors', error, url)
         );
     }

@@ -11,15 +11,15 @@
             <div class="publication-cover__guide" *ngIf="publication && !publication.cover && (isMyPublication || publication.memberStatus == 2)">
                 <div class="icon-profile upload-icon"></div>
                 <div class="publication-cover__guide__texts">
-                    <h4>Drop or upload a cover photo here!</h4>
-                    <p>JPG, PNG up to 5mb, 1400x364px recommended.</p>
+                    <h4>{{'publication.drop_upload' | translate}}</h4>
+                    <p>JPG, PNG up to 5mb, 1400x364px {{'publication.recommended' | translate}}.</p>
                 </div>
             </div>
             <div class="publication-cover__actions" *ngIf="(isMyPublication || publication.memberStatus == 2) && !imageLoaded">
                 <label for="addCover">
           <div class="cover__upload">
             <input type="file" (change)="uploadCover($event, coverContainer)">
-            <ui-button iconClassName="picture" text="Upload">
+            <ui-button iconClassName="picture" text="{{'publication.upload' | translate}}">
             </ui-button>
           </div>
         </label>
@@ -38,7 +38,7 @@
     </div>
     <div class="row publication-show-cover" *ngIf="(isMyPublication || publication.memberStatus == 2) && publication.hideCover">
         <div class="col-lg-8 offset-lg-2">
-            <ui-button text="Show Cover" iconClassName="preview" (btnClicked)="showCover()"></ui-button>
+            <ui-button text="{{'publication.show_cover' | translate}}" iconClassName="preview" (btnClicked)="showCover()"></ui-button>
         </div>
     </div>
     <div class="row publication-metadata" *ngIf="publicationForm">
@@ -52,31 +52,33 @@
             <form novalidate [formGroup]="publicationForm">
                 <h1 class="publication-metadata__title">
                     <label>
-                <textarea formControlName="title" placeholder="Add publication title"  (keyup)="onTitleChange($event)" rows="1">{{publication?.title}}</textarea>
+                <textarea formControlName="title" placeholder="{{'publication.add_title' | translate}}"  (keyup)="onTitleChange($event)" rows="1">{{publication?.title}}</textarea>
                 <i class="icon-edit editable-icon" [ngClass]="editMode ? 'active-icon' : ''" *ngIf="editMode && isMyPublication"></i>
               </label>
                 </h1>
                 <h3 class="publication-metadata__description">
                     <label>
-                <textarea formControlName="description" placeholder="Add publication description"  (keyup)="onDescriptionChange($event)"  rows="1">{{publication?.description}}</textarea>
+                <textarea formControlName="description" placeholder="{{'publication.add_description' | translate}}"  (keyup)="onDescriptionChange($event)"  rows="1">{{publication?.description}}</textarea>
                 <i class="icon-edit editable-icon" *ngIf="editMode && isMyPublication"></i>
               </label>
                 </h3>
             </form>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
+            <ui-button [iconButton]="true" iconClassName="logout" size="small" *ngIf="!editMode && (publication.memberStatus == 2 || publication.memberStatus == 3)" (btnClicked)="openPopup(true, false)"></ui-button>
             <ng-container *ngIf="(isMyPublication || publication.memberStatus == 2)">
                 <ui-button icon="icon-settings" size="small" [iconButton]="true" iconClassName="settings" *ngIf="!editMode && !textChanging" (btnClicked)="setEditMode(true)"></ui-button>
                 <ng-container *ngIf="editMode || textChanging">
-                    <ui-button type="primary" text="Save" className="save-button" (click)="edit()"></ui-button>
-                    <span *ngIf="(editMode || textChanging) && isMyPublication" class="delete-pub" (click)="openPopup(true)">
+                    <ui-button type="primary" text="{{'publication.save' | translate}}" className="save-button" (click)="edit()"></ui-button>
+                    <span *ngIf="(editMode || textChanging) && isMyPublication" class="delete-pub" (click)="openPopup(true, true)">
                             <i class="icon icon-delete"></i>
                         </span>
                     <ui-button [iconButton]="true" size="small" iconClassName="close" (btnClicked)="setEditMode(false)"></ui-button>
                 </ng-container>
             </ng-container>
-            <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="publication.memberStatus == 0 ? 'Become a member' : 'cancel'" (click)="becomeMember()"></ui-button>
-            <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="!publication.following ? 'Follow' : 'Following'" [isFollowing]="publication.following" (click)="follow()" *ngIf="!isMyPublication && publication.memberStatus !== 2"></ui-button>
+            <ui-button *ngIf="publication.memberStatus == 0 || publication.memberStatus == 203" size="small" [text]="(publication.memberStatus == 0 ? 'publication.become_a_member' : 'publication.cancel') | translate" (click)="becomeMember()"></ui-button>
+            <ui-button [type]="!publication.following ? 'primary' : 'ordinary'" iconClassName="follow" size="small" [text]="(!publication.following ? 'publication.follow' : 'publication.following') | translate" [isFollowing]="publication.following" (click)="follow()"
+                *ngIf="!isMyPublication && publication.memberStatus !== 2"></ui-button>
             <!-- <div class="button button--primary">
           <i class="icon-follow"></i>
           <span>Follow</span>
@@ -87,27 +89,27 @@
         <div class="col-lg-8 offset-lg-2 col-12 offset-0">
             <div class="datum">
                 <span class="datum__value">{{publication?.views}}</span>
-                <span class="datum__descriptor">Views</span>
+                <span class="datum__descriptor">{{'publication.views' | translate}}</span>
             </div>
             <div class="datum">
                 <span class="datum__value">{{stories.length}}</span>
-                <span class="datum__descriptor">Stories</span>
+                <span class="datum__descriptor">{{'publication.stories' | translate}}</span>
             </div>
             <div class="datum">
                 <span class="datum__value">{{publication?.subscribersCount}}</span>
-                <span class="datum__descriptor">Followers</span>
+                <span class="datum__descriptor">{{'publication.followers' | translate}}</span>
             </div>
             <div class="datum">
                 <span class="datum__value">{{publication?.membersCount}}</span>
-                <span class="datum__descriptor">Members</span>
+                <span class="datum__descriptor">{{'publication.members' | translate}}</span>
             </div>
         </div>
     </div>
     <div class="row">
 
         <div class="col-12 col-lg-8 offset-lg-2 tabber-container" [class.editable-disabled]="editMode" *ngIf="searchForm">
-            <ui-tab type="buttons" *ngIf="isMyPublication || publication && publication.memberStatus == 2" [tabs]="[{value: 'stories', text: 'Stories'}, {value: 'members', text: 'Members'}, {value: 'followers', text: 'Followers'}]" (onTabChange)="activeTab = $event"
-                [currentValue]="activeTab"></ui-tab>
+            <ui-tab type="buttons" *ngIf="isMyPublication || publication && publication.memberStatus == 2" [tabs]="[{value: 'stories', text: ('publication.stories' | translate)}, {value: 'members', text: ('publication.members' | translate)}, {value: 'followers', text: ('publication.followers' | translate)}]"
+                (onTabChange)="activeTab = $event" [currentValue]="activeTab"></ui-tab>
         </div>
     </div>
     <div class="row">
@@ -115,19 +117,19 @@
             <div class="grid-style grid-style--custom">
                 <div class="grid-style__choose">
                     <div>
-                        <h4>{{listType | titlecase}} style</h4>
-                        <p>Choose the way your readers will see your stories.</p>
+                        <h4>{{listType | titlecase}} {{'publication.style' | translate}}</h4>
+                        <p>{{'publication.choose_style' | translate}}</p>
                     </div>
                     <div class="grid-style__choose__item">
                         <span (click)="listType = 'grid'">
                           <i  class="grid-icon icon-multi-grid"
                               [ngClass]="{'grid-icon--selected': (listType == 'grid')}"></i>
-                          <small>Grid</small>
+                          <small>{{'publication.grid' | translate}}</small>
                         </span>
                         <span (click)="listType = 'single'">
                            <i  class="list-icon icon-single-grid"
                             [ngClass]="{'list-icon--selected': (listType == 'single')}"></i>
-                          <small>List</small>
+                          <small>{{'publication.list' | translate}}</small>
                         </span>
                     </div>
                 </div>
@@ -140,7 +142,7 @@
                 ngxMasonryItem [type]="listType" *ngFor="let content of stories;" [contentData]="content"></ui-content-single>
             <div class="not-found local" *ngIf="!loading && !stories.length">
                 <img src="../../../assets/no_story.svg" alt="">
-                <b>No stories yet</b>
+                <b>{{'publication.no_stories' | translate}}</b>
             </div>
         </div>
     </div>
@@ -148,7 +150,7 @@
 <div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 tab-heading tab-heading--members">
-            <h2>Members</h2>
+            <h2>{{'publication.members' | translate}}</h2>
             <div class="tab-heading__inner" (click)="inviteModal(true)">
                 <i class="icon-search"></i>
                 <input type="text">
@@ -157,13 +159,13 @@
                 <div class="invite-member-space" *ngIf="activeTab === 'members'">
                     <ui-button text="Invite Member" (btnClicked)="inviteModal(true)"></ui-button>
                     <div class="custom-modal" [ngClass]="{'custom-modal--visible' : showInviteModal}">
-                        <p>To add members search by name or type email to invite.</p>
-                        <app-chips-input [tagsArray]="chips" [placeholder]="'Search people'" (keyupEnter)="enterTag($event)" (remove)="removeChip($event)" (change)="textChange($event)"></app-chips-input>
+                        <p>{{'publication.to_add_members_text' | translate}}</p>
+                        <app-chips-input [tagsArray]="chips" [placeholder]="('publication.search_people' |translate)" (keyupEnter)="enterTag($event)" (remove)="removeChip($event)" (change)="textChange($event)"></app-chips-input>
                         <ui-input-suggestions *ngIf="searchedResult" [suggestions]="searchedMembers" (onSelect)="suggestionSelected($event)"></ui-input-suggestions>
                         <ui-dropdown [className]="'invite-member-space__dropdown'" formControlName="status" [type]="'default'" [optionsData]="pubSelectData" [isNone]="false"></ui-dropdown>
                         <div class="custom-modal__buttons">
-                            <ui-button [text]="'Cancel'" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
-                            <ui-button [text]="'Invite'" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'" [disabled]="chips.length==0 || searchForm.invalid"></ui-button>
+                            <ui-button [text]="('publication.cancel' | translate)" (btnClicked)="inviteModal(false)" [className]="'cancel-modal'"></ui-button>
+                            <ui-button [text]="('publication.invite' | translate)" [className]="'cancel-modal'" (btnClicked)="invite()" [type]="'primary'" [disabled]="chips.length==0 || searchForm.invalid"></ui-button>
                         </div>
                     </div>
                 </div>
@@ -177,12 +179,12 @@
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersOdd" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
                     [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [isOwner]="member.memberStatus == 1"
-                    [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]" [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
+                    [userNotificationData]="[{'text': ('publication.delete_from_publication' | translate),'value': 'delete'}]" [disableSelectChange]="publication.memberStatus == 2" [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
             </div>
             <div>
                 <ui-user-single [type]="'notification'" *ngFor="let member of membersEven" (onRoleClick)="onRoleClick($event, member)" (onUserClick)="onUserClick($event)" (follow)="followMember($event, member)" (onNotificationClick)="removeFromPublication($event, member)"
-                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text': 'Delete from publication','value': 'delete'}]"
-                    [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
+                    [userData]="{ user: member,followMember: member.subscribed }" [userRoleData]="[{ 'value': 'Editor', 'slug': 2, 'status': member.memberStatus == 2 }, { 'value': 'Contributor', 'slug': 3, 'status': member.memberStatus == 3 }]" [userNotificationData]="[{'text':  ('publication.delete_from_publication' | translate),'value': 'delete'}]"
+                    [disableSelectChange]="publication.memberStatus == 2" [showFollowButton]="currentUser.publicKey !== member.publicKey"></ui-user-single>
             </div>
         </div>
     </div>
@@ -190,7 +192,8 @@
 <div class="container" *ngIf="activeTab === 'members'">
     <div class="row">
         <div class="col-12 col-lg-8 offset-lg-2 requests-tabber">
-            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: 'Requests', count: requests.length}, {value: 'pending', text: 'Pending', count: pendings.length}]" (onTabChange)="membersActiveTab = $event;" [currentValue]="membersActiveTab"></ui-tab>
+            <ui-tab type="navigation" [tabs]="[{value: 'requests', text: ('publication.requests' | translate), count: requests.length}, {value: 'pending', text: ('publication.pending' | translate), count: pendings.length}]" (onTabChange)="membersActiveTab = $event;"
+                [currentValue]="membersActiveTab"></ui-tab>
         </div>
     </div>
     <div class="row">

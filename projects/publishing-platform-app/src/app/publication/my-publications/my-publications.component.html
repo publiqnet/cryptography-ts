@@ -1,14 +1,14 @@
 <div class="container">
     <div class="row publications-heading">
         <div class="col-lg-6 offset-lg-2 col-9">
-            <h1>Publications</h1>
+            <h1>{{'publication.publications' | translate}}</h1>
             <div class="arrowed-action" [ngClass]="{'no-select' : !invitations?.length}" (click)="invitations?.length? openPublicationModal(true, 'invitation') : ''">
-                <span>Invitations<small>({{invitations?.length || 0}})</small></span>
+                <span>{{'publication.invitations' | translate}}<small>({{invitations?.length || 0}})</small></span>
                 <i class="icon-arrow-right"></i>
             </div>
         </div>
         <div class="col-lg-2 col-3">
-            <ui-button text="Create" (click)="openPublicationModal(true, 'create')"></ui-button>
+            <ui-button text="{{'publication.create' | translate}}" (click)="openPublicationModal(true, 'create')"></ui-button>
         </div>
     </div>
     <div class="row publications-staff" *ngIf="publications && publications.length">

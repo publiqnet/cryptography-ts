@@ -1,75 +1,75 @@
 <div class="main-wrap" *ngIf="false">
-  <div class="inner-wrap-main">
-    <div class="main-wrap">
-      <div *ngIf="coverImageUrl">
-        <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
-          <div class="inner-wrap">
-          </div>
-          <div class="overlay"></div>
-        </div>
-      </div>
-      <div class="inner-content-wrap article-full-content">
-        <div class="inner-wrap" *ngIf="article.text">
-          <div class="content">
-            <div class="content-inner">
-              <div class="article-author">
-                <div class="author-image">
-                  <ui-avatar [avatarData]="{'image': env.backend + '/' + authorImage, 'fullName': authorFirstName}"></ui-avatar>
+    <div class="inner-wrap-main">
+        <div class="main-wrap">
+            <div *ngIf="coverImageUrl">
+                <div [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " [ngClass]="{'inner-title-wrap': true}">
+                    <div class="inner-wrap">
+                    </div>
+                    <div class="overlay"></div>
                 </div>
-                <div class="author-info">
-                  <span class="author-info__name">{{authorFullName}}</span>
-                  <span class="author-info__published">{{published * 1000 | date:'dd MMM, HH:mm'}}</span>
-                </div>
-                <div class="follow-button" *ngIf="!isCurrentUser">
-                  <ui-button [type]="'primary'" [size]="'medium'" [text]="'Follow'"></ui-button>
-                </div>
-              </div>
-              <h1 class="article-title">{{article.title}}</h1>
-              <div [innerHTML]="article.text" class="article-main-content"></div>
             </div>
-          </div>
+            <div class="inner-content-wrap article-full-content">
+                <div class="inner-wrap" *ngIf="article.text">
+                    <div class="content">
+                        <div class="content-inner">
+                            <div class="article-author">
+                                <div class="author-image">
+                                    <ui-avatar [avatarData]="{'image': env.backend + '/' + authorImage, 'fullName': authorFirstName}"></ui-avatar>
+                                </div>
+                                <div class="author-info">
+                                    <span class="author-info__name">{{authorFullName}}</span>
+                                    <span class="author-info__published">{{published * 1000 | date:'dd MMM, HH:mm'}}</span>
+                                </div>
+                                <div class="follow-button" *ngIf="!isCurrentUser">
+                                    <ui-button [type]="'primary'" [size]="'medium'" [text]="'Follow'" iconClassName="follow" [isFollowing]="author.subscribed" (btnClicked)="follow($event)"></ui-button>
+                                </div>
+                            </div>
+                            <h1 class="article-title">{{article.title}}</h1>
+                            <div [innerHTML]="article.text" class="article-main-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <div *ngIf="article && article.nextVersions.length" class="article__old-warning">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[0].uri]">here</a>. 
-      </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                This is an old version of this story, a new one is available <a [routerLink]="['/s/', article.nextVersions[0].uri]">here</a>.
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class="article__cover" [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } " ></div>
+    <div class="row">
+        <div class="col-12">
+            <div class="article__cover" [ngStyle]="coverImageUrl && {'background-image':'url(' + coverImageUrl + ')' } "></div>
+        </div>
     </div>
-  </div>
 </div>
 <div class="container" *ngIf="article">
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="article__author">
-        <ui-avatar [avatarData]="article.author"></ui-avatar>
-        <div>
-          <a routerLink="/a/{{article.author.slug}}" class="article__author__name">{{article.author.fullName}}</a>
-          <span class="article__author__date">{{formatDate(article.published, 'DD MMM, YYYY')}}</span>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="article__author">
+                <ui-avatar [avatarData]="article.author"></ui-avatar>
+                <div>
+                    <a routerLink="/a/{{article.author.slug}}" class="article__author__name">{{article.author.fullName}}</a>
+                    <span class="article__author__date">{{formatDate(article.published, 'DD MMM, YYYY')}}</span>
+                </div>
+                <ui-button size="small" type="primary" [text]="author.subscribed? 'Unfollow' : 'Follow'" iconClassName="follow" [isFollowing]="author.subscribed" (btnClicked)="follow($event)"></ui-button>
+            </div>
         </div>
-        <ui-button size="small" type="primary" text="Follow"></ui-button>
-      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <h1 class="article__title">{{article.title}}</h1>
-      <div class="article__content" [innerHTML]="article.text"></div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="article__title">{{article.title}}</h1>
+            <div class="article__content" [innerHTML]="article.text"></div>
+        </div>
     </div>
-  </div>
-  <!-- <div class="row article__footing">
+    <!-- <div class="row article__footing">
     <div class="col-9 col-md-5 offset-md-2">
       <div class="article__tag" *ngFor="let tag of article.tags;">{{tag}}</div>
     </div>
@@ -81,13 +81,13 @@
       </div>
     </div>
   </div> -->
-  <div class="row article__versions">
-    <div class="col-md-8 offset-md-2">
-      <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">
-        <span>Updated: {{formatDate(version.published, 'hh:mm, MMM DD')}}</span>
-        <h2>{{version.title}}</h2>
-        <i class="icon-arrow-right article__version__arrow"></i>
-      </a>
+    <div class="row article__versions">
+        <div class="col-md-8 offset-md-2">
+            <a class="article__version" tabindex="0" [routerLink]="['/s/', version.uri]" *ngFor="let version of article.previousVersions;">
+                <span>Updated: {{formatDate(version.published, 'hh:mm, MMM DD')}}</span>
+                <h2>{{version.title}}</h2>
+                <i class="icon-arrow-right article__version__arrow"></i>
+            </a>
+        </div>
     </div>
-  </div>
 </div>

@@ -11,6 +11,7 @@ import { Publications } from '../services/models/publications';
 import { DecimalPipe } from '@angular/common';
 import { Tag } from '../services/models/tag';
 import { environment } from '../../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -28,10 +29,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public tagsList: Tag[] = [];
 
   headerRoutesList = {
-    '' : '/',
-    'new-story' : '/content/newcontent',
-    'profile' : '/content/newcontent',
-    'publications' : '/p/my-publications',
+    '': '/',
+    'new-story': '/content/newcontent',
+    'profile': '/content/newcontent',
+    'publications': '/p/my-publications',
   };
 
   constructor(
@@ -40,7 +41,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private contentService: ContentService,
     private errorService: ErrorService,
-    private _decimalPipe: DecimalPipe
+    private _decimalPipe: DecimalPipe,
+    private translate: TranslateService
   ) {
   }
 
@@ -114,7 +116,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           icon: 'pbq',
           text: this.accountService.loggedIn() ? this._decimalPipe.transform(this.accountService.accountInfo.balance, '0.0-8') + ' PBQ' : '',
           inner: {
-            'text': 'Wallet',
+            'text': this.translate.instant('header.wallet'),
             'icon': 'arrow-right',
           },
           value: 'wallet',
@@ -122,24 +124,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
         },
         {
           icon: 'new-story',
-          text: 'New story',
+          text: this.translate.instant('header.new_story'),
           value: 'new-story'
         },
         {
           icon: 'publication',
-          text: 'Publications',
+          text: this.translate.instant('header.publications'),
           value: 'publications',
           seperator: true
         },
         {
           icon: 'profile',
-          text: 'Profile',
+          text: this.translate.instant('header.profile'),
           value: 'profile',
           className: 'silly'
         },
         {
           icon: 'logout',
-          text: 'Log Out',
+          text: this.translate.instant('header.log_out'),
           value: 'logout'
         },
       ],
