@@ -20,6 +20,7 @@ var KeyPair = /** @class */ (function () {
         else {
             this.pureBrainKay = brainKeyPrefix;
         }
+        console.log('pureBrainKay - ', this.pureBrainKay);
         var brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
         var privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
         var pubKeyCoordinates = KeyPair.getPointCordinats(privateCorKeyHex); //generatorPoint.mul(privateCorKeyHex);
@@ -28,6 +29,7 @@ var KeyPair = /** @class */ (function () {
         this.publicKey = new public_key_1.PublicKey(pubKeyXHex, pubKeyYHex);
         this.privateKey = new private_key_1.PrivateKey(privateCorKeyHex);
         this.brainKey = brainKey;
+        console.log('brainKey - ', this.brainKey);
     }
     Object.defineProperty(KeyPair.prototype, "PpublicKey", {
         get: function () {
