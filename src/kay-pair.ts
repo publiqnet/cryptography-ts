@@ -29,7 +29,7 @@ export class KeyPair {
     } else {
       this.pureBrainKay = brainKeyPrefix;
     }
-    console.log('pureBrainKay - ', this.pureBrainKay);
+
     const brainKey = KeyPair.createBrainKey(0, this.pureBrainKay);
     const privateCorKeyHex = KeyPair.encryptBrainKey(brainKey);
     const pubKeyCoordinates = KeyPair.getPointCordinats(privateCorKeyHex); //generatorPoint.mul(privateCorKeyHex);
@@ -39,7 +39,6 @@ export class KeyPair {
     this.publicKey = new PublicKey(pubKeyXHex, pubKeyYHex);
     this.privateKey = new PrivateKey(privateCorKeyHex);
     this.brainKey = brainKey;
-    console.log('brainKey - ', this.brainKey);
   }
 
   public get PpublicKey(): string {
